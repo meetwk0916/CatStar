@@ -69,11 +69,11 @@ The gentle memorial process completed through delayed **信件**. It is not disa
 _Avoid_: 通关, 毕业, 结束服务
 
 **星河陪伴**:
-The quiet memorial state after the final **信件** has been read. The **小猫** remains present in the scene and may continue ordinary companionship expressions, but no longer sends new letters.
+The quiet memorial state after the **告别选择** has been completed. The **小猫** remains present in the scene and may continue ordinary companionship expressions, but no longer sends new letters.
 _Avoid_: 定格陪伴, 养成完成, 永久聊天, 内容续订
 
 **星尘标记**:
-A soft star-like memorial mark that may appear near the **小猫** after the **最终信** is read. It belongs to the Cat Star setting and should not imply angels, ascension, or religious symbolism.
+A soft star-like memorial mark that may appear near the **小猫** after the **告别选择** is completed. It belongs to the Cat Star setting and should not imply angels, ascension, or religious symbolism.
 _Avoid_: 光环, 天使, 升天, 成仙
 
 **陪伴表现**:
@@ -101,7 +101,7 @@ The small ritual choice shown at the end of the **最终信**. It lets the **用
 _Avoid_: 打开前警告, 确认弹窗, 通关按钮
 
 **信箱封存**:
-The state of the **时光信箱** after every existing **信件** has been read. It stops producing new letters, but still allows the **用户** to revisit letters that have already been read.
+The state of the **时光信箱** after every existing **信件** has been read and the **告别选择** has been completed. It stops producing new letters, but still allows the **用户** to revisit letters that have already been read.
 _Avoid_: 禁用, 关闭, 删除
 
 **离世日期**:
@@ -160,13 +160,13 @@ Dev: Are coat color and personality just customization options?
 Domain expert: No. They are **纪念特征**. They may affect how the **小猫** appears or moves, but they come from remembrance.
 
 Dev: What happens after the final letter?
-Domain expert: The experience enters **星河陪伴**. The **告别** is complete, but the **小猫** is still gently present through ordinary **陪伴表现**.
+Domain expert: After the **告别选择**, the experience enters **星河陪伴**. The **告别** is complete, but the **小猫** is still gently present through ordinary **陪伴表现**.
 
 Dev: Can clicking the cat produce new story content?
 Domain expert: No. It can show a **陪伴反应**, but the story belongs to **信件**.
 
 Dev: Does the mailbox disappear after all letters are read?
-Domain expert: No. **信箱封存** means no new letters are produced, but already-read **信件** remain available for rereading.
+Domain expert: No. After the **告别选择**, **信箱封存** means no new letters are produced, but already-read **信件** remain available for rereading.
 
 Dev: Can the final letter alone put the mailbox into sealed state?
 Domain expert: No. **信箱封存** starts only after every existing **信件** has been read. The **用户** should not be pushed past unread letters.
