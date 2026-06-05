@@ -13,6 +13,14 @@ export function getNextMorningDeliveryAt(createdAt: number): number {
   return nextMorning.getTime();
 }
 
+export function getDeliveryTimeAtIndex(createdAt: number, deliveryIndex: number): number {
+  if (deliveryIndex <= 0) {
+    return createdAt;
+  }
+
+  return getNextMorningDeliveryAt(createdAt) + (deliveryIndex - 1) * DAY_MS;
+}
+
 export function getCurrentDeliveryIndex(createdAt: number, now = getNow()): number {
   const nextMorningDeliveryAt = getNextMorningDeliveryAt(createdAt);
   if (now < nextMorningDeliveryAt) {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import CatScene from "./components/CatScene";
 import Mailbox from "./components/Mailbox";
 import OnboardingForm from "./components/OnboardingForm";
+import { getDeliveryTimeAtIndex } from "./domain/time";
 import {
   clearPassport,
   completeFarewell,
@@ -14,6 +15,7 @@ import type { ICatPassport } from "./types";
 export default function App() {
   const [passport, setPassport] = useState<ICatPassport | null>(() => loadPassport());
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [previewNow, setPreviewNow] = useState<number | undefined>(undefined);
 
   const persistPassport = (nextPassport: ICatPassport) => {
     setPassport(nextPassport);
@@ -61,6 +63,47 @@ export default function App() {
           <CatScene passport={passport} />
 
           <aside className="grid content-start gap-4">
+            {import.meta.env.DEV ? (
+              <section className="border-4 border-[#4A3E3D] bg-[#EFE8F6] p-4 shadow-[4px_4px_0_#4A3E3D]">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8D6E63]">
+                  Dev Time Preview
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewNow(undefined)}
+                    className="border-2 border-[#4A3E3D] bg-white px-3 py-2 font-black"
+                  >
+                    真实时间
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewNow(getDeliveryTimeAtIndex(passport.createdAt, 1) + 60_000)}
+                    className="border-2 border-[#4A3E3D] bg-white px-3 py-2 font-black"
+                  >
+                    第2天 8点后
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewNow(getDeliveryTimeAtIndex(passport.createdAt, 2) + 60_000)}
+                    className="border-2 border-[#4A3E3D] bg-white px-3 py-2 font-black"
+                  >
+                    第3天 8点后
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewNow(getDeliveryTimeAtIndex(passport.createdAt, 7) + 60_000)}
+                    className="border-2 border-[#4A3E3D] bg-white px-3 py-2 font-black"
+                  >
+                    最终信投递日
+                  </button>
+                </div>
+                <p className="mt-3 text-xs leading-5 text-[#6C5A57]">
+                  {previewNow ? `当前预览：${new Date(previewNow).toLocaleString()}` : "当前预览：真实设备时间"}
+                </p>
+              </section>
+            ) : null}
+
             <div className="border-4 border-[#4A3E3D] bg-[#FFFDF9] p-5 shadow-[4px_4px_0_#4A3E3D]">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#A98D85]">Passport</p>
               <h2 className="mt-2 text-3xl font-black">{passport.catName}</h2>
@@ -82,6 +125,7 @@ export default function App() {
 
             <Mailbox
               passport={passport}
+              now={previewNow}
               onReadLetter={handleReadLetter}
               onCompleteFarewell={handleCompleteFarewell}
             />

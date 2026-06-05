@@ -44,12 +44,16 @@ export function hasReadAllOtherLetters(
     .every((letter) => isLetterRead(passport, letter.id));
 }
 
-export function canOpenLetter(passport: ICatPassport, letter: ILetter): boolean {
+export function canOpenLetter(
+  passport: ICatPassport,
+  letter: ILetter,
+  letters: ILetter[] = LETTERS,
+): boolean {
   if (letter.id !== FINAL_LETTER_ID) {
     return true;
   }
 
-  return hasReadAllOtherLetters(passport);
+  return hasReadAllOtherLetters(passport, letters);
 }
 
 export function getMailboxLetters(
@@ -58,7 +62,7 @@ export function getMailboxLetters(
   letters: ILetter[] = LETTERS,
 ): MailboxLetter[] {
   return getDeliveredLetters(passport, now, letters).map((letter) => {
-    const isFinalWaiting = letter.id === FINAL_LETTER_ID && !canOpenLetter(passport, letter);
+    const isFinalWaiting = letter.id === FINAL_LETTER_ID && !canOpenLetter(passport, letter, letters);
     return {
       letter,
       state: isFinalWaiting ? "final-waiting" : "readable",
@@ -73,8 +77,12 @@ export function getMailboxLetters(
   });
 }
 
-export function countUnreadDeliveredLetters(passport: ICatPassport, now?: number): number {
-  return getMailboxLetters(passport, now).filter(
+export function countUnreadDeliveredLetters(
+  passport: ICatPassport,
+  now?: number,
+  letters: ILetter[] = LETTERS,
+): number {
+  return getMailboxLetters(passport, now, letters).filter(
     (item) => item.state === "readable" && !item.isRead,
   ).length;
 }

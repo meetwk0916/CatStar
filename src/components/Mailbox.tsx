@@ -11,16 +11,17 @@ import type { ICatPassport } from "../types";
 
 interface MailboxProps {
   passport: ICatPassport;
+  now?: number;
   onReadLetter: (letterId: number) => void;
   onCompleteFarewell: () => void;
 }
 
-export default function Mailbox({ passport, onReadLetter, onCompleteFarewell }: MailboxProps) {
+export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewell }: MailboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<MailboxLetter | null>(null);
-  const mailboxItems = useMemo(() => getMailboxLetters(passport), [passport]);
-  const unreadCount = useMemo(() => countUnreadDeliveredLetters(passport), [passport]);
-  const nextHint = useMemo(() => formatNextDeliveryHint(passport.createdAt), [passport.createdAt]);
+  const mailboxItems = useMemo(() => getMailboxLetters(passport, now), [now, passport]);
+  const unreadCount = useMemo(() => countUnreadDeliveredLetters(passport, now), [now, passport]);
+  const nextHint = useMemo(() => formatNextDeliveryHint(passport.createdAt, now), [now, passport.createdAt]);
 
   const openLetter = (item: MailboxLetter) => {
     if (item.state !== "readable") {
