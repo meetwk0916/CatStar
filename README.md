@@ -55,4 +55,5 @@ src/
 
 - [CONTEXT.md](./CONTEXT.md): glossary and domain language.
 - [SPEC-Phase0.md](./SPEC-Phase0.md): Phase 0 product and implementation spec.
+- [docs/PROGRESS.md](./docs/PROGRESS.md): current implementation state, verification, and remaining work.
 - [docs/adr/0001-local-memorial-data-for-phase-0.md](./docs/adr/0001-local-memorial-data-for-phase-0.md): why Phase 0 stores memorial data locally.

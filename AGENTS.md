@@ -7,6 +7,7 @@ Read this before changing CatStar.
 - `CONTEXT.md` is the domain glossary. Keep it implementation-free.
 - `SPEC-Phase0.md` is the Phase 0 implementation target.
 - `README.md` is the human handoff and run guide.
+- `docs/PROGRESS.md` is the current implementation ledger.
 - ADRs live in `docs/adr/`.
 
 ## Product Boundaries
