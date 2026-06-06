@@ -12,7 +12,8 @@ The current implementation includes:
 - Lazy-loaded Phaser 3 room-scene spike embedded inside the React shell.
 - Local-only passport creation and persistence through `localStorage`.
 - Minimum onboarding fields: cat name, family address name, coat color, personality, favorite snack, and passed date.
-- Pure-code pixel room scene with floor, cushion, window, plant, cat sprite, Arcade Physics collision, and stardust after farewell.
+- Runtime image-asset room scene under `public/assets/scenes/window-room/`.
+- Generated empty room background, transparent idle cat cutout, and hand-authored Arcade Physics collision config.
 - Autonomous cat movement with walking, jumping, landing, and click/tap companion reaction.
 - Prewritten Phase 0 letter script in `src/data/letters.json`; no AI-generated letters or chat.
 - Development-only time preview controls for delivery-day QA.
@@ -35,12 +36,14 @@ The current implementation includes:
 - `CONTEXT.md`: domain glossary and language boundaries.
 - `SPEC-Phase0.md`: Phase 0 target specification.
 - `docs/adr/0001-local-memorial-data-for-phase-0.md`: local-data decision.
+- `docs/ART_DIRECTION.md`: visual quality direction and asset rules.
 - `docs/QA.md`: Phase 0.1 manual QA checklist.
 - `src/domain/time.ts`: delivery time calculation and dev preview delivery-index helper.
 - `src/domain/letters.ts`: mailbox, read-state, and final-letter rules.
 - `src/domain/catFsm.ts`: cat state weights and companion reactions.
 - `src/storage/passportStorage.ts`: local passport persistence.
 - `src/components/PhaserCatScene.tsx`: Phaser room scene spike.
+- `public/assets/scenes/window-room/`: current runtime scene assets.
 
 ## Verification
 
@@ -72,5 +75,6 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
-- Replace code-generated Phaser cat frames with a proper sprite sheet if the engine route is accepted.
+- Replace the single idle cat cutout with a proper sprite sheet if the engine route is accepted.
+- Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.

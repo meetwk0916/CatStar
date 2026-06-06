@@ -8,6 +8,7 @@ Read this before changing CatStar.
 - `SPEC-Phase0.md` is the Phase 0 implementation target.
 - `README.md` is the human handoff and run guide.
 - `docs/PROGRESS.md` is the current implementation ledger.
+- `docs/ART_DIRECTION.md` is the current visual quality and asset direction.
 - `docs/QA.md` is the Phase 0.1 manual QA checklist.
 - ADRs live in `docs/adr/`.
 

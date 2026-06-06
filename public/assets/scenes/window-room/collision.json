@@ -1,0 +1,7 @@
+{
+  "floor": { "x": 320, "y": 312, "width": 640, "height": 96 },
+  "windowBench": { "x": 270, "y": 183, "width": 270, "height": 20 },
+  "catBed": { "x": 86, "y": 235, "width": 92, "height": 24 },
+  "plant": { "x": 513, "y": 214, "width": 60, "height": 116 },
+  "rightTray": { "x": 540, "y": 300, "width": 92, "height": 24 }
+}
