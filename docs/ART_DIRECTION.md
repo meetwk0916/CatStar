@@ -65,6 +65,7 @@ public/assets/scenes/window-room/
 - Sleep chroma-key source: `docs/art/sources/cat-sleep-chromakey-source.png`
 - Cat action keyframe candidate: `docs/art/candidates/cat-action-keyframes/cat-action-keyframes-01-alpha.png`
 - Cat 96x96 pose preview: `docs/art/candidates/cat-action-keyframes/normalized-96/contact-sheet.png`
+- Dedicated jump/interact keyframe candidate: `docs/art/candidates/cat-jump-interact-keyframes/cat-jump-interact-keyframes-01-alpha.png`
 - Runtime background: `public/assets/scenes/window-room/background.png`
 - Runtime cat action sprite sheets:
   - `public/assets/scenes/window-room/cat/idle.png`
@@ -82,6 +83,7 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 ## Next Asset Work
 
 - Current action sheets use `docs/art/candidates/cat-action-keyframes/` as the first art-directed visual baseline.
+- Runtime `jump` and `interact` use the dedicated candidate under `docs/art/candidates/cat-jump-interact-keyframes/`.
 - Replace assembled candidate motion with hand-authored sprite sheets or atlas before final product art lock.
 - Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for frame counts, anchors, and metadata.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.

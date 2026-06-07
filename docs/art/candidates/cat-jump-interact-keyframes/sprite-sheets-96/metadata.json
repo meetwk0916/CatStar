@@ -1,0 +1,61 @@
+{
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "anchor": "bottom-center",
+  "source": "docs/art/candidates/cat-jump-interact-keyframes/normalized-96",
+  "actions": {
+    "jump": {
+      "file": "jump.png",
+      "frames": 5,
+      "visibleSizes": [
+        [
+          77,
+          56
+        ],
+        [
+          80,
+          75
+        ],
+        [
+          76,
+          57
+        ],
+        [
+          70,
+          76
+        ],
+        [
+          82,
+          52
+        ]
+      ]
+    },
+    "interact": {
+      "file": "interact.png",
+      "frames": 5,
+      "visibleSizes": [
+        [
+          72,
+          74
+        ],
+        [
+          54,
+          76
+        ],
+        [
+          70,
+          76
+        ],
+        [
+          69,
+          74
+        ],
+        [
+          72,
+          74
+        ]
+      ]
+    }
+  },
+  "note": "Dedicated jump/interact candidate assembled from generated key poses; still needs final hand cleanup."
+}

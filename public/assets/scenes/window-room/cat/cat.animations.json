@@ -17,7 +17,7 @@
     },
     "jump": {
       "file": "jump.png",
-      "frames": 4,
+      "frames": 5,
       "frameRate": 7,
       "repeat": 0
     },
@@ -34,5 +34,5 @@
       "repeat": 0
     }
   },
-  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; replace with hand-cleaned production animation after visual approval."
+  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; jump and interact use dedicated keyframe candidates and still need final hand cleanup."
 }

@@ -273,14 +273,14 @@ face, and fur volume, but it is still not final hand-cleaned production motion:
 
 - `idle`: 4 frames
 - `walk`: 6 frames, based on two walking key poses with light timing offsets
-- `jump`: 4 frames, based on crouch and landing key poses
+- `jump`: 5 frames, based on dedicated crouch, launch, air, descent, and landing key poses
 - `sleep`: 4 frames
-- `interact`: 5 frames, based on standing, landing, and crouch key poses
+- `interact`: 5 frames, based on dedicated notice, nuzzle/blink, and settle key poses
 
 These sheets are acceptable as the current Phase 0.1 visual baseline. They
 preserve cat identity and mobile readability better than the previous runtime
-stopgap, but walk, jump, and interact still need manual in-betweening, contact
-cleanup, and pose-specific polish before product art lock.
+stopgap, but walk contact frames, jump landing timing, and interact edge cleanup
+still need manual polish before product art lock.
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must
