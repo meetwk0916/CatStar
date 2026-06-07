@@ -57,5 +57,6 @@ src/
 - [SPEC-Phase0.md](./SPEC-Phase0.md): Phase 0 product and implementation spec.
 - [docs/PROGRESS.md](./docs/PROGRESS.md): current implementation state, verification, and remaining work.
 - [docs/ART_DIRECTION.md](./docs/ART_DIRECTION.md): Phase 0.1A visual quality direction and asset rules.
+- [docs/CAT_ANIMATION_SPEC.md](./docs/CAT_ANIMATION_SPEC.md): production target for consistent cat motion assets.
 - [docs/QA.md](./docs/QA.md): Phase 0.1 manual QA checklist.
 - [docs/adr/0001-local-memorial-data-for-phase-0.md](./docs/adr/0001-local-memorial-data-for-phase-0.md): why Phase 0 stores memorial data locally.

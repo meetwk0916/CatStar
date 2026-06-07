@@ -9,6 +9,7 @@ Read this before changing CatStar.
 - `README.md` is the human handoff and run guide.
 - `docs/PROGRESS.md` is the current implementation ledger.
 - `docs/ART_DIRECTION.md` is the current visual quality and asset direction.
+- `docs/CAT_ANIMATION_SPEC.md` is the production target for cat motion assets.
 - `docs/QA.md` is the Phase 0.1 manual QA checklist.
 - ADRs live in `docs/adr/`.
 

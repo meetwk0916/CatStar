@@ -81,5 +81,6 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 
 - Replace MVP derived motion sheets with hand-authored sprite sheets or atlas.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
+- Follow `docs/CAT_ANIMATION_SPEC.md` for character consistency, motion breakdown, frame counts, anchors, and Phaser integration.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.
