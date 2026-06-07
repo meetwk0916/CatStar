@@ -62,8 +62,15 @@ public/assets/scenes/window-room/
 - Concept reference: `docs/art/catstar-window-room-concept-01.png`
 - Background source: `docs/art/sources/window-room-background-source.png`
 - Cat chroma-key source: `docs/art/sources/cat-idle-chromakey-source.png`
+- Sleep chroma-key source: `docs/art/sources/cat-sleep-chromakey-source.png`
 - Runtime background: `public/assets/scenes/window-room/background.png`
-- Runtime idle cat cutout: `public/assets/scenes/window-room/cat/idle.png`
+- Runtime cat action sprite sheets:
+  - `public/assets/scenes/window-room/cat/idle.png`
+  - `public/assets/scenes/window-room/cat/walk.png`
+  - `public/assets/scenes/window-room/cat/jump.png`
+  - `public/assets/scenes/window-room/cat/sleep.png`
+  - `public/assets/scenes/window-room/cat/interact.png`
+- Runtime animation metadata: `public/assets/scenes/window-room/cat/cat.animations.json`
 - Runtime collision config: `public/assets/scenes/window-room/collision.json`
 
 ## Integration Rule
@@ -72,7 +79,7 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 
 ## Next Asset Work
 
-- Replace single idle cat cutout with a consistent sprite sheet or atlas.
-- Add `walk`, `jump`, `sleep`, and `interact` frames with matching scale and anchor.
+- Replace MVP derived motion sheets with hand-authored sprite sheets or atlas.
+- Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.

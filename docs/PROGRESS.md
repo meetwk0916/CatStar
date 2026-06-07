@@ -13,8 +13,8 @@ The current implementation includes:
 - Local-only passport creation and persistence through `localStorage`.
 - Minimum onboarding fields: cat name, family address name, coat color, personality, favorite snack, and passed date.
 - Runtime image-asset room scene under `public/assets/scenes/window-room/`.
-- Generated empty room background, transparent idle cat cutout, and hand-authored Arcade Physics collision config.
-- Autonomous cat movement with walking, jumping, landing, and click/tap companion reaction.
+- Generated empty room background, cat action sprite sheets, animation metadata, and hand-authored Arcade Physics collision config.
+- Autonomous cat movement with idle, walk, jump, sleep, and click/tap companion animations.
 - Prewritten Phase 0 letter script in `src/data/letters.json`; no AI-generated letters or chat.
 - Development-only time preview controls for delivery-day QA.
 - Mailbox delivery logic:
@@ -75,6 +75,6 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
-- Replace the single idle cat cutout with a proper sprite sheet if the engine route is accepted.
+- Replace MVP derived cat action sheets with proper hand-authored sprite sheets if the engine route is accepted.
 - Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.

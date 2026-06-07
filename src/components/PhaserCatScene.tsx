@@ -17,7 +17,22 @@ interface CollisionRect {
   height: number;
 }
 
+type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact";
 type CollisionConfig = Record<string, CollisionRect>;
+
+interface CatAnimationSpec {
+  frameWidth: number;
+  frameHeight: number;
+  actions: Record<
+    CatAction,
+    {
+      file: string;
+      frames: number;
+      frameRate: number;
+      repeat: number;
+    }
+  >;
+}
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
 
@@ -59,8 +74,14 @@ class CatRoomScene extends Phaser.Scene {
 
   preload() {
     this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
-    this.load.image("cat-idle-asset", `${SCENE_ASSET_ROOT}/cat/idle.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
+    this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
+    (["idle", "walk", "jump", "sleep", "interact"] as CatAction[]).forEach((action) => {
+      this.load.spritesheet(`cat-${action}`, `${SCENE_ASSET_ROOT}/cat/${action}.png`, {
+        frameWidth: 96,
+        frameHeight: 96,
+      });
+    });
   }
 
   create() {
@@ -68,6 +89,7 @@ class CatRoomScene extends Phaser.Scene {
     this.createPhysicsTexture();
     this.createParticleTexture();
     this.add.image(320, 180, "window-room-background").setDisplaySize(640, 360).setDepth(0);
+    this.createCatAnimations();
     this.createSceneObjects();
     this.createCat();
   }
@@ -84,17 +106,20 @@ class CatRoomScene extends Phaser.Scene {
     const distance = this.targetX - this.cat.x;
     if (this.state === "SLEEPING" || this.state === "EATING") {
       this.cat.setVelocityX(0);
+      this.playCatAction(this.state === "SLEEPING" ? "sleep" : "idle");
       return;
     }
 
     if (Math.abs(distance) < 8 || this.state === "IDLE") {
       this.cat.setVelocityX(0);
+      this.playCatAction("idle");
       return;
     }
 
     const speed = PERSONALITY_SPEED[this.personality];
     this.cat.setVelocityX(distance > 0 ? speed : -speed);
     this.cat.setFlipX(distance < 0);
+    this.playCatAction("walk");
   }
 
   private createSceneObjects() {
@@ -112,8 +137,8 @@ class CatRoomScene extends Phaser.Scene {
   }
 
   private createCat() {
-    this.cat = this.physics.add.sprite(320, 120, "cat-idle-asset");
-    this.cat.setDisplaySize(88, 97);
+    this.cat = this.physics.add.sprite(320, 120, "cat-idle");
+    this.cat.setDisplaySize(88, 88);
     this.cat.setTint(PALETTE_TINTS[this.palette] ?? 0xffffff);
     this.cat.setCollideWorldBounds(true);
     this.cat.setGravityY(620);
@@ -122,9 +147,9 @@ class CatRoomScene extends Phaser.Scene {
     this.cat.setInteractive({ useHandCursor: true });
     this.cat.on("pointerdown", () => this.interact());
 
-    // Body values are in source texture pixels; display size scales them to scene pixels.
-    this.cat.setSize(420, 570);
-    this.cat.setOffset(120, 95);
+    this.cat.setSize(48, 76);
+    this.cat.setOffset(24, 18);
+    this.playCatAction("idle");
 
     const colliders = this.registry.get("catstar-colliders") as Phaser.Physics.Arcade.Image[] | undefined;
     colliders?.forEach((collider) => {
@@ -148,6 +173,7 @@ class CatRoomScene extends Phaser.Scene {
 
     if (this.state === "JUMPING" && this.cat?.body.blocked.down) {
       this.cat.setVelocityY(-360);
+      this.playCatAction("jump", true);
     }
   }
 
@@ -157,6 +183,7 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     this.cat.setVelocityY(-250);
+    this.playCatAction("interact", true);
     this.tweens.add({
       targets: this.cat,
       angle: { from: -4, to: 4 },
@@ -185,6 +212,35 @@ class CatRoomScene extends Phaser.Scene {
       alpha: { start: 0.9, end: 0 },
     });
     particles.setDepth(10);
+  }
+
+  private createCatAnimations() {
+    const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
+    (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
+      const config = spec.actions[action];
+      this.anims.create({
+        key: `cat-${action}-anim`,
+        frames: this.anims.generateFrameNumbers(`cat-${action}`, {
+          start: 0,
+          end: config.frames - 1,
+        }),
+        frameRate: config.frameRate,
+        repeat: config.repeat,
+      });
+    });
+  }
+
+  private playCatAction(action: CatAction, restart = false) {
+    if (!this.cat) {
+      return;
+    }
+
+    const key = `cat-${action}-anim`;
+    if (!restart && this.cat.anims.currentAnim?.key === key) {
+      return;
+    }
+
+    this.cat.play(key, !restart);
   }
 
   private createParticleTexture() {
