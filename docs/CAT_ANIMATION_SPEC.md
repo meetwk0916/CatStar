@@ -266,19 +266,21 @@ If production art changes frame composition, update body size/offset in Phaser a
 
 ## Current Asset Status
 
-Current runtime sheets have been rolled back to the higher-fidelity visual cat
-mother asset. This keeps the app from shipping with abstract code-drawn cat art,
-but it means the current action sheets are still MVP derived motion:
+Current runtime sheets use the first art-directed candidate baseline from
+`docs/art/candidates/cat-action-keyframes/`. This keeps the app from shipping
+with abstract code-drawn cat art and gives the room a more believable cat body,
+face, and fur volume, but it is still not final hand-cleaned production motion:
 
 - `idle`: 4 frames
-- `walk`: 6 frames, visually coherent but not a true gait
-- `jump`: 4 frames, derived vertical motion
+- `walk`: 6 frames, based on two walking key poses with light timing offsets
+- `jump`: 4 frames, based on crouch and landing key poses
 - `sleep`: 4 frames
-- `interact`: 5 frames, derived tap response
+- `interact`: 5 frames, based on standing, landing, and crouch key poses
 
-These sheets are acceptable only as a visual stopgap for the Phase 0.1 scene.
-They preserve cat identity better than generated technical sprites, but they do
-not meet the production motion breakdown above.
+These sheets are acceptable as the current Phase 0.1 visual baseline. They
+preserve cat identity and mobile readability better than the previous runtime
+stopgap, but walk, jump, and interact still need manual in-betweening, contact
+cleanup, and pose-specific polish before product art lock.
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must

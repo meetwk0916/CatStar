@@ -81,9 +81,8 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 
 ## Next Asset Work
 
-- Current action sheets use the higher-fidelity visual cat mother asset as a stopgap.
-- Use `docs/art/candidates/cat-action-keyframes/` as the first art-directed motion candidate, not as runtime production art.
-- Replace derived stopgap motion with hand-authored sprite sheets or atlas before final product art lock.
+- Current action sheets use `docs/art/candidates/cat-action-keyframes/` as the first art-directed visual baseline.
+- Replace assembled candidate motion with hand-authored sprite sheets or atlas before final product art lock.
 - Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for frame counts, anchors, and metadata.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
 - Follow `docs/CAT_ANIMATION_SPEC.md` for character consistency, motion breakdown, frame counts, anchors, and Phaser integration.

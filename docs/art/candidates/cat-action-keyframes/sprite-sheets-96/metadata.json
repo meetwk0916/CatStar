@@ -1,0 +1,131 @@
+{
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "anchor": "bottom-center",
+  "source": "docs/art/candidates/cat-action-keyframes/normalized-96",
+  "actions": {
+    "idle": {
+      "file": "idle.png",
+      "frames": 4,
+      "visibleSizes": [
+        [
+          76,
+          76
+        ],
+        [
+          76,
+          77
+        ],
+        [
+          76,
+          76
+        ],
+        [
+          76,
+          76
+        ]
+      ]
+    },
+    "walk": {
+      "file": "walk.png",
+      "frames": 6,
+      "visibleSizes": [
+        [
+          81,
+          62
+        ],
+        [
+          81,
+          62
+        ],
+        [
+          79,
+          64
+        ],
+        [
+          79,
+          64
+        ],
+        [
+          81,
+          62
+        ],
+        [
+          79,
+          64
+        ]
+      ]
+    },
+    "jump": {
+      "file": "jump.png",
+      "frames": 4,
+      "visibleSizes": [
+        [
+          78,
+          48
+        ],
+        [
+          74,
+          70
+        ],
+        [
+          73,
+          67
+        ],
+        [
+          79,
+          47
+        ]
+      ]
+    },
+    "sleep": {
+      "file": "sleep.png",
+      "frames": 4,
+      "visibleSizes": [
+        [
+          78,
+          49
+        ],
+        [
+          79,
+          50
+        ],
+        [
+          78,
+          49
+        ],
+        [
+          78,
+          49
+        ]
+      ]
+    },
+    "interact": {
+      "file": "interact.png",
+      "frames": 5,
+      "visibleSizes": [
+        [
+          76,
+          76
+        ],
+        [
+          74,
+          68
+        ],
+        [
+          75,
+          67
+        ],
+        [
+          78,
+          49
+        ],
+        [
+          76,
+          76
+        ]
+      ]
+    }
+  },
+  "note": "Art-directed candidate assembled from pose frames; review before replacing runtime assets."
+}

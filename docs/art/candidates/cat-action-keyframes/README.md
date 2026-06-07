@@ -15,6 +15,13 @@ It is not a runtime sprite sheet yet.
 - `normalized-96/pose-06.png`: curled sleeping pose.
 - `normalized-96/contact-sheet.png`: 96x96 pose preview sheet.
 - `normalized-96/metadata.json`: extraction metadata.
+- `sprite-sheets-96/idle.png`: assembled 4-frame idle candidate.
+- `sprite-sheets-96/walk.png`: assembled 6-frame walk candidate.
+- `sprite-sheets-96/jump.png`: assembled 4-frame jump candidate.
+- `sprite-sheets-96/sleep.png`: assembled 4-frame sleep candidate.
+- `sprite-sheets-96/interact.png`: assembled 5-frame interact candidate.
+- `sprite-sheets-96/all-actions-preview.png`: stacked action preview.
+- `sprite-sheets-96/metadata.json`: assembled sheet metadata.
 
 ## Assessment
 
@@ -49,6 +56,10 @@ Avoid: abstract code-drawn look, emoji cat, toy/plush look, different cats acros
 
 ## Next Step
 
-Use this board as an art reference to create the actual action sheets required
-by `docs/CAT_ANIMATION_SPEC.md`. Do not overwrite runtime assets until a full
-action sheet passes visual review at `96x96`.
+The assembled sheets are suitable as the current visual baseline because they
+are more coherent than the older runtime stopgap and avoid code-drawn cat art.
+They are still not final production animation.
+
+Next, manually clean the action sheets required by `docs/CAT_ANIMATION_SPEC.md`:
+walk contact frames, jump launch/air/descent frames, and a dedicated tap
+response with a true nuzzle or blink.
