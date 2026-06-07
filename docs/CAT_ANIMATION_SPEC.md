@@ -266,17 +266,23 @@ If production art changes frame composition, update body size/offset in Phaser a
 
 ## Current Asset Status
 
-Current sheets are generated from `scripts/generate_cat_animation_assets.py`.
+Current runtime sheets have been rolled back to the higher-fidelity visual cat
+mother asset. This keeps the app from shipping with abstract code-drawn cat art,
+but it means the current action sheets are still MVP derived motion:
 
-They now follow the production structure in this spec:
-
-- one consistent gray-and-white cat identity
-- `96x96` transparent frames
-- bottom-center anchor
 - `idle`: 4 frames
-- `walk`: 8 frames with leg, tail, and body-weight changes
-- `jump`: 6 frames with crouch, launch, air, descent, and landing poses
-- `sleep`: 4 frames with subtle breathing/twitch motion
-- `interact`: 6 frames with attention, lean-in, nuzzle/blink, and return poses
+- `walk`: 6 frames, visually coherent but not a true gait
+- `jump`: 4 frames, derived vertical motion
+- `sleep`: 4 frames
+- `interact`: 5 frames, derived tap response
 
-These sheets are suitable for validating real animation timing and Phaser integration. They are still generated technical art, not final painterly product art. Replace them with hand-authored sheets when commissioning final assets, while preserving the same frame sizes, anchors, and action contract unless Phaser is recalibrated.
+These sheets are acceptable only as a visual stopgap for the Phase 0.1 scene.
+They preserve cat identity better than generated technical sprites, but they do
+not meet the production motion breakdown above.
+
+`scripts/generate_cat_animation_assets.py` is retained only as a technical
+experiment for validating frame counts, anchors, and Phaser metadata. It must
+not be used as the source of production runtime cat art. Production work should
+start from an approved high-fidelity cat mother asset, then create hand-authored
+or art-directed keyframes for each action while preserving the same frame size,
+anchor, and character lock unless Phaser is recalibrated.

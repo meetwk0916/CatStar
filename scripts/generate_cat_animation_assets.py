@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
-"""Generate CatStar's default cat animation sprite sheets.
+"""Generate experimental CatStar cat animation sprite sheets.
 
-The assets intentionally follow docs/CAT_ANIMATION_SPEC.md:
+This script is kept as a technical animation experiment only. It must not be
+used as the source of production runtime cat art because code-drawn sprites lose
+the cat identity, facial detail, and fur volume required by the product.
+
+The generated assets intentionally test docs/CAT_ANIMATION_SPEC.md:
 - 96x96 transparent frames
 - right-facing cat
 - bottom-center anchor
 - same gray/white character design across actions
 - frame-by-frame pose changes rather than transforming one idle cutout
+
+By default it writes to tmp/cat-animation-experiment/. Pass --write-runtime to
+overwrite public/assets/scenes/window-room/cat/ for local experiments only.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,7 +28,8 @@ from PIL import Image, ImageDraw
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "public/assets/scenes/window-room/cat"
+RUNTIME_OUT_DIR = ROOT / "public/assets/scenes/window-room/cat"
+DEFAULT_OUT_DIR = ROOT / "tmp/cat-animation-experiment"
 FRAME = 96
 
 Action = Literal["idle", "walk", "jump", "sleep", "interact"]
@@ -191,15 +200,27 @@ def draw_sleeping_cat(frame: int) -> Image.Image:
     return img
 
 
-def make_sheet(frames: list[Image.Image], name: str) -> None:
+def make_sheet(frames: list[Image.Image], name: str, out_dir: Path) -> None:
     sheet = Image.new("RGBA", (FRAME * len(frames), FRAME), (0, 0, 0, 0))
     for i, frame in enumerate(frames):
         sheet.alpha_composite(frame, (i * FRAME, 0))
-    sheet.save(OUT_DIR / f"{name}.png")
+    sheet.save(out_dir / f"{name}.png")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--write-runtime",
+        action="store_true",
+        help="Overwrite runtime cat assets. Use only for local visual experiments.",
+    )
+    return parser.parse_args()
 
 
 def main() -> None:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    args = parse_args()
+    out_dir = RUNTIME_OUT_DIR if args.write_runtime else DEFAULT_OUT_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     idle = [
         Pose(),
@@ -237,11 +258,11 @@ def main() -> None:
         Pose(),
     ]
 
-    make_sheet([draw_standing_cat(pose) for pose in idle], "idle")
-    make_sheet([draw_standing_cat(pose) for pose in walk], "walk")
-    make_sheet([draw_standing_cat(pose) for pose in jump], "jump")
-    make_sheet([draw_sleeping_cat(i) for i in range(4)], "sleep")
-    make_sheet([draw_standing_cat(pose) for pose in interact], "interact")
+    make_sheet([draw_standing_cat(pose) for pose in idle], "idle", out_dir)
+    make_sheet([draw_standing_cat(pose) for pose in walk], "walk", out_dir)
+    make_sheet([draw_standing_cat(pose) for pose in jump], "jump", out_dir)
+    make_sheet([draw_sleeping_cat(i) for i in range(4)], "sleep", out_dir)
+    make_sheet([draw_standing_cat(pose) for pose in interact], "interact", out_dir)
 
     animations = {
         "frameWidth": FRAME,
@@ -254,9 +275,9 @@ def main() -> None:
             "sleep": {"file": "sleep.png", "frames": 4, "frameRate": 2, "repeat": -1},
             "interact": {"file": "interact.png", "frames": 6, "frameRate": 10, "repeat": 0},
         },
-        "note": "Spec-compliant generated sheets: consistent character lock, 96x96 frames, bottom-center anchor, right-facing default.",
+        "note": "Experimental code-drawn sheets for motion validation only. Do not use as production runtime cat art.",
     }
-    (OUT_DIR / "cat.animations.json").write_text(json.dumps(animations, ensure_ascii=False, indent=2) + "\n")
+    (out_dir / "cat.animations.json").write_text(json.dumps(animations, ensure_ascii=False, indent=2) + "\n")
 
 
 if __name__ == "__main__":
