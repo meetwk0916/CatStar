@@ -14,6 +14,7 @@ The current implementation includes:
 - Minimum onboarding fields: cat name, family address name, coat color, personality, favorite snack, and passed date.
 - Runtime image-asset room scene under `public/assets/scenes/window-room/`.
 - Generated empty room background, higher-fidelity stopgap cat action sprite sheets, animation metadata, and hand-authored Arcade Physics collision config.
+- First art-directed cat action keyframe candidate under `docs/art/candidates/cat-action-keyframes/`, with transparent source and normalized `96x96` preview poses.
 - Autonomous cat movement with idle, walk, jump, sleep, and click/tap companion animations.
 - Prewritten Phase 0 letter script in `src/data/letters.json`; no AI-generated letters or chat.
 - Development-only time preview controls for delivery-day QA.
@@ -77,5 +78,6 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
 - Replace derived stopgap cat action sheets with hand-authored final art following `docs/CAT_ANIMATION_SPEC.md`.
+- Turn the approved keyframe candidate into full `idle`, `walk`, `jump`, `sleep`, and `interact` sprite sheets before replacing runtime cat assets.
 - Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.

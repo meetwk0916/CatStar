@@ -63,6 +63,8 @@ public/assets/scenes/window-room/
 - Background source: `docs/art/sources/window-room-background-source.png`
 - Cat chroma-key source: `docs/art/sources/cat-idle-chromakey-source.png`
 - Sleep chroma-key source: `docs/art/sources/cat-sleep-chromakey-source.png`
+- Cat action keyframe candidate: `docs/art/candidates/cat-action-keyframes/cat-action-keyframes-01-alpha.png`
+- Cat 96x96 pose preview: `docs/art/candidates/cat-action-keyframes/normalized-96/contact-sheet.png`
 - Runtime background: `public/assets/scenes/window-room/background.png`
 - Runtime cat action sprite sheets:
   - `public/assets/scenes/window-room/cat/idle.png`
@@ -80,6 +82,7 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 ## Next Asset Work
 
 - Current action sheets use the higher-fidelity visual cat mother asset as a stopgap.
+- Use `docs/art/candidates/cat-action-keyframes/` as the first art-directed motion candidate, not as runtime production art.
 - Replace derived stopgap motion with hand-authored sprite sheets or atlas before final product art lock.
 - Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for frame counts, anchors, and metadata.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.

@@ -1,0 +1,116 @@
+[
+  {
+    "name": "pose-01",
+    "source_bbox": [
+      17,
+      200,
+      368,
+      541
+    ],
+    "output_file": "pose-01.png",
+    "source_size": [
+      351,
+      341
+    ],
+    "placed_size": [
+      76,
+      76
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-02",
+    "source_bbox": [
+      352,
+      218,
+      755,
+      531
+    ],
+    "output_file": "pose-02.png",
+    "source_size": [
+      403,
+      313
+    ],
+    "placed_size": [
+      81,
+      62
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-03",
+    "source_bbox": [
+      725,
+      215,
+      1132,
+      541
+    ],
+    "output_file": "pose-03.png",
+    "source_size": [
+      407,
+      326
+    ],
+    "placed_size": [
+      79,
+      64
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-04",
+    "source_bbox": [
+      1121,
+      299,
+      1481,
+      541
+    ],
+    "output_file": "pose-04.png",
+    "source_size": [
+      360,
+      242
+    ],
+    "placed_size": [
+      76,
+      51
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-05",
+    "source_bbox": [
+      1521,
+      288,
+      1814,
+      545
+    ],
+    "output_file": "pose-05.png",
+    "source_size": [
+      293,
+      257
+    ],
+    "placed_size": [
+      75,
+      67
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-06",
+    "source_bbox": [
+      1825,
+      341,
+      2146,
+      549
+    ],
+    "output_file": "pose-06.png",
+    "source_size": [
+      321,
+      208
+    ],
+    "placed_size": [
+      78,
+      49
+    ],
+    "anchor": "bottom-center"
+  }
+]
