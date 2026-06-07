@@ -43,14 +43,6 @@ const PERSONALITY_SPEED: Record<CatPersonality, number> = {
   ENERGY: 72,
 };
 
-const PALETTE_TINTS: Partial<Record<CatPalette, number>> = {
-  ORANGE: 0xffc28e,
-  BLACK: 0xb8b4c0,
-  WHITE: 0xffffff,
-  CALICO: 0xffe2b8,
-  TUXEDO: 0xf5f5ff,
-};
-
 class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private targetX = 260;
@@ -58,7 +50,6 @@ class CatRoomScene extends Phaser.Scene {
   private state: CatFsmState = "IDLE";
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
-  private palette: CatPalette = "ORANGE";
   private onInteract: (message: string) => void = () => {};
 
   constructor() {
@@ -66,7 +57,6 @@ class CatRoomScene extends Phaser.Scene {
   }
 
   init(data: PhaserCatSceneProps) {
-    this.palette = data.palette;
     this.personality = data.personality;
     this.showStardust = data.showStardust;
     this.onInteract = data.onInteract;
@@ -139,7 +129,6 @@ class CatRoomScene extends Phaser.Scene {
   private createCat() {
     this.cat = this.physics.add.sprite(320, 120, "cat-idle");
     this.cat.setDisplaySize(88, 88);
-    this.cat.setTint(PALETTE_TINTS[this.palette] ?? 0xffffff);
     this.cat.setCollideWorldBounds(true);
     this.cat.setGravityY(620);
     this.cat.setBounce(0.08);

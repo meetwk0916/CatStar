@@ -266,12 +266,17 @@ If production art changes frame composition, update body size/offset in Phaser a
 
 ## Current Asset Status
 
-Current sheets are generated MVP placeholders:
+Current sheets are generated from `scripts/generate_cat_animation_assets.py`.
 
-- `idle.png`: derived from one idle cutout
-- `walk.png`: derived motion, not true step animation
-- `jump.png`: derived motion, not true jump animation
-- `sleep.png`: separate sleeping pose with derived breathing
-- `interact.png`: derived motion, not true nuzzle animation
+They now follow the production structure in this spec:
 
-These are acceptable for technical validation only. They should be replaced before product-quality release.
+- one consistent gray-and-white cat identity
+- `96x96` transparent frames
+- bottom-center anchor
+- `idle`: 4 frames
+- `walk`: 8 frames with leg, tail, and body-weight changes
+- `jump`: 6 frames with crouch, launch, air, descent, and landing poses
+- `sleep`: 4 frames with subtle breathing/twitch motion
+- `interact`: 6 frames with attention, lean-in, nuzzle/blink, and return poses
+
+These sheets are suitable for validating real animation timing and Phaser integration. They are still generated technical art, not final painterly product art. Replace them with hand-authored sheets when commissioning final assets, while preserving the same frame sizes, anchors, and action contract unless Phaser is recalibrated.

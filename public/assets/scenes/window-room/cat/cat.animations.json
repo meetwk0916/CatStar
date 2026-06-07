@@ -11,13 +11,13 @@
     },
     "walk": {
       "file": "walk.png",
-      "frames": 6,
+      "frames": 8,
       "frameRate": 8,
       "repeat": -1
     },
     "jump": {
       "file": "jump.png",
-      "frames": 4,
+      "frames": 6,
       "frameRate": 7,
       "repeat": 0
     },
@@ -29,10 +29,10 @@
     },
     "interact": {
       "file": "interact.png",
-      "frames": 5,
+      "frames": 6,
       "frameRate": 10,
       "repeat": 0
     }
   },
-  "note": "MVP derived sheets for motion validation; replace with hand-authored sprite sheets after art direction is approved."
+  "note": "Spec-compliant generated sheets: consistent character lock, 96x96 frames, bottom-center anchor, right-facing default."
 }
