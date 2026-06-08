@@ -19,6 +19,14 @@ interface CollisionRect {
 
 type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact";
 type CollisionConfig = Record<string, CollisionRect>;
+type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
+
+interface EnvironmentZone {
+  id: string;
+  kind: EnvironmentZoneKind;
+  xMin: number;
+  xMax: number;
+}
 
 interface CatAnimationSpec {
   frameWidth: number;
@@ -43,6 +51,20 @@ const PERSONALITY_SPEED: Record<CatPersonality, number> = {
   ENERGY: 72,
 };
 
+const PHYSICAL_SURFACES = new Set(["floor", "windowBench", "catBed"]);
+
+const ENVIRONMENT_ZONES: EnvironmentZone[] = [
+  { id: "floor-left", kind: "floor", xMin: 130, xMax: 230 },
+  { id: "floor-center", kind: "floor", xMin: 250, xMax: 430 },
+  { id: "windowBench", kind: "perch", xMin: 180, xMax: 360 },
+  { id: "catBed", kind: "rest", xMin: 60, xMax: 115 },
+  { id: "rightTray", kind: "food", xMin: 505, xMax: 575 },
+  { id: "plant", kind: "blocker", xMin: 480, xMax: 545 },
+];
+
+const WALKABLE_ZONES = ENVIRONMENT_ZONES.filter((zone) => zone.kind === "floor");
+const JUMP_TARGET_ZONES = ENVIRONMENT_ZONES.filter((zone) => zone.kind === "floor" || zone.kind === "perch" || zone.kind === "rest");
+
 class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private targetX = 260;
@@ -50,6 +72,9 @@ class CatRoomScene extends Phaser.Scene {
   private state: CatFsmState = "IDLE";
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
+  private jumpLandingX?: number;
+  private jumpStartedAt = 0;
+  private isPreparingJump = false;
   private onInteract: (message: string) => void = () => {};
 
   constructor() {
@@ -89,6 +114,11 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    if (this.state === "JUMPING" || this.isPreparingJump) {
+      this.updateJumpState(time);
+      return;
+    }
+
     if (time >= this.nextDecisionAt) {
       this.chooseNextMove(time);
     }
@@ -114,14 +144,16 @@ class CatRoomScene extends Phaser.Scene {
 
   private createSceneObjects() {
     const collision = this.cache.json.get("window-room-collision") as CollisionConfig;
-    const colliders = Object.entries(collision).map(([name, rect]) =>
-      this.physics.add
-        .staticImage(rect.x, rect.y, "physics-pixel")
-        .setName(name)
-        .setSize(rect.width, rect.height)
-        .setVisible(false)
-        .refreshBody(),
-    );
+    const colliders = Object.entries(collision)
+      .filter(([name]) => PHYSICAL_SURFACES.has(name))
+      .map(([name, rect]) =>
+        this.physics.add
+          .staticImage(rect.x, rect.y, "physics-pixel")
+          .setName(name)
+          .setSize(rect.width, rect.height)
+          .setVisible(false)
+          .refreshBody(),
+      );
 
     this.registry.set("catstar-colliders", colliders);
   }
@@ -156,13 +188,12 @@ class CatRoomScene extends Phaser.Scene {
     this.nextDecisionAt = time + Phaser.Math.Between(1800, 3800);
     this.state = chooseNextState(this.personality);
 
-    if (this.state === "WALKING" || this.state === "JUMPING") {
-      this.targetX = Phaser.Math.Between(120, 520);
+    if (this.state === "WALKING") {
+      this.targetX = this.chooseWalkTarget();
     }
 
-    if (this.state === "JUMPING" && this.cat?.body.blocked.down) {
-      this.cat.setVelocityY(-360);
-      this.playCatAction("jump", true);
+    if (this.state === "JUMPING") {
+      this.startJump(time);
     }
   }
 
@@ -171,7 +202,7 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    this.cat.setVelocityY(-250);
+    this.cat.setVelocityX(0);
     this.playCatAction("interact", true);
     this.tweens.add({
       targets: this.cat,
@@ -186,6 +217,89 @@ class CatRoomScene extends Phaser.Scene {
       },
     });
     this.onInteract(getCompanionReaction("INTERACTING"));
+  }
+
+  private chooseWalkTarget() {
+    const zone = Phaser.Utils.Array.GetRandom(WALKABLE_ZONES);
+    return Phaser.Math.Between(zone.xMin, zone.xMax);
+  }
+
+  private chooseJumpTarget() {
+    const candidates = JUMP_TARGET_ZONES.filter((zone) => !this.cat || Math.abs((zone.xMin + zone.xMax) / 2 - this.cat.x) > 70);
+    const zone = Phaser.Utils.Array.GetRandom(candidates.length > 0 ? candidates : JUMP_TARGET_ZONES);
+    return Phaser.Math.Between(zone.xMin, zone.xMax);
+  }
+
+  private startJump(time: number) {
+    if (!this.cat || this.isPreparingJump || !this.cat.body.blocked.down) {
+      return;
+    }
+
+    this.isPreparingJump = true;
+    this.jumpLandingX = this.chooseJumpTarget();
+    this.targetX = this.jumpLandingX;
+    this.cat.setVelocityX(0);
+    this.playCatAction("jump", true);
+    const baseScaleX = Math.abs(this.cat.scaleX);
+    const baseScaleY = this.cat.scaleY;
+
+    this.tweens.add({
+      targets: this.cat,
+      scaleY: { from: baseScaleY, to: baseScaleY * 0.92 },
+      scaleX: { from: baseScaleX, to: baseScaleX * 1.05 },
+      duration: 130,
+      yoyo: true,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        if (!this.cat || this.state !== "JUMPING") {
+          this.isPreparingJump = false;
+          return;
+        }
+
+        const distance = (this.jumpLandingX ?? this.cat.x) - this.cat.x;
+        const direction = distance >= 0 ? 1 : -1;
+        const horizontalSpeed = Phaser.Math.Clamp(Math.abs(distance) * 1.8, 95, 165);
+        this.cat.setFlipX(direction < 0);
+        this.cat.setVelocityX(direction * horizontalSpeed);
+        this.cat.setVelocityY(-430);
+        this.jumpStartedAt = this.time.now;
+        this.isPreparingJump = false;
+        this.playCatAction("jump", true);
+      },
+    });
+  }
+
+  private updateJumpState(time: number) {
+    if (!this.cat) {
+      return;
+    }
+
+    this.playCatAction("jump");
+
+    if (this.isPreparingJump) {
+      this.cat.setVelocityX(0);
+      return;
+    }
+
+    if (this.jumpLandingX !== undefined) {
+      const distance = this.jumpLandingX - this.cat.x;
+      if (Math.abs(distance) < 10) {
+        this.cat.setVelocityX(0);
+      } else {
+        const speed = Phaser.Math.Clamp(Math.abs(distance) * 1.25, 45, 135);
+        this.cat.setVelocityX(distance > 0 ? speed : -speed);
+      }
+    }
+
+    const hasBeenAirborne = time - this.jumpStartedAt > 260;
+    if (hasBeenAirborne && this.cat.body.blocked.down) {
+      this.cat.setVelocityX(0);
+      this.cat.setVelocityY(0);
+      this.jumpLandingX = undefined;
+      this.state = "IDLE";
+      this.nextDecisionAt = time + Phaser.Math.Between(900, 1800);
+      this.playCatAction("idle", true);
+    }
   }
 
   private addStardust() {

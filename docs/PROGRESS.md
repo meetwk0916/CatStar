@@ -41,6 +41,7 @@ The current implementation includes:
 - `docs/adr/0001-local-memorial-data-for-phase-0.md`: local-data decision.
 - `docs/ART_DIRECTION.md`: visual quality direction and asset rules.
 - `docs/CAT_ANIMATION_SPEC.md`: production target for consistent cat motion assets.
+- `docs/ENVIRONMENT_INTERACTION_SPEC.md`: room-zone behavior model for grounded cat actions.
 - `docs/QA.md`: Phase 0.1 manual QA checklist.
 - `src/domain/time.ts`: delivery time calculation and dev preview delivery-index helper.
 - `src/domain/letters.ts`: mailbox, read-state, and final-letter rules.
@@ -80,6 +81,7 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
 - Replace assembled candidate cat action sheets with hand-authored final art following `docs/CAT_ANIMATION_SPEC.md`.
+- Move sleep/eat/rest states onto environment zones following `docs/ENVIRONMENT_INTERACTION_SPEC.md`.
 - Manually clean walk edge artifacts and foot contact, jump landing timing, and interact edge/pixel clusters before final art lock.
 - Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.

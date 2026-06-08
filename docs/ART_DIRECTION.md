@@ -90,5 +90,6 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 - Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for frame counts, anchors, and metadata.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
 - Follow `docs/CAT_ANIMATION_SPEC.md` for character consistency, motion breakdown, frame counts, anchors, and Phaser integration.
+- Follow `docs/ENVIRONMENT_INTERACTION_SPEC.md` when tying walk, jump, rest, food, crouch, or future run states to room props.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.
