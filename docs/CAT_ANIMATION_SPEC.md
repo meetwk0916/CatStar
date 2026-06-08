@@ -272,15 +272,16 @@ with abstract code-drawn cat art and gives the room a more believable cat body,
 face, and fur volume, but it is still not final hand-cleaned production motion:
 
 - `idle`: 4 frames
-- `walk`: 8 frames, based on a dedicated walk-cycle keyframe candidate
+- `walk`: 6 frames, using the rounder-face visual baseline while the dedicated 8-frame walk candidate stays under `docs/art/candidates/cat-walk-cycle-keyframes/` for cleanup
 - `jump`: 5 frames, based on dedicated crouch, launch, air, descent, and landing key poses
 - `sleep`: 4 frames
 - `interact`: 5 frames, based on dedicated notice, nuzzle/blink, and settle key poses
 
 These sheets are acceptable as the current Phase 0.1 visual baseline. They
 preserve cat identity and mobile readability better than the previous runtime
-stopgap, but walk foot contact cleanup, jump landing timing, and interact edge
-cleanup still need manual polish before product art lock.
+stopgap, but walk needs a hand-cleaned 8-frame cycle that preserves the rounder
+face, jump landing timing needs review, and interact edge cleanup still needs
+manual polish before product art lock.
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must

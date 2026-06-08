@@ -247,11 +247,9 @@ class CatRoomScene extends Phaser.Scene {
     this.targetX = this.jumpLandingX;
     this.cat.setVelocityX(0);
     this.playCatAction("jump", true);
-    const baseScaleY = this.cat.scaleY;
 
     this.tweens.add({
       targets: this.cat,
-      scaleY: { from: baseScaleY, to: baseScaleY * 0.92 },
       y: this.cat.y + 3,
       duration: 190,
       yoyo: true,
