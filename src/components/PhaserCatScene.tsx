@@ -138,7 +138,9 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     const speed = PERSONALITY_SPEED[this.personality];
-    this.cat.setVelocityX(distance > 0 ? speed : -speed);
+    const targetVelocityX = distance > 0 ? speed : -speed;
+    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.14);
+    this.cat.setVelocityX(easedVelocityX);
     this.cat.setFlipX(distance < 0);
     this.playCatAction("walk");
   }
