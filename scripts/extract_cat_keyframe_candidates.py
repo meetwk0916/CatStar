@@ -167,6 +167,50 @@ def remove_small_alpha_components(image: Image.Image, min_area: int) -> Image.Im
     return image
 
 
+def keep_largest_alpha_component(image: Image.Image) -> Image.Image:
+    width, height = image.size
+    alpha = image.getchannel("A")
+    pixels = image.load()
+    seen: set[tuple[int, int]] = set()
+    components: list[list[tuple[int, int]]] = []
+
+    for y in range(height):
+        for x in range(width):
+            if (x, y) in seen or alpha.getpixel((x, y)) <= ALPHA_THRESHOLD:
+                continue
+
+            stack = [(x, y)]
+            component: list[tuple[int, int]] = []
+            seen.add((x, y))
+            while stack:
+                px, py = stack.pop()
+                component.append((px, py))
+                for nx, ny in ((px - 1, py), (px + 1, py), (px, py - 1), (px, py + 1)):
+                    if (
+                        nx < 0
+                        or ny < 0
+                        or nx >= width
+                        or ny >= height
+                        or (nx, ny) in seen
+                        or alpha.getpixel((nx, ny)) <= ALPHA_THRESHOLD
+                    ):
+                        continue
+                    seen.add((nx, ny))
+                    stack.append((nx, ny))
+            components.append(component)
+
+    if not components:
+        return image
+
+    largest = max(components, key=len)
+    keep = set(largest)
+    for y in range(height):
+        for x in range(width):
+            if alpha.getpixel((x, y)) > ALPHA_THRESHOLD and (x, y) not in keep:
+                pixels[x, y] = (0, 0, 0, 0)
+    return image
+
+
 def fit_into_frame(source: Image.Image, max_occupancy: float) -> Image.Image:
     max_size = int(FRAME_SIZE * max_occupancy)
     source_width, source_height = source.size
@@ -205,6 +249,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--padding", type=int, default=18)
     parser.add_argument("--max-occupancy", type=float, default=0.86)
     parser.add_argument("--min-component-area", type=int, default=80)
+    parser.add_argument("--keep-largest-component", action="store_true")
     parser.add_argument(
         "--expected-count",
         type=int,
@@ -241,6 +286,8 @@ def main() -> None:
     for index, run in enumerate(runs, start=1):
         bbox = expand_bbox(bbox_for_run(image, *run), image.size, padding=args.padding)
         crop = remove_small_alpha_components(image.crop(bbox), min_area=args.min_component_area)
+        if args.keep_largest_component:
+            crop = keep_largest_alpha_component(crop)
         frame = fit_into_frame(crop, max_occupancy=args.max_occupancy)
         name = f"pose-{index:02d}.png"
         frame.save(args.out_dir / name)

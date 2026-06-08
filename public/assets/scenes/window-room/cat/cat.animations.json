@@ -11,7 +11,7 @@
     },
     "walk": {
       "file": "walk.png",
-      "frames": 6,
+      "frames": 8,
       "frameRate": 8,
       "repeat": -1
     },
@@ -34,5 +34,5 @@
       "repeat": 0
     }
   },
-  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; jump and interact use dedicated keyframe candidates and still need final hand cleanup."
+  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; walk, jump, and interact use dedicated keyframe candidates and still need final hand cleanup."
 }

@@ -1,0 +1,47 @@
+{
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "anchor": "bottom-center",
+  "source": "docs/art/candidates/cat-walk-cycle-keyframes/normalized-96",
+  "actions": {
+    "walk": {
+      "file": "walk.png",
+      "frames": 8,
+      "visibleSizes": [
+        [
+          81,
+          60
+        ],
+        [
+          82,
+          67
+        ],
+        [
+          82,
+          70
+        ],
+        [
+          82,
+          68
+        ],
+        [
+          82,
+          67
+        ],
+        [
+          82,
+          69
+        ],
+        [
+          82,
+          73
+        ],
+        [
+          79,
+          64
+        ]
+      ]
+    }
+  },
+  "note": "Dedicated 8-frame walk candidate assembled from generated key poses; still needs final foot-contact cleanup."
+}

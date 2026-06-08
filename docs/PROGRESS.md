@@ -15,6 +15,7 @@ The current implementation includes:
 - Runtime image-asset room scene under `public/assets/scenes/window-room/`.
 - Generated empty room background, first art-directed cat action baseline, animation metadata, and hand-authored Arcade Physics collision config.
 - Cat action keyframe candidate under `docs/art/candidates/cat-action-keyframes/`, with transparent source, normalized `96x96` preview poses, and assembled runtime-sized action sheets.
+- Dedicated walk-cycle candidate under `docs/art/candidates/cat-walk-cycle-keyframes/`, now used for runtime `walk`.
 - Dedicated jump/interact candidate under `docs/art/candidates/cat-jump-interact-keyframes/`, now used for runtime `jump` and `interact`.
 - Autonomous cat movement with idle, walk, jump, sleep, and click/tap companion animations.
 - Prewritten Phase 0 letter script in `src/data/letters.json`; no AI-generated letters or chat.
@@ -79,6 +80,6 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
 - Replace assembled candidate cat action sheets with hand-authored final art following `docs/CAT_ANIMATION_SPEC.md`.
-- Manually clean walk contact frames, jump landing timing, and interact edge/pixel clusters before final art lock.
+- Manually clean walk edge artifacts and foot contact, jump landing timing, and interact edge/pixel clusters before final art lock.
 - Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.
