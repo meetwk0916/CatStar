@@ -19,4 +19,4 @@ Replace them with hand-authored frame-by-frame sprite sheets when commissioning 
 
 Room behavior should follow `docs/ENVIRONMENT_INTERACTION_SPEC.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 
-Runtime walk currently uses the v2 round-face 8-frame candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v2-round-face/`.
+Runtime walk currently uses the v3 idle-match 8-frame candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v3-idle-match/`.

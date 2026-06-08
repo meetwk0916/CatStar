@@ -15,7 +15,7 @@ The current implementation includes:
 - Runtime image-asset room scene under `public/assets/scenes/window-room/`.
 - Generated empty room background, first art-directed cat action baseline, animation metadata, and hand-authored Arcade Physics collision config.
 - Cat action keyframe candidate under `docs/art/candidates/cat-action-keyframes/`, with transparent source, normalized `96x96` preview poses, and assembled runtime-sized action sheets.
-- Dedicated walk-cycle v2 round-face candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v2-round-face/`, now used for runtime `walk`.
+- Dedicated walk-cycle v3 idle-match candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v3-idle-match/`, now used for runtime `walk`.
 - Dedicated jump/interact candidate under `docs/art/candidates/cat-jump-interact-keyframes/`, now used for runtime `jump` and `interact`.
 - Room-zone movement: walk targets use floor zones; jump has anticipation and clear floor-to-floor travel distance while prop landing waits for one-way platform support.
 - Autonomous cat movement with idle, walk, jump, sleep, and click/tap companion animations.

@@ -272,7 +272,7 @@ with abstract code-drawn cat art and gives the room a more believable cat body,
 face, and fur volume, but it is still not final hand-cleaned production motion:
 
 - `idle`: 4 frames
-- `walk`: 8 frames, using the v2 round-face walk-cycle candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v2-round-face/`
+- `walk`: 8 frames, using the v3 idle-match walk-cycle candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v3-idle-match/`
 - `jump`: 5 frames, based on dedicated crouch, launch, air, descent, and landing key poses
 - `sleep`: 4 frames
 - `interact`: 5 frames, based on dedicated notice, nuzzle/blink, and settle key poses
