@@ -29,15 +29,15 @@ The scene now separates:
 
 ## Current Physical Surfaces
 
-The Phaser Arcade Physics colliders are limited to:
+The Phaser Arcade Physics colliders are currently limited to:
 
 - `floor`
-- `windowBench`
-- `catBed`
 
-`plant` and `rightTray` are not physical walking blockers in Phase 0.1 because
-they previously created invisible air-wall behavior. They should become
-interaction zones, not generic collision rectangles.
+`windowBench`, `catBed`, `plant`, and `rightTray` are not physical walking
+blockers in Phase 0.1 because generic Arcade Physics rectangles create invisible
+side walls. They should become interaction zones first. If the cat needs to land
+on bench/bed later, implement one-way/top-only platform behavior rather than
+turning the full prop rectangle into a normal collider.
 
 ## Current Environment Zones
 
@@ -51,11 +51,12 @@ The current scene defines zones in code:
 - `plant`: blocker/avoidance target
 
 Walk targets currently choose only walkable floor zones. This prevents the cat
-from walking into plant/tray rectangles or stopping against invisible props.
+from walking into prop rectangles or stopping against invisible props.
 
-Jump targets currently choose floor, window bench, or cat bed zones. The jump
-has anticipation compression, horizontal travel, airborne frames, and landing
-recovery.
+Jump targets currently choose floor zones and enforce a clear horizontal travel
+distance. The jump has anticipation compression, horizontal travel, airborne
+frames, and landing recovery. Bench/bed jumping should wait for one-way platform
+support.
 
 ## Current Action Behavior
 
