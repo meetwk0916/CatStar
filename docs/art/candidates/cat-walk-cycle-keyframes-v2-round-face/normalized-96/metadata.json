@@ -1,0 +1,154 @@
+[
+  {
+    "name": "pose-01",
+    "source_bbox": [
+      0,
+      255,
+      280,
+      481
+    ],
+    "output_file": "pose-01.png",
+    "source_size": [
+      280,
+      226
+    ],
+    "placed_size": [
+      77,
+      60
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-02",
+    "source_bbox": [
+      270,
+      255,
+      545,
+      480
+    ],
+    "output_file": "pose-02.png",
+    "source_size": [
+      275,
+      225
+    ],
+    "placed_size": [
+      76,
+      61
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-03",
+    "source_bbox": [
+      537,
+      255,
+      803,
+      481
+    ],
+    "output_file": "pose-03.png",
+    "source_size": [
+      266,
+      226
+    ],
+    "placed_size": [
+      75,
+      64
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-04",
+    "source_bbox": [
+      786,
+      254,
+      1062,
+      480
+    ],
+    "output_file": "pose-04.png",
+    "source_size": [
+      276,
+      226
+    ],
+    "placed_size": [
+      76,
+      61
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-05",
+    "source_bbox": [
+      1054,
+      255,
+      1320,
+      480
+    ],
+    "output_file": "pose-05.png",
+    "source_size": [
+      266,
+      225
+    ],
+    "placed_size": [
+      75,
+      63
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-06",
+    "source_bbox": [
+      1315,
+      254,
+      1593,
+      480
+    ],
+    "output_file": "pose-06.png",
+    "source_size": [
+      278,
+      226
+    ],
+    "placed_size": [
+      79,
+      61
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-07",
+    "source_bbox": [
+      1569,
+      252,
+      1847,
+      480
+    ],
+    "output_file": "pose-07.png",
+    "source_size": [
+      278,
+      228
+    ],
+    "placed_size": [
+      82,
+      61
+    ],
+    "anchor": "bottom-center"
+  },
+  {
+    "name": "pose-08",
+    "source_bbox": [
+      1825,
+      256,
+      2089,
+      481
+    ],
+    "output_file": "pose-08.png",
+    "source_size": [
+      264,
+      225
+    ],
+    "placed_size": [
+      79,
+      64
+    ],
+    "anchor": "bottom-center"
+  }
+]

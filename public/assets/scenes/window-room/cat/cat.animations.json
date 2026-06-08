@@ -11,7 +11,7 @@
     },
     "walk": {
       "file": "walk.png",
-      "frames": 6,
+      "frames": 8,
       "frameRate": 8,
       "repeat": -1
     },
@@ -34,5 +34,5 @@
       "repeat": 0
     }
   },
-  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; runtime walk favors the rounder face baseline while the 8-frame walk candidate remains under docs/art for cleanup."
+  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; runtime walk uses the v2 round-face 8-frame walk candidate."
 }

@@ -4,7 +4,7 @@ These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
 - `cat/idle.png`: 4-frame idle sprite sheet, `96x96` per frame.
-- `cat/walk.png`: 6-frame walk sprite sheet, `96x96` per frame.
+- `cat/walk.png`: 8-frame walk sprite sheet, `96x96` per frame.
 - `cat/jump.png`: 5-frame jump sprite sheet, `96x96` per frame.
 - `cat/sleep.png`: 4-frame sleep sprite sheet, `96x96` per frame.
 - `cat/interact.png`: 5-frame click/tap reaction sprite sheet, `96x96` per frame.
@@ -19,4 +19,4 @@ Replace them with hand-authored frame-by-frame sprite sheets when commissioning 
 
 Room behavior should follow `docs/ENVIRONMENT_INTERACTION_SPEC.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 
-The 8-frame walk-cycle candidate is archived under `docs/art/candidates/cat-walk-cycle-keyframes/`, but runtime currently uses the rounder-face 6-frame baseline until that candidate is hand-cleaned.
+Runtime walk currently uses the v2 round-face 8-frame candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v2-round-face/`.
