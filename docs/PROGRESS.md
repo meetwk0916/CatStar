@@ -17,7 +17,7 @@ The current implementation includes:
 - Cat action keyframe candidate under `docs/art/candidates/cat-action-keyframes/`, with transparent source, normalized `96x96` preview poses, and assembled runtime-sized action sheets.
 - Dedicated walk-cycle v3 idle-match candidate under `docs/art/candidates/cat-walk-cycle-keyframes-v3-idle-match/`, now used for runtime `walk`.
 - Dedicated jump/interact candidate under `docs/art/candidates/cat-jump-interact-keyframes/`, now used for runtime `jump` and `interact`.
-- Room-zone movement: walk targets use floor zones; jump has anticipation and clear floor-to-floor travel distance while prop landing waits for one-way platform support.
+- Room-zone movement: the cat now follows a purposeful window-bench routine, walking to a takeoff point, jumping onto the perch, resting there, then jumping back to the floor.
 - Autonomous cat movement with idle, walk, jump, sleep, and click/tap companion animations.
 - Prewritten Phase 0 letter script in `src/data/letters.json`; no AI-generated letters or chat.
 - Development-only time preview controls for delivery-day QA.
@@ -82,8 +82,8 @@ Result: local Vite dev server returned `HTTP/1.1 200 OK`.
 - Polish responsive layout after browser review on mobile and desktop.
 - Decide whether to keep Phaser as the long-term H5 scene engine or use this spike only to validate motion feel.
 - Replace assembled candidate cat action sheets with hand-authored final art following `docs/CAT_ANIMATION_SPEC.md`.
-- Move sleep/eat/rest states onto environment zones following `docs/ENVIRONMENT_INTERACTION_SPEC.md`.
-- Add one-way/top-only platform support before enabling true bed/window-bench landings.
+- Move eat/rest states onto more environment zones following `docs/ENVIRONMENT_INTERACTION_SPEC.md`.
+- Add one-way/top-only platform support before enabling free-form bed/window-bench landings beyond the current scripted window routine.
 - Manually clean walk paw contact and edge pixels, then revisit jump landing timing and interact edge/pixel clusters before final art lock.
 - Add foreground/midground split assets after the first scene composition is approved.
 - Review Phaser chunk size after real sprite sheets are introduced.

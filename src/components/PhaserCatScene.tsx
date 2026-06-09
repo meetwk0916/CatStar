@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as Phaser from "phaser";
-import { chooseNextState, getCompanionReaction } from "../domain/catFsm";
-import type { CatFsmState, CatPalette, CatPersonality } from "../types";
+import { getCompanionReaction } from "../domain/catFsm";
+import type { CatPalette, CatPersonality } from "../types";
 
 interface PhaserCatSceneProps {
   palette: CatPalette;
@@ -20,6 +20,7 @@ interface CollisionRect {
 type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact";
 type CollisionConfig = Record<string, CollisionRect>;
 type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
+type CatRoutine = "approachWindowBench" | "perchWindowBench" | "floorPause";
 
 interface EnvironmentZone {
   id: string;
@@ -42,6 +43,17 @@ interface CatAnimationSpec {
   >;
 }
 
+interface ScriptedJump {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  startedAt: number;
+  duration: number;
+  peakHeight: number;
+  landingRoutine: CatRoutine;
+}
+
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
 
 const PERSONALITY_SPEED: Record<CatPersonality, number> = {
@@ -62,20 +74,33 @@ const ENVIRONMENT_ZONES: EnvironmentZone[] = [
   { id: "plant", kind: "blocker", xMin: 480, xMax: 545 },
 ];
 
-const WALKABLE_ZONES = ENVIRONMENT_ZONES.filter((zone) => zone.kind === "floor");
-const JUMP_TARGET_ZONES = ENVIRONMENT_ZONES.filter((zone) => zone.kind === "floor");
+const findZone = (id: string) => {
+  const zone = ENVIRONMENT_ZONES.find((candidate) => candidate.id === id);
+  if (!zone) {
+    throw new Error(`Missing CatStar environment zone: ${id}`);
+  }
+  return zone;
+};
+
+const ARRIVAL_DISTANCE = 8;
+const FLOOR_STAND_Y = 170;
+const WINDOW_BENCH_STAND_Y = 80;
+const WINDOW_BENCH_ZONE = findZone("windowBench");
+const FLOOR_CENTER_ZONE = findZone("floor-center");
+const FLOOR_LEFT_ZONE = findZone("floor-left");
+const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
+const WINDOW_BENCH_LANDING_X = (WINDOW_BENCH_ZONE.xMin + WINDOW_BENCH_ZONE.xMax) / 2 + 16;
+const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMax - 65;
+const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
 
 class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private targetX = 260;
-  private nextDecisionAt = 0;
-  private state: CatFsmState = "IDLE";
+  private targetX = WINDOW_BENCH_TAKEOFF_X;
+  private routine: CatRoutine = "approachWindowBench";
+  private routineHoldUntil = 0;
+  private scriptedJump?: ScriptedJump;
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
-  private jumpLandingX?: number;
-  private jumpTakeoffX?: number;
-  private jumpStartedAt = 0;
-  private isPreparingJump = false;
   private onInteract: (message: string) => void = () => {};
 
   constructor() {
@@ -115,34 +140,12 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    if (this.state === "JUMPING" || this.isPreparingJump) {
-      this.updateJumpState(time);
+    if (this.scriptedJump) {
+      this.updateScriptedJump(time);
       return;
     }
 
-    if (time >= this.nextDecisionAt) {
-      this.chooseNextMove(time);
-    }
-
-    const distance = this.targetX - this.cat.x;
-    if (this.state === "SLEEPING" || this.state === "EATING") {
-      this.cat.setVelocityX(0);
-      this.playCatAction(this.state === "SLEEPING" ? "sleep" : "idle");
-      return;
-    }
-
-    if (Math.abs(distance) < 8 || this.state === "IDLE") {
-      this.cat.setVelocityX(0);
-      this.playCatAction("idle");
-      return;
-    }
-
-    const speed = PERSONALITY_SPEED[this.personality];
-    const targetVelocityX = distance > 0 ? speed : -speed;
-    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.14);
-    this.cat.setVelocityX(easedVelocityX);
-    this.cat.setFlipX(distance < 0);
-    this.playCatAction("walk");
+    this.updatePurposefulRoutine(time);
   }
 
   private createSceneObjects() {
@@ -187,19 +190,6 @@ class CatRoomScene extends Phaser.Scene {
     }
   }
 
-  private chooseNextMove(time: number) {
-    this.nextDecisionAt = time + Phaser.Math.Between(1800, 3800);
-    this.state = chooseNextState(this.personality);
-
-    if (this.state === "WALKING") {
-      this.targetX = this.chooseWalkTarget();
-    }
-
-    if (this.state === "JUMPING") {
-      this.startJump(time);
-    }
-  }
-
   private interact() {
     if (!this.cat) {
       return;
@@ -222,91 +212,155 @@ class CatRoomScene extends Phaser.Scene {
     this.onInteract(getCompanionReaction("INTERACTING"));
   }
 
-  private chooseWalkTarget() {
-    const zone = Phaser.Utils.Array.GetRandom(WALKABLE_ZONES);
-    return Phaser.Math.Between(zone.xMin, zone.xMax);
-  }
-
-  private chooseJumpTarget() {
+  private updatePurposefulRoutine(time: number) {
     if (!this.cat) {
-      const zone = Phaser.Utils.Array.GetRandom(JUMP_TARGET_ZONES);
-      return Phaser.Math.Between(zone.xMin, zone.xMax);
-    }
-
-    const direction = this.cat.x < 300 ? 1 : -1;
-    const distance = Phaser.Math.Between(110, 170);
-    return Phaser.Math.Clamp(this.cat.x + direction * distance, 145, 430);
-  }
-
-  private startJump(time: number) {
-    if (!this.cat || this.isPreparingJump || !this.cat.body.blocked.down) {
       return;
     }
 
-    this.isPreparingJump = true;
-    this.jumpTakeoffX = this.cat.x;
-    this.jumpLandingX = this.chooseJumpTarget();
-    this.targetX = this.jumpLandingX;
+    if (this.routine === "approachWindowBench") {
+      this.cat.body.setAllowGravity(true);
+      if (time < this.routineHoldUntil) {
+        this.cat.setVelocityX(0);
+        this.playCatAction("idle");
+        return;
+      }
+
+      this.targetX = WINDOW_BENCH_TAKEOFF_X;
+      if (!this.cat.body.blocked.down) {
+        this.cat.setVelocityX(0);
+        this.playCatAction("idle");
+        return;
+      }
+
+      if (this.moveTowardTarget(WINDOW_BENCH_TAKEOFF_X)) {
+        this.startScriptedJump(time, {
+          toX: WINDOW_BENCH_LANDING_X,
+          toY: WINDOW_BENCH_STAND_Y,
+          duration: 760,
+          peakHeight: 76,
+          landingRoutine: "perchWindowBench",
+        });
+      }
+      return;
+    }
+
+    if (this.routine === "perchWindowBench") {
+      this.cat.body.setAllowGravity(false);
+      this.cat.setVelocity(0, 0);
+      this.cat.setY(WINDOW_BENCH_STAND_Y);
+      this.playCatAction(time > this.routineHoldUntil - 1400 ? "idle" : "sleep");
+
+      if (time >= this.routineHoldUntil) {
+        this.startScriptedJump(time, {
+          toX: FLOOR_RETURN_X,
+          toY: FLOOR_STAND_Y,
+          duration: 700,
+          peakHeight: 48,
+          landingRoutine: "floorPause",
+        });
+      }
+      return;
+    }
+
+    this.cat.body.setAllowGravity(true);
+    if (this.cat.body.blocked.down && time >= this.routineHoldUntil) {
+      this.targetX = FLOOR_PAUSE_X;
+      if (this.moveTowardTarget(FLOOR_PAUSE_X)) {
+        this.cat.setVelocityX(0);
+        this.playCatAction("idle");
+        this.routineHoldUntil = time + Phaser.Math.Between(900, 1500);
+        this.routine = "approachWindowBench";
+      }
+      return;
+    }
+
     this.cat.setVelocityX(0);
-    this.playCatAction("jump", true);
-
-    this.tweens.add({
-      targets: this.cat,
-      y: this.cat.y + 3,
-      duration: 190,
-      yoyo: true,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        if (!this.cat || this.state !== "JUMPING") {
-          this.isPreparingJump = false;
-          return;
-        }
-
-        const distance = (this.jumpLandingX ?? this.cat.x) - this.cat.x;
-        const direction = distance >= 0 ? 1 : -1;
-        const horizontalSpeed = Phaser.Math.Clamp(Math.abs(distance) / 1.05, 95, 150);
-        this.cat.setFlipX(direction < 0);
-        this.cat.setVelocityX(direction * horizontalSpeed);
-        this.cat.setVelocityY(-360);
-        this.jumpStartedAt = this.time.now;
-        this.isPreparingJump = false;
-        this.playCatAction("jump", true);
-      },
-    });
+    this.playCatAction("idle");
   }
 
-  private updateJumpState(time: number) {
+  private moveTowardTarget(targetX: number) {
+    if (!this.cat) {
+      return false;
+    }
+
+    const distance = targetX - this.cat.x;
+    if (Math.abs(distance) < ARRIVAL_DISTANCE) {
+      this.cat.setVelocityX(0);
+      this.playCatAction("idle");
+      return true;
+    }
+
+    const speed = PERSONALITY_SPEED[this.personality];
+    const targetVelocityX = distance > 0 ? speed : -speed;
+    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.14);
+    this.cat.setVelocityX(easedVelocityX);
+    this.cat.setFlipX(distance < 0);
+    this.playCatAction("walk");
+    return false;
+  }
+
+  private startScriptedJump(
+    time: number,
+    options: {
+      toX: number;
+      toY: number;
+      duration: number;
+      peakHeight: number;
+      landingRoutine: CatRoutine;
+    },
+  ) {
     if (!this.cat) {
       return;
     }
 
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.cat.setFlipX(options.toX < this.cat.x);
+    this.scriptedJump = {
+      fromX: this.cat.x,
+      fromY: this.cat.y,
+      toX: options.toX,
+      toY: options.toY,
+      startedAt: time,
+      duration: options.duration,
+      peakHeight: options.peakHeight,
+      landingRoutine: options.landingRoutine,
+    };
+    this.playCatAction("jump", true);
+  }
+
+  private updateScriptedJump(time: number) {
+    if (!this.cat || !this.scriptedJump) {
+      return;
+    }
+
+    const jump = this.scriptedJump;
+    const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
+    const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
+    const arcY = Math.sin(progress * Math.PI) * jump.peakHeight;
+    const x = Phaser.Math.Linear(jump.fromX, jump.toX, easedProgress);
+    const y = Phaser.Math.Linear(jump.fromY, jump.toY, easedProgress) - arcY;
+
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.cat.setPosition(x, y);
     this.playCatAction("jump");
 
-    if (this.isPreparingJump) {
-      this.cat.setVelocityX(0);
-      return;
-    }
+    if (progress >= 1) {
+      this.cat.setPosition(jump.toX, jump.toY);
+      this.scriptedJump = undefined;
+      this.routine = jump.landingRoutine;
+      this.targetX = jump.toX;
 
-    if (this.jumpLandingX !== undefined && this.jumpTakeoffX !== undefined) {
-      const distance = this.jumpLandingX - this.cat.x;
-      const travel = Math.abs(this.jumpLandingX - this.jumpTakeoffX);
-      const progress = Phaser.Math.Clamp(Math.abs(this.cat.x - this.jumpTakeoffX) / Math.max(1, travel), 0, 1);
-      if (Math.abs(distance) < 12 || progress > 0.92) {
-        this.cat.setVelocityX(0);
-      } else if (this.cat.body.velocity.y > 40) {
-        const speed = Phaser.Math.Clamp(Math.abs(distance) / 0.65, 55, 120);
-        this.cat.setVelocityX(distance > 0 ? speed : -speed);
+      if (jump.landingRoutine === "perchWindowBench") {
+        this.cat.body.setAllowGravity(false);
+        this.routineHoldUntil = time + Phaser.Math.Between(3200, 5200);
+        this.playCatAction("idle", true);
+        return;
       }
-    }
 
-    const hasBeenAirborne = time - this.jumpStartedAt > 260;
-    if (hasBeenAirborne && this.cat.body.blocked.down) {
-      this.cat.setVelocityX(0);
-      this.cat.setVelocityY(0);
-      this.jumpLandingX = undefined;
-      this.jumpTakeoffX = undefined;
-      this.state = "IDLE";
-      this.nextDecisionAt = time + Phaser.Math.Between(900, 1800);
+      this.cat.body.setAllowGravity(true);
+      this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
       this.playCatAction("idle", true);
     }
   }

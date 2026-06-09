@@ -1,6 +1,6 @@
 # Environment Interaction Spec
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 ## Purpose
 
@@ -23,9 +23,13 @@ public/assets/scenes/window-room/collision.json
 The scene now separates:
 
 - physical surfaces: places the cat can stand or land;
-- environment zones: places the cat can choose as walk/jump/rest targets;
+- environment zones: places the cat can choose as walk/rest/perch targets;
 - visual blockers: props that should affect path choice without becoming
   invisible air walls.
+
+The first implemented interaction point is the window bench. It is not a normal
+Arcade Physics collider; the cat reaches it through a scripted perch routine so
+the prop does not create invisible side walls.
 
 ## Current Physical Surfaces
 
@@ -35,9 +39,11 @@ The Phaser Arcade Physics colliders are currently limited to:
 
 `windowBench`, `catBed`, `plant`, and `rightTray` are not physical walking
 blockers in Phase 0.1 because generic Arcade Physics rectangles create invisible
-side walls. They should become interaction zones first. If the cat needs to land
-on bench/bed later, implement one-way/top-only platform behavior rather than
-turning the full prop rectangle into a normal collider.
+side walls. They should become interaction zones first.
+
+`windowBench` is currently reachable through a scripted jump/perch routine. If
+free-form bench/bed landing is needed later, implement one-way/top-only platform
+behavior rather than turning the full prop rectangle into a normal collider.
 
 ## Current Environment Zones
 
@@ -50,20 +56,27 @@ The current scene defines zones in code:
 - `rightTray`: future food/eating target
 - `plant`: blocker/avoidance target
 
-Walk targets currently choose only walkable floor zones. This prevents the cat
-from walking into prop rectangles or stopping against invisible props.
+Walk targets currently choose only purposeful floor positions that serve an
+environment routine. This prevents the cat from wandering into prop rectangles
+or stopping against invisible props.
 
-Jump targets currently choose floor zones and enforce a clear horizontal travel
-distance. The jump has anticipation compression, horizontal travel, airborne
-frames, and landing recovery. Bench/bed jumping should wait for one-way platform
-support.
+The current window-bench routine is:
+
+1. rest briefly on the floor;
+2. walk to the bench-side takeoff point;
+3. jump in a fixed arc to the window bench perch point;
+4. sit or sleep on the bench for a short hold;
+5. jump back down to the floor;
+6. walk to a floor pause point before the next cycle.
+
+This replaces purely random floor roaming with a repeatable room habit. It is a
+Phase 0.1 animation behavior, not a game reward loop.
 
 ## Current Action Behavior
 
-- `WALKING`: chooses a floor-zone target and walks horizontally.
-- `JUMPING`: chooses a floor/perch/rest target, compresses, launches with
-  vertical and horizontal velocity, and lands before returning to idle.
-- `SLEEPING`: plays sleep animation, currently not yet tied to bed occupancy.
+- `WALKING`: walks toward the active routine target.
+- `JUMPING`: uses a scripted arc for window-bench up/down travel.
+- `SLEEPING`: plays on the window bench during the perch hold.
 - `EATING`: plays idle animation, currently reserved for future tray behavior.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
@@ -71,8 +84,8 @@ support.
 
 The next behavior pass should move from state-only choices to zone-aware actions:
 
-- `SLEEPING` should prefer `catBed` or `windowBench`, then play sleep only after
-  the cat reaches the zone.
+- `SLEEPING` should later support `catBed` as well as the current
+  `windowBench` perch.
 - `EATING` should move toward `rightTray`, then play a dedicated eating/sniffing
   animation.
 - `CROUCHING` should exist as a transition/action near jump, plant inspection,
