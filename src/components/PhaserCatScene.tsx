@@ -57,10 +57,10 @@ interface ScriptedJump {
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
 
 const PERSONALITY_SPEED: Record<CatPersonality, number> = {
-  GLUTTON: 54,
-  ALOOFS: 42,
-  CLINGY: 50,
-  ENERGY: 72,
+  GLUTTON: 32,
+  ALOOFS: 26,
+  CLINGY: 30,
+  ENERGY: 40,
 };
 
 const PHYSICAL_SURFACES = new Set(["floor"]);
@@ -84,7 +84,7 @@ const findZone = (id: string) => {
 
 const ARRIVAL_DISTANCE = 8;
 const FLOOR_STAND_Y = 170;
-const WINDOW_BENCH_STAND_Y = 80;
+const WINDOW_BENCH_STAND_Y = 140;
 const WINDOW_BENCH_ZONE = findZone("windowBench");
 const FLOOR_CENTER_ZONE = findZone("floor-center");
 const FLOOR_LEFT_ZONE = findZone("floor-left");
@@ -99,6 +99,7 @@ class CatRoomScene extends Phaser.Scene {
   private routine: CatRoutine = "approachWindowBench";
   private routineHoldUntil = 0;
   private scriptedJump?: ScriptedJump;
+  private walkPaceSeed = 0;
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
   private onInteract: (message: string) => void = () => {};
@@ -110,6 +111,7 @@ class CatRoomScene extends Phaser.Scene {
   init(data: PhaserCatSceneProps) {
     this.personality = data.personality;
     this.showStardust = data.showStardust;
+    this.walkPaceSeed = Phaser.Math.FloatBetween(0, Math.PI * 2);
     this.onInteract = data.onInteract;
   }
 
@@ -167,7 +169,7 @@ class CatRoomScene extends Phaser.Scene {
   private createCat() {
     this.cat = this.physics.add.sprite(320, 120, "cat-idle");
     this.cat.setDisplaySize(88, 88);
-    this.cat.setCollideWorldBounds(true);
+    this.cat.setCollideWorldBounds(false);
     this.cat.setGravityY(620);
     this.cat.setBounce(0.08);
     this.cat.setDepth(5);
@@ -236,8 +238,8 @@ class CatRoomScene extends Phaser.Scene {
         this.startScriptedJump(time, {
           toX: WINDOW_BENCH_LANDING_X,
           toY: WINDOW_BENCH_STAND_Y,
-          duration: 760,
-          peakHeight: 76,
+          duration: 880,
+          peakHeight: 58,
           landingRoutine: "perchWindowBench",
         });
       }
@@ -254,8 +256,8 @@ class CatRoomScene extends Phaser.Scene {
         this.startScriptedJump(time, {
           toX: FLOOR_RETURN_X,
           toY: FLOOR_STAND_Y,
-          duration: 700,
-          peakHeight: 48,
+          duration: 760,
+          peakHeight: 42,
           landingRoutine: "floorPause",
         });
       }
@@ -284,15 +286,22 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     const distance = targetX - this.cat.x;
+    const currentVelocityX = this.cat.body.velocity.x;
     if (Math.abs(distance) < ARRIVAL_DISTANCE) {
-      this.cat.setVelocityX(0);
+      const easedStopVelocityX = Phaser.Math.Linear(currentVelocityX, 0, 0.18);
+      this.cat.setVelocityX(Math.abs(easedStopVelocityX) < 4 ? 0 : easedStopVelocityX);
       this.playCatAction("idle");
-      return true;
+      return Math.abs(easedStopVelocityX) < 5;
     }
 
-    const speed = PERSONALITY_SPEED[this.personality];
+    const baseSpeed = PERSONALITY_SPEED[this.personality];
+    const distanceEase = Phaser.Math.Clamp(Math.abs(distance) / 72, 0.22, 1);
+    const time = this.time.now;
+    const curiousSlowdown = 0.84 + Math.sin(time * 0.0034 + this.walkPaceSeed) * 0.16;
+    const tinyHesitation = Math.sin(time * 0.0017 + this.walkPaceSeed * 0.7) > 0.94 ? 0.58 : 1;
+    const speed = baseSpeed * distanceEase * curiousSlowdown * tinyHesitation;
     const targetVelocityX = distance > 0 ? speed : -speed;
-    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.14);
+    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.08);
     this.cat.setVelocityX(easedVelocityX);
     this.cat.setFlipX(distance < 0);
     this.playCatAction("walk");
@@ -390,7 +399,7 @@ class CatRoomScene extends Phaser.Scene {
           start: 0,
           end: config.frames - 1,
         }),
-        frameRate: config.frameRate,
+        frameRate: action === "walk" ? 6 : config.frameRate,
         repeat: config.repeat,
       });
     });
