@@ -45,6 +45,11 @@ side walls. They should become interaction zones first.
 free-form bench/bed landing is needed later, implement one-way/top-only platform
 behavior rather than turning the full prop rectangle into a normal collider.
 
+The active window-bench routine uses fixed visual anchors for floor and perch
+positions. It does not rely on Arcade gravity for routine landing because the
+floor collider sits lower than the visible walkable floor and makes the cat
+appear to drop into the foreground.
+
 ## Current Environment Zones
 
 The current scene defines zones in code:

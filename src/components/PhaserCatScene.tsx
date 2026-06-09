@@ -83,14 +83,14 @@ const findZone = (id: string) => {
 };
 
 const ARRIVAL_DISTANCE = 8;
-const FLOOR_STAND_Y = 170;
+const FLOOR_STAND_Y = 225;
 const WINDOW_BENCH_STAND_Y = 140;
 const WINDOW_BENCH_ZONE = findZone("windowBench");
 const FLOOR_CENTER_ZONE = findZone("floor-center");
 const FLOOR_LEFT_ZONE = findZone("floor-left");
 const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
 const WINDOW_BENCH_LANDING_X = (WINDOW_BENCH_ZONE.xMin + WINDOW_BENCH_ZONE.xMax) / 2 + 16;
-const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMax - 65;
+const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
 
 class CatRoomScene extends Phaser.Scene {
@@ -167,11 +167,12 @@ class CatRoomScene extends Phaser.Scene {
   }
 
   private createCat() {
-    this.cat = this.physics.add.sprite(320, 120, "cat-idle");
+    this.cat = this.physics.add.sprite(320, FLOOR_STAND_Y, "cat-idle");
     this.cat.setDisplaySize(88, 88);
-    this.cat.setCollideWorldBounds(false);
-    this.cat.setGravityY(620);
-    this.cat.setBounce(0.08);
+    this.cat.setCollideWorldBounds(true);
+    this.cat.setGravityY(0);
+    this.cat.body.setAllowGravity(false);
+    this.cat.setBounce(0);
     this.cat.setDepth(5);
     this.cat.setInteractive({ useHandCursor: true });
     this.cat.on("pointerdown", () => this.interact());
@@ -220,7 +221,8 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     if (this.routine === "approachWindowBench") {
-      this.cat.body.setAllowGravity(true);
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
       if (time < this.routineHoldUntil) {
         this.cat.setVelocityX(0);
         this.playCatAction("idle");
@@ -228,12 +230,6 @@ class CatRoomScene extends Phaser.Scene {
       }
 
       this.targetX = WINDOW_BENCH_TAKEOFF_X;
-      if (!this.cat.body.blocked.down) {
-        this.cat.setVelocityX(0);
-        this.playCatAction("idle");
-        return;
-      }
-
       if (this.moveTowardTarget(WINDOW_BENCH_TAKEOFF_X)) {
         this.startScriptedJump(time, {
           toX: WINDOW_BENCH_LANDING_X,
@@ -264,8 +260,9 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    this.cat.body.setAllowGravity(true);
-    if (this.cat.body.blocked.down && time >= this.routineHoldUntil) {
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
+    if (time >= this.routineHoldUntil) {
       this.targetX = FLOOR_PAUSE_X;
       if (this.moveTowardTarget(FLOOR_PAUSE_X)) {
         this.cat.setVelocityX(0);
@@ -368,7 +365,8 @@ class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.cat.body.setAllowGravity(true);
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
       this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
       this.playCatAction("idle", true);
     }
