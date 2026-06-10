@@ -3,6 +3,7 @@
 These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
+- `foreground-blanket.png`: transparent foreground occlusion layer for the folded blanket stack, rendered above the cat so blanket-top resting reads correctly.
 - `cat/idle.png`: 4-frame idle sprite sheet, `96x96` per frame.
 - `cat/walk.png`: 8-frame walk sprite sheet, `96x96` per frame.
 - `cat/jump.png`: 5-frame jump sprite sheet, `96x96` per frame.

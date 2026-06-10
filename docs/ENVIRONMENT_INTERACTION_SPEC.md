@@ -44,8 +44,8 @@ side walls. They should become interaction zones first.
 
 `windowBench` is currently reachable through a scripted jump/perch routine. It
 is modeled as a bounded visual surface, not a single point: after landing, the
-cat can walk within the bench surface, pause, sit, or sleep before jumping back
-to the floor. If free-form bench/bed landing is needed later, implement
+cat can walk within the bench surface, pause, and sit before jumping back to the
+floor. If free-form bench/bed landing is needed later, implement
 one-way/top-only platform behavior rather than turning the full prop rectangle
 into a normal collider.
 
@@ -56,10 +56,11 @@ sleep loop there before leaving.
 side and pauses in an eating/sniffing hold using the available idle animation
 until a dedicated eating sheet exists.
 
-The folded blanket stack is currently an inspection point, not a jumpable
-surface. The foreground layering makes a jump-on-top behavior look like the cat
-is standing in front of the blankets unless the blanket is split into a separate
-foreground/midground asset later.
+The folded blanket stack is a small rest surface. It uses a lightweight
+foreground occlusion layer (`foreground-blanket.png`) so the blanket front can
+cover the cat's lower body and make the cat read as resting on top instead of
+standing in front of it. Because the surface is narrow, the cat jumps onto a
+fixed rest anchor and lies down rather than walking around on the blanket.
 
 `plant` is a blocker/avoidance zone with an inspection point at its left edge.
 The cat can approach and inspect it without walking into the plant rectangle.
@@ -87,12 +88,12 @@ or stopping against invisible props.
 The current whole-room routine cycles through:
 
 1. window bench: walk to takeoff, jump to a target inside the bench surface,
-   move gently within the surface, then sit or sleep before jumping down;
+   move gently within the surface, then sit before jumping down;
 2. cat bed: walk to the bed rest point and sleep briefly;
 3. food bowl: walk to the bowl side and pause in an eating/sniffing hold;
 4. plant: walk to the plant edge and pause in a short inspection hold;
-5. folded blankets: walk to the blanket edge and pause in a short inspection
-   hold;
+5. folded blankets: walk to takeoff, jump to the blanket rest anchor, lie down
+   briefly, then jump back down;
 6. floor pause: return to a calm floor point before the next object.
 
 This replaces purely random floor roaming with a repeatable room habit. It is a
@@ -101,8 +102,8 @@ Phase 0.1 animation behavior, not a game reward loop.
 ## Current Action Behavior
 
 - `WALKING`: walks toward the active routine target.
-- `JUMPING`: uses a scripted arc for window-bench up/down travel.
-- `SLEEPING`: plays on the window bench or cat bed.
+- `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
+- `SLEEPING`: plays on the cat bed or blanket surface.
 - `EATING`: uses idle at the food bowl until a dedicated eating sheet exists.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
