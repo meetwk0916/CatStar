@@ -88,8 +88,9 @@ const WINDOW_BENCH_STAND_Y = 140;
 const WINDOW_BENCH_ZONE = findZone("windowBench");
 const FLOOR_CENTER_ZONE = findZone("floor-center");
 const FLOOR_LEFT_ZONE = findZone("floor-left");
+const WINDOW_BENCH_SURFACE_X_MIN = WINDOW_BENCH_ZONE.xMin + 30;
+const WINDOW_BENCH_SURFACE_X_MAX = WINDOW_BENCH_ZONE.xMax - 24;
 const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
-const WINDOW_BENCH_LANDING_X = (WINDOW_BENCH_ZONE.xMin + WINDOW_BENCH_ZONE.xMax) / 2 + 16;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
 
@@ -99,6 +100,8 @@ class CatRoomScene extends Phaser.Scene {
   private routine: CatRoutine = "approachWindowBench";
   private routineHoldUntil = 0;
   private scriptedJump?: ScriptedJump;
+  private windowBenchTargetX = (WINDOW_BENCH_SURFACE_X_MIN + WINDOW_BENCH_SURFACE_X_MAX) / 2;
+  private windowBenchDecisionAt = 0;
   private walkPaceSeed = 0;
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
@@ -231,8 +234,9 @@ class CatRoomScene extends Phaser.Scene {
 
       this.targetX = WINDOW_BENCH_TAKEOFF_X;
       if (this.moveTowardTarget(WINDOW_BENCH_TAKEOFF_X)) {
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
         this.startScriptedJump(time, {
-          toX: WINDOW_BENCH_LANDING_X,
+          toX: this.windowBenchTargetX,
           toY: WINDOW_BENCH_STAND_Y,
           duration: 880,
           peakHeight: 58,
@@ -244,9 +248,7 @@ class CatRoomScene extends Phaser.Scene {
 
     if (this.routine === "perchWindowBench") {
       this.cat.body.setAllowGravity(false);
-      this.cat.setVelocity(0, 0);
       this.cat.setY(WINDOW_BENCH_STAND_Y);
-      this.playCatAction(time > this.routineHoldUntil - 1400 ? "idle" : "sleep");
 
       if (time >= this.routineHoldUntil) {
         this.startScriptedJump(time, {
@@ -256,6 +258,17 @@ class CatRoomScene extends Phaser.Scene {
           peakHeight: 42,
           landingRoutine: "floorPause",
         });
+        return;
+      }
+
+      if (time >= this.windowBenchDecisionAt) {
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
+        this.windowBenchDecisionAt = time + Phaser.Math.Between(1200, 2400);
+      }
+
+      if (this.moveOnWindowBenchSurface(this.windowBenchTargetX)) {
+        this.cat.setVelocityX(0);
+        this.playCatAction(time > this.routineHoldUntil - 1400 ? "idle" : "sleep");
       }
       return;
     }
@@ -303,6 +316,21 @@ class CatRoomScene extends Phaser.Scene {
     this.cat.setFlipX(distance < 0);
     this.playCatAction("walk");
     return false;
+  }
+
+  private chooseWindowBenchTargetX() {
+    return Phaser.Math.Between(WINDOW_BENCH_SURFACE_X_MIN, WINDOW_BENCH_SURFACE_X_MAX);
+  }
+
+  private moveOnWindowBenchSurface(targetX: number) {
+    if (!this.cat) {
+      return false;
+    }
+
+    const boundedTargetX = Phaser.Math.Clamp(targetX, WINDOW_BENCH_SURFACE_X_MIN, WINDOW_BENCH_SURFACE_X_MAX);
+    this.cat.x = Phaser.Math.Clamp(this.cat.x, WINDOW_BENCH_SURFACE_X_MIN, WINDOW_BENCH_SURFACE_X_MAX);
+    this.cat.setY(WINDOW_BENCH_STAND_Y);
+    return this.moveTowardTarget(boundedTargetX);
   }
 
   private startScriptedJump(
@@ -360,7 +388,9 @@ class CatRoomScene extends Phaser.Scene {
 
       if (jump.landingRoutine === "perchWindowBench") {
         this.cat.body.setAllowGravity(false);
-        this.routineHoldUntil = time + Phaser.Math.Between(3200, 5200);
+        this.windowBenchDecisionAt = time + Phaser.Math.Between(700, 1400);
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
+        this.routineHoldUntil = time + Phaser.Math.Between(5200, 7600);
         this.playCatAction("idle", true);
         return;
       }

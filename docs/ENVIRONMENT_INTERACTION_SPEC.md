@@ -41,9 +41,12 @@ The Phaser Arcade Physics colliders are currently limited to:
 blockers in Phase 0.1 because generic Arcade Physics rectangles create invisible
 side walls. They should become interaction zones first.
 
-`windowBench` is currently reachable through a scripted jump/perch routine. If
-free-form bench/bed landing is needed later, implement one-way/top-only platform
-behavior rather than turning the full prop rectangle into a normal collider.
+`windowBench` is currently reachable through a scripted jump/perch routine. It
+is modeled as a bounded visual surface, not a single point: after landing, the
+cat can walk within the bench surface, pause, sit, or sleep before jumping back
+to the floor. If free-form bench/bed landing is needed later, implement
+one-way/top-only platform behavior rather than turning the full prop rectangle
+into a normal collider.
 
 The active window-bench routine uses fixed visual anchors for floor and perch
 positions. It does not rely on Arcade gravity for routine landing because the
@@ -69,8 +72,8 @@ The current window-bench routine is:
 
 1. rest briefly on the floor;
 2. walk to the bench-side takeoff point;
-3. jump in a fixed arc to the window bench perch point;
-4. sit or sleep on the bench for a short hold;
+3. jump in a fixed arc to a target inside the window bench surface;
+4. move gently within the bench surface, then sit or sleep for a short hold;
 5. jump back down to the floor;
 6. walk to a floor pause point before the next cycle.
 
