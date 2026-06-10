@@ -1,6 +1,6 @@
 # Environment Interaction Spec
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 ## Purpose
 
@@ -27,9 +27,10 @@ The scene now separates:
 - visual blockers: props that should affect path choice without becoming
   invisible air walls.
 
-The first implemented interaction point is the window bench. It is not a normal
-Arcade Physics collider; the cat reaches it through a scripted perch routine so
-the prop does not create invisible side walls.
+The implemented interaction points are the window bench, cat bed, food bowl,
+plant edge, and folded blanket stack. None of them are normal Arcade Physics
+colliders; the cat reaches them through anchored routines so props do not create
+invisible side walls.
 
 ## Current Physical Surfaces
 
@@ -48,6 +49,21 @@ to the floor. If free-form bench/bed landing is needed later, implement
 one-way/top-only platform behavior rather than turning the full prop rectangle
 into a normal collider.
 
+`catBed` is a floor-level rest point. The cat walks to the bed and plays the
+sleep loop there before leaving.
+
+`rightTray` currently stands for the food bowl area. The cat walks to the bowl
+side and pauses in an eating/sniffing hold using the available idle animation
+until a dedicated eating sheet exists.
+
+The folded blanket stack is currently an inspection point, not a jumpable
+surface. The foreground layering makes a jump-on-top behavior look like the cat
+is standing in front of the blankets unless the blanket is split into a separate
+foreground/midground asset later.
+
+`plant` is a blocker/avoidance zone with an inspection point at its left edge.
+The cat can approach and inspect it without walking into the plant rectangle.
+
 The active window-bench routine uses fixed visual anchors for floor and perch
 positions. It does not rely on Arcade gravity for routine landing because the
 floor collider sits lower than the visible walkable floor and makes the cat
@@ -60,22 +76,24 @@ The current scene defines zones in code:
 - `floor-left`: walkable floor
 - `floor-center`: walkable floor
 - `windowBench`: perch/jump target
-- `catBed`: rest/jump target
-- `rightTray`: future food/eating target
+- `catBed`: rest target
+- `rightTray`: food/eating target
 - `plant`: blocker/avoidance target
 
 Walk targets currently choose only purposeful floor positions that serve an
 environment routine. This prevents the cat from wandering into prop rectangles
 or stopping against invisible props.
 
-The current window-bench routine is:
+The current whole-room routine cycles through:
 
-1. rest briefly on the floor;
-2. walk to the bench-side takeoff point;
-3. jump in a fixed arc to a target inside the window bench surface;
-4. move gently within the bench surface, then sit or sleep for a short hold;
-5. jump back down to the floor;
-6. walk to a floor pause point before the next cycle.
+1. window bench: walk to takeoff, jump to a target inside the bench surface,
+   move gently within the surface, then sit or sleep before jumping down;
+2. cat bed: walk to the bed rest point and sleep briefly;
+3. food bowl: walk to the bowl side and pause in an eating/sniffing hold;
+4. plant: walk to the plant edge and pause in a short inspection hold;
+5. folded blankets: walk to the blanket edge and pause in a short inspection
+   hold;
+6. floor pause: return to a calm floor point before the next object.
 
 This replaces purely random floor roaming with a repeatable room habit. It is a
 Phase 0.1 animation behavior, not a game reward loop.
@@ -84,8 +102,8 @@ Phase 0.1 animation behavior, not a game reward loop.
 
 - `WALKING`: walks toward the active routine target.
 - `JUMPING`: uses a scripted arc for window-bench up/down travel.
-- `SLEEPING`: plays on the window bench during the perch hold.
-- `EATING`: plays idle animation, currently reserved for future tray behavior.
+- `SLEEPING`: plays on the window bench or cat bed.
+- `EATING`: uses idle at the food bowl until a dedicated eating sheet exists.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
 ## Next Upgrade Path
