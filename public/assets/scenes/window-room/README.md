@@ -9,6 +9,8 @@ These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 - `cat/jump.png`: 5-frame jump sprite sheet, `96x96` per frame.
 - `cat/sleep.png`: 4-frame sleep sprite sheet, `96x96` per frame.
 - `cat/interact.png`: 5-frame click/tap reaction sprite sheet, `96x96` per frame.
+- `cat/eat.png`: 6-frame food-bowl sniff/eat transition sheet, `96x96` per frame.
+- `cat/lie.png`: 4-frame lying/rest sheet for bed and blanket routines, `96x96` per frame.
 - `cat/cat.animations.json`: Phaser animation metadata.
 - `collision.json`: hand-authored Arcade Physics rectangles in Phaser logical coordinates.
 
