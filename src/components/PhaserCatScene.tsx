@@ -24,7 +24,9 @@ type CatRoutine =
   | "approachWindowBench"
   | "perchWindowBench"
   | "approachCatBed"
+  | "enterCatBed"
   | "restCatBed"
+  | "leaveCatBed"
   | "approachFoodBowl"
   | "eatFoodBowl"
   | "approachPlant"
@@ -108,8 +110,15 @@ const WINDOW_BENCH_SURFACE = {
   y: WINDOW_BENCH_STAND_Y,
 };
 const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
-const CAT_BED_REST_X = (CAT_BED_ZONE.xMin + CAT_BED_ZONE.xMax) / 2 + 8;
-const FOOD_BOWL_X = FOOD_ZONE.xMin + 20;
+const CAT_BED_SURFACE = {
+  xMin: CAT_BED_ZONE.xMin + 8,
+  xMax: CAT_BED_ZONE.xMax - 4,
+  y: FLOOR_STAND_Y,
+};
+const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
+const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
+const FOOD_BOWL_X = FOOD_ZONE.xMin - 30;
+const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 28;
 const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
 const BLANKET_STAND_Y = 156;
 const BLANKET_REST_X = 568;
@@ -124,6 +133,7 @@ const ACTIVITY_SEQUENCE: CatRoutine[] = [
   "approachPlant",
   "approachBlanket",
 ];
+const DEBUG_ROUTINES = new Set<CatRoutine>(ACTIVITY_SEQUENCE);
 
 class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -134,6 +144,8 @@ class CatRoomScene extends Phaser.Scene {
   private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
   private windowBenchDecisionAt = 0;
   private windowBenchStillUntil = 0;
+  private catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
+  private foodBowlSniffAt = 0;
   private nextActivityIndex = 1;
   private walkPaceSeed = 0;
   private showStardust = false;
@@ -149,6 +161,15 @@ class CatRoomScene extends Phaser.Scene {
     this.showStardust = data.showStardust;
     this.walkPaceSeed = Phaser.Math.FloatBetween(0, Math.PI * 2);
     this.onInteract = data.onInteract;
+
+    if (import.meta.env.DEV) {
+      const debugRoutine = new URLSearchParams(window.location.search).get("catstarRoutine") as CatRoutine | null;
+      if (debugRoutine && DEBUG_ROUTINES.has(debugRoutine)) {
+        this.routine = debugRoutine;
+        this.nextActivityIndex = Math.max(ACTIVITY_SEQUENCE.indexOf(debugRoutine) + 1, 1);
+        this.routineHoldUntil = 0;
+      }
+    }
   }
 
   preload() {
@@ -282,11 +303,23 @@ class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = CAT_BED_REST_X;
-      if (this.moveTowardTarget(CAT_BED_REST_X)) {
+      this.targetX = CAT_BED_ENTRY_X;
+      if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
+        this.catBedRestX = this.chooseCatBedRestX();
+        this.routine = "enterCatBed";
+      }
+      return;
+    }
+
+    if (this.routine === "enterCatBed") {
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(CAT_BED_SURFACE.y);
+
+      if (this.moveOnCatBedSurface(this.catBedRestX)) {
         this.cat.setVelocityX(0);
         this.routine = "restCatBed";
         this.routineHoldUntil = time + Phaser.Math.Between(3600, 5600);
+        this.cat.setFlipX(false);
         this.playCatAction("sleep", true);
       }
       return;
@@ -299,6 +332,16 @@ class CatRoomScene extends Phaser.Scene {
       this.playCatAction("sleep");
 
       if (time >= this.routineHoldUntil) {
+        this.routine = "leaveCatBed";
+      }
+      return;
+    }
+
+    if (this.routine === "leaveCatBed") {
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+
+      if (this.moveTowardTarget(CAT_BED_EXIT_X)) {
         this.startFloorPause(time);
       }
       return;
@@ -315,19 +358,27 @@ class CatRoomScene extends Phaser.Scene {
         this.cat.setFlipX(false);
         this.routine = "eatFoodBowl";
         this.routineHoldUntil = time + Phaser.Math.Between(2600, 4300);
-        this.playCatAction("idle", true);
+        this.foodBowlSniffAt = time;
+        this.cat.setY(FOOD_BOWL_STAND_Y);
+        this.playCatAction("interact", true);
       }
       return;
     }
 
     if (this.routine === "eatFoodBowl") {
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
+      this.cat.setY(FOOD_BOWL_STAND_Y + Math.sin(time * 0.012) * 1.5);
       this.cat.setVelocityX(0);
       this.cat.setFlipX(false);
-      this.playCatAction("idle");
+      if (time >= this.foodBowlSniffAt) {
+        this.playCatAction("interact", true);
+        this.foodBowlSniffAt = time + Phaser.Math.Between(900, 1300);
+      } else if (!this.cat.anims.isPlaying) {
+        this.playCatAction("idle", true);
+      }
 
       if (time >= this.routineHoldUntil) {
+        this.cat.setY(FLOOR_STAND_Y);
         this.startFloorPause(time);
       }
       return;
@@ -518,6 +569,20 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     return nextX;
+  }
+
+  private chooseCatBedRestX() {
+    return Phaser.Math.Between(CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
+  }
+
+  private moveOnCatBedSurface(targetX: number) {
+    if (!this.cat) {
+      return false;
+    }
+
+    const boundedTargetX = Phaser.Math.Clamp(targetX, CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
+    this.cat.setY(CAT_BED_SURFACE.y);
+    return this.moveTowardTarget(boundedTargetX);
   }
 
   private moveOnWindowBenchSurface(targetX: number) {

@@ -49,12 +49,13 @@ floor. If free-form bench/bed landing is needed later, implement
 one-way/top-only platform behavior rather than turning the full prop rectangle
 into a normal collider.
 
-`catBed` is a floor-level rest point. The cat walks to the bed and plays the
-sleep loop there before leaving.
+`catBed` is a small floor-level rest surface. The cat walks to the bed opening,
+steps into a chosen rest position inside the bed, plays the sleep loop, then
+walks back out through the opening before returning to the floor routine.
 
 `rightTray` currently stands for the food bowl area. The cat walks to the bowl
-side and pauses in an eating/sniffing hold using the available idle animation
-until a dedicated eating sheet exists.
+side and cycles a short sniff/eat hold using the available interact animation
+and a tiny body dip until a dedicated eating sheet exists.
 
 The folded blanket stack is a small rest surface. It uses a lightweight
 foreground occlusion layer (`foreground-blanket.png`) so the blanket front can
@@ -77,7 +78,7 @@ The current scene defines zones in code:
 - `floor-left`: walkable floor
 - `floor-center`: walkable floor
 - `windowBench`: perch/jump target
-- `catBed`: rest target
+- `catBed`: floor-level rest surface
 - `rightTray`: food/eating target
 - `plant`: blocker/avoidance target
 
@@ -89,8 +90,9 @@ The current whole-room routine cycles through:
 
 1. window bench: walk to takeoff, jump to a target inside the bench surface,
    move gently within the surface, then sit before jumping down;
-2. cat bed: walk to the bed rest point and sleep briefly;
-3. food bowl: walk to the bowl side and pause in an eating/sniffing hold;
+2. cat bed: walk to the bed opening, step into a rest position inside the bed,
+   sleep briefly, then walk back out;
+3. food bowl: walk to the bowl side and cycle a short sniff/eat hold;
 4. plant: walk to the plant edge and pause in a short inspection hold;
 5. folded blankets: walk to takeoff, jump to the blanket rest anchor, lie down
    briefly, then jump back down;
@@ -104,15 +106,14 @@ Phase 0.1 animation behavior, not a game reward loop.
 - `WALKING`: walks toward the active routine target.
 - `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
 - `SLEEPING`: plays on the cat bed or blanket surface.
-- `EATING`: uses idle at the food bowl until a dedicated eating sheet exists.
+- `EATING`: uses a repeated short interact/sniff cycle at the food bowl until a
+  dedicated eating sheet exists.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
 ## Next Upgrade Path
 
 The next behavior pass should move from state-only choices to zone-aware actions:
 
-- `SLEEPING` should later support `catBed` as well as the current
-  `windowBench` perch.
 - `EATING` should move toward `rightTray`, then play a dedicated eating/sniffing
   animation.
 - `CROUCHING` should exist as a transition/action near jump, plant inspection,
