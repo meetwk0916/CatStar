@@ -3,13 +3,13 @@
 These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
+- `foreground-cat-bed.png`: transparent foreground occlusion layer for the cat bed front rim, rendered above the cat so entering/resting in the bed does not read as walking through the prop.
 - `foreground-blanket.png`: transparent foreground occlusion layer for the folded blanket stack, rendered above the cat so blanket-top resting reads correctly.
 - `cat/idle.png`: 4-frame idle sprite sheet, `96x96` per frame.
 - `cat/walk.png`: 8-frame walk sprite sheet, `96x96` per frame.
 - `cat/jump.png`: 5-frame jump sprite sheet, `96x96` per frame.
 - `cat/sleep.png`: 4-frame sleep sprite sheet, `96x96` per frame.
 - `cat/interact.png`: 5-frame click/tap reaction sprite sheet, `96x96` per frame.
-- `cat/eat.png`: 6-frame food-bowl sniff/eat transition sheet, `96x96` per frame.
 - `cat/lie.png`: 4-frame lying/rest sheet for bed and blanket routines, `96x96` per frame.
 - `cat/cat.animations.json`: Phaser animation metadata.
 - `collision.json`: hand-authored Arcade Physics rectangles in Phaser logical coordinates.

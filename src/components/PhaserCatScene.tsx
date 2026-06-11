@@ -17,7 +17,7 @@ interface CollisionRect {
   height: number;
 }
 
-type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact" | "eat" | "lie";
+type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact" | "lie";
 type CollisionConfig = Record<string, CollisionRect>;
 type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
 type CatRoutine =
@@ -68,13 +68,13 @@ interface ScriptedJump {
 }
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
-const CAT_ACTIONS: CatAction[] = ["idle", "walk", "jump", "sleep", "interact", "eat", "lie"];
+const CAT_ACTIONS: CatAction[] = ["idle", "walk", "jump", "sleep", "interact", "lie"];
 
 const PERSONALITY_SPEED: Record<CatPersonality, number> = {
-  GLUTTON: 32,
-  ALOOFS: 26,
-  CLINGY: 30,
-  ENERGY: 40,
+  GLUTTON: 24,
+  ALOOFS: 20,
+  CLINGY: 22,
+  ENERGY: 30,
 };
 
 const PHYSICAL_SURFACES = new Set(["floor"]);
@@ -118,8 +118,8 @@ const CAT_BED_SURFACE = {
 };
 const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
 const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
-const FOOD_BOWL_X = FOOD_ZONE.xMin - 30;
-const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 28;
+const FOOD_BOWL_X = FOOD_ZONE.xMin - 34;
+const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 26;
 const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
 const BLANKET_STAND_Y = 156;
 const BLANKET_REST_X = 568;
@@ -175,6 +175,7 @@ class CatRoomScene extends Phaser.Scene {
 
   preload() {
     this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
+    this.load.image("window-room-foreground-cat-bed", `${SCENE_ASSET_ROOT}/foreground-cat-bed.png`);
     this.load.image("window-room-foreground-blanket", `${SCENE_ASSET_ROOT}/foreground-blanket.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
     this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
@@ -361,7 +362,7 @@ class CatRoomScene extends Phaser.Scene {
         this.routineHoldUntil = time + Phaser.Math.Between(2600, 4300);
         this.foodBowlSniffAt = time;
         this.cat.setY(FOOD_BOWL_STAND_Y);
-        this.playCatAction("eat", true);
+        this.playCatAction("idle", true);
       }
       return;
     }
@@ -372,10 +373,10 @@ class CatRoomScene extends Phaser.Scene {
       this.cat.setVelocityX(0);
       this.cat.setFlipX(false);
       if (time >= this.foodBowlSniffAt) {
-        this.playCatAction("eat", true);
-        this.foodBowlSniffAt = time + Phaser.Math.Between(900, 1300);
-      } else if (!this.cat.anims.isPlaying) {
         this.playCatAction("idle", true);
+        this.foodBowlSniffAt = time + Phaser.Math.Between(900, 1300);
+      } else {
+        this.playCatAction("idle");
       }
 
       if (time >= this.routineHoldUntil) {
@@ -691,6 +692,7 @@ class CatRoomScene extends Phaser.Scene {
   }
 
   private createForegroundObjects() {
+    this.add.image(320, 180, "window-room-foreground-cat-bed").setDisplaySize(640, 360).setDepth(6);
     this.add.image(320, 180, "window-room-foreground-blanket").setDisplaySize(640, 360).setDepth(6);
   }
 
@@ -704,7 +706,7 @@ class CatRoomScene extends Phaser.Scene {
           start: 0,
           end: config.frames - 1,
         }),
-        frameRate: action === "walk" ? 6 : config.frameRate,
+        frameRate: action === "walk" ? 4 : config.frameRate,
         repeat: config.repeat,
       });
     });

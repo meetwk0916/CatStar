@@ -33,12 +33,6 @@
       "frameRate": 10,
       "repeat": 0
     },
-    "eat": {
-      "file": "eat.png",
-      "frames": 6,
-      "frameRate": 7,
-      "repeat": 0
-    },
     "lie": {
       "file": "lie.png",
       "frames": 4,

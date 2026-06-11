@@ -54,8 +54,8 @@ steps into a chosen rest position inside the bed, plays the lying/rest loop, the
 walks back out through the opening before returning to the floor routine.
 
 `rightTray` currently stands for the food bowl area. The cat walks to the bowl
-side and cycles a short sniff/eat hold using the `eat` transition sheet and a
-tiny body dip until a fully hand-authored eating sheet exists.
+side and holds a calm sniff/eat pose using stable idle frames and a tiny body
+dip until a fully hand-authored eating sheet exists.
 
 The folded blanket stack is a small rest surface. It uses a lightweight
 foreground occlusion layer (`foreground-blanket.png`) so the blanket front can
@@ -106,7 +106,7 @@ Phase 0.1 animation behavior, not a game reward loop.
 - `WALKING`: walks toward the active routine target.
 - `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
 - `LYING`: plays on the cat bed or blanket surface.
-- `EATING`: uses a repeated short `eat` cycle at the food bowl until a
+- `EATING`: uses a stable idle-based sniff/eat hold at the food bowl until a
   production eating sheet exists.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
