@@ -1,0 +1,216 @@
+{
+  "walk": [
+    {
+      "frame": 1,
+      "source_x": [
+        27,
+        261
+      ],
+      "sprite_size": [
+        86,
+        71
+      ],
+      "paste": [
+        5,
+        17
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        308,
+        529
+      ],
+      "sprite_size": [
+        86,
+        75
+      ],
+      "paste": [
+        5,
+        13
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        574,
+        797
+      ],
+      "sprite_size": [
+        86,
+        75
+      ],
+      "paste": [
+        5,
+        13
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        846,
+        1068
+      ],
+      "sprite_size": [
+        86,
+        75
+      ],
+      "paste": [
+        5,
+        13
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1128,
+        1346
+      ],
+      "sprite_size": [
+        86,
+        75
+      ],
+      "paste": [
+        5,
+        13
+      ]
+    },
+    {
+      "frame": 6,
+      "source_x": [
+        1399,
+        1621
+      ],
+      "sprite_size": [
+        86,
+        75
+      ],
+      "paste": [
+        5,
+        13
+      ]
+    },
+    {
+      "frame": 7,
+      "source_x": [
+        1672,
+        1889
+      ],
+      "sprite_size": [
+        86,
+        76
+      ],
+      "paste": [
+        5,
+        12
+      ]
+    },
+    {
+      "frame": 8,
+      "source_x": [
+        1929,
+        2146
+      ],
+      "sprite_size": [
+        86,
+        76
+      ],
+      "paste": [
+        5,
+        12
+      ]
+    }
+  ],
+  "eat": [
+    {
+      "frame": 1,
+      "source_x": [
+        40,
+        323
+      ],
+      "sprite_size": [
+        86,
+        71
+      ],
+      "paste": [
+        5,
+        17
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        423,
+        709
+      ],
+      "sprite_size": [
+        86,
+        65
+      ],
+      "paste": [
+        5,
+        23
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        780,
+        1059
+      ],
+      "sprite_size": [
+        86,
+        65
+      ],
+      "paste": [
+        5,
+        23
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        1140,
+        1413
+      ],
+      "sprite_size": [
+        86,
+        66
+      ],
+      "paste": [
+        5,
+        22
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1483,
+        1761
+      ],
+      "sprite_size": [
+        86,
+        65
+      ],
+      "paste": [
+        5,
+        23
+      ]
+    },
+    {
+      "frame": 6,
+      "source_x": [
+        1826,
+        2106
+      ],
+      "sprite_size": [
+        86,
+        65
+      ],
+      "paste": [
+        5,
+        23
+      ]
+    }
+  ]
+}

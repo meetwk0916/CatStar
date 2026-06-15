@@ -1,0 +1,64 @@
+{
+  "sleep": [
+    {
+      "frame": 1,
+      "source_x": [
+        165,
+        511
+      ],
+      "sprite_size": [
+        82,
+        47
+      ],
+      "paste": [
+        7,
+        42
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        664,
+        1009
+      ],
+      "sprite_size": [
+        82,
+        48
+      ],
+      "paste": [
+        7,
+        40
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        1158,
+        1506
+      ],
+      "sprite_size": [
+        82,
+        47
+      ],
+      "paste": [
+        7,
+        42
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        1655,
+        2000
+      ],
+      "sprite_size": [
+        82,
+        48
+      ],
+      "paste": [
+        7,
+        41
+      ]
+    }
+  ]
+}

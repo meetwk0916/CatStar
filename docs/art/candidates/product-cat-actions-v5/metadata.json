@@ -1,0 +1,79 @@
+{
+  "jump": [
+    {
+      "frame": 1,
+      "source_x": [
+        82,
+        383
+      ],
+      "sprite_size": [
+        88,
+        64
+      ],
+      "paste": [
+        4,
+        26
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        508,
+        851
+      ],
+      "sprite_size": [
+        88,
+        79
+      ],
+      "paste": [
+        4,
+        8
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        944,
+        1271
+      ],
+      "sprite_size": [
+        88,
+        57
+      ],
+      "paste": [
+        4,
+        28
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        1404,
+        1699
+      ],
+      "sprite_size": [
+        88,
+        81
+      ],
+      "paste": [
+        4,
+        6
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1793,
+        2088
+      ],
+      "sprite_size": [
+        88,
+        55
+      ],
+      "paste": [
+        4,
+        35
+      ]
+    }
+  ]
+}

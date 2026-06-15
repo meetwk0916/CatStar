@@ -17,16 +17,14 @@ interface CollisionRect {
   height: number;
 }
 
-type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact" | "lie";
+type CatAction = "idle" | "walk" | "jump" | "sleep" | "interact" | "eat" | "lie";
 type CollisionConfig = Record<string, CollisionRect>;
 type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
 type CatRoutine =
   | "approachWindowBench"
   | "perchWindowBench"
   | "approachCatBed"
-  | "enterCatBed"
   | "restCatBed"
-  | "leaveCatBed"
   | "approachFoodBowl"
   | "eatFoodBowl"
   | "approachPlant"
@@ -68,13 +66,13 @@ interface ScriptedJump {
 }
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
-const CAT_ACTIONS: CatAction[] = ["idle", "walk", "jump", "sleep", "interact", "lie"];
+const CAT_ACTIONS: CatAction[] = ["idle", "walk", "jump", "sleep", "interact", "eat", "lie"];
 
 const PERSONALITY_SPEED: Record<CatPersonality, number> = {
-  GLUTTON: 24,
-  ALOOFS: 20,
-  CLINGY: 22,
-  ENERGY: 30,
+  GLUTTON: 66,
+  ALOOFS: 56,
+  CLINGY: 60,
+  ENERGY: 74,
 };
 
 const PHYSICAL_SURFACES = new Set(["floor"]);
@@ -96,7 +94,7 @@ const findZone = (id: string) => {
   return zone;
 };
 
-const ARRIVAL_DISTANCE = 8;
+const ARRIVAL_DISTANCE = 14;
 const FLOOR_STAND_Y = 225;
 const WINDOW_BENCH_STAND_Y = 140;
 const WINDOW_BENCH_ZONE = findZone("windowBench");
@@ -112,27 +110,27 @@ const WINDOW_BENCH_SURFACE = {
 };
 const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
 const CAT_BED_SURFACE = {
-  xMin: CAT_BED_ZONE.xMin + 8,
-  xMax: CAT_BED_ZONE.xMax - 4,
+  xMin: CAT_BED_ZONE.xMin + 14,
+  xMax: CAT_BED_ZONE.xMax - 10,
   y: FLOOR_STAND_Y,
 };
 const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
 const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
 const FOOD_BOWL_X = FOOD_ZONE.xMin - 34;
-const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 26;
+const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 34;
 const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
-const BLANKET_STAND_Y = 156;
-const BLANKET_REST_X = 568;
-const BLANKET_TAKEOFF_X = 500;
+const BLANKET_STAND_Y = 196;
+const BLANKET_REST_X = 558;
+const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
 const ACTIVITY_SEQUENCE: CatRoutine[] = [
   "approachWindowBench",
   "approachCatBed",
+  "approachBlanket",
   "approachFoodBowl",
   "approachPlant",
-  "approachBlanket",
 ];
 const DEBUG_ROUTINES = new Set<CatRoutine>(ACTIVITY_SEQUENCE);
 
@@ -146,9 +144,9 @@ class CatRoomScene extends Phaser.Scene {
   private windowBenchDecisionAt = 0;
   private windowBenchStillUntil = 0;
   private catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
-  private foodBowlSniffAt = 0;
   private nextActivityIndex = 1;
   private walkPaceSeed = 0;
+  private manualInteractUntil = 0;
   private showStardust = false;
   private personality: CatPersonality = "CLINGY";
   private onInteract: (message: string) => void = () => {};
@@ -208,6 +206,12 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    if (time < this.manualInteractUntil) {
+      this.cat.setVelocity(0, 0);
+      this.playCatAction("interact");
+      return;
+    }
+
     this.updatePurposefulRoutine(time);
   }
 
@@ -259,7 +263,8 @@ class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    this.cat.setVelocityX(0);
+    this.cat.setVelocity(0, 0);
+    this.manualInteractUntil = this.time.now + 1400;
     this.playCatAction("interact", true);
     this.tweens.add({
       targets: this.cat,
@@ -308,43 +313,31 @@ class CatRoomScene extends Phaser.Scene {
       this.targetX = CAT_BED_ENTRY_X;
       if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
         this.catBedRestX = this.chooseCatBedRestX();
-        this.routine = "enterCatBed";
-      }
-      return;
-    }
-
-    if (this.routine === "enterCatBed") {
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(CAT_BED_SURFACE.y);
-
-      if (this.moveOnCatBedSurface(this.catBedRestX)) {
-        this.cat.setVelocityX(0);
-        this.routine = "restCatBed";
-        this.routineHoldUntil = time + Phaser.Math.Between(3600, 5600);
-        this.cat.setFlipX(false);
-        this.playCatAction("lie", true);
+        this.startScriptedJump(time, {
+          toX: this.catBedRestX,
+          toY: CAT_BED_SURFACE.y,
+          duration: 700,
+          peakHeight: 34,
+          landingRoutine: "restCatBed",
+        });
       }
       return;
     }
 
     if (this.routine === "restCatBed") {
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
+      this.cat.setY(CAT_BED_SURFACE.y);
       this.cat.setVelocityX(0);
       this.playCatAction("lie");
 
       if (time >= this.routineHoldUntil) {
-        this.routine = "leaveCatBed";
-      }
-      return;
-    }
-
-    if (this.routine === "leaveCatBed") {
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-
-      if (this.moveTowardTarget(CAT_BED_EXIT_X)) {
-        this.startFloorPause(time);
+        this.startScriptedJump(time, {
+          toX: CAT_BED_EXIT_X,
+          toY: FLOOR_STAND_Y,
+          duration: 680,
+          peakHeight: 30,
+          landingRoutine: "floorPause",
+        });
       }
       return;
     }
@@ -359,25 +352,19 @@ class CatRoomScene extends Phaser.Scene {
         this.cat.setVelocityX(0);
         this.cat.setFlipX(false);
         this.routine = "eatFoodBowl";
-        this.routineHoldUntil = time + Phaser.Math.Between(2600, 4300);
-        this.foodBowlSniffAt = time;
+        this.routineHoldUntil = time + Phaser.Math.Between(4200, 6200);
         this.cat.setY(FOOD_BOWL_STAND_Y);
-        this.playCatAction("idle", true);
+        this.playCatAction("eat", true);
       }
       return;
     }
 
     if (this.routine === "eatFoodBowl") {
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(FOOD_BOWL_STAND_Y + Math.sin(time * 0.012) * 1.5);
+      this.cat.setY(FOOD_BOWL_STAND_Y);
       this.cat.setVelocityX(0);
       this.cat.setFlipX(false);
-      if (time >= this.foodBowlSniffAt) {
-        this.playCatAction("idle", true);
-        this.foodBowlSniffAt = time + Phaser.Math.Between(900, 1300);
-      } else {
-        this.playCatAction("idle");
-      }
+      this.playCatAction("eat");
 
       if (time >= this.routineHoldUntil) {
         this.cat.setY(FLOOR_STAND_Y);
@@ -425,8 +412,8 @@ class CatRoomScene extends Phaser.Scene {
         this.startScriptedJump(time, {
           toX: BLANKET_REST_X,
           toY: BLANKET_STAND_Y,
-          duration: 760,
-          peakHeight: 46,
+          duration: 720,
+          peakHeight: 42,
           landingRoutine: "restBlanket",
         });
       }
@@ -437,13 +424,14 @@ class CatRoomScene extends Phaser.Scene {
       this.cat.body.setAllowGravity(false);
       this.cat.setY(BLANKET_STAND_Y);
       this.cat.setVelocityX(0);
+      this.cat.setFlipX(true);
       this.playCatAction("lie");
 
       if (time >= this.routineHoldUntil) {
         this.startScriptedJump(time, {
           toX: BLANKET_RETURN_X,
           toY: FLOOR_STAND_Y,
-          duration: 680,
+          duration: 700,
           peakHeight: 38,
           landingRoutine: "floorPause",
         });
@@ -510,19 +498,18 @@ class CatRoomScene extends Phaser.Scene {
     }
 
     const distance = targetX - this.cat.x;
-    const currentVelocityX = this.cat.body.velocity.x;
     if (Math.abs(distance) < ARRIVAL_DISTANCE) {
-      const easedStopVelocityX = Phaser.Math.Linear(currentVelocityX, 0, 0.18);
-      this.cat.setVelocityX(Math.abs(easedStopVelocityX) < 4 ? 0 : easedStopVelocityX);
+      this.cat.setX(targetX);
+      this.cat.setVelocityX(0);
       this.playCatAction("idle");
-      return Math.abs(easedStopVelocityX) < 5;
+      return true;
     }
 
     const baseSpeed = PERSONALITY_SPEED[this.personality];
-    const distanceEase = Phaser.Math.Clamp(Math.abs(distance) / 72, 0.22, 1);
+    const distanceEase = Phaser.Math.Clamp(Math.abs(distance) / 92, 0.22, 0.94);
     const time = this.time.now;
-    const curiousSlowdown = 0.84 + Math.sin(time * 0.0034 + this.walkPaceSeed) * 0.16;
-    const tinyHesitation = Math.sin(time * 0.0017 + this.walkPaceSeed * 0.7) > 0.94 ? 0.58 : 1;
+    const curiousSlowdown = 0.82 + Math.sin(time * 0.0024 + this.walkPaceSeed) * 0.1;
+    const tinyHesitation = Math.sin(time * 0.0015 + this.walkPaceSeed * 0.7) > 0.96 ? 0.7 : 1;
     const speed = baseSpeed * distanceEase * curiousSlowdown * tinyHesitation;
     const targetVelocityX = distance > 0 ? speed : -speed;
     const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.08);
@@ -575,16 +562,6 @@ class CatRoomScene extends Phaser.Scene {
 
   private chooseCatBedRestX() {
     return Phaser.Math.Between(CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
-  }
-
-  private moveOnCatBedSurface(targetX: number) {
-    if (!this.cat) {
-      return false;
-    }
-
-    const boundedTargetX = Phaser.Math.Clamp(targetX, CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
-    this.cat.setY(CAT_BED_SURFACE.y);
-    return this.moveTowardTarget(boundedTargetX);
   }
 
   private moveOnWindowBenchSurface(targetX: number) {
@@ -669,6 +646,15 @@ class CatRoomScene extends Phaser.Scene {
         return;
       }
 
+      if (jump.landingRoutine === "restCatBed") {
+        this.cat.body.setAllowGravity(false);
+        this.cat.setY(CAT_BED_SURFACE.y);
+        this.routineHoldUntil = time + Phaser.Math.Between(3600, 5600);
+        this.cat.setFlipX(false);
+        this.playCatAction("lie", true);
+        return;
+      }
+
       this.cat.body.setAllowGravity(false);
       this.cat.setY(FLOOR_STAND_Y);
       this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
@@ -700,13 +686,18 @@ class CatRoomScene extends Phaser.Scene {
     const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
     (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
       const config = spec.actions[action];
+      const frames =
+        action === "eat"
+          ? [1, 2, 1, 2].map((frame) => ({ key: `cat-${action}`, frame }))
+          : this.anims.generateFrameNumbers(`cat-${action}`, {
+              start: 0,
+              end: config.frames - 1,
+            });
+
       this.anims.create({
         key: `cat-${action}-anim`,
-        frames: this.anims.generateFrameNumbers(`cat-${action}`, {
-          start: 0,
-          end: config.frames - 1,
-        }),
-        frameRate: action === "walk" ? 4 : config.frameRate,
+        frames,
+        frameRate: action === "eat" ? 5 : config.frameRate,
         repeat: config.repeat,
       });
     });

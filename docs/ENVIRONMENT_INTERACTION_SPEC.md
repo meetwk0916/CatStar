@@ -1,6 +1,6 @@
 # Environment Interaction Spec
 
-Last updated: 2026-06-10
+Last updated: 2026-06-15
 
 ## Purpose
 
@@ -18,6 +18,12 @@ Runtime scene:
 ```text
 src/components/PhaserCatScene.tsx
 public/assets/scenes/window-room/collision.json
+```
+
+Runtime review evidence:
+
+```text
+docs/art/runtime-review/2026-06-15/
 ```
 
 The scene now separates:
@@ -44,18 +50,23 @@ side walls. They should become interaction zones first.
 
 `windowBench` is currently reachable through a scripted jump/perch routine. It
 is modeled as a bounded visual surface, not a single point: after landing, the
-cat can walk within the bench surface, pause, and sit before jumping back to the
-floor. If free-form bench/bed landing is needed later, implement
+cat can walk within the bench surface, pause in the idle loop, and then jump
+back to the floor. If free-form bench/bed landing is needed later, implement
 one-way/top-only platform behavior rather than turning the full prop rectangle
 into a normal collider.
 
 `catBed` is a small floor-level rest surface. The cat walks to the bed opening,
-steps into a chosen rest position inside the bed, plays the lying/rest loop, then
-walks back out through the opening before returning to the floor routine.
+then uses a short scripted hop into a chosen rest position inside the bed. This
+keeps the cat from reading as if it walked through the bed rim. After the
+lying/rest loop, it hops back out through the opening before returning to the
+floor routine.
 
 `rightTray` currently stands for the food bowl area. The cat walks to the bowl
-side and holds a calm sniff/eat pose using stable idle frames and a tiny body
-dip until a fully hand-authored eating sheet exists.
+side and plays the dedicated `eat` sniff/eat sheet at a stable bowl-side
+anchor. Because the food bowl sits on the foreground tray, its eating anchor is
+slightly below the normal walking baseline and horizontally aligned to the main
+food bowl so the cat reads as standing behind the tray and lowering its head to
+the bowl rim.
 
 The folded blanket stack is a small rest surface. It uses a lightweight
 foreground occlusion layer (`foreground-blanket.png`) so the blanket front can
@@ -89,13 +100,13 @@ or stopping against invisible props.
 The current whole-room routine cycles through:
 
 1. window bench: walk to takeoff, jump to a target inside the bench surface,
-   move gently within the surface, then sit before jumping down;
-2. cat bed: walk to the bed opening, step into a rest position inside the bed,
-   lie down briefly, then walk back out;
-3. food bowl: walk to the bowl side and cycle a short sniff/eat hold;
-4. plant: walk to the plant edge and pause in a short inspection hold;
-5. folded blankets: walk to takeoff, jump to the blanket rest anchor, lie down
+   move gently within the surface, then pause before jumping down;
+2. cat bed: walk to the bed opening, hop into a rest position inside the bed,
+   lie down briefly, then hop back out;
+3. folded blankets: walk to takeoff, jump to the blanket rest anchor, lie down
    briefly, then jump back down;
+4. food bowl: walk to the bowl side and cycle a stable sniff/eat hold;
+5. plant: walk to the plant edge and pause in a short inspection hold;
 6. floor pause: return to a calm floor point before the next object.
 
 This replaces purely random floor roaming with a repeatable room habit. It is a
@@ -103,19 +114,21 @@ Phase 0.1 animation behavior, not a game reward loop.
 
 ## Current Action Behavior
 
-- `WALKING`: walks toward the active routine target.
+- `WALKING`: walks toward the active routine target with the product-action v9
+  slow cat-step loop.
 - `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
-- `LYING`: plays on the cat bed or blanket surface.
-- `EATING`: uses a stable idle-based sniff/eat hold at the food bowl until a
-  production eating sheet exists.
+- `LYING`: awake resting/lying loop for the cat bed or blanket surface.
+- `SLEEPING`: deeper sleep loop reserved for future long-rest or explicit sleep
+  moments, not the default environmental rest pose.
+- `EATING`: uses the dedicated `eat` sniff/eat sheet at the food bowl.
 - `INTERACTING`: plays the tap response in place, without a vertical hop.
 
 ## Next Upgrade Path
 
 The next behavior pass should move from state-only choices to zone-aware actions:
 
-- `EATING` should replace the current transition sheet with a dedicated
-  hand-authored eating/sniffing animation.
+- `EATING` should keep improving toward a fully hand-authored eating/sniffing
+  animation if commissioned final art becomes available.
 - `CROUCHING` should exist as a transition/action near jump, plant inspection,
   or playful pause.
 - `LYING` should keep diverging from deep sleep and support more rest surfaces.

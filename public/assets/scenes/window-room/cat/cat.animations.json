@@ -12,7 +12,7 @@
     "walk": {
       "file": "walk.png",
       "frames": 8,
-      "frameRate": 8,
+      "frameRate": 5,
       "repeat": -1
     },
     "jump": {
@@ -33,6 +33,12 @@
       "frameRate": 10,
       "repeat": 0
     },
+    "eat": {
+      "file": "eat.png",
+      "frames": 6,
+      "frameRate": 5,
+      "repeat": -1
+    },
     "lie": {
       "file": "lie.png",
       "frames": 4,
@@ -40,5 +46,5 @@
       "repeat": -1
     }
   },
-  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; runtime walk uses the v3 idle-match 8-frame walk candidate."
+  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; runtime walk uses product-action v9 slow cat-step gait, eat uses product-action v3 bowl alignment, lie uses product-action v4 awake resting, jump uses product-action v5 natural jumping, interact uses product-action v6 affectionate response, idle uses product-action v7 calm standing, and sleep uses product-action v8 deep sleeping."
 }

@@ -1,0 +1,124 @@
+{
+  "walk": [
+    {
+      "frame": 1,
+      "source_x": [
+        0,
+        272
+      ],
+      "sprite_size": [
+        86,
+        71
+      ],
+      "paste": [
+        5,
+        19
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        272,
+        543
+      ],
+      "sprite_size": [
+        86,
+        73
+      ],
+      "paste": [
+        5,
+        17
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        543,
+        814
+      ],
+      "sprite_size": [
+        86,
+        67
+      ],
+      "paste": [
+        5,
+        23
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        814,
+        1086
+      ],
+      "sprite_size": [
+        85,
+        76
+      ],
+      "paste": [
+        5,
+        14
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1086,
+        1358
+      ],
+      "sprite_size": [
+        84,
+        76
+      ],
+      "paste": [
+        6,
+        14
+      ]
+    },
+    {
+      "frame": 6,
+      "source_x": [
+        1358,
+        1629
+      ],
+      "sprite_size": [
+        86,
+        66
+      ],
+      "paste": [
+        5,
+        24
+      ]
+    },
+    {
+      "frame": 7,
+      "source_x": [
+        1629,
+        1900
+      ],
+      "sprite_size": [
+        86,
+        74
+      ],
+      "paste": [
+        5,
+        16
+      ]
+    },
+    {
+      "frame": 8,
+      "source_x": [
+        1900,
+        2172
+      ],
+      "sprite_size": [
+        85,
+        76
+      ],
+      "paste": [
+        5,
+        14
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "eat": [
+    {
+      "frame": 1,
+      "source_x": [
+        44,
+        345
+      ],
+      "sprite_size": [
+        86,
+        72
+      ],
+      "paste": [
+        5,
+        16
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        418,
+        712
+      ],
+      "sprite_size": [
+        86,
+        66
+      ],
+      "paste": [
+        5,
+        22
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        760,
+        1056
+      ],
+      "sprite_size": [
+        86,
+        58
+      ],
+      "paste": [
+        5,
+        30
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        1131,
+        1411
+      ],
+      "sprite_size": [
+        86,
+        57
+      ],
+      "paste": [
+        5,
+        31
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1470,
+        1750
+      ],
+      "sprite_size": [
+        86,
+        56
+      ],
+      "paste": [
+        5,
+        32
+      ]
+    },
+    {
+      "frame": 6,
+      "source_x": [
+        1800,
+        2102
+      ],
+      "sprite_size": [
+        86,
+        71
+      ],
+      "paste": [
+        5,
+        17
+      ]
+    }
+  ]
+}

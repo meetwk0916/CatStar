@@ -1,0 +1,84 @@
+{
+  "interact": [
+    {
+      "frame": 1,
+      "sourceFrame": 1,
+      "source_x": [
+        69,
+        425
+      ],
+      "sprite_size": [
+        82,
+        66
+      ],
+      "paste": [
+        7,
+        24
+      ]
+    },
+    {
+      "frame": 2,
+      "sourceFrame": 2,
+      "source_x": [
+        531,
+        848
+      ],
+      "sprite_size": [
+        76,
+        76
+      ],
+      "paste": [
+        10,
+        13
+      ]
+    },
+    {
+      "frame": 3,
+      "sourceFrame": 3,
+      "source_x": [
+        970,
+        1291
+      ],
+      "sprite_size": [
+        81,
+        76
+      ],
+      "paste": [
+        7,
+        13
+      ]
+    },
+    {
+      "frame": 4,
+      "sourceFrame": 2,
+      "source_x": [
+        531,
+        848
+      ],
+      "sprite_size": [
+        76,
+        76
+      ],
+      "paste": [
+        10,
+        13
+      ]
+    },
+    {
+      "frame": 5,
+      "sourceFrame": 5,
+      "source_x": [
+        1772,
+        2126
+      ],
+      "sprite_size": [
+        82,
+        66
+      ],
+      "paste": [
+        7,
+        24
+      ]
+    }
+  ]
+}
