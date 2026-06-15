@@ -16,6 +16,7 @@ These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 - `collision.json`: hand-authored Arcade Physics rectangles in Phaser logical coordinates.
 
 Source/reference images are kept under `docs/art/` so generated and runtime assets stay separate.
+Run `npm run check:assets` after changing any `cat/*.png` sheet.
 
 The current action sheets use the higher-fidelity visual cat mother asset as a stopgap. They preserve the cat identity better than code-drawn technical sprites, but they are still derived candidates rather than final hand-authored frame-by-frame animation.
 

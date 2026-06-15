@@ -14,6 +14,15 @@ public/assets/scenes/window-room/cat/
 Each runtime sheet must follow the `96x96` bottom-center action contract defined
 by `public/assets/scenes/window-room/cat/cat.animations.json`.
 
+Run this after replacing any runtime cat sheet:
+
+```bash
+npm run check:assets
+```
+
+The checker validates sheet dimensions, non-empty alpha frames, stable baselines,
+reasonable visible-area changes, and the absence of small detached pixel islands.
+
 The active runtime source map is:
 
 ```text
