@@ -30,9 +30,12 @@ It is the review checklist for the current product-asset pass.
   its face/body mass during final art review.
 - Current runtime review screenshots are stored under
   `docs/art/runtime-review/2026-06-15/`:
+  - `default-walk-2s.png`
+  - `window-bench-6s.png`
   - `catbed-rest-10s.png`
   - `food-bowl-eat-8s.png`
   - `blanket-rest-10s.png`
+- Regenerate the set with `npm run review:runtime`.
 
 ## Candidate Retention
 

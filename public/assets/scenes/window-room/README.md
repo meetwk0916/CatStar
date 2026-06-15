@@ -27,3 +27,5 @@ Room behavior should follow `docs/ENVIRONMENT_INTERACTION_SPEC.md`: props like t
 Runtime action-source mapping is tracked in `docs/art/candidates/product-cat-actions-runtime.md`.
 The current candidate index lives in `docs/art/candidates/README.md`, and the
 latest browser review screenshots live in `docs/art/runtime-review/2026-06-15/`.
+Run `npm run review:runtime` after changing Phaser timing, target anchors, or
+foreground occlusion layers.

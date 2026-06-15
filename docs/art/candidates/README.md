@@ -66,3 +66,13 @@ docs/art/runtime-review/2026-06-15/
 
 They verify the active cat bed, food bowl, and blanket interactions after the
 v9 walk and interaction-anchor tuning pass.
+
+Regenerate browser review screenshots with:
+
+```bash
+npm run review:runtime
+```
+
+The script starts a local Vite server, injects a review-only local passport, and
+captures default walking plus the window bench, cat bed, food bowl, and blanket
+debug routines.
