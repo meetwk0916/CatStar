@@ -21,6 +21,8 @@ from pathlib import Path
 from urllib.error import URLError
 from urllib.request import ProxyHandler, build_opener
 
+from PIL import Image
+
 
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("CATSTAR_REVIEW_PORT", "5191"))
@@ -28,6 +30,11 @@ BASE_URL = f"http://{HOST}:{PORT}"
 OUT_DIR = Path(os.environ.get("CATSTAR_REVIEW_OUT", f"docs/art/runtime-review/{datetime.now():%Y-%m-%d}"))
 CHANNEL = os.environ.get("CATSTAR_PLAYWRIGHT_CHANNEL", "chrome")
 VIEWPORT = os.environ.get("CATSTAR_REVIEW_VIEWPORT", "1280,720")
+EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1))
+ROOM_REVIEW_REGION = (64, 248, 744, 634)
+MIN_ROOM_UNIQUE_COLORS = 10_000
+MIN_ROOM_MEAN_LUMINANCE = 40
+MAX_ROOM_MEAN_LUMINANCE = 140
 
 REVIEW_PASSPORT = {
     "id": "runtime-review",
@@ -43,7 +50,7 @@ REVIEW_PASSPORT = {
 }
 
 SHOTS = [
-    ("default-walk-2s.png", "/", 2200),
+    ("default-walk-4s.png", "/", 4500),
     ("window-bench-6s.png", "/?catstarRoutine=approachWindowBench", 6000),
     ("catbed-rest-10s.png", "/?catstarRoutine=approachCatBed", 10000),
     ("food-bowl-eat-8s.png", "/?catstarRoutine=approachFoodBowl", 8000),
@@ -110,6 +117,28 @@ def capture(storage_state: Path) -> None:
 
         print(f"Capturing {filename} ...", flush=True)
         subprocess.run(command, check=True)
+        validate_screenshot(OUT_DIR / filename)
+
+
+def mean_luminance(image: Image.Image) -> float:
+    histogram = image.convert("L").histogram()
+    pixels = image.width * image.height
+    return sum(value * count for value, count in enumerate(histogram)) / pixels
+
+
+def validate_screenshot(path: Path) -> None:
+    image = Image.open(path).convert("RGB")
+    if image.size != EXPECTED_VIEWPORT:
+        raise RuntimeError(f"{path}: expected viewport {EXPECTED_VIEWPORT}, got {image.size}")
+
+    room = image.crop(ROOM_REVIEW_REGION)
+    unique_colors = len(room.getcolors(maxcolors=room.width * room.height) or [])
+    luminance = mean_luminance(room)
+
+    if unique_colors < MIN_ROOM_UNIQUE_COLORS:
+        raise RuntimeError(f"{path}: room region looks blank; only {unique_colors} unique colors")
+    if not (MIN_ROOM_MEAN_LUMINANCE <= luminance <= MAX_ROOM_MEAN_LUMINANCE):
+        raise RuntimeError(f"{path}: room luminance out of range: {luminance:.1f}")
 
 
 def main() -> None:
