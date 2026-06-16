@@ -76,3 +76,9 @@ npm run review:runtime
 The script starts a local Vite server, injects a review-only local passport, and
 captures default walking plus the window bench, cat bed, food bowl, and blanket
 debug routines.
+
+Validate the existing screenshots without starting a browser with:
+
+```bash
+npm run review:runtime:check
+```

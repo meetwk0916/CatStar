@@ -27,14 +27,19 @@ from PIL import Image
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("CATSTAR_REVIEW_PORT", "5191"))
 BASE_URL = f"http://{HOST}:{PORT}"
-OUT_DIR = Path(os.environ.get("CATSTAR_REVIEW_OUT", f"docs/art/runtime-review/{datetime.now():%Y-%m-%d}"))
+OUT_DIR_ENV = os.environ.get("CATSTAR_REVIEW_OUT")
+OUT_DIR = Path(OUT_DIR_ENV or f"docs/art/runtime-review/{datetime.now():%Y-%m-%d}")
 CHANNEL = os.environ.get("CATSTAR_PLAYWRIGHT_CHANNEL", "chrome")
 VIEWPORT = os.environ.get("CATSTAR_REVIEW_VIEWPORT", "1280,720")
 EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1))
 ROOM_REVIEW_REGION = (64, 248, 744, 634)
+CANVAS_REVIEW_REGION = (69, 253, 735, 628)
 MIN_ROOM_UNIQUE_COLORS = 10_000
 MIN_ROOM_MEAN_LUMINANCE = 40
 MAX_ROOM_MEAN_LUMINANCE = 140
+CAT_DIFF_THRESHOLD = 75
+MIN_CAT_DIFF_COMPONENT = 140
+BACKGROUND_PATH = Path("public/assets/scenes/window-room/background.png")
 
 REVIEW_PASSPORT = {
     "id": "runtime-review",
@@ -56,6 +61,7 @@ SHOTS = [
     ("food-bowl-eat-8s.png", "/?catstarRoutine=approachFoodBowl", 8000),
     ("blanket-rest-10s.png", "/?catstarRoutine=approachBlanket", 10000),
 ]
+SHOT_FILENAMES = [filename for filename, _route, _timeout in SHOTS]
 
 
 def wait_for_server(timeout_seconds: float = 20) -> None:
@@ -120,6 +126,15 @@ def capture(storage_state: Path) -> None:
         validate_screenshot(OUT_DIR / filename)
 
 
+def validate_existing_screenshots() -> None:
+    for filename in SHOT_FILENAMES:
+        path = OUT_DIR / filename
+        if not path.exists():
+            raise RuntimeError(f"Missing runtime review screenshot: {path}")
+        validate_screenshot(path)
+        print(f"Validated {path}", flush=True)
+
+
 def mean_luminance(image: Image.Image) -> float:
     histogram = image.convert("L").histogram()
     pixels = image.width * image.height
@@ -140,8 +155,71 @@ def validate_screenshot(path: Path) -> None:
     if not (MIN_ROOM_MEAN_LUMINANCE <= luminance <= MAX_ROOM_MEAN_LUMINANCE):
         raise RuntimeError(f"{path}: room luminance out of range: {luminance:.1f}")
 
+    cat_component = largest_cat_diff_component(image)
+    if cat_component < MIN_CAT_DIFF_COMPONENT:
+        raise RuntimeError(f"{path}: cat is not visibly present; largest cat diff component is {cat_component}px")
+
+
+def largest_cat_diff_component(screenshot: Image.Image) -> int:
+    canvas = screenshot.crop(CANVAS_REVIEW_REGION)
+    background = Image.open(BACKGROUND_PATH).convert("RGB").resize(canvas.size, Image.Resampling.BICUBIC)
+    width, height = canvas.size
+    diff_pixels = []
+
+    screenshot_pixels = canvas.load()
+    background_pixels = background.load()
+    for y in range(height):
+        row: list[bool] = []
+        for x in range(width):
+            sr, sg, sb = screenshot_pixels[x, y]
+            br, bg, bb = background_pixels[x, y]
+            diff = round(0.299 * abs(sr - br) + 0.587 * abs(sg - bg) + 0.114 * abs(sb - bb))
+            row.append(diff > CAT_DIFF_THRESHOLD)
+        diff_pixels.append(row)
+
+    visited: set[tuple[int, int]] = set()
+    largest = 0
+    for y in range(height):
+        for x in range(width):
+            if (x, y) in visited or not diff_pixels[y][x]:
+                continue
+
+            stack = [(x, y)]
+            visited.add((x, y))
+            size = 0
+            while stack:
+                current_x, current_y = stack.pop()
+                size += 1
+                for next_x, next_y in (
+                    (current_x + 1, current_y),
+                    (current_x - 1, current_y),
+                    (current_x, current_y + 1),
+                    (current_x, current_y - 1),
+                ):
+                    if (
+                        next_x < 0
+                        or next_y < 0
+                        or next_x >= width
+                        or next_y >= height
+                        or (next_x, next_y) in visited
+                        or not diff_pixels[next_y][next_x]
+                    ):
+                        continue
+                    visited.add((next_x, next_y))
+                    stack.append((next_x, next_y))
+
+            largest = max(largest, size)
+
+    return largest
+
 
 def main() -> None:
+    if os.environ.get("CATSTAR_REVIEW_VALIDATE_ONLY") == "1":
+        if not OUT_DIR_ENV:
+            use_latest_review_dir()
+        validate_existing_screenshots()
+        return
+
     server = subprocess.Popen(
         ["npm", "run", "dev", "--", "--host", HOST, "--port", str(PORT)],
         stdout=subprocess.DEVNULL,
@@ -164,6 +242,16 @@ def main() -> None:
                 server.wait()
 
     print(f"Runtime review screenshots written to {OUT_DIR}")
+
+
+def use_latest_review_dir() -> None:
+    global OUT_DIR
+
+    review_root = Path("docs/art/runtime-review")
+    candidates = sorted(path for path in review_root.iterdir() if path.is_dir())
+    if not candidates:
+        raise RuntimeError(f"No runtime review directories found under {review_root}")
+    OUT_DIR = candidates[-1]
 
 
 if __name__ == "__main__":

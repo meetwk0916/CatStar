@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "check:assets": "python3 scripts/check_cat_action_assets.py",
-    "review:runtime": "python3 scripts/capture_cat_runtime_review.py"
+    "review:runtime": "python3 scripts/capture_cat_runtime_review.py",
+    "review:runtime:check": "CATSTAR_REVIEW_VALIDATE_ONLY=1 python3 scripts/capture_cat_runtime_review.py"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
