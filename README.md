@@ -35,10 +35,14 @@ http://127.0.0.1:5173/
 ## Verify
 
 ```bash
+npm run check:assets
+npm run review:runtime:check
+npm test
 npm run build
 ```
 
-This runs TypeScript build checks and Vite production bundling.
+This checks runtime cat sprite-sheet structure, validates saved browser review
+screenshots, runs domain tests, and builds the Vite app.
 
 ## Project Structure
 

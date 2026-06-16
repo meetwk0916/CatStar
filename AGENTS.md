@@ -37,7 +37,11 @@ Read this before changing CatStar.
 ```bash
 npm install
 npm run dev
+npm run check:assets
+npm run review:runtime:check
+npm test
 npm run build
 ```
 
-Run `npm run build` before committing code changes.
+Run `npm run check:assets`, `npm run review:runtime:check`, `npm test`, and
+`npm run build` before committing code or runtime asset changes.
