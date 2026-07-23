@@ -20,7 +20,7 @@ Run `npm run check:assets` after changing any `cat/*.png` sheet.
 
 The current action sheets use the higher-fidelity visual cat mother asset as a stopgap. They preserve the cat identity better than code-drawn technical sprites, but they are still derived candidates rather than final hand-authored frame-by-frame animation.
 
-Replace them with hand-authored frame-by-frame sprite sheets when commissioning final product art, but preserve the same action contract unless Phaser is recalibrated. `scripts/generate_cat_animation_assets.py` is retained only for local motion experiments and must not be treated as production art source.
+Replace them with hand-authored frame-by-frame sprite sheets when commissioning final product art, but preserve the same action contract unless Phaser is recalibrated. `scripts/generate_cat_animation_assets.py` is retained only for local motion experiments covering `idle`, `walk`, `jump`, `sleep`, and `interact`; it must not be treated as production art source. The six-frame `eat` and four-frame `lie` sheets remain owned by `scripts/compose_product_cat_eat_v3.py` and `scripts/compose_product_cat_lie_v4.py`.
 
 Room behavior should follow `docs/specs/environment-interaction.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 

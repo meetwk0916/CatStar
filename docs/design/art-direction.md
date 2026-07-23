@@ -76,7 +76,7 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 ## Asset Production Rules
 
 - Use `docs/art/runtime-map.md` to resolve the currently active candidate for each action.
-- Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for frame counts, anchors, and metadata.
+- Do not use code-drawn cat sprites as production art. `scripts/generate_cat_animation_assets.py` is only an experiment for the `idle`, `walk`, `jump`, `sleep`, and `interact` subset; the six-frame `eat` and four-frame `lie` production sheets are owned by `scripts/compose_product_cat_eat_v3.py` and `scripts/compose_product_cat_lie_v4.py`.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
 - Follow `docs/specs/cat-animation.md` for character consistency, motion breakdown, frame counts, anchors, and Phaser integration.
 - Follow `docs/specs/environment-interaction.md` when tying walk, jump, rest, food, crouch, or future run states to room props.

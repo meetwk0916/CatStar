@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Generate experimental CatStar cat animation sprite sheets.
+"""Generate a technical-experiment subset of CatStar cat animation sheets.
 
 This script is kept as a technical animation experiment only. It must not be
 used as the source of production runtime cat art because code-drawn sprites lose
 the cat identity, facial detail, and fur volume required by the product.
 
-The generated assets intentionally test docs/specs/cat-animation.md:
+This generator intentionally covers only the technical experiment subset of
+the current production contract: idle, walk, jump, sleep, and interact. It
+does not generate the production eat or lie actions. The six-frame eat sheet
+is owned by compose_product_cat_eat_v3.py, and the four-frame lie sheet is
+owned by compose_product_cat_lie_v4.py.
+
+The generated assets test docs/specs/cat-animation.md for this subset:
 - 96x96 transparent frames
 - right-facing cat
 - bottom-center anchor
@@ -272,6 +278,14 @@ def main() -> None:
             "jump": {"file": "jump.png", "frames": 5, "frameRate": 7, "repeat": 0},
             "sleep": {"file": "sleep.png", "frames": 4, "frameRate": 2, "repeat": -1},
             "interact": {"file": "interact.png", "frames": 5, "frameRate": 10, "repeat": 0},
+        },
+        "scope": {
+            "type": "technical-experiment-subset",
+            "actions": ["idle", "walk", "jump", "sleep", "interact"],
+            "productionOnlyActions": {
+                "eat": {"frames": 6, "composer": "scripts/compose_product_cat_eat_v3.py"},
+                "lie": {"frames": 4, "composer": "scripts/compose_product_cat_lie_v4.py"},
+            },
         },
         "note": "Experimental code-drawn sheets for motion validation only. Do not use as production runtime cat art.",
     }

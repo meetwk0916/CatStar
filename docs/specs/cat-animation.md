@@ -319,8 +319,12 @@ candidate source sheets. Current runtime-to-source mapping lives in
 state lives in [`../status/current.md`](../status/current.md).
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
-experiment for validating frame counts, anchors, and Phaser metadata. It must
-not be used as the source of production runtime cat art. Production work should
-start from an approved high-fidelity cat mother asset, then create hand-authored
-or art-directed keyframes for each action while preserving the same frame size,
-anchor, and character lock unless Phaser is recalibrated.
+experiment for the `idle`, `walk`, `jump`, `sleep`, and `interact` subset. It
+validates frame counts, anchors, and Phaser metadata for those actions; it is
+not the sole generator for the complete production contract and must not be
+used as the source of production runtime cat art. The six-frame `eat` sheet is
+owned by `scripts/compose_product_cat_eat_v3.py`, and the four-frame `lie`
+sheet is owned by `scripts/compose_product_cat_lie_v4.py`. Production work
+should start from an approved high-fidelity cat mother asset, then create
+hand-authored or art-directed keyframes for each action while preserving the
+same frame size, anchor, and character lock unless Phaser is recalibrated.
