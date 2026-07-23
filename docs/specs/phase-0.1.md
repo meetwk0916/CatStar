@@ -1,6 +1,6 @@
 # CatStar Phase 0.1 Current Specification
 
-**Status:** Current  
+**Status:** Current
 **Last aligned:** 2026-07-23
 
 This document is the current implementation specification for the CatStar web

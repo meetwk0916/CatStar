@@ -1,6 +1,6 @@
 # CatStar Current Status
 
-**Status:** Living implementation ledger  
+**Status:** Living implementation ledger
 **Last aligned:** 2026-07-23
 
 This is the only document that should summarize mutable project-wide

@@ -1,6 +1,6 @@
 # Cat Animation Spec
 
-**Status:** Current production animation contract  
+**Status:** Current production animation contract
 Last updated: 2026-07-23
 
 ## Purpose

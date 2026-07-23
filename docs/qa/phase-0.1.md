@@ -1,6 +1,6 @@
 # CatStar Phase 0.1 QA
 
-**Status:** Current manual acceptance checklist  
+**Status:** Current manual acceptance checklist
 Last updated: 2026-07-23
 
 ## Scope
