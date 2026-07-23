@@ -7,7 +7,7 @@ import json
 
 from PIL import Image
 
-from artifact_paths import ARTIFACTS_ART_ROOT
+from artifact_paths import ARTIFACTS_ART_ROOT, REPO_ROOT
 
 
 FRAME = 96
@@ -25,6 +25,7 @@ OUT_DIR = (
     / "cat-walk-cycle-keyframes"
     / "sprite-sheets-96"
 )
+POSE_SOURCE = POSE_DIR.relative_to(REPO_ROOT).as_posix()
 
 
 def visible_size(image: Image.Image) -> tuple[int, int]:
@@ -46,7 +47,7 @@ def main() -> None:
         "frameWidth": FRAME,
         "frameHeight": FRAME,
         "anchor": "bottom-center",
-        "source": str(POSE_DIR),
+        "source": POSE_SOURCE,
         "actions": {
             "walk": {
                 "file": "walk.png",

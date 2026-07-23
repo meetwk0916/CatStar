@@ -159,7 +159,7 @@ Constraints:
 
 Purpose: a calm sniff/eat loop at the food-bowl anchor.
 
-Target frames: `5`
+Target frames: `6`
 
 Loop: yes
 
@@ -183,7 +183,7 @@ Constraints:
 
 Purpose: short domestic-cat hop between floor and cushion/bench.
 
-Target frames: `6`
+Target frames: `5`
 
 Loop: no
 

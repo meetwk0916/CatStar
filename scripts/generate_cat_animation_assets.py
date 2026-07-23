@@ -244,7 +244,6 @@ def main() -> None:
         Pose(body_y=60, body_h=23, head_y=48, tail=((35, 63), (24, 62), (15, 66), (10, 72)), leg_offsets=(0, 0, 0, 0), paw_lift=(0, 0, 0, 0), back_arch=2),
         Pose(body_y=52, body_h=30, head_y=40, tail=((35, 53), (25, 47), (17, 49), (12, 56)), leg_offsets=(-2, 2, 3, 4), paw_lift=(10, 8, 12, 8), back_arch=-1),
         Pose(body_y=45, body_h=32, head_y=35, tail=((35, 44), (25, 40), (17, 43), (12, 50)), leg_offsets=(-1, 2, 2, 3), paw_lift=(18, 16, 18, 15), back_arch=-2),
-        Pose(body_y=43, body_h=31, head_y=34, tail=((35, 43), (25, 45), (17, 50), (12, 57)), leg_offsets=(0, 0, 1, 2), paw_lift=(18, 18, 18, 17), back_arch=-2),
         Pose(body_y=50, body_h=29, head_y=39, tail=((35, 50), (25, 53), (17, 59), (12, 66)), leg_offsets=(1, -1, 4, -1), paw_lift=(10, 8, 8, 6), back_arch=0),
         Pose(body_y=59, body_h=23, head_y=47, tail=((35, 62), (25, 59), (17, 63), (12, 70)), leg_offsets=(0, 0, 0, 0), paw_lift=(0, 0, 0, 0), back_arch=2),
     ]
@@ -253,7 +252,6 @@ def main() -> None:
         Pose(ear_lift=1, eye_shift=-1),
         Pose(body_x=45, head_x=69, head_y=42, tail=((35, 58), (25, 52), (18, 54), (13, 61)), ear_lift=2, eye_shift=-1, chest_shift=1),
         Pose(body_x=47, head_x=71, head_y=43, tail=((35, 58), (27, 51), (20, 52), (15, 58)), blink=True, mouth="nuzzle", chest_shift=2),
-        Pose(body_x=46, head_x=70, head_y=42, tail=((35, 58), (25, 53), (17, 58), (12, 66)), blink=True, mouth="nuzzle", chest_shift=1),
         Pose(body_x=44, head_x=68, head_y=43, tail=((35, 59), (25, 56), (17, 60), (12, 67)), ear_lift=1),
         Pose(),
     ]
@@ -271,9 +269,9 @@ def main() -> None:
         "actions": {
             "idle": {"file": "idle.png", "frames": 4, "frameRate": 3, "repeat": -1},
             "walk": {"file": "walk.png", "frames": 8, "frameRate": 8, "repeat": -1},
-            "jump": {"file": "jump.png", "frames": 6, "frameRate": 7, "repeat": 0},
+            "jump": {"file": "jump.png", "frames": 5, "frameRate": 7, "repeat": 0},
             "sleep": {"file": "sleep.png", "frames": 4, "frameRate": 2, "repeat": -1},
-            "interact": {"file": "interact.png", "frames": 6, "frameRate": 10, "repeat": 0},
+            "interact": {"file": "interact.png", "frames": 5, "frameRate": 10, "repeat": 0},
         },
         "note": "Experimental code-drawn sheets for motion validation only. Do not use as production runtime cat art.",
     }
