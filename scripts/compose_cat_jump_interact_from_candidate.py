@@ -4,14 +4,28 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT, REPO_ROOT
+
 
 FRAME = 96
-POSE_DIR = Path("docs/art/candidates/cat-jump-interact-keyframes/normalized-96")
-OUT_DIR = Path("docs/art/candidates/cat-jump-interact-keyframes/sprite-sheets-96")
+POSE_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-jump-interact-keyframes"
+    / "normalized-96"
+)
+OUT_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-jump-interact-keyframes"
+    / "sprite-sheets-96"
+)
+POSE_SOURCE = POSE_DIR.relative_to(REPO_ROOT).as_posix()
 
 
 def load_pose(index: int) -> Image.Image:
@@ -88,7 +102,7 @@ def main() -> None:
         "frameWidth": FRAME,
         "frameHeight": FRAME,
         "anchor": "bottom-center",
-        "source": str(POSE_DIR),
+        "source": POSE_SOURCE,
         "actions": {
             action: {
                 "file": f"{action}.png",

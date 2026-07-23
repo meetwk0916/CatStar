@@ -3,20 +3,35 @@
 
 This script does not draw the cat. It only assembles existing 96x96 pose
 candidates into reviewable sprite sheets, with small offsets for breathing and
-impact timing. Output stays under docs/art/candidates/ until manually approved.
+impact timing. Output stays in the candidate archive and is never promoted
+automatically.
 """
 
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT, REPO_ROOT
+
 
 FRAME = 96
-POSE_DIR = Path("docs/art/candidates/cat-action-keyframes/normalized-96")
-OUT_DIR = Path("docs/art/candidates/cat-action-keyframes/sprite-sheets-96")
+POSE_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-action-keyframes"
+    / "normalized-96"
+)
+OUT_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-action-keyframes"
+    / "sprite-sheets-96"
+)
+POSE_SOURCE = POSE_DIR.relative_to(REPO_ROOT).as_posix()
 
 
 def load_pose(name: str) -> Image.Image:
@@ -133,7 +148,7 @@ def main() -> None:
         "frameWidth": FRAME,
         "frameHeight": FRAME,
         "anchor": "bottom-center",
-        "source": str(POSE_DIR),
+        "source": POSE_SOURCE,
         "actions": {
             action: {
                 "file": f"{action}.png",

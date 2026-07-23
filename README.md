@@ -6,8 +6,8 @@ Phase 0 web demo for **喵星来信** / **Letters from Cat Star**: a local-first
 
 - One local **护照** for one deceased real cat.
 - Minimal onboarding fields: cat name, family address name, coat color, personality, favorite snack, and passed date.
-- Pure-code 16x16 pixel cat rendering with palette-based coat colors.
-- A small Cat Star island scene with ordinary companionship expressions.
+- A Phaser-rendered pixel-art window room with runtime assets under `public/assets/`.
+- Dedicated cat sprite-sheet actions and grounded room routines for ordinary companionship.
 - A **时光信箱** with prewritten letters, not AI-generated text.
 - Letter delivery rules:
   - Letter 1 arrives immediately after passport creation.
@@ -53,14 +53,16 @@ src/
   domain/                   Product rules kept out of UI components
   storage/passportStorage.ts local passport persistence
   types.ts                  Shared domain types
+docs/                       Specifications, status, QA, ADRs, and documentation indexes
+artifacts/art/              Generated art sources, candidates, and review evidence
+public/assets/              Runtime assets consumed by the app
 ```
 
-## Domain Docs
+## Documentation
 
 - [CONTEXT.md](./CONTEXT.md): glossary and domain language.
-- [SPEC-Phase0.md](./SPEC-Phase0.md): Phase 0 product and implementation spec.
-- [docs/PROGRESS.md](./docs/PROGRESS.md): current implementation state, verification, and remaining work.
-- [docs/ART_DIRECTION.md](./docs/ART_DIRECTION.md): Phase 0.1A visual quality direction and asset rules.
-- [docs/CAT_ANIMATION_SPEC.md](./docs/CAT_ANIMATION_SPEC.md): production target for consistent cat motion assets.
-- [docs/QA.md](./docs/QA.md): Phase 0.1 manual QA checklist.
+- [docs/README.md](./docs/README.md): documentation map and precedence.
+- [docs/specs/phase-0.1.md](./docs/specs/phase-0.1.md): current product and architecture spec.
+- [docs/status/current.md](./docs/status/current.md): living implementation state and remaining work.
+- [docs/qa/phase-0.1.md](./docs/qa/phase-0.1.md): Phase 0.1 manual QA checklist.
 - [docs/adr/0001-local-memorial-data-for-phase-0.md](./docs/adr/0001-local-memorial-data-for-phase-0.md): why Phase 0 stores memorial data locally.

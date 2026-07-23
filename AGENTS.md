@@ -5,13 +5,20 @@ Read this before changing CatStar.
 ## Canonical Docs
 
 - `CONTEXT.md` is the domain glossary. Keep it implementation-free.
-- `SPEC-Phase0.md` is the Phase 0 implementation target.
+- `docs/README.md` is the documentation map and precedence guide.
+- `docs/specs/phase-0.1.md` is the current product and architecture specification.
+- `docs/specs/phase-0.md` is a historical baseline and must not override current architecture.
 - `README.md` is the human handoff and run guide.
-- `docs/PROGRESS.md` is the current implementation ledger.
-- `docs/ART_DIRECTION.md` is the current visual quality and asset direction.
-- `docs/CAT_ANIMATION_SPEC.md` is the production target for cat motion assets.
-- `docs/QA.md` is the Phase 0.1 manual QA checklist.
+- `docs/status/current.md` is the only project-wide mutable implementation ledger.
+- `docs/design/art-direction.md` is the current visual quality direction.
+- `docs/specs/cat-animation.md` is the production target for cat motion assets.
+- `docs/specs/environment-interaction.md` is the room-zone behavior contract.
+- `docs/qa/phase-0.1.md` is the Phase 0.1 manual QA checklist.
 - ADRs live in `docs/adr/`.
+
+When documents conflict, use `CONTEXT.md` and this file for product boundaries,
+then the current Phase 0.1 spec, then the relevant specialized spec. Historical
+specs and mutable status notes never override those sources.
 
 ## Product Boundaries
 
@@ -45,3 +52,13 @@ npm run build
 
 Run `npm run check:assets`, `npm run review:runtime:check`, `npm test`, and
 `npm run build` before committing code or runtime asset changes.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs are tracked in this repository's GitHub Issues via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+This is a single-context repository using root-level `CONTEXT.md` and `docs/adr/`. See `docs/agents/domain.md`.

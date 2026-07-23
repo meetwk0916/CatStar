@@ -15,13 +15,25 @@ from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT
+
 
 FRAME_SIZE = 96
 ALPHA_THRESHOLD = 20
-DEFAULT_INPUT = Path(
-    "docs/art/candidates/cat-action-keyframes/cat-action-keyframes-01-alpha.png"
+DEFAULT_INPUT = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-action-keyframes"
+    / "cat-action-keyframes-01-alpha.png"
 )
-DEFAULT_OUTPUT = Path("docs/art/candidates/cat-action-keyframes/normalized-96")
+DEFAULT_OUTPUT = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-action-keyframes"
+    / "normalized-96"
+)
 
 
 @dataclass(frozen=True)

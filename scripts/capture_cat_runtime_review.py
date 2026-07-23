@@ -23,12 +23,19 @@ from urllib.request import ProxyHandler, build_opener
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT
+
 
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("CATSTAR_REVIEW_PORT", "5191"))
 BASE_URL = f"http://{HOST}:{PORT}"
 OUT_DIR_ENV = os.environ.get("CATSTAR_REVIEW_OUT")
-OUT_DIR = Path(OUT_DIR_ENV or f"docs/art/runtime-review/{datetime.now():%Y-%m-%d}")
+RUNTIME_REVIEW_DIR = ARTIFACTS_ART_ROOT / "runtime-review"
+OUT_DIR = (
+    Path(OUT_DIR_ENV)
+    if OUT_DIR_ENV
+    else RUNTIME_REVIEW_DIR / f"{datetime.now():%Y-%m-%d}"
+)
 CHANNEL = os.environ.get("CATSTAR_PLAYWRIGHT_CHANNEL", "chrome")
 VIEWPORT = os.environ.get("CATSTAR_REVIEW_VIEWPORT", "1280,720")
 EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1))
@@ -247,10 +254,9 @@ def main() -> None:
 def use_latest_review_dir() -> None:
     global OUT_DIR
 
-    review_root = Path("docs/art/runtime-review")
-    candidates = sorted(path for path in review_root.iterdir() if path.is_dir())
+    candidates = sorted(path for path in RUNTIME_REVIEW_DIR.iterdir() if path.is_dir())
     if not candidates:
-        raise RuntimeError(f"No runtime review directories found under {review_root}")
+        raise RuntimeError(f"No runtime review directories found under {RUNTIME_REVIEW_DIR}")
     OUT_DIR = candidates[-1]
 
 

@@ -15,17 +15,17 @@ These files are consumed directly by `src/components/PhaserCatScene.tsx`.
 - `cat/cat.animations.json`: Phaser animation metadata.
 - `collision.json`: hand-authored Arcade Physics rectangles in Phaser logical coordinates.
 
-Source/reference images are kept under `docs/art/` so generated and runtime assets stay separate.
+Source/reference images are kept under `artifacts/art/` so generated and runtime assets stay separate.
 Run `npm run check:assets` after changing any `cat/*.png` sheet.
 
 The current action sheets use the higher-fidelity visual cat mother asset as a stopgap. They preserve the cat identity better than code-drawn technical sprites, but they are still derived candidates rather than final hand-authored frame-by-frame animation.
 
-Replace them with hand-authored frame-by-frame sprite sheets when commissioning final product art, but preserve the same action contract unless Phaser is recalibrated. `scripts/generate_cat_animation_assets.py` is retained only for local motion experiments and must not be treated as production art source.
+Replace them with hand-authored frame-by-frame sprite sheets when commissioning final product art, but preserve the same action contract unless Phaser is recalibrated. `scripts/generate_cat_animation_assets.py` is retained only for local motion experiments covering `idle`, `walk`, `jump`, `sleep`, and `interact`; it must not be treated as production art source. The six-frame `eat` and four-frame `lie` sheets remain owned by `scripts/compose_product_cat_eat_v3.py` and `scripts/compose_product_cat_lie_v4.py`.
 
-Room behavior should follow `docs/ENVIRONMENT_INTERACTION_SPEC.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
+Room behavior should follow `docs/specs/environment-interaction.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 
-Runtime action-source mapping is tracked in `docs/art/candidates/product-cat-actions-runtime.md`.
-The current candidate index lives in `docs/art/candidates/README.md`, and the
-latest browser review screenshots live in `docs/art/runtime-review/2026-06-15/`.
+Runtime action-source mapping is tracked in `docs/art/runtime-map.md`.
+The current candidate index lives in `docs/art/README.md`, and the latest
+browser review screenshots live in `artifacts/art/runtime-review/2026-06-15/`.
 Run `npm run review:runtime` after changing Phaser timing, target anchors, or
 foreground occlusion layers.
