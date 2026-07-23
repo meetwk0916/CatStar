@@ -115,8 +115,8 @@ Phase 0.1 animation behavior, not a game reward loop.
 
 ## Current Action Behavior
 
-- `WALKING`: walks toward the active routine target with the product-action v9
-  slow cat-step loop.
+- `WALKING`: walks toward the active routine target with the dedicated slow
+  cat-step loop documented in the runtime map.
 - `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
 - `LYING`: awake resting/lying loop for the cat bed or blanket surface.
 - `SLEEPING`: deeper sleep loop reserved for future long-rest or explicit sleep

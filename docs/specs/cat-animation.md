@@ -91,11 +91,11 @@ All frames in one sheet must have identical dimensions and be laid out horizonta
 ```text
 idle.png      4 frames  -> 384x96
 walk.png      8 frames  -> 768x96
-jump.png      6 frames  -> 576x96
+jump.png      5 frames  -> 480x96
 eat.png       6 frames  -> 576x96
 lie.png       4 frames  -> 384x96
 sleep.png     4 frames  -> 384x96
-interact.png  6 frames  -> 576x96
+interact.png  5 frames  -> 480x96
 ```
 
 If a different frame count is used, update:
@@ -159,7 +159,7 @@ Constraints:
 
 Purpose: a calm sniff/eat loop at the food-bowl anchor.
 
-Target frames: `6`
+Target frames: `5`
 
 Loop: yes
 
@@ -192,9 +192,8 @@ Frame intent:
 1. crouch/anticipation, body compresses
 2. launch, rear legs extend
 3. rising air frame, body stretched
-4. top/float frame, tail balances
-5. descending, front paws prepare for landing
-6. landing/recovery, body compresses then can return to idle
+4. descending, front paws prepare for landing
+5. landing/recovery, body compresses then can return to idle
 
 Constraints:
 
@@ -251,7 +250,7 @@ Constraints:
 
 Purpose: short response when the user taps/clicks the cat.
 
-Target frames: `6`
+Target frames: `5`
 
 Loop: no
 
@@ -260,9 +259,8 @@ Frame intent:
 1. notices user/tap, head turns or ears perk
 2. leans forward
 3. soft rub/nuzzle or happy blink
-4. tail or cheek follow-through
-5. returns toward neutral
-6. settles back to idle-compatible pose
+4. returns toward neutral
+5. settles back to idle-compatible pose
 
 Constraints:
 

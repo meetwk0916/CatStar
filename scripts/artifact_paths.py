@@ -3,4 +3,5 @@
 from pathlib import Path
 
 
-ARTIFACTS_ART_ROOT = Path("artifacts/art")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+ARTIFACTS_ART_ROOT = REPO_ROOT / "artifacts/art"
