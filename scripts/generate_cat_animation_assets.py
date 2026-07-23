@@ -5,7 +5,7 @@ This script is kept as a technical animation experiment only. It must not be
 used as the source of production runtime cat art because code-drawn sprites lose
 the cat identity, facial detail, and fur volume required by the product.
 
-The generated assets intentionally test docs/CAT_ANIMATION_SPEC.md:
+The generated assets intentionally test docs/specs/cat-animation.md:
 - 96x96 transparent frames
 - right-facing cat
 - bottom-center anchor

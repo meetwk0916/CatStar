@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
-"""Compose product-action v2 sheets from the most consistent current frames."""
+"""Rebuild historical product-action v2 sheets from archived source sheets."""
 
 from __future__ import annotations
 
 import json
-import shutil
-from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT
+
 
 FRAME = 96
-RUNTIME_DIR = Path("public/assets/scenes/window-room/cat")
-OUT_DIR = Path("docs/art/candidates/product-cat-actions-v2")
+OUT_DIR = ARTIFACTS_ART_ROOT / "candidates" / "archive" / "product-cat-actions-v2"
 SHEET_DIR = OUT_DIR / "sprite-sheets-96"
 SOURCE_DIR = OUT_DIR / "sources"
 
 
 def load_action_frame(action: str, index: int) -> Image.Image:
-    source = Image.open(RUNTIME_DIR / f"{action}.png").convert("RGBA")
+    source = Image.open(SOURCE_DIR / f"{action}-runtime-source.png").convert("RGBA")
     return source.crop((index * FRAME, 0, (index + 1) * FRAME, FRAME))
 
 
@@ -63,16 +62,8 @@ def visible_bbox(frame: Image.Image) -> tuple[int, int, int, int] | None:
     return frame.getbbox()
 
 
-def copy_runtime_source(action: str) -> None:
-    shutil.copy2(RUNTIME_DIR / f"{action}.png", SOURCE_DIR / f"{action}-runtime-source.png")
-
-
 def main() -> None:
     SHEET_DIR.mkdir(parents=True, exist_ok=True)
-    SOURCE_DIR.mkdir(parents=True, exist_ok=True)
-
-    for action in ["idle", "walk", "eat"]:
-        copy_runtime_source(action)
 
     idle_1 = load_action_frame("idle", 0)
     idle_2 = load_action_frame("idle", 1)
@@ -121,16 +112,10 @@ def main() -> None:
             }
             for action, frames in actions.items()
         },
-        "source": "Derived from runtime idle/walk/eat product-action frames to preserve cat identity while image generation is unavailable.",
+        "source": "Derived from the archived v2 idle/walk/eat source sheets.",
     }
     (OUT_DIR / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
 
-    (OUT_DIR / "README.md").write_text(
-        "# Product Cat Actions v2\n\n"
-        "Deterministic jump/interact cleanup derived from the current most consistent runtime frames.\n\n"
-        "This candidate reduces the old jump size popping and replaces the distorted interact frames with a subtle idle-based response.\n"
-        "It is a stabilization pass, not a final hand-authored animation pass.\n",
-    )
     print(f"Wrote {SHEET_DIR}")
 
 

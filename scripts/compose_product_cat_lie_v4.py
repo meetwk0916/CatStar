@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT
+
 
 FRAME = 96
-OUT_DIR = Path("docs/art/candidates/product-cat-actions-v4")
+OUT_DIR = ARTIFACTS_ART_ROOT / "candidates" / "active" / "product-cat-actions-v4"
 SOURCE = OUT_DIR / "sources" / "lie-awake-rest-source.png"
 SHEET_DIR = OUT_DIR / "sprite-sheets-96"
 NORMALIZED_DIR = OUT_DIR / "normalized-96"

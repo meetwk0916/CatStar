@@ -4,14 +4,27 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from PIL import Image
 
+from artifact_paths import ARTIFACTS_ART_ROOT
+
 
 FRAME = 96
-POSE_DIR = Path("docs/art/candidates/cat-walk-cycle-keyframes/normalized-96")
-OUT_DIR = Path("docs/art/candidates/cat-walk-cycle-keyframes/sprite-sheets-96")
+POSE_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-walk-cycle-keyframes"
+    / "normalized-96"
+)
+OUT_DIR = (
+    ARTIFACTS_ART_ROOT
+    / "candidates"
+    / "archive"
+    / "cat-walk-cycle-keyframes"
+    / "sprite-sheets-96"
+)
 
 
 def visible_size(image: Image.Image) -> tuple[int, int]:
