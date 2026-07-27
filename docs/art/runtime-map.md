@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-07-23
+Last updated: 2026-07-27
 
 This file maps the current runtime cat action sheets to their candidate sources.
 It is the review checklist for the current product-asset pass.
