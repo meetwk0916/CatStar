@@ -124,7 +124,6 @@ const DEBUG_ROUTINES = new Set<ActivityRoutine>(DEBUG_ACTIVITY_ROUTINES);
 
 export class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private targetX = WINDOW_BENCH_TAKEOFF_X;
   private routine: CatRoutine = "approachWindowBench";
   private routineHoldUntil = 0;
   private scriptedJump?: ScriptedJump;
@@ -288,7 +287,6 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = WINDOW_BENCH_TAKEOFF_X;
       if (this.moveTowardTarget(WINDOW_BENCH_TAKEOFF_X)) {
         this.windowBenchTargetX = this.chooseWindowBenchTargetX();
         this.startScriptedJump(time, {
@@ -307,7 +305,6 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = CAT_BED_ENTRY_X;
       if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
         this.catBedRestX = this.chooseCatBedRestX();
         this.startScriptedJump(time, {
@@ -344,7 +341,6 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = FOOD_BOWL_X;
       if (this.moveTowardTarget(FOOD_BOWL_X)) {
         this.cat.setVelocityX(0);
         this.cat.setFlipX(false);
@@ -375,7 +371,6 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = PLANT_INSPECT_X;
       if (this.moveTowardTarget(PLANT_INSPECT_X)) {
         this.cat.setVelocityX(0);
         this.cat.setFlipX(false);
@@ -404,7 +399,6 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.targetX = BLANKET_TAKEOFF_X;
       if (this.moveTowardTarget(BLANKET_TAKEOFF_X)) {
         this.startScriptedJump(time, {
           toX: BLANKET_REST_X,
@@ -475,7 +469,6 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.body.setAllowGravity(false);
     this.cat.setY(FLOOR_STAND_Y);
     if (time >= this.routineHoldUntil) {
-      this.targetX = FLOOR_PAUSE_X;
       if (this.moveTowardTarget(FLOOR_PAUSE_X)) {
         this.cat.setVelocityX(0);
         this.playCatAction("idle");
@@ -623,7 +616,6 @@ export class CatRoomScene extends Phaser.Scene {
       this.cat.setPosition(jump.toX, jump.toY);
       this.scriptedJump = undefined;
       this.routine = jump.landingRoutine;
-      this.targetX = jump.toX;
 
       if (jump.landingRoutine === "perchWindowBench") {
         this.cat.body.setAllowGravity(false);
