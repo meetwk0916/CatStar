@@ -1,15 +1,11 @@
 import { useState } from "react";
 import CatScene from "./components/CatScene";
 import Mailbox from "./components/Mailbox";
+import ModalDialog from "./components/ModalDialog";
 import OnboardingForm from "./components/OnboardingForm";
 import { getDeliveryTimeAtIndex } from "./domain/time";
-import {
-  clearPassport,
-  completeFarewell,
-  loadPassport,
-  markLetterRead,
-  savePassport,
-} from "./storage/passportStorage";
+import { completeFarewell, markLetterRead } from "./domain/passport";
+import { clearPassport, loadPassport, savePassport } from "./storage/passportStorage";
 import type { ICatPassport } from "./types";
 
 export default function App() {
@@ -60,7 +56,7 @@ export default function App() {
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <CatScene passport={passport} />
+          <CatScene passport={passport} now={previewNow} />
 
           <aside className="grid content-start gap-4">
             {import.meta.env.DEV ? (
@@ -133,9 +129,13 @@ export default function App() {
         </section>
       </div>
 
-      {showResetConfirm ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-[#2A2321]/50 px-4">
-          <section className="w-full max-w-md border-4 border-[#4A3E3D] bg-[#FFFDF9] p-6 shadow-[6px_6px_0_#4A3E3D]">
+      <ModalDialog
+        open={showResetConfirm}
+        ariaLabel="重新登记"
+        onClose={() => setShowResetConfirm(false)}
+        overlayClassName="bg-[#2A2321]/50 px-4"
+        panelClassName="w-full max-w-md border-4 border-[#4A3E3D] bg-[#FFFDF9] p-6 shadow-[6px_6px_0_#4A3E3D]"
+      >
             <h2 className="text-2xl font-black">重新登记</h2>
             <p className="mt-3 leading-7 text-[#6C5A57]">
               这会清除当前护照和信件阅读记录，然后回到登记页。已经读过的信也会从这台设备上移除。
@@ -156,9 +156,7 @@ export default function App() {
                 重新登记
               </button>
             </div>
-          </section>
-        </div>
-      ) : null}
+      </ModalDialog>
     </main>
   );
 }

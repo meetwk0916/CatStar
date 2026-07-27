@@ -1,67 +1,154 @@
 import type { CatFsmState, CatPersonality } from "../types";
 
-type WeightedState = Exclude<CatFsmState, "INTERACTING">;
-type Weights = Record<WeightedState, number>;
+export type CatRoutine =
+  | "approachWindowBench"
+  | "perchWindowBench"
+  | "approachCatBed"
+  | "restCatBed"
+  | "approachFoodBowl"
+  | "eatFoodBowl"
+  | "approachPlant"
+  | "inspectPlant"
+  | "approachBlanket"
+  | "restBlanket"
+  | "floorPause";
 
-const DEFAULT_WEIGHTS: Weights = {
-  IDLE: 30,
-  WALKING: 30,
-  JUMPING: 10,
-  EATING: 10,
-  SLEEPING: 20,
-};
+export type ActivityRoutine = Extract<
+  CatRoutine,
+  | "approachWindowBench"
+  | "approachCatBed"
+  | "approachFoodBowl"
+  | "approachPlant"
+  | "approachBlanket"
+>;
 
-const PERSONALITY_WEIGHTS: Record<CatPersonality, Weights> = {
+export type RoutineHoldKind = "floorPause" | "windowBench" | "catBed" | "foodBowl" | "plant" | "blanket";
+
+interface HoldRange {
+  min: number;
+  max: number;
+}
+
+interface CompanionRoutineProfile {
+  speed: number;
+  activities: readonly ActivityRoutine[];
+  holds: Record<RoutineHoldKind, HoldRange>;
+}
+
+const PROFILES: Record<CatPersonality, CompanionRoutineProfile> = {
+  CLINGY: {
+    speed: 60,
+    activities: [
+      "approachWindowBench",
+      "approachBlanket",
+      "approachWindowBench",
+      "approachCatBed",
+      "approachPlant",
+      "approachFoodBowl",
+    ],
+    holds: {
+      floorPause: { min: 900, max: 1500 },
+      windowBench: { min: 6500, max: 9000 },
+      catBed: { min: 3800, max: 5600 },
+      foodBowl: { min: 3600, max: 5000 },
+      plant: { min: 2200, max: 3400 },
+      blanket: { min: 4200, max: 6000 },
+    },
+  },
   ALOOFS: {
-    SLEEPING: 50,
-    IDLE: 30,
-    WALKING: 10,
-    JUMPING: 5,
-    EATING: 5,
+    speed: 56,
+    activities: [
+      "approachCatBed",
+      "approachWindowBench",
+      "approachBlanket",
+      "approachCatBed",
+      "approachPlant",
+      "approachFoodBowl",
+    ],
+    holds: {
+      floorPause: { min: 1200, max: 1900 },
+      windowBench: { min: 6200, max: 8400 },
+      catBed: { min: 6200, max: 8400 },
+      foodBowl: { min: 3200, max: 4500 },
+      plant: { min: 1800, max: 2800 },
+      blanket: { min: 5600, max: 7600 },
+    },
   },
   GLUTTON: {
-    EATING: 40,
-    WALKING: 20,
-    IDLE: 20,
-    SLEEPING: 10,
-    JUMPING: 10,
+    speed: 66,
+    activities: [
+      "approachFoodBowl",
+      "approachWindowBench",
+      "approachFoodBowl",
+      "approachCatBed",
+      "approachPlant",
+      "approachBlanket",
+    ],
+    holds: {
+      floorPause: { min: 700, max: 1200 },
+      windowBench: { min: 4800, max: 6600 },
+      catBed: { min: 3400, max: 5000 },
+      foodBowl: { min: 6200, max: 8200 },
+      plant: { min: 1800, max: 2800 },
+      blanket: { min: 3400, max: 5000 },
+    },
   },
   ENERGY: {
-    WALKING: 40,
-    JUMPING: 35,
-    IDLE: 10,
-    SLEEPING: 10,
-    EATING: 5,
-  },
-  CLINGY: {
-    IDLE: 35,
-    WALKING: 25,
-    JUMPING: 20,
-    EATING: 10,
-    SLEEPING: 10,
+    speed: 74,
+    activities: [
+      "approachWindowBench",
+      "approachPlant",
+      "approachBlanket",
+      "approachWindowBench",
+      "approachFoodBowl",
+      "approachCatBed",
+    ],
+    holds: {
+      floorPause: { min: 500, max: 900 },
+      windowBench: { min: 3200, max: 4800 },
+      catBed: { min: 2400, max: 3600 },
+      foodBowl: { min: 2800, max: 4000 },
+      plant: { min: 3000, max: 4400 },
+      blanket: { min: 2600, max: 3800 },
+    },
   },
 };
 
-export function getStateWeights(personality: CatPersonality): Weights {
-  return PERSONALITY_WEIGHTS[personality] ?? DEFAULT_WEIGHTS;
+export function getActivityRoutine(
+  personality: CatPersonality,
+  activityIndex: number,
+): { routine: ActivityRoutine; nextActivityIndex: number } {
+  const activities = PROFILES[personality].activities;
+  const normalizedIndex = Math.max(0, Math.floor(activityIndex));
+  return {
+    routine: activities[normalizedIndex % activities.length],
+    nextActivityIndex: normalizedIndex + 1,
+  };
 }
 
-export function chooseNextState(personality: CatPersonality, random = Math.random()): WeightedState {
-  const weights = getStateWeights(personality);
-  const total = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
-  let cursor = random * total;
-
-  for (const [state, weight] of Object.entries(weights) as Array<[WeightedState, number]>) {
-    cursor -= weight;
-    if (cursor <= 0) {
-      return state;
-    }
-  }
-
-  return "IDLE";
+export function getNextActivityIndexAfter(
+  personality: CatPersonality,
+  routine: ActivityRoutine,
+): number {
+  const index = PROFILES[personality].activities.indexOf(routine);
+  return index < 0 ? 0 : index + 1;
 }
 
-export function getCompanionReaction(state: CatFsmState): string {
+export function getRoutineHoldDuration(
+  personality: CatPersonality,
+  kind: RoutineHoldKind,
+  random = Math.random(),
+): number {
+  const range = PROFILES[personality].holds[kind];
+  const boundedRandom = Math.min(0.999_999, Math.max(0, random));
+  return Math.floor(range.min + (range.max - range.min + 1) * boundedRandom);
+}
+
+export function getMovementSpeed(personality: CatPersonality): number {
+  return PROFILES[personality].speed;
+}
+
+export function getCompanionReaction(state: CatFsmState, random = Math.random()): string {
   const reactions: Record<CatFsmState, string[]> = {
     IDLE: ["我在呢。", "今天的星星很安静。"],
     WALKING: ["我在云朵草坪上走走。", "这里的路软软的。"],
@@ -72,5 +159,6 @@ export function getCompanionReaction(state: CatFsmState): string {
   };
 
   const options = reactions[state];
-  return options[Math.floor(Math.random() * options.length)];
+  const index = Math.min(options.length - 1, Math.max(0, Math.floor(random * options.length)));
+  return options[index];
 }

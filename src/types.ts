@@ -1,7 +1,8 @@
-export type CatPalette = "ORANGE" | "BLACK" | "WHITE" | "CALICO" | "TUXEDO";
+export type CatPalette = "GRAY_WHITE" | "ORANGE" | "BLACK" | "WHITE" | "CALICO" | "TUXEDO";
 export type CatPersonality = "GLUTTON" | "ALOOFS" | "CLINGY" | "ENERGY";
 
 export interface ICatPassport {
+  schemaVersion: 1;
   id: string;
   catName: string;
   ownerName: string;

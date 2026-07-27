@@ -34,7 +34,9 @@ specs and mutable status notes never override those sources.
 - Keep product logic out of UI components:
   - `src/domain/time.ts`: delivery time calculations.
   - `src/domain/letters.ts`: mailbox, delivery, read/final-letter rules.
-  - `src/domain/catFsm.ts`: cat state selection and companion reactions.
+  - `src/domain/passport.ts`: passport validation, migration, read/farewell invariants.
+  - `src/domain/catFsm.ts`: cat routine policy and companion reactions.
+  - `src/game/CatRoomScene.ts`: Phaser coordinates, animation, and physics adapter.
   - `src/storage/passportStorage.ts`: local storage persistence.
 - Phase 0 data stays local. Do not add accounts, upload, sync, or remote storage.
 - Do not commit `node_modules/`, `dist/`, or TypeScript build info.
@@ -47,11 +49,14 @@ npm run dev
 npm run check:assets
 npm run review:runtime:check
 npm test
+npm run test:e2e
 npm run build
+npm run check:bundle
 ```
 
-Run `npm run check:assets`, `npm run review:runtime:check`, `npm test`, and
-`npm run build` before committing code or runtime asset changes.
+Run `npm run check:assets`, `npm run review:runtime:check`, `npm test`,
+`npm run test:e2e`, `npm run build`, and `npm run check:bundle` before
+committing code or runtime asset changes.
 
 ## Agent skills
 

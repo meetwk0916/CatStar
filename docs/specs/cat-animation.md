@@ -287,7 +287,7 @@ Before accepting a sheet, verify:
 
 ## Phaser Integration Contract
 
-`src/components/PhaserCatScene.tsx` expects:
+`src/game/CatRoomScene.ts` expects:
 
 - one PNG sprite sheet per action
 - `96x96` frames by default

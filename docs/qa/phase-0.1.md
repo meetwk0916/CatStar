@@ -1,7 +1,7 @@
 # CatStar Phase 0.1 QA
 
-**Status:** Current manual acceptance checklist
-Last updated: 2026-07-23
+**Status:** Current internal-prototype acceptance checklist
+Last updated: 2026-07-27
 
 ## Scope
 
@@ -21,7 +21,26 @@ npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/` on desktop and mobile-width browser viewports.
+Open `http://127.0.0.1:5173/` on desktop and at 320, 375, 414, and 768 px
+browser viewport widths.
+
+Run the automated browser checks with the local Chrome installation:
+
+```bash
+npm run test:e2e
+```
+
+After a production build, enforce the accepted internal-prototype download
+budget:
+
+```bash
+npm run build
+npm run check:bundle
+```
+
+The browser checks are release-blocking for the internal prototype. The saved
+runtime-review screenshots remain art evidence and do not replace interaction,
+responsive, or accessibility checks.
 
 ## Checklist
 
@@ -29,7 +48,7 @@ Open `http://127.0.0.1:5173/` on desktop and mobile-width browser viewports.
 
 - Open a fresh browser profile or clear `localStorage`.
 - Confirm the onboarding form appears.
-- Fill cat name, family address name, coat color, personality, favorite snack, and passed date.
+- Fill cat name, family address name, personality, favorite snack, and passed date.
 - Submit the form.
 - Confirm the main page shows the created passport.
 - Refresh the page.
@@ -72,7 +91,7 @@ Open `http://127.0.0.1:5173/` on desktop and mobile-width browser viewports.
 - Open final letter.
 - Confirm final farewell choice appears only after opening the final letter.
 - Select `谢谢你陪我走到这里`.
-- Confirm the mailbox becomes `星河封存`.
+- Confirm the mailbox becomes `信箱封存`.
 - Confirm previous letters remain readable.
 
 ### Re-registration

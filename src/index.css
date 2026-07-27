@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@keyframes cat-reaction-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.cat-reaction {
+  animation: cat-reaction-in 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-reaction {
+    animation: none;
+  }
+}
+
 :root {
   color-scheme: light;
   font-family:
@@ -22,13 +44,25 @@ body {
   background: #fbf8f3;
 }
 
-button,
-input {
-  font: inherit;
+html,
+body {
+  overflow-x: clip;
 }
 
-button {
-  color: inherit;
+@layer base {
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    color: inherit;
+  }
+}
+
+:where(button, input):focus-visible {
+  outline: 3px solid #b45f4f;
+  outline-offset: 3px;
 }
 
 .star-field {

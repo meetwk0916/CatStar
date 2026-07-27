@@ -33,6 +33,10 @@ The exact runtime-to-candidate selection lives only in
 [`runtime-map.md`](runtime-map.md). Candidate indexes and archived package notes
 must point there rather than restating which version is current.
 
+Technical lineage does not establish distribution rights. The current
+rights-chain gate and production intake requirements live in
+[`rights-and-provenance.md`](rights-and-provenance.md).
+
 ## Runtime Review Workflow
 
 Browser review evidence is stored by capture date under:

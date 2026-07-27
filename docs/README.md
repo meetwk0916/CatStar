@@ -29,6 +29,8 @@ their subject. The historical Phase 0 spec never overrides current documents.
 - [`design/art-direction.md`](design/art-direction.md) — durable visual direction.
 - [`art/README.md`](art/README.md) — generated-art workflow and evidence index.
 - [`art/runtime-map.md`](art/runtime-map.md) — current runtime asset provenance.
+- [`art/rights-and-provenance.md`](art/rights-and-provenance.md) — rights-chain
+  gate for internal versus public use.
 
 Generated sources, candidate sheets, and browser-review evidence live under
 `artifacts/art/`, not under `docs/`.

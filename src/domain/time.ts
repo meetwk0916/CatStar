@@ -18,7 +18,11 @@ export function getDeliveryTimeAtIndex(createdAt: number, deliveryIndex: number)
     return createdAt;
   }
 
-  return getNextMorningDeliveryAt(createdAt) + (deliveryIndex - 1) * DAY_MS;
+  const created = new Date(createdAt);
+  const delivery = new Date(created);
+  delivery.setDate(created.getDate() + deliveryIndex);
+  delivery.setHours(DELIVERY_HOUR, 0, 0, 0);
+  return delivery.getTime();
 }
 
 export function getCurrentDeliveryIndex(createdAt: number, now = getNow()): number {
@@ -27,7 +31,17 @@ export function getCurrentDeliveryIndex(createdAt: number, now = getNow()): numb
     return 0;
   }
 
-  return 1 + Math.floor((now - nextMorningDeliveryAt) / DAY_MS);
+  const firstDelivery = new Date(nextMorningDeliveryAt);
+  const current = new Date(now);
+  const calendarDays =
+    (Date.UTC(current.getFullYear(), current.getMonth(), current.getDate()) -
+      Date.UTC(firstDelivery.getFullYear(), firstDelivery.getMonth(), firstDelivery.getDate())) /
+    DAY_MS;
+  let deliveryIndex = 1 + Math.floor(calendarDays);
+  if (now < getDeliveryTimeAtIndex(createdAt, deliveryIndex)) {
+    deliveryIndex -= 1;
+  }
+  return Math.max(0, deliveryIndex);
 }
 
 export function formatNextDeliveryHint(createdAt: number, now = getNow()): string {

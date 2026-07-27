@@ -1,0 +1,139 @@
+import { expect, test, type Page } from "playwright/test";
+
+async function registerPassport(page: Page) {
+  await page.getByLabel("小猫叫什么名字？", { exact: true }).fill("小灰");
+  await page.getByLabel("你希望小猫怎么称呼你？", { exact: true }).fill("家人");
+  await page.getByLabel("它最喜欢的零食", { exact: true }).fill("小鱼干");
+  await page.getByRole("button", { name: "登记喵星护照", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "星光窗边", exact: true })).toBeVisible();
+}
+
+test.beforeEach(async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => window.localStorage.clear());
+  await page.reload();
+});
+
+test("primary actions remain legible and implemented memorial traits expose selection state", async ({ page }) => {
+  const submit = page.getByRole("button", { name: "登记喵星护照", exact: true });
+  const colors = await submit.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { color: style.color, backgroundColor: style.backgroundColor };
+  });
+
+  expect(colors.color).not.toBe(colors.backgroundColor);
+  await expect(page.getByRole("group", { name: "毛色" })).toHaveCount(0);
+  await expect(page.getByText(/当前原型统一使用灰白小猫形象/)).toBeVisible();
+  await expect(page.getByRole("button", { name: /喜欢靠近/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /安静独处/ })).toHaveAttribute("aria-pressed", "false");
+});
+
+for (const width of [320, 375, 414, 768]) {
+  test(`main experience does not overflow at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await registerPassport(page);
+    const canvas = page.locator("canvas");
+    await expect(canvas).toHaveCount(1);
+    await expect(canvas).toBeVisible();
+
+    const viewport = await page.evaluate(() => ({
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+    }));
+
+    expect(viewport.documentWidth).toBeLessThanOrEqual(viewport.viewportWidth);
+  });
+}
+
+test("mailbox uses one focus-managed modal dialog", async ({ page }) => {
+  await registerPassport(page);
+  await page.getByRole("button", { name: /时光信箱/ }).click();
+
+  const dialog = page.getByRole("dialog", { name: "时光信箱", exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveCount(1);
+  await expect
+    .poll(() => page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null))
+    .toBe(true);
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
+    .toBe("hidden");
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+});
+
+test("cat interaction has a keyboard-accessible control and live response", async ({ page }) => {
+  await registerPassport(page);
+  const interact = page.getByRole("button", { name: "轻轻摸摸小灰", exact: true });
+  await expect(interact).toBeVisible();
+  await interact.click();
+  await expect(page.getByRole("status")).toContainText(/我听见你啦|轻轻摸摸也收到啦/);
+});
+
+test("passport and read progress survive a reload", async ({ page }) => {
+  await registerPassport(page);
+  await page.getByRole("button", { name: /时光信箱/ }).click();
+  await page.getByRole("button", { name: /我在窗边安顿好了/ }).click();
+  await expect(page.getByRole("dialog", { name: "我在窗边安顿好了" })).toBeVisible();
+  await page.getByRole("button", { name: "回到信箱", exact: true }).click();
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+
+  await page.reload();
+
+  await expect(page.getByRole("heading", { name: "小灰", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /时光信箱/ }).click();
+  await expect(page.getByRole("button", { name: /我在窗边安顿好了.*已经读过/ })).toBeVisible();
+});
+
+test("final letter stays gated, then farewell seals only the mailbox", async ({ page }) => {
+  await registerPassport(page);
+  await page.getByRole("button", { name: "最终信投递日", exact: true }).click();
+  await expect(page.getByText("小灰 正在窗边陪你，已经抵达的信都可以慢慢读。", { exact: true })).toBeVisible();
+  await expect(page.getByText(/等下一封信抵达/)).toHaveCount(0);
+  await page.getByRole("button", { name: /时光信箱/ }).click();
+
+  const waitingFinal = page.getByRole("button", { name: /远方的星光/ });
+  await expect(waitingFinal).toBeDisabled();
+
+  for (const title of [
+    "我在窗边安顿好了",
+    "窗边有喜欢的味道",
+    "今天的星光很轻",
+    "今天在房间里走走",
+    "想念不用放整齐",
+    "睡醒以后还在这里",
+    "谢谢你记得我",
+  ]) {
+    await page.getByRole("button", { name: new RegExp(title) }).click();
+    await expect(page.getByRole("dialog", { name: title, exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "回到信箱", exact: true }).click();
+  }
+
+  await page.getByRole("button", { name: /最后一封信：窗边还亮着/ }).click();
+  await expect(page.getByText(/这不是我消失，也不是要你把想念放下/)).toBeVisible();
+  await page.getByRole("button", { name: "谢谢你陪我走到这里", exact: true }).click();
+  await expect(page.getByText("信箱已经封存，星河陪伴仍在继续。", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
+  await page.getByRole("button", { name: /信箱封存/ }).click();
+  await expect(page.getByRole("button", { name: /最后一封信：窗边还亮着/ })).toContainText("已经读过");
+});
+
+test("reset can be cancelled and confirmed without leaving stale local state", async ({ page }) => {
+  await registerPassport(page);
+  await page.getByRole("button", { name: "重新登记", exact: true }).click();
+  await page.getByRole("button", { name: "先不重新登记", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "小灰", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "重新登记", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "重新登记", exact: true });
+  await dialog.getByRole("button", { name: "重新登记", exact: true }).click();
+  await expect(page.getByRole("button", { name: "登记喵星护照", exact: true })).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: "登记喵星护照", exact: true })).toBeVisible();
+});

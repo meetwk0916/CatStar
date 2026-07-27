@@ -40,5 +40,11 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Run browser regression tests
+        run: npm run test:e2e
+
       - name: Build
         run: npm run build
+
+      - name: Check production bundle budget
+        run: npm run check:bundle

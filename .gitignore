@@ -5,3 +5,7 @@ vite.config.js
 vite.config.d.ts
 # Added by code-review-graph
 .code-review-graph/
+playwright-report/
+test-results/
+__pycache__/
+*.pyc
