@@ -55,11 +55,13 @@ export function parsePassport(value: unknown): ICatPassport | null {
     return null;
   }
 
-  const readLetters = Array.isArray(candidate.readLetters)
-    ? [...new Set(candidate.readLetters.filter((id): id is number => Number.isInteger(id) && LETTER_IDS.has(id)))].sort(
-        (a, b) => a - b,
-      )
-    : [];
+  if (!Array.isArray(candidate.readLetters)) {
+    return null;
+  }
+
+  const readLetters = [...new Set(candidate.readLetters.filter((id): id is number => Number.isInteger(id) && LETTER_IDS.has(id)))].sort(
+    (a, b) => a - b,
+  );
   const passport: ICatPassport = {
     schemaVersion: 1,
     id: candidate.id.trim(),

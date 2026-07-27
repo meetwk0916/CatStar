@@ -71,6 +71,11 @@ describe("passport domain", () => {
     expect(passport?.readLetters).toEqual([1, 2]);
   });
 
+  it("rejects records without an explicit letter-progress array", () => {
+    expect(parsePassport(storedPassport({ readLetters: undefined }))).toBeNull();
+    expect(parsePassport(storedPassport({ readLetters: {} }))).toBeNull();
+  });
+
   it("does not preserve farewell completion when the final invariant is unmet", () => {
     const passport = parsePassport(
       storedPassport({ readLetters: [FINAL_LETTER_ID], isFarewellCompleted: true }),

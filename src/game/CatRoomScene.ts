@@ -253,6 +253,7 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    this.cancelScriptedJump(this.time.now);
     this.cat.setVelocity(0, 0);
     this.manualInteractUntil = this.time.now + 1400;
     this.playCatAction("interact", true);
@@ -271,6 +272,16 @@ export class CatRoomScene extends Phaser.Scene {
     if (notify) {
       this.onInteract(getCompanionReaction("INTERACTING"));
     }
+  }
+
+  private cancelScriptedJump(time: number) {
+    if (!this.scriptedJump) {
+      return;
+    }
+
+    this.scriptedJump = undefined;
+    this.routine = "floorPause";
+    this.routineHoldUntil = time + getRoutineHoldDuration(this.personality, "floorPause");
   }
 
   triggerInteraction() {

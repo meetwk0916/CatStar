@@ -35,6 +35,9 @@ describe("passport storage adapter", () => {
 
     values.set("catstar.passport.v1", JSON.stringify({ id: "partial" }));
     expect(loadPassport()).toBeNull();
+
+    values.set("catstar.passport.v1", JSON.stringify({ ...validPassport, readLetters: {} }));
+    expect(loadPassport()).toBeNull();
   });
 
   it("normalizes a legacy record while loading", () => {
