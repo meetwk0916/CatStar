@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-07-27T22:40:43.047689+08:00",
+  "capturedAt": "2026-07-29T21:39:44.045574+08:00",
   "viewport": [
     1280,
     720
   ],
-  "sourceFingerprint": "349228d4d1d35bf31a50703e71c8e052b4ebd25b1c845e89d9ccc248066fe82b",
+  "sourceFingerprint": "9a03ad69824997ff9297a50c67e2a2c27d95a32bf687e29400e3c90fdb595519",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -39,6 +39,7 @@
     "src/domain/passport.ts",
     "src/domain/time.test.ts",
     "src/domain/time.ts",
+    "src/game/CatRoomScene.test.ts",
     "src/game/CatRoomScene.ts",
     "src/index.css",
     "src/main.tsx",
