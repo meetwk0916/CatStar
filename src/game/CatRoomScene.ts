@@ -280,6 +280,8 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     this.scriptedJump = undefined;
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
     this.routine = "floorPause";
     this.routineHoldUntil = time + getRoutineHoldDuration(this.personality, "floorPause");
   }
