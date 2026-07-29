@@ -1,0 +1,27 @@
+name: Internal prototype gap
+description: Track a reproducible gap against the current Phase 0.1 specification.
+title: "[Prototype] "
+labels:
+  - internal-prototype
+body:
+  - type: textarea
+    id: contract
+    attributes:
+      label: Contract and observed gap
+      description: Link the canonical spec or QA item, then state what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include viewport, local data state, and exact steps.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: Name the automated or manual evidence required to close this issue.
+    validations:
+      required: true

@@ -1,6 +1,7 @@
 # Window Room Runtime Assets
 
-These files are consumed directly by `src/components/PhaserCatScene.tsx`.
+These files are consumed by the Phaser room adapter in
+`src/game/CatRoomScene.ts`.
 
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
 - `foreground-cat-bed.png`: transparent foreground occlusion layer for the cat bed front rim, rendered above the cat so entering/resting in the bed does not read as walking through the prop.
@@ -25,7 +26,8 @@ Replace them with hand-authored frame-by-frame sprite sheets when commissioning 
 Room behavior should follow `docs/specs/environment-interaction.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 
 Runtime action-source mapping is tracked in `docs/art/runtime-map.md`.
-The current candidate index lives in `docs/art/README.md`, and the latest
-browser review screenshots live in `artifacts/art/runtime-review/2026-06-15/`.
+The latest browser review screenshots live in
+`artifacts/art/runtime-review/2026-07-27/`; the runtime map owns the accepted
+evidence set and exact source mapping.
 Run `npm run review:runtime` after changing Phaser timing, target anchors, or
 foreground occlusion layers.

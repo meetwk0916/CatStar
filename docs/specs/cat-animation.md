@@ -1,7 +1,7 @@
 # Cat Animation Spec
 
 **Status:** Current production animation contract
-Last updated: 2026-07-23
+Last updated: 2026-07-27
 
 ## Purpose
 
@@ -287,7 +287,7 @@ Before accepting a sheet, verify:
 
 ## Phaser Integration Contract
 
-`src/components/PhaserCatScene.tsx` expects:
+`src/game/CatRoomScene.ts` expects:
 
 - one PNG sprite sheet per action
 - `96x96` frames by default

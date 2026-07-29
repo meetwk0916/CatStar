@@ -5,7 +5,9 @@ import {
   countUnreadDeliveredLetters,
   getDeliveredLetters,
   getMailboxLetters,
+  getMailboxStatusHint,
   hasReadAllOtherLetters,
+  LETTERS,
   renderLetterContent,
 } from "./letters";
 import { getDeliveryTimeAtIndex } from "./time";
@@ -14,10 +16,11 @@ const createdAt = new Date(2026, 5, 5, 21, 10, 0, 0).getTime();
 
 function makePassport(readLetters: number[] = []): ICatPassport {
   return {
+    schemaVersion: 1,
     id: "test-passport",
     catName: "小橘",
     ownerName: "家人",
-    colorPalette: "ORANGE",
+    colorPalette: "GRAY_WHITE",
     personality: "CLINGY",
     favoriteSnack: "鸡胸肉",
     passedDate: "2026-06-01",
@@ -74,5 +77,42 @@ describe("letters domain", () => {
     const rendered = renderLetterContent(letters[0], makePassport());
 
     expect(rendered).toBe("小橘 给 家人 的 鸡胸肉");
+  });
+
+  it("stops promising another delivery after the final letter arrives", () => {
+    const finalDelivery = getDeliveryTimeAtIndex(createdAt, 2) + 60_000;
+
+    expect(getMailboxStatusHint(makePassport(), finalDelivery, letters)).toContain("所有来信都已经抵达");
+    expect(
+      getMailboxStatusHint({ ...makePassport([1, 2, 99]), isFarewellCompleted: true }, finalDelivery, letters),
+    ).toBe("信箱已经封存，星河陪伴仍在继续。");
+  });
+
+  it("never locks an already-read letter again when device time moves backward", () => {
+    const passport = makePassport([1, 2]);
+
+    expect(getDeliveredLetters(passport, createdAt + 60_000, letters).map((letter) => letter.id)).toEqual([1, 2]);
+  });
+
+  it("keeps the complete archive visible after farewell", () => {
+    const passport = { ...makePassport([1, 2, 99]), isFarewellCompleted: true };
+
+    expect(getDeliveredLetters(passport, createdAt + 60_000, letters)).toHaveLength(letters.length);
+  });
+
+  it("keeps the production letter script within the uncollected-memory and continuing-presence boundary", () => {
+    const script = JSON.stringify(LETTERS);
+
+    for (const unsupportedClaim of [
+      "脚边绕圈圈",
+      "你在忙自己的事",
+      "陪我长大",
+      "远航船",
+      "再见啦",
+      "一点都不痛",
+    ]) {
+      expect(script).not.toContain(unsupportedClaim);
+    }
+    expect(LETTERS.find((letter) => letter.id === 99)?.templateContent).toContain("这不是我消失");
   });
 });

@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 import {
   countUnreadDeliveredLetters,
   getMailboxLetters,
+  getMailboxStatusHint,
   isFinalLetter,
   renderLetterContent,
   type MailboxLetter,
 } from "../domain/letters";
-import { formatNextDeliveryHint } from "../domain/time";
 import type { ICatPassport } from "../types";
+import ModalDialog from "./ModalDialog";
 
 interface MailboxProps {
   passport: ICatPassport;
@@ -21,7 +22,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
   const [selected, setSelected] = useState<MailboxLetter | null>(null);
   const mailboxItems = useMemo(() => getMailboxLetters(passport, now), [now, passport]);
   const unreadCount = useMemo(() => countUnreadDeliveredLetters(passport, now), [now, passport]);
-  const nextHint = useMemo(() => formatNextDeliveryHint(passport.createdAt, now), [now, passport.createdAt]);
+  const mailboxHint = useMemo(() => getMailboxStatusHint(passport, now), [now, passport]);
 
   const openLetter = (item: MailboxLetter) => {
     if (item.state !== "readable") {
@@ -47,7 +48,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
         <span>
           <span className="block text-sm font-bold text-[#8D6E63]">时光信箱</span>
           <span className="block text-xl font-black">
-            {passport.isFarewellCompleted ? "星河封存" : "打开来信"}
+            {passport.isFarewellCompleted ? "信箱封存" : "打开来信"}
           </span>
         </span>
         <span className="grid h-10 min-w-10 place-items-center border-4 border-[#4A3E3D] bg-[#F3D8C7] px-2 text-lg font-black">
@@ -55,9 +56,12 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
         </span>
       </button>
 
-      {isOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-[#2A2321]/50 px-4 py-6">
-          <section className="max-h-[90dvh] w-full max-w-2xl overflow-auto border-4 border-[#4A3E3D] bg-[#FBF8F3] p-5 shadow-[6px_6px_0_#4A3E3D]">
+      <ModalDialog
+        open={isOpen && !selected}
+        ariaLabel="时光信箱"
+        onClose={() => setIsOpen(false)}
+        panelClassName="max-h-[90dvh] w-full max-w-2xl overflow-auto border-4 border-[#4A3E3D] bg-[#FBF8F3] p-5 shadow-[6px_6px_0_#4A3E3D]"
+      >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#A98D85]">Mailbox</p>
@@ -98,18 +102,20 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
                 </button>
               ))}
               <p className="border-2 border-dashed border-[#BCAAA4] px-4 py-3 text-sm leading-6 text-[#7B6662]">
-                {passport.isFarewellCompleted
-                  ? "这是小猫留下的最后一封信，信箱已化作璀璨星河。"
-                  : nextHint}
+                {mailboxHint}
               </p>
             </div>
-          </section>
-        </div>
-      ) : null}
+      </ModalDialog>
 
-      {selected ? (
-        <div className="fixed inset-0 z-[60] grid place-items-center bg-[#2A2321]/60 px-4 py-6">
-          <article className="max-h-[90dvh] w-full max-w-xl overflow-auto border-4 border-[#4A3E3D] bg-[#FFFDF9] p-6 shadow-[6px_6px_0_#4A3E3D]">
+      <ModalDialog
+        open={selected !== null}
+        ariaLabel={selected?.letter.title ?? "来信"}
+        onClose={closeModal}
+        overlayClassName="z-[60] bg-[#2A2321]/60 px-4 py-6"
+        panelClassName="max-h-[90dvh] w-full max-w-xl overflow-auto border-4 border-[#4A3E3D] bg-[#FFFDF9] p-6 shadow-[6px_6px_0_#4A3E3D]"
+      >
+          {selected ? (
+            <article>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#A98D85]">
               Letter {selected.letter.id}
             </p>
@@ -143,9 +149,9 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
             >
               回到信箱
             </button>
-          </article>
-        </div>
-      ) : null}
+            </article>
+          ) : null}
+      </ModalDialog>
     </>
   );
 }

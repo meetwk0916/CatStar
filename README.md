@@ -1,11 +1,16 @@
 # 喵星来信
 
-Phase 0 web demo for **喵星来信** / **Letters from Cat Star**: a local-first memorial companionship experience for people grieving a real cat who has died.
+Phase 0.1 internal web prototype for **喵星来信** / **Letters from Cat
+Star**: a local-first memorial companionship experience for people grieving a
+real cat who has died. It is not yet a public beta, paid release, or
+production-art build.
 
-## What Phase 0 Includes
+## What Phase 0.1 Includes
 
 - One local **护照** for one deceased real cat.
-- Minimal onboarding fields: cat name, family address name, coat color, personality, favorite snack, and passed date.
+- Minimal onboarding fields: cat name, family address name, personality,
+  favorite snack, and optional passed date. The internal prototype uses one
+  honest gray-and-white cat identity until final coat art exists.
 - A Phaser-rendered pixel-art window room with runtime assets under `public/assets/`.
 - Dedicated cat sprite-sheet actions and grounded room routines for ordinary companionship.
 - A **时光信箱** with prewritten letters, not AI-generated text.
@@ -20,6 +25,10 @@ Phase 0 web demo for **喵星来信** / **Letters from Cat Star**: a local-first
 - Local-only data: passport and reading progress stay on the current device.
 
 ## Run Locally
+
+Prerequisites: Node.js 20.19 or newer (or 22.12 or newer), Python 3.12 with
+Pillow for art checks, and a local Chrome installation for browser/runtime
+review.
 
 ```bash
 npm install
@@ -38,19 +47,23 @@ http://127.0.0.1:5173/
 npm run check:assets
 npm run review:runtime:check
 npm test
+npm run test:e2e
 npm run build
+npm run check:bundle
 ```
 
 This checks runtime cat sprite-sheet structure, validates saved browser review
-screenshots, runs domain tests, and builds the Vite app.
+screenshots, runs domain and browser regression tests, builds the Vite app, and
+enforces the accepted internal-prototype bundle budget.
 
 ## Project Structure
 
 ```text
 src/
   components/              UI components
-  data/letters.json         Phase 0 prewritten test letters
+  data/letters.json         Phase 0.1 prewritten letters
   domain/                   Product rules kept out of UI components
+  game/                     Phaser scene adapter
   storage/passportStorage.ts local passport persistence
   types.ts                  Shared domain types
 docs/                       Specifications, status, QA, ADRs, and documentation indexes
@@ -66,3 +79,5 @@ public/assets/              Runtime assets consumed by the app
 - [docs/status/current.md](./docs/status/current.md): living implementation state and remaining work.
 - [docs/qa/phase-0.1.md](./docs/qa/phase-0.1.md): Phase 0.1 manual QA checklist.
 - [docs/adr/0001-local-memorial-data-for-phase-0.md](./docs/adr/0001-local-memorial-data-for-phase-0.md): why Phase 0 stores memorial data locally.
+- [docs/adr/0002-keep-phaser-for-the-internal-prototype.md](./docs/adr/0002-keep-phaser-for-the-internal-prototype.md): why the prototype keeps a budgeted, lazy Phaser scene.
+- [docs/art/rights-and-provenance.md](./docs/art/rights-and-provenance.md): why current art remains internal-prototype-only.

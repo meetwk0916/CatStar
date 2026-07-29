@@ -1,31 +1,31 @@
 import { useState } from "react";
-import type { CatPalette, CatPersonality } from "../types";
-import { createPassport, type PassportInput } from "../storage/passportStorage";
-
-const PALETTES: Array<{ value: CatPalette; label: string; swatch: string }> = [
-  { value: "ORANGE", label: "橘色", swatch: "#E89F71" },
-  { value: "BLACK", label: "黑色", swatch: "#3A3A3C" },
-  { value: "WHITE", label: "白色", swatch: "#F2F2F7" },
-  { value: "CALICO", label: "三花", swatch: "linear-gradient(135deg,#E89F71 0 40%,#FFFDF9 40% 68%,#3A3A3C 68%)" },
-  { value: "TUXEDO", label: "燕尾服", swatch: "linear-gradient(135deg,#2C2C2E 0 55%,#FFFFFF 55%)" },
-];
+import type { CatPersonality } from "../types";
+import { createPassport, type PassportInput } from "../domain/passport";
 
 const PERSONALITIES: Array<{ value: CatPersonality; label: string; helper: string }> = [
-  { value: "CLINGY", label: "黏人小尾巴", helper: "总想靠近一点" },
-  { value: "ALOOFS", label: "高冷大佬", helper: "安静地守在旁边" },
-  { value: "GLUTTON", label: "干饭王", helper: "想到吃的就开心" },
-  { value: "ENERGY", label: "拆家狂", helper: "星星都拦不住" },
+  { value: "CLINGY", label: "喜欢靠近", helper: "常常想待在家人身边" },
+  { value: "ALOOFS", label: "安静独处", helper: "习惯在不远处陪着" },
+  { value: "GLUTTON", label: "惦记零食", helper: "闻到喜欢的味道就开心" },
+  { value: "ENERGY", label: "活泼好动", helper: "喜欢到处走走看看" },
 ];
 
 interface OnboardingFormProps {
   onCreate: (passport: ReturnType<typeof createPassport>) => void;
 }
 
+function getTodayDateInputValue(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
   const [form, setForm] = useState<PassportInput>({
     catName: "",
     ownerName: "",
-    colorPalette: "ORANGE",
+    colorPalette: "GRAY_WHITE",
     personality: "CLINGY",
     favoriteSnack: "",
     passedDate: "",
@@ -40,6 +40,10 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
     event.preventDefault();
     if (!form.catName.trim() || !form.ownerName.trim() || !form.favoriteSnack.trim()) {
       setError("请先把小猫名字、家人称呼和喜欢的零食写好。");
+      return;
+    }
+    if (form.passedDate && form.passedDate > getTodayDateInputValue()) {
+      setError("离世日期不能晚于今天；如果不确定，也可以暂时不填。");
       return;
     }
 
@@ -70,6 +74,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             <label className="grid gap-2">
               <span className="text-sm font-bold">小猫叫什么名字？</span>
               <input
+                required
                 value={form.catName}
                 onChange={(event) => update("catName", event.target.value)}
                 className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
@@ -80,6 +85,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             <label className="grid gap-2">
               <span className="text-sm font-bold">你希望小猫怎么称呼你？</span>
               <input
+                required
                 value={form.ownerName}
                 onChange={(event) => update("ownerName", event.target.value)}
                 className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
@@ -90,6 +96,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             <label className="grid gap-2">
               <span className="text-sm font-bold">它最喜欢的零食</span>
               <input
+                required
                 value={form.favoriteSnack}
                 onChange={(event) => update("favoriteSnack", event.target.value)}
                 className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
@@ -101,6 +108,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               <span className="text-sm font-bold">离世日期</span>
               <input
                 type="date"
+                max={getTodayDateInputValue()}
                 value={form.passedDate}
                 onChange={(event) => update("passedDate", event.target.value)}
                 className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
@@ -108,37 +116,14 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             </label>
 
             <fieldset className="grid gap-3">
-              <legend className="text-sm font-bold">毛色</legend>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {PALETTES.map((palette) => (
-                  <button
-                    key={palette.value}
-                    type="button"
-                    onClick={() => update("colorPalette", palette.value)}
-                    className={`border-4 px-3 py-3 text-left text-sm font-bold shadow-[3px_3px_0px_0px_#4A3E3D] ${
-                      form.colorPalette === palette.value
-                        ? "border-[#4A3E3D] bg-[#F3D8C7]"
-                        : "border-[#BCAAA4] bg-white"
-                    }`}
-                  >
-                    <span
-                      className="mb-2 block h-5 w-5 border-2 border-[#4A3E3D]"
-                      style={{ background: palette.swatch }}
-                    />
-                    {palette.label}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-
-            <fieldset className="grid gap-3">
-              <legend className="text-sm font-bold">性格</legend>
+              <legend className="text-sm font-bold">它平常更像哪一种？</legend>
               <div className="grid gap-3 sm:grid-cols-2">
                 {PERSONALITIES.map((personality) => (
                   <button
                     key={personality.value}
                     type="button"
                     onClick={() => update("personality", personality.value)}
+                    aria-pressed={form.personality === personality.value}
                     className={`border-4 p-3 text-left shadow-[3px_3px_0px_0px_#4A3E3D] ${
                       form.personality === personality.value
                         ? "border-[#4A3E3D] bg-[#F3D8C7]"
@@ -152,7 +137,11 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               </div>
             </fieldset>
 
-            {error ? <p className="border-2 border-[#C46B5C] bg-[#FFF2EF] p-3 text-sm">{error}</p> : null}
+            {error ? (
+              <p role="alert" className="border-2 border-[#C46B5C] bg-[#FFF2EF] p-3 text-sm">
+                {error}
+              </p>
+            ) : null}
 
             <button
               type="submit"
@@ -162,7 +151,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             </button>
 
             <p className="text-sm leading-6 text-[#7B6662]">
-              当前版本会把小猫护照和信件阅读记录保存在这台设备上。
+              当前原型统一使用灰白小猫形象。护照和信件阅读记录只保存在这台设备上。
             </p>
           </div>
         </form>

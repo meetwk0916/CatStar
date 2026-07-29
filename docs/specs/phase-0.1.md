@@ -1,12 +1,31 @@
 # CatStar Phase 0.1 Current Specification
 
-**Status:** Current
-**Last aligned:** 2026-07-23
+**Status:** Current internal prototype specification
+**Last aligned:** 2026-07-27
 
 This document is the current implementation specification for the CatStar web
-demo. It supersedes the runtime architecture described in
+internal prototype. It supersedes the runtime architecture described in
 [`phase-0.md`](./phase-0.md) while preserving the product and language boundaries
 defined in [`../../CONTEXT.md`](../../CONTEXT.md).
+
+## Release posture
+
+Phase 0.1 is an internal prototype used to validate the memorial ritual,
+local-only data model, letter pacing, and first interactive room slice. It is
+not a public beta, paid release, App Store-quality build, or evidence that the
+current generated art is approved for production.
+
+The prototype is ready to leave internal use only when:
+
+- primary actions remain legible and keyboard reachable;
+- onboarding, the room, mailbox, final letter, farewell, and re-registration
+  pass automated browser tests at 320, 375, 414, 768, and desktop widths;
+- user-facing letters follow the domain rules for uncollected memories,
+  farewell, and continuing companionship;
+- unsupported coat-color selection stays out of onboarding until matching
+  runtime art exists, while personality changes companion pacing;
+- current runtime evidence is regenerated from the same revision being
+  evaluated.
 
 ## Document precedence
 
@@ -29,14 +48,18 @@ When documents disagree, use this order:
 
 ## Current architecture
 
-- React, TypeScript, Vite, Tailwind CSS, and Motion provide the application shell.
+- React, TypeScript, Vite, and Tailwind CSS provide the application shell.
 - Phaser renders the interactive room scene inside the React application.
+- `src/components/PhaserCatScene.tsx` adapts React lifecycle to Phaser, while
+  `src/game/CatRoomScene.ts` owns scene rendering and `src/domain/catFsm.ts`
+  owns testable personality/routine policy.
 - Runtime scene and animation assets live under `public/assets/scenes/window-room/`.
 - Generated source art, candidates, and runtime-review evidence live under `artifacts/art/`.
 - Product rules stay outside UI components:
   - `src/domain/time.ts`
   - `src/domain/letters.ts`
   - `src/domain/catFsm.ts`
+  - `src/domain/passport.ts`
   - `src/storage/passportStorage.ts`
 - Runtime art must follow [`cat-animation.md`](./cat-animation.md).
 - Environment-bound movement must follow
@@ -46,6 +69,8 @@ When documents disagree, use this order:
 
 - The cat uses environment-aware routines for the floor, window bench, cat bed,
   food bowl, and blanket.
+- Personality changes the order and duration of those routines, not only the
+  cat's walking speed.
 - Walking, jumping, eating, awake resting, sleeping, and interaction use dedicated
   animation contracts.
 - Clicking or tapping the cat produces an in-place companion reaction; it does
@@ -67,6 +92,8 @@ When documents disagree, use this order:
   ascending `id` within the same delivery index.
 - Show only delivered letters. Do not render placeholders for future letters or
   expose the full script length in advance.
+- Once a letter has been read, device-clock rollback must not lock it again.
+  After farewell, the complete delivered archive remains available for review.
 - The mailbox entrance shows only the unread delivered-letter count; avoid
   urgent badges, reward language, or pressuring copy.
 - `id === 99` is the final letter. Once delivered, it may appear in a waiting
@@ -87,7 +114,9 @@ Before committing code or runtime asset changes, run:
 npm run check:assets
 npm run review:runtime:check
 npm test
+npm run test:e2e
 npm run build
+npm run check:bundle
 ```
 
 The living implementation ledger is [`../status/current.md`](../status/current.md).

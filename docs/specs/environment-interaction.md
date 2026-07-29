@@ -1,7 +1,7 @@
 # Environment Interaction Spec
 
 **Status:** Current specialized behavior contract
-Last updated: 2026-06-15
+Last updated: 2026-07-27
 
 ## Purpose
 
@@ -17,14 +17,19 @@ path.
 Runtime scene:
 
 ```text
-src/components/PhaserCatScene.tsx
+src/game/CatRoomScene.ts
+src/domain/catFsm.ts
 public/assets/scenes/window-room/collision.json
 ```
+
+`CatRoomScene` is the Phaser adapter for coordinates, animation, and physics.
+`catFsm.ts` owns the testable personality policy: activity order, hold duration,
+and movement pace.
 
 Runtime review evidence:
 
 ```text
-artifacts/art/runtime-review/2026-06-15/
+artifacts/art/runtime-review/2026-07-27/
 ```
 
 The scene now separates:
@@ -110,8 +115,12 @@ The current whole-room routine cycles through:
 5. plant: walk to the plant edge and pause in a short inspection hold;
 6. floor pause: return to a calm floor point before the next object.
 
-This replaces purely random floor roaming with a repeatable room habit. It is a
-Phase 0.1 animation behavior, not a game reward loop.
+This replaces purely random floor roaming with a repeatable room habit. The
+habit varies without becoming game-like: `惦记零食` revisits the bowl and stays
+there longer, `安静独处` favors longer bed/blanket rests, `喜欢靠近` returns to
+the lit window more often, and `活泼好动` moves faster with shorter rests and
+more window/plant exploration. It is a Phase 0.1 companionship behavior, not a
+reward loop.
 
 ## Current Action Behavior
 

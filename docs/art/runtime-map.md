@@ -1,9 +1,12 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-07-23
+Last updated: 2026-07-27
 
 This file maps the current runtime cat action sheets to their candidate sources.
 It is the review checklist for the current product-asset pass.
+Rights and distribution status are tracked separately in
+[`rights-and-provenance.md`](rights-and-provenance.md); all current generated
+assets remain internal-prototype-only while that evidence is incomplete.
 
 ## Runtime Sheets
 
@@ -29,13 +32,15 @@ It is the review checklist for the current product-asset pass.
   product-action candidate, all other action sheets should be checked against
   its face/body mass during final art review.
 - Current runtime review screenshots are stored under
-  `artifacts/art/runtime-review/2026-06-15/`:
+  `artifacts/art/runtime-review/2026-07-27/`:
   - `default-walk-4s.png`
   - `window-bench-6s.png`
   - `catbed-rest-10s.png`
   - `food-bowl-eat-8s.png`
   - `blanket-rest-10s.png`
 - Regenerate the set with `npm run review:runtime`.
+- `manifest.json` binds the accepted screenshots to the exact runtime input
+  fingerprint; `npm run review:runtime:check` fails after those inputs change.
 
 ## Candidate Retention
 

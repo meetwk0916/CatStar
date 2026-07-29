@@ -1,6 +1,6 @@
 import rawLetters from "../data/letters.json";
 import type { ICatPassport, ILetter, LetterViewState } from "../types";
-import { getCurrentDeliveryIndex } from "./time";
+import { formatNextDeliveryHint, getCurrentDeliveryIndex } from "./time";
 
 export const LETTERS = rawLetters satisfies ILetter[];
 export const FINAL_LETTER_ID = 99;
@@ -28,7 +28,14 @@ export function getDeliveredLetters(
   letters: ILetter[] = LETTERS,
 ): ILetter[] {
   const currentDeliveryIndex = getCurrentDeliveryIndex(passport.createdAt, now);
-  return sortLetters(letters.filter((letter) => letter.deliveryIndex <= currentDeliveryIndex));
+  return sortLetters(
+    letters.filter(
+      (letter) =>
+        letter.deliveryIndex <= currentDeliveryIndex ||
+        isLetterRead(passport, letter.id) ||
+        passport.isFarewellCompleted,
+    ),
+  );
 }
 
 export function isLetterRead(passport: ICatPassport, letterId: number): boolean {
@@ -85,6 +92,23 @@ export function countUnreadDeliveredLetters(
   return getMailboxLetters(passport, now, letters).filter(
     (item) => item.state === "readable" && !item.isRead,
   ).length;
+}
+
+export function getMailboxStatusHint(
+  passport: ICatPassport,
+  now?: number,
+  letters: ILetter[] = LETTERS,
+): string {
+  if (passport.isFarewellCompleted) {
+    return "信箱已经封存，星河陪伴仍在继续。";
+  }
+
+  const finalLetterDelivered = getDeliveredLetters(passport, now, letters).some(isFinalLetter);
+  if (finalLetterDelivered) {
+    return "所有来信都已经抵达。你可以按自己的节奏慢慢读。";
+  }
+
+  return formatNextDeliveryHint(passport.createdAt, now);
 }
 
 export function renderLetterContent(letter: ILetter, passport: ICatPassport): string {

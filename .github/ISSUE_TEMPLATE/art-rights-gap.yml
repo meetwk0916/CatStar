@@ -1,0 +1,37 @@
+name: Art rights or provenance gap
+description: Track missing source, license, transformation, or approval evidence.
+title: "[Art provenance] "
+labels:
+  - art
+  - provenance
+body:
+  - type: input
+    id: assets
+    attributes:
+      label: Affected runtime assets
+      placeholder: public/assets/...
+    validations:
+      required: true
+  - type: textarea
+    id: missing
+    attributes:
+      label: Missing evidence
+      description: Identify the provider, model, creator, terms, source, or approval gap.
+    validations:
+      required: true
+  - type: dropdown
+    id: exposure
+    attributes:
+      label: Current allowed exposure
+      options:
+        - Internal prototype only
+        - Not allowed in runtime
+    validations:
+      required: true
+  - type: textarea
+    id: close
+    attributes:
+      label: Closure evidence
+      description: State what must be recorded or replaced before this issue closes.
+    validations:
+      required: true
