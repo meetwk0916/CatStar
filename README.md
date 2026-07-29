@@ -5,7 +5,7 @@ Star**: a local-first memorial companionship experience for people grieving a
 real cat who has died. It is not yet a public beta, paid release, or
 production-art build.
 
-## What Phase 0 Includes
+## What Phase 0.1 Includes
 
 - One local **护照** for one deceased real cat.
 - Minimal onboarding fields: cat name, family address name, personality,
@@ -26,8 +26,9 @@ production-art build.
 
 ## Run Locally
 
-Prerequisites: Node.js 22.12 or newer, Python 3.12 with Pillow for art checks,
-and a local Chrome installation for browser/runtime review.
+Prerequisites: Node.js 20.19 or newer (or 22.12 or newer), Python 3.12 with
+Pillow for art checks, and a local Chrome installation for browser/runtime
+review.
 
 ```bash
 npm install
@@ -60,7 +61,7 @@ enforces the accepted internal-prototype bundle budget.
 ```text
 src/
   components/              UI components
-  data/letters.json         Phase 0 prewritten test letters
+  data/letters.json         Phase 0.1 prewritten letters
   domain/                   Product rules kept out of UI components
   game/                     Phaser scene adapter
   storage/passportStorage.ts local passport persistence

@@ -18,7 +18,7 @@ The current implementation includes:
 - React, TypeScript, Vite, and Tailwind CSS application shell.
 - Lazy-loaded Phaser room scene embedded in React.
 - One local memorial passport and local letter-reading progress.
-- Prewritten Phase 0 letter script with delayed device-local delivery.
+- Prewritten Phase 0.1 letter script with delayed device-local delivery.
 - Final-letter ordering, farewell choice, **星河陪伴**, and **信箱封存**.
 - Re-registration with confirmation.
 - Runtime image assets under `public/assets/scenes/window-room/`.
@@ -62,7 +62,7 @@ Last verified on 2026-07-27:
 - Runtime cat asset structure passed.
 - Five browser-review screenshots were regenerated and bound to the current
   runtime-input fingerprint.
-- Vitest passed 5 test files and 29 tests.
+- Vitest passed 6 test files and 31 tests.
 - Playwright passed 10 flows, including 320, 375, 414, and 768 px layouts,
   persistence, mailbox/farewell, reset, focus, and keyboard interaction.
 - TypeScript and the Vite production build passed.

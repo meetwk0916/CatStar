@@ -1,11 +1,11 @@
 # CatStar Art Direction
 
 **Status:** Current visual direction
-Last updated: 2026-07-23
+Last updated: 2026-07-27
 
 ## Priority
 
-CatStar's highest Phase 0.1A priority is the first scene quality slice. The mailbox and letter logic are important, but the product will not work unless the first screen feels warm, finished, and worth staying with.
+CatStar's highest Phase 0.1 internal-prototype priority is the first scene quality slice. The mailbox and letter logic are important, but the product will not work unless the first screen feels warm, finished, and worth staying with.
 
 ## Product Position
 
