@@ -9,6 +9,12 @@
       "frameRate": 3,
       "repeat": -1
     },
+    "sit": {
+      "file": "sit.png",
+      "frames": 4,
+      "frameRate": 3,
+      "repeat": -1
+    },
     "walk": {
       "file": "walk.png",
       "frames": 8,
@@ -17,7 +23,7 @@
     },
     "jump": {
       "file": "jump.png",
-      "frames": 5,
+      "frames": 6,
       "frameRate": 7,
       "repeat": 0
     },
@@ -29,8 +35,8 @@
     },
     "interact": {
       "file": "interact.png",
-      "frames": 5,
-      "frameRate": 10,
+      "frames": 6,
+      "frameRate": 8,
       "repeat": 0
     },
     "eat": {
@@ -44,7 +50,19 @@
       "frames": 4,
       "frameRate": 2,
       "repeat": -1
+    },
+    "groom": {
+      "file": "groom.png",
+      "frames": 8,
+      "frameRate": 6,
+      "repeat": -1
+    },
+    "stretch": {
+      "file": "stretch.png",
+      "frames": 6,
+      "frameRate": 6,
+      "repeat": 0
     }
   },
-  "note": "Art-directed candidate sheets assembled from high-fidelity key poses; current runtime asset provenance is maintained in docs/art/runtime-map.md."
+  "note": "Ten-action Phase 0.1 contract. The gray-white motion master uses product-cat-quality-slice v10 for sit, idle, walk, interact, groom, and stretch; eat uses product-action v3, lie uses v4, jump uses v5, and sleep uses v8. Curated coat presets are deterministic derivatives of the same motion master."
 }

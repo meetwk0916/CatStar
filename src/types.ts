@@ -1,13 +1,24 @@
+export type CatCoatPreset =
+  | "ORANGE_TABBY"
+  | "SOLID_BLACK"
+  | "SOLID_WHITE"
+  | "CALICO"
+  | "TUXEDO"
+  | "GRAY_WHITE_TABBY";
+
+export type CatTemperament = "QUIET" | "CURIOUS" | "AFFECTIONATE" | "LIVELY";
 export type CatPalette = "GRAY_WHITE" | "ORANGE" | "BLACK" | "WHITE" | "CALICO" | "TUXEDO";
 export type CatPersonality = "GLUTTON" | "ALOOFS" | "CLINGY" | "ENERGY";
 
 export interface ICatPassport {
-  schemaVersion: 1;
+  schemaVersion?: 1;
   id: string;
   catName: string;
   ownerName: string;
-  colorPalette: CatPalette;
-  personality: CatPersonality;
+  coatPreset?: CatCoatPreset;
+  temperament?: CatTemperament;
+  colorPalette?: CatPalette;
+  personality?: CatPersonality;
   favoriteSnack: string;
   passedDate: string;
   createdAt: number;

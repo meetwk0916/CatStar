@@ -1,18 +1,17 @@
 # 喵星来信
 
-Phase 0.1 internal web prototype for **喵星来信** / **Letters from Cat
-Star**: a local-first memorial companionship experience for people grieving a
-real cat who has died. It is not yet a public beta, paid release, or
-production-art build.
+Phase 0.1 internal web prototype for **喵星来信** / **Letters from Cat Star**:
+a local-first memorial companionship experience for people grieving a real cat
+who has died. It is not yet a public beta or production-art build.
 
 ## What Phase 0.1 Includes
 
 - One local **护照** for one deceased real cat.
-- Minimal onboarding fields: cat name, family address name, personality,
-  favorite snack, and optional passed date. The internal prototype uses one
-  honest gray-and-white cat identity until final coat art exists.
-- A Phaser-rendered pixel-art window room with runtime assets under `public/assets/`.
-- Dedicated cat sprite-sheet actions and grounded room routines for ordinary companionship.
+- Minimal onboarding fields: cat name, family address name, coat preset,
+  companion temperament, favorite snack, and optional passed date.
+- Six curated coat presets on one stylized-natural, rounded short-haired appearance prototype.
+- A Phaser-rendered window room with runtime assets under `public/assets/`.
+- Ten dedicated cat action classes and weighted, zone-aware room routines for ordinary companionship.
 - A **时光信箱** with prewritten letters, not AI-generated text.
 - Letter delivery rules:
   - Letter 1 arrives immediately after passport creation.
@@ -61,9 +60,8 @@ enforces the accepted internal-prototype bundle budget.
 ```text
 src/
   components/              UI components
-  data/letters.json         Phase 0.1 prewritten letters
+  data/letters.json         Phase 0 prewritten test letters
   domain/                   Product rules kept out of UI components
-  game/                     Phaser scene adapter
   storage/passportStorage.ts local passport persistence
   types.ts                  Shared domain types
 docs/                       Specifications, status, QA, ADRs, and documentation indexes
@@ -79,5 +77,3 @@ public/assets/              Runtime assets consumed by the app
 - [docs/status/current.md](./docs/status/current.md): living implementation state and remaining work.
 - [docs/qa/phase-0.1.md](./docs/qa/phase-0.1.md): Phase 0.1 manual QA checklist.
 - [docs/adr/0001-local-memorial-data-for-phase-0.md](./docs/adr/0001-local-memorial-data-for-phase-0.md): why Phase 0 stores memorial data locally.
-- [docs/adr/0002-keep-phaser-for-the-internal-prototype.md](./docs/adr/0002-keep-phaser-for-the-internal-prototype.md): why the prototype keeps a budgeted, lazy Phaser scene.
-- [docs/art/rights-and-provenance.md](./docs/art/rights-and-provenance.md): why current art remains internal-prototype-only.

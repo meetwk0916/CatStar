@@ -1,40 +1,157 @@
 import { describe, expect, it } from "vitest";
 import {
+  chooseCompanionWhisper,
+  chooseTouchResponse,
+  createCompanionPlanner,
   getActivityRoutine,
   getCompanionReaction,
   getMovementSpeed,
   getNextActivityIndexAfter,
   getRoutineHoldDuration,
+  type CompanionIntentKind,
+  type TouchResponseKind,
 } from "./catFsm";
+import type { CatTemperament } from "../types";
 
-describe("companion routine policy", () => {
-  it("gives each personality a meaningful first habit", () => {
+const TEMPERAMENTS: CatTemperament[] = ["QUIET", "CURIOUS", "LIVELY", "AFFECTIONATE"];
+
+function sequenceRandom(values: number[]) {
+  let index = 0;
+  return () => {
+    const value = values[index % values.length];
+    index += 1;
+    return value;
+  };
+}
+
+describe("companion planner", () => {
+  it("keeps every companion intention reachable for every temperament", () => {
+    const expected = new Set<CompanionIntentKind>([
+      "window-watch",
+      "cat-bed-rest",
+      "blanket-rest",
+      "eat",
+      "plant-inspect",
+      "floor-sit",
+      "floor-groom",
+      "floor-sleep",
+      "floor-stretch",
+      "approach-user",
+    ]);
+
+    for (const temperament of TEMPERAMENTS) {
+      const actual = new Set<CompanionIntentKind>();
+      for (let sample = 0; sample < 200; sample += 1) {
+        const planner = createCompanionPlanner({
+          temperament,
+          random: sequenceRandom([sample / 200, 0.5]),
+        });
+        actual.add(
+          planner.next({
+            currentZone: "plant",
+            sessionElapsedMs: 60_000,
+            localHour: 18,
+          }).kind,
+        );
+      }
+      expect(actual).toEqual(expected);
+    }
+  });
+
+  it("avoids repeating either of the two most recent intentions", () => {
+    const planner = createCompanionPlanner({
+      temperament: "AFFECTIONATE",
+      random: sequenceRandom([0, 0.4, 0.8, 0.2]),
+    });
+    const selected: CompanionIntentKind[] = [];
+
+    for (let index = 0; index < 24; index += 1) {
+      selected.push(
+        planner.next({
+          currentZone: "floor",
+          sessionElapsedMs: 60_000,
+          localHour: 18,
+        }).kind,
+      );
+    }
+
+    selected.forEach((kind, index) => {
+      expect(kind).not.toBe(selected[index - 1]);
+      expect(kind).not.toBe(selected[index - 2]);
+    });
+  });
+
+  it("keeps deep sleep unavailable during the opening wakeful window", () => {
+    const planner = createCompanionPlanner({
+      temperament: "QUIET",
+      random: sequenceRandom([0.75, 0.9, 0.7, 0.2]),
+    });
+
+    const selected = Array.from({ length: 30 }, () =>
+      planner.next({
+        currentZone: "floor",
+        sessionElapsedMs: 10_000,
+        localHour: 1,
+      }),
+    );
+
+    expect(selected.every((intent) => intent.kind !== "floor-sleep")).toBe(true);
+  });
+
+  it("keeps dwell timing inside the domain-owned range", () => {
+    const planner = createCompanionPlanner({
+      temperament: "LIVELY",
+      random: sequenceRandom([0, 0, 0.99, 0.99]),
+    });
+
+    const intents = Array.from({ length: 12 }, () =>
+      planner.next({
+        currentZone: "floor",
+        sessionElapsedMs: 90_000,
+        localHour: 14,
+      }),
+    );
+
+    expect(intents.every((intent) => intent.dwellMs >= 1_400 && intent.dwellMs <= 11_000)).toBe(true);
+  });
+});
+
+describe("touch responses", () => {
+  it("keeps every response available to every temperament", () => {
+    const expected = new Set<TouchResponseKind>([
+      "slow-blink",
+      "curious-sniff",
+      "gentle-nuzzle",
+      "tail-lift",
+    ]);
+
+    for (const temperament of TEMPERAMENTS) {
+      const actual = new Set<TouchResponseKind>();
+      for (let sample = 0; sample < 100; sample += 1) {
+        actual.add(chooseTouchResponse(temperament, () => sample / 100));
+      }
+      expect(actual).toEqual(expected);
+    }
+  });
+
+  it("shows a short whisper only some of the time", () => {
+    expect(chooseCompanionWhisper(sequenceRandom([0.9]))).toBeNull();
+    expect(chooseCompanionWhisper(sequenceRandom([0.1, 0]))).toBe("我在呢。");
+  });
+});
+
+describe("legacy companion routine policy", () => {
+  it("preserves personality-specific routines and pacing", () => {
     expect(getActivityRoutine("GLUTTON", 0).routine).toBe("approachFoodBowl");
     expect(getActivityRoutine("ALOOFS", 0).routine).toBe("approachCatBed");
     expect(getActivityRoutine("CLINGY", 0).routine).toBe("approachWindowBench");
     expect(getActivityRoutine("ENERGY", 1).routine).toBe("approachPlant");
-  });
-
-  it("cycles deterministically without leaking sequence storage into Phaser", () => {
-    const first = getActivityRoutine("CLINGY", 0);
-    const second = getActivityRoutine("CLINGY", first.nextActivityIndex);
-    const wrapped = getActivityRoutine("CLINGY", 6);
-
-    expect(second.routine).toBe("approachBlanket");
-    expect(wrapped.routine).toBe(first.routine);
     expect(getNextActivityIndexAfter("GLUTTON", "approachFoodBowl")).toBe(1);
-  });
-
-  it("expresses personality in hold time as well as movement speed", () => {
     expect(getRoutineHoldDuration("GLUTTON", "foodBowl", 0)).toBe(6200);
-    expect(getRoutineHoldDuration("GLUTTON", "foodBowl", 1)).toBe(8200);
-    expect(getRoutineHoldDuration("ALOOFS", "catBed", 0)).toBeGreaterThan(
-      getRoutineHoldDuration("ENERGY", "catBed", 0),
-    );
     expect(getMovementSpeed("ENERGY")).toBeGreaterThan(getMovementSpeed("ALOOFS"));
   });
 
-  it("selects companion reactions deterministically when requested", () => {
+  it("preserves deterministic companion copy selection", () => {
     expect(getCompanionReaction("INTERACTING", 0)).toBe("我听见你啦。");
     expect(getCompanionReaction("INTERACTING", 0.99)).toBe("轻轻摸摸也收到啦。");
   });

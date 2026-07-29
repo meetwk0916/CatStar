@@ -1,9 +1,1015 @@
 import { useEffect, useRef } from "react";
 import * as Phaser from "phaser";
-import { CatRoomScene, type CatRoomSceneData } from "../game/CatRoomScene";
+import {
+  chooseCompanionWhisper,
+  chooseTouchResponse,
+  createCompanionPlanner,
+  type CompanionIntent,
+  type CompanionIntentKind,
+  type CompanionPlanner,
+  type CompanionZone,
+  type TouchResponseKind,
+} from "../domain/catFsm";
+import type { CatCoatPreset, CatTemperament } from "../types";
 
-interface PhaserCatSceneProps extends CatRoomSceneData {
-  interactionSignal: number;
+interface PhaserCatSceneProps {
+  coatPreset?: CatCoatPreset;
+  temperament?: CatTemperament;
+  showStardust: boolean;
+  onInteract: (message: string | null) => void;
+  interactionSignal?: number;
+}
+
+interface CollisionRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+type CatAction =
+  | "idle"
+  | "sit"
+  | "walk"
+  | "jump"
+  | "sleep"
+  | "interact"
+  | "eat"
+  | "lie"
+  | "groom"
+  | "stretch";
+type CollisionConfig = Record<string, CollisionRect>;
+type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
+type CatRoutine =
+  | "approachWindowBench"
+  | "perchWindowBench"
+  | "approachCatBed"
+  | "restCatBed"
+  | "approachFoodBowl"
+  | "eatFoodBowl"
+  | "approachPlant"
+  | "inspectPlant"
+  | "approachBlanket"
+  | "restBlanket"
+  | "floorSit"
+  | "floorGroom"
+  | "floorSleep"
+  | "floorStretch"
+  | "approachUser"
+  | "acknowledgeUser"
+  | "floorPause";
+
+interface EnvironmentZone {
+  id: string;
+  kind: EnvironmentZoneKind;
+  xMin: number;
+  xMax: number;
+}
+
+interface CatAnimationSpec {
+  frameWidth: number;
+  frameHeight: number;
+  actions: Record<
+    CatAction,
+    {
+      file: string;
+      frames: number;
+      frameRate: number;
+      repeat: number;
+    }
+  >;
+}
+
+interface ScriptedJump {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  startedAt: number;
+  duration: number;
+  peakHeight: number;
+  landingRoutine: CatRoutine;
+}
+
+const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
+const CAT_ACTIONS: CatAction[] = [
+  "idle",
+  "sit",
+  "walk",
+  "jump",
+  "sleep",
+  "interact",
+  "eat",
+  "lie",
+  "groom",
+  "stretch",
+];
+
+const COAT_ASSET_DIRECTORIES: Record<CatCoatPreset, string> = {
+  ORANGE_TABBY: "orange-tabby",
+  SOLID_BLACK: "solid-black",
+  SOLID_WHITE: "solid-white",
+  CALICO: "calico",
+  TUXEDO: "tuxedo",
+  GRAY_WHITE_TABBY: "gray-white-tabby",
+};
+
+const TEMPERAMENT_SPEED: Record<CatTemperament, number> = {
+  CURIOUS: 64,
+  QUIET: 56,
+  AFFECTIONATE: 60,
+  LIVELY: 74,
+};
+
+const PHYSICAL_SURFACES = new Set(["floor"]);
+
+const ENVIRONMENT_ZONES: EnvironmentZone[] = [
+  { id: "floor-left", kind: "floor", xMin: 130, xMax: 230 },
+  { id: "floor-center", kind: "floor", xMin: 250, xMax: 430 },
+  { id: "windowBench", kind: "perch", xMin: 180, xMax: 360 },
+  { id: "catBed", kind: "rest", xMin: 60, xMax: 115 },
+  { id: "rightTray", kind: "food", xMin: 505, xMax: 575 },
+  { id: "plant", kind: "blocker", xMin: 480, xMax: 545 },
+];
+
+const findZone = (id: string) => {
+  const zone = ENVIRONMENT_ZONES.find((candidate) => candidate.id === id);
+  if (!zone) {
+    throw new Error(`Missing CatStar environment zone: ${id}`);
+  }
+  return zone;
+};
+
+const ARRIVAL_DISTANCE = 14;
+const FLOOR_STAND_Y = 225;
+const WINDOW_BENCH_STAND_Y = 140;
+const WINDOW_BENCH_ZONE = findZone("windowBench");
+const FLOOR_CENTER_ZONE = findZone("floor-center");
+const FLOOR_LEFT_ZONE = findZone("floor-left");
+const CAT_BED_ZONE = findZone("catBed");
+const FOOD_ZONE = findZone("rightTray");
+const PLANT_ZONE = findZone("plant");
+const WINDOW_BENCH_SURFACE = {
+  xMin: WINDOW_BENCH_ZONE.xMin + 26,
+  xMax: WINDOW_BENCH_ZONE.xMax - 22,
+  y: WINDOW_BENCH_STAND_Y,
+};
+const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
+const CAT_BED_SURFACE = {
+  xMin: CAT_BED_ZONE.xMin + 14,
+  xMax: CAT_BED_ZONE.xMax - 10,
+  y: FLOOR_STAND_Y,
+};
+const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
+const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
+const FOOD_BOWL_X = FOOD_ZONE.xMin - 34;
+const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 34;
+const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
+const BLANKET_STAND_Y = 196;
+const BLANKET_REST_X = 558;
+const BLANKET_TAKEOFF_X = 482;
+const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
+const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
+const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
+const USER_APPROACH_X = FLOOR_CENTER_ZONE.xMax - 18;
+const DEBUG_ROUTINES = new Set<CatRoutine>([
+  "approachWindowBench",
+  "approachCatBed",
+  "approachBlanket",
+  "approachFoodBowl",
+  "approachPlant",
+  "floorSit",
+  "floorGroom",
+  "floorSleep",
+  "floorStretch",
+  "approachUser",
+]);
+
+const INTENT_ROUTINES: Record<CompanionIntentKind, CatRoutine> = {
+  "window-watch": "approachWindowBench",
+  "cat-bed-rest": "approachCatBed",
+  "blanket-rest": "approachBlanket",
+  eat: "approachFoodBowl",
+  "plant-inspect": "approachPlant",
+  "floor-sit": "floorSit",
+  "floor-groom": "floorGroom",
+  "floor-sleep": "floorSleep",
+  "floor-stretch": "floorStretch",
+  "approach-user": "approachUser",
+};
+
+class CatRoomScene extends Phaser.Scene {
+  private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private targetX = WINDOW_BENCH_TAKEOFF_X;
+  private routine: CatRoutine = "approachWindowBench";
+  private routineHoldUntil = 0;
+  private scriptedJump?: ScriptedJump;
+  private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
+  private windowBenchDecisionAt = 0;
+  private windowBenchStillUntil = 0;
+  private catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
+  private walkPaceSeed = 0;
+  private manualInteractUntil = 0;
+  private manualInteractAction: CatAction = "interact";
+  private sessionStartedAt = 0;
+  private showStardust = false;
+  private coatPreset: CatCoatPreset = "GRAY_WHITE_TABBY";
+  private temperament: CatTemperament = "AFFECTIONATE";
+  private currentZone: CompanionZone = "floor";
+  private activeIntent?: CompanionIntent;
+  private planner: CompanionPlanner = createCompanionPlanner({ temperament: "AFFECTIONATE" });
+  private debugRoutine?: CatRoutine;
+  private onInteract: (message: string | null) => void = () => {};
+
+  constructor() {
+    super("cat-room");
+  }
+
+  init(data: PhaserCatSceneProps) {
+    this.coatPreset = data.coatPreset ?? "GRAY_WHITE_TABBY";
+    this.temperament = data.temperament ?? "AFFECTIONATE";
+    this.showStardust = data.showStardust;
+    this.walkPaceSeed = Phaser.Math.FloatBetween(0, Math.PI * 2);
+    this.planner = createCompanionPlanner({
+      temperament: this.temperament,
+      random: () => Phaser.Math.RND.frac(),
+    });
+    this.onInteract = data.onInteract;
+
+    if (import.meta.env.DEV) {
+      const debugRoutine = new URLSearchParams(window.location.search).get("catstarRoutine") as CatRoutine | null;
+      if (debugRoutine && DEBUG_ROUTINES.has(debugRoutine)) {
+        this.debugRoutine = debugRoutine;
+      }
+    }
+  }
+
+  preload() {
+    this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
+    this.load.image("window-room-foreground-cat-bed", `${SCENE_ASSET_ROOT}/foreground-cat-bed.png`);
+    this.load.image("window-room-foreground-blanket", `${SCENE_ASSET_ROOT}/foreground-blanket.png`);
+    this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
+    this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
+    const coatDirectory = COAT_ASSET_DIRECTORIES[this.coatPreset];
+    CAT_ACTIONS.forEach((action) => {
+      this.load.spritesheet(`cat-${action}`, `${SCENE_ASSET_ROOT}/cat/${coatDirectory}/${action}.png`, {
+        frameWidth: 96,
+        frameHeight: 96,
+      });
+    });
+  }
+
+  create() {
+    this.physics.world.setBounds(0, 0, 640, 360);
+    this.createPhysicsTexture();
+    this.createParticleTexture();
+    this.add.image(320, 180, "window-room-background").setDisplaySize(640, 360).setDepth(0);
+    this.createCatAnimations();
+    this.createSceneObjects();
+    this.createCat();
+    this.createForegroundObjects();
+    this.sessionStartedAt = this.time.now;
+    if (this.debugRoutine) {
+      this.routine = this.debugRoutine;
+      this.routineHoldUntil =
+        this.debugRoutine === "floorSit" ||
+        this.debugRoutine === "floorGroom" ||
+        this.debugRoutine === "floorSleep" ||
+        this.debugRoutine === "floorStretch"
+          ? this.time.now + 20_000
+          : 0;
+    } else {
+      this.startReturnEncounter(this.time.now);
+    }
+  }
+
+  update(time: number) {
+    if (!this.cat) {
+      return;
+    }
+
+    if (this.scriptedJump) {
+      this.updateScriptedJump(time);
+      return;
+    }
+
+    if (time < this.manualInteractUntil) {
+      this.cat.setVelocity(0, 0);
+      this.playCatAction(this.manualInteractAction);
+      return;
+    }
+
+    this.updatePurposefulRoutine(time);
+  }
+
+  private createSceneObjects() {
+    const collision = this.cache.json.get("window-room-collision") as CollisionConfig;
+    const colliders = Object.entries(collision)
+      .filter(([name]) => PHYSICAL_SURFACES.has(name))
+      .map(([name, rect]) =>
+        this.physics.add
+          .staticImage(rect.x, rect.y, "physics-pixel")
+          .setName(name)
+          .setSize(rect.width, rect.height)
+          .setVisible(false)
+          .refreshBody(),
+      );
+
+    this.registry.set("catstar-colliders", colliders);
+  }
+
+  private createCat() {
+    this.cat = this.physics.add.sprite(320, FLOOR_STAND_Y, "cat-idle");
+    this.cat.setDisplaySize(88, 88);
+    this.cat.setCollideWorldBounds(true);
+    this.cat.setGravityY(0);
+    this.cat.body.setAllowGravity(false);
+    this.cat.setBounce(0);
+    this.cat.setDepth(5);
+    this.cat.setInteractive({ useHandCursor: true });
+    this.cat.on("pointerdown", () => this.interact());
+
+    this.cat.setSize(48, 76);
+    this.cat.setOffset(24, 18);
+    this.playCatAction("idle");
+
+    const colliders = this.registry.get("catstar-colliders") as Phaser.Physics.Arcade.Image[] | undefined;
+    colliders?.forEach((collider) => {
+      if (this.cat) {
+        this.physics.add.collider(this.cat, collider);
+      }
+    });
+
+    if (this.showStardust) {
+      this.addStardust();
+    }
+  }
+
+  interact() {
+    if (!this.cat) {
+      return;
+    }
+
+    if (this.scriptedJump) {
+      this.tweens.killTweensOf(this.cat);
+      this.scriptedJump = undefined;
+      this.cat.body.setAllowGravity(false);
+      this.cat.setVelocity(0, 0);
+      this.cat.setY(FLOOR_STAND_Y);
+      this.currentZone = "floor";
+      this.routine = "floorPause";
+      this.routineHoldUntil = this.time.now + 900;
+    }
+
+    const response = chooseTouchResponse(this.temperament, () => Phaser.Math.RND.frac());
+    const sleeping = this.routine === "floorSleep";
+    const wakes = sleeping && Phaser.Math.RND.frac() < 0.15;
+
+    this.cat.setVelocity(0, 0);
+    this.manualInteractAction = sleeping && !wakes ? "sleep" : wakes ? "stretch" : "interact";
+    this.manualInteractUntil = this.time.now + (sleeping && !wakes ? 900 : 1400);
+    this.playCatAction(this.manualInteractAction, true);
+    this.applyTouchMotion(response, sleeping && !wakes);
+    this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
+  }
+
+  private applyTouchMotion(response: TouchResponseKind, sleeping: boolean) {
+    if (!this.cat) {
+      return;
+    }
+
+    this.tweens.killTweensOf(this.cat);
+    const duration = sleeping ? 180 : 140;
+    const common = {
+      targets: this.cat,
+      duration,
+      yoyo: true,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        if (this.cat) {
+          this.cat.angle = 0;
+        }
+      },
+    };
+
+    if (response === "gentle-nuzzle") {
+      this.tweens.add({ ...common, x: this.cat.x + 7, repeat: 1 });
+      return;
+    }
+
+    if (response === "tail-lift") {
+      this.tweens.add({ ...common, y: this.cat.y - 3, repeat: 1 });
+      return;
+    }
+
+    this.tweens.add({
+      ...common,
+      angle: response === "curious-sniff" ? { from: -3, to: 2 } : { from: -1, to: 1 },
+      repeat: response === "curious-sniff" ? 2 : 1,
+    });
+  }
+
+  private updatePurposefulRoutine(time: number) {
+    if (!this.cat) {
+      return;
+    }
+
+    if (this.routine === "approachWindowBench") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      this.targetX = WINDOW_BENCH_TAKEOFF_X;
+      if (this.moveTowardTarget(WINDOW_BENCH_TAKEOFF_X)) {
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
+        this.startScriptedJump(time, {
+          toX: this.windowBenchTargetX,
+          toY: WINDOW_BENCH_STAND_Y,
+          duration: 880,
+          peakHeight: 58,
+          landingRoutine: "perchWindowBench",
+        });
+      }
+      return;
+    }
+
+    if (this.routine === "approachCatBed") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      this.targetX = CAT_BED_ENTRY_X;
+      if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
+        this.catBedRestX = this.chooseCatBedRestX();
+        this.startScriptedJump(time, {
+          toX: this.catBedRestX,
+          toY: CAT_BED_SURFACE.y,
+          duration: 700,
+          peakHeight: 34,
+          landingRoutine: "restCatBed",
+        });
+      }
+      return;
+    }
+
+    if (this.routine === "restCatBed") {
+      this.currentZone = "cat-bed";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(CAT_BED_SURFACE.y);
+      this.cat.setVelocityX(0);
+      this.playCatAction("lie");
+
+      if (time >= this.routineHoldUntil) {
+        this.startScriptedJump(time, {
+          toX: CAT_BED_EXIT_X,
+          toY: FLOOR_STAND_Y,
+          duration: 680,
+          peakHeight: 30,
+          landingRoutine: "floorPause",
+        });
+      }
+      return;
+    }
+
+    if (this.routine === "approachFoodBowl") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      this.targetX = FOOD_BOWL_X;
+      if (this.moveTowardTarget(FOOD_BOWL_X)) {
+        this.cat.setVelocityX(0);
+        this.cat.setFlipX(false);
+        this.routine = "eatFoodBowl";
+        this.routineHoldUntil = time + this.activeDwellMs(5_200);
+        this.currentZone = "food-bowl";
+        this.cat.setY(FOOD_BOWL_STAND_Y);
+        this.playCatAction("eat", true);
+      }
+      return;
+    }
+
+    if (this.routine === "eatFoodBowl") {
+      this.currentZone = "food-bowl";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FOOD_BOWL_STAND_Y);
+      this.cat.setVelocityX(0);
+      this.cat.setFlipX(false);
+      this.playCatAction("eat");
+
+      if (time >= this.routineHoldUntil) {
+        this.cat.setY(FLOOR_STAND_Y);
+        this.startFloorPause(time);
+      }
+      return;
+    }
+
+    if (this.routine === "approachPlant") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      this.targetX = PLANT_INSPECT_X;
+      if (this.moveTowardTarget(PLANT_INSPECT_X)) {
+        this.cat.setVelocityX(0);
+        this.cat.setFlipX(false);
+        this.routine = "inspectPlant";
+        this.routineHoldUntil = time + this.activeDwellMs(2_800);
+        this.currentZone = "plant";
+        this.playCatAction("interact", true);
+      }
+      return;
+    }
+
+    if (this.routine === "inspectPlant") {
+      this.currentZone = "plant";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+      this.cat.setVelocityX(0);
+      this.cat.setFlipX(false);
+      this.playCatAction(time > this.routineHoldUntil - 1000 ? "idle" : "interact");
+
+      if (time >= this.routineHoldUntil) {
+        this.startFloorPause(time);
+      }
+      return;
+    }
+
+    if (this.routine === "approachBlanket") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      this.targetX = BLANKET_TAKEOFF_X;
+      if (this.moveTowardTarget(BLANKET_TAKEOFF_X)) {
+        this.startScriptedJump(time, {
+          toX: BLANKET_REST_X,
+          toY: BLANKET_STAND_Y,
+          duration: 720,
+          peakHeight: 42,
+          landingRoutine: "restBlanket",
+        });
+      }
+      return;
+    }
+
+    if (this.routine === "restBlanket") {
+      this.currentZone = "blanket";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(BLANKET_STAND_Y);
+      this.cat.setVelocityX(0);
+      this.cat.setFlipX(true);
+      this.playCatAction("lie");
+
+      if (time >= this.routineHoldUntil) {
+        this.startScriptedJump(time, {
+          toX: BLANKET_RETURN_X,
+          toY: FLOOR_STAND_Y,
+          duration: 700,
+          peakHeight: 38,
+          landingRoutine: "floorPause",
+        });
+        return;
+      }
+      return;
+    }
+
+    if (this.routine === "perchWindowBench") {
+      this.currentZone = "window-bench";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(WINDOW_BENCH_SURFACE.y);
+
+      if (time >= this.routineHoldUntil) {
+        this.startScriptedJump(time, {
+          toX: FLOOR_RETURN_X,
+          toY: FLOOR_STAND_Y,
+          duration: 760,
+          peakHeight: 42,
+          landingRoutine: "floorPause",
+        });
+        return;
+      }
+
+      if (time < this.windowBenchStillUntil) {
+        this.cat.setVelocityX(0);
+        this.playCatAction("sit");
+        return;
+      }
+
+      if (time >= this.windowBenchDecisionAt) {
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
+        this.windowBenchDecisionAt = time + Phaser.Math.Between(1400, 2600);
+      }
+
+      if (this.moveOnWindowBenchSurface(this.windowBenchTargetX)) {
+        this.cat.setVelocityX(0);
+        this.windowBenchStillUntil = time + Phaser.Math.Between(700, 1500);
+        this.windowBenchDecisionAt = this.windowBenchStillUntil + Phaser.Math.Between(500, 1200);
+        this.playCatAction("sit");
+      }
+      return;
+    }
+
+    if (
+      this.routine === "floorSit" ||
+      this.routine === "floorGroom" ||
+      this.routine === "floorSleep" ||
+      this.routine === "floorStretch"
+    ) {
+      this.currentZone = "floor";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+      this.cat.setVelocityX(0);
+      const action: CatAction =
+        this.routine === "floorSit"
+          ? "sit"
+          : this.routine === "floorGroom"
+            ? "groom"
+            : this.routine === "floorSleep"
+              ? "sleep"
+              : "stretch";
+      this.playCatAction(action);
+
+      if (time >= this.routineHoldUntil) {
+        this.startFloorPause(time);
+      }
+      return;
+    }
+
+    if (this.routine === "approachUser") {
+      this.currentZone = "floor";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+      if (this.moveTowardTarget(USER_APPROACH_X)) {
+        this.cat.setVelocityX(0);
+        this.cat.setFlipX(false);
+        this.routine = "acknowledgeUser";
+        this.routineHoldUntil = time + this.activeDwellMs(1_800);
+        this.playCatAction("interact", true);
+      }
+      return;
+    }
+
+    if (this.routine === "acknowledgeUser") {
+      this.currentZone = "floor";
+      this.cat.setVelocityX(0);
+      this.playCatAction("interact");
+      if (time >= this.routineHoldUntil) {
+        this.startFloorPause(time);
+      }
+      return;
+    }
+
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
+    if (time >= this.routineHoldUntil) {
+      this.targetX = FLOOR_PAUSE_X;
+      if (this.moveTowardTarget(FLOOR_PAUSE_X)) {
+        this.cat.setVelocityX(0);
+        this.playCatAction("idle");
+        this.scheduleNextIntent(time);
+      }
+      return;
+    }
+
+    this.cat.setVelocityX(0);
+    this.playCatAction("idle");
+  }
+
+  private moveTowardTarget(targetX: number) {
+    if (!this.cat) {
+      return false;
+    }
+
+    const distance = targetX - this.cat.x;
+    if (Math.abs(distance) < ARRIVAL_DISTANCE) {
+      this.cat.setX(targetX);
+      this.cat.setVelocityX(0);
+      this.playCatAction("idle");
+      return true;
+    }
+
+    const baseSpeed = TEMPERAMENT_SPEED[this.temperament];
+    const distanceEase = Phaser.Math.Clamp(Math.abs(distance) / 92, 0.22, 0.94);
+    const time = this.time.now;
+    const curiousSlowdown = 0.82 + Math.sin(time * 0.0024 + this.walkPaceSeed) * 0.1;
+    const tinyHesitation = Math.sin(time * 0.0015 + this.walkPaceSeed * 0.7) > 0.96 ? 0.7 : 1;
+    const speed = baseSpeed * distanceEase * curiousSlowdown * tinyHesitation;
+    const targetVelocityX = distance > 0 ? speed : -speed;
+    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.08);
+    this.cat.setVelocityX(easedVelocityX);
+    this.cat.setFlipX(distance < 0);
+    this.playCatAction("walk");
+    return false;
+  }
+
+  private waitOnFloorUntil(time: number) {
+    if (!this.cat) {
+      return true;
+    }
+
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
+    if (time >= this.routineHoldUntil) {
+      return false;
+    }
+
+    this.cat.setVelocityX(0);
+    this.playCatAction("idle");
+    return true;
+  }
+
+  private startFloorPause(time: number) {
+    this.currentZone = "floor";
+    this.routine = "floorPause";
+    this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
+  }
+
+  private startReturnEncounter(time: number) {
+    if (!this.cat) {
+      return;
+    }
+
+    const intent = this.planner.next({
+      currentZone: "floor",
+      sessionElapsedMs: 0,
+      localHour: new Date().getHours(),
+    });
+    this.activeIntent = intent;
+
+    if (intent.kind === "window-watch") {
+      this.currentZone = "window-bench";
+      this.routine = "perchWindowBench";
+      this.windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
+      this.cat.setPosition(this.windowBenchTargetX, WINDOW_BENCH_SURFACE.y);
+      this.routineHoldUntil = time + intent.dwellMs;
+      this.windowBenchStillUntil = time + 1_200;
+      this.windowBenchDecisionAt = this.windowBenchStillUntil + 800;
+      this.playCatAction("sit", true);
+      return;
+    }
+
+    if (intent.kind === "cat-bed-rest") {
+      this.currentZone = "cat-bed";
+      this.routine = "restCatBed";
+      this.catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
+      this.cat.setPosition(this.catBedRestX, CAT_BED_SURFACE.y);
+      this.routineHoldUntil = time + intent.dwellMs;
+      this.playCatAction("lie", true);
+      return;
+    }
+
+    if (intent.kind === "blanket-rest") {
+      this.currentZone = "blanket";
+      this.routine = "restBlanket";
+      this.cat.setPosition(BLANKET_REST_X, BLANKET_STAND_Y);
+      this.cat.setFlipX(true);
+      this.routineHoldUntil = time + intent.dwellMs;
+      this.playCatAction("lie", true);
+      return;
+    }
+
+    if (intent.kind === "eat") {
+      this.currentZone = "food-bowl";
+      this.routine = "eatFoodBowl";
+      this.cat.setPosition(FOOD_BOWL_X, FOOD_BOWL_STAND_Y);
+      this.cat.setFlipX(false);
+      this.routineHoldUntil = time + intent.dwellMs;
+      this.playCatAction("eat", true);
+      return;
+    }
+
+    if (intent.kind === "plant-inspect") {
+      this.currentZone = "plant";
+      this.routine = "inspectPlant";
+      this.cat.setPosition(PLANT_INSPECT_X, FLOOR_STAND_Y);
+      this.cat.setFlipX(false);
+      this.routineHoldUntil = time + intent.dwellMs;
+      this.playCatAction("interact", true);
+      return;
+    }
+
+    this.cat.setPosition(FLOOR_PAUSE_X, FLOOR_STAND_Y);
+    this.beginIntent(intent, time);
+  }
+
+  private scheduleNextIntent(time: number) {
+    const intent = this.planner.next({
+      currentZone: this.currentZone,
+      sessionElapsedMs: Math.max(time - this.sessionStartedAt, 0),
+      localHour: new Date().getHours(),
+    });
+    this.beginIntent(intent, time);
+  }
+
+  private beginIntent(intent: CompanionIntent, time: number) {
+    this.activeIntent = intent;
+    this.routine = INTENT_ROUTINES[intent.kind];
+    if (
+      this.routine === "floorSit" ||
+      this.routine === "floorGroom" ||
+      this.routine === "floorSleep" ||
+      this.routine === "floorStretch"
+    ) {
+      this.routineHoldUntil = time + intent.dwellMs;
+    } else {
+      this.routineHoldUntil = time;
+    }
+  }
+
+  private activeDwellMs(fallback: number) {
+    return this.activeIntent?.dwellMs ?? fallback;
+  }
+
+  private chooseWindowBenchTargetX() {
+    const currentX = this.cat?.x ?? (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
+    let nextX = currentX;
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      nextX = Phaser.Math.Between(WINDOW_BENCH_SURFACE.xMin, WINDOW_BENCH_SURFACE.xMax);
+      if (Math.abs(nextX - currentX) >= 28) {
+        break;
+      }
+    }
+
+    return nextX;
+  }
+
+  private chooseCatBedRestX() {
+    return Phaser.Math.Between(CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
+  }
+
+  private moveOnWindowBenchSurface(targetX: number) {
+    if (!this.cat) {
+      return false;
+    }
+
+    const boundedTargetX = Phaser.Math.Clamp(targetX, WINDOW_BENCH_SURFACE.xMin, WINDOW_BENCH_SURFACE.xMax);
+    this.cat.x = Phaser.Math.Clamp(this.cat.x, WINDOW_BENCH_SURFACE.xMin, WINDOW_BENCH_SURFACE.xMax);
+    this.cat.setY(WINDOW_BENCH_SURFACE.y);
+    return this.moveTowardTarget(boundedTargetX);
+  }
+
+  private startScriptedJump(
+    time: number,
+    options: {
+      toX: number;
+      toY: number;
+      duration: number;
+      peakHeight: number;
+      landingRoutine: CatRoutine;
+    },
+  ) {
+    if (!this.cat) {
+      return;
+    }
+
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.cat.setFlipX(options.toX < this.cat.x);
+    this.scriptedJump = {
+      fromX: this.cat.x,
+      fromY: this.cat.y,
+      toX: options.toX,
+      toY: options.toY,
+      startedAt: time,
+      duration: options.duration,
+      peakHeight: options.peakHeight,
+      landingRoutine: options.landingRoutine,
+    };
+    this.playCatAction("jump", true);
+  }
+
+  private updateScriptedJump(time: number) {
+    if (!this.cat || !this.scriptedJump) {
+      return;
+    }
+
+    const jump = this.scriptedJump;
+    const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
+    const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
+    const arcY = Math.sin(progress * Math.PI) * jump.peakHeight;
+    const x = Phaser.Math.Linear(jump.fromX, jump.toX, easedProgress);
+    const y = Phaser.Math.Linear(jump.fromY, jump.toY, easedProgress) - arcY;
+
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.cat.setPosition(x, y);
+    this.playCatAction("jump");
+
+    if (progress >= 1) {
+      this.cat.setPosition(jump.toX, jump.toY);
+      this.scriptedJump = undefined;
+      this.routine = jump.landingRoutine;
+      this.targetX = jump.toX;
+
+      if (jump.landingRoutine === "perchWindowBench") {
+        this.currentZone = "window-bench";
+        this.cat.body.setAllowGravity(false);
+        this.cat.setY(WINDOW_BENCH_SURFACE.y);
+        this.windowBenchStillUntil = time + Phaser.Math.Between(900, 1700);
+        this.windowBenchDecisionAt = this.windowBenchStillUntil + Phaser.Math.Between(600, 1300);
+        this.windowBenchTargetX = this.chooseWindowBenchTargetX();
+        this.routineHoldUntil = time + this.activeDwellMs(6_400);
+        this.playCatAction("sit", true);
+        return;
+      }
+
+      if (jump.landingRoutine === "restBlanket") {
+        this.currentZone = "blanket";
+        this.cat.body.setAllowGravity(false);
+        this.routineHoldUntil = time + this.activeDwellMs(4_800);
+        this.playCatAction("lie", true);
+        return;
+      }
+
+      if (jump.landingRoutine === "restCatBed") {
+        this.currentZone = "cat-bed";
+        this.cat.body.setAllowGravity(false);
+        this.cat.setY(CAT_BED_SURFACE.y);
+        this.routineHoldUntil = time + this.activeDwellMs(5_000);
+        this.cat.setFlipX(false);
+        this.playCatAction("lie", true);
+        return;
+      }
+
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+      this.currentZone = "floor";
+      this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
+      this.playCatAction("idle", true);
+    }
+  }
+
+  private addStardust() {
+    const particles = this.add.particles(0, 0, "star-pixel", {
+      x: { min: 250, max: 390 },
+      y: { min: 90, max: 210 },
+      lifespan: 1600,
+      speedY: { min: -8, max: 16 },
+      speedX: { min: -14, max: 14 },
+      quantity: 1,
+      frequency: 360,
+      scale: { start: 1.5, end: 0 },
+      alpha: { start: 0.9, end: 0 },
+    });
+    particles.setDepth(10);
+  }
+
+  private createForegroundObjects() {
+    this.add.image(320, 180, "window-room-foreground-cat-bed").setDisplaySize(640, 360).setDepth(6);
+    this.add.image(320, 180, "window-room-foreground-blanket").setDisplaySize(640, 360).setDepth(6);
+  }
+
+  private createCatAnimations() {
+    const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
+    (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
+      const config = spec.actions[action];
+      const frames =
+        action === "eat"
+          ? [1, 2, 1, 2].map((frame) => ({ key: `cat-${action}`, frame }))
+          : this.anims.generateFrameNumbers(`cat-${action}`, {
+              start: 0,
+              end: config.frames - 1,
+            });
+
+      this.anims.create({
+        key: `cat-${action}-anim`,
+        frames,
+        frameRate: action === "eat" ? 5 : config.frameRate,
+        repeat: config.repeat,
+      });
+    });
+  }
+
+  private playCatAction(action: CatAction, restart = false) {
+    if (!this.cat) {
+      return;
+    }
+
+    const key = `cat-${action}-anim`;
+    if (!restart && this.cat.anims.currentAnim?.key === key) {
+      return;
+    }
+
+    this.cat.play(key, !restart);
+  }
+
+  private createParticleTexture() {
+    const star = this.make.graphics({ x: 0, y: 0 }, false);
+    star.fillStyle(0xffe88a);
+    star.fillRect(0, 0, 4, 4);
+    star.generateTexture("star-pixel", 4, 4);
+    star.destroy();
+  }
+
+  private createPhysicsTexture() {
+    const pixel = this.make.graphics({ x: 0, y: 0 }, false);
+    pixel.fillStyle(0xffffff, 0);
+    pixel.fillRect(0, 0, 1, 1);
+    pixel.generateTexture("physics-pixel", 1, 1);
+    pixel.destroy();
+  }
 }
 
 export default function PhaserCatScene(props: PhaserCatSceneProps) {
@@ -15,11 +1021,9 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
       return;
     }
 
-    const container = containerRef.current;
-    container.replaceChildren();
     const game = new Phaser.Game({
       type: Phaser.AUTO,
-      parent: container,
+      parent: containerRef.current,
       width: 640,
       height: 360,
       backgroundColor: "#202433",
@@ -45,23 +1049,22 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
 
     return () => {
       game.destroy(true);
-      container.replaceChildren();
       if (gameRef.current === game) {
         gameRef.current = null;
       }
     };
-  }, [props.palette, props.personality, props.showStardust, props.onInteract]);
+  }, [props.coatPreset, props.temperament, props.showStardust, props.onInteract]);
 
   useEffect(() => {
-    if (props.interactionSignal <= 0) {
+    if (!props.interactionSignal) {
       return;
     }
 
     const scene = gameRef.current?.scene.getScene("cat-room");
     if (scene instanceof CatRoomScene && scene.scene.isActive()) {
-      scene.triggerInteraction();
+      scene.interact();
     }
   }, [props.interactionSignal]);
 
-  return <div ref={containerRef} className="h-full min-w-0 w-full" aria-hidden="true" />;
+  return <div ref={containerRef} className="h-full w-full" />;
 }
