@@ -430,7 +430,7 @@ Before accepting a sheet, verify:
 
 ## Phaser Integration Contract
 
-`src/components/PhaserCatScene.tsx` expects:
+`src/game/CatRoomScene.ts` expects:
 
 - one PNG sprite sheet per action for each of the six coat presets, including
   the current `sit`, `groom`, and `stretch` sheets
@@ -438,6 +438,10 @@ Before accepting a sheet, verify:
 - animation metadata in `cat.animations.json`
 - bottom-center visual alignment
 - default right-facing cat
+
+`src/components/PhaserCatScene.tsx` only owns the React lifecycle for the
+Phaser game and does not define animation, coordinate, physics, or companion
+policy.
 
 Physics body currently assumes a standing cat frame:
 

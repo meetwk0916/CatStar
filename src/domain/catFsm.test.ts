@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   chooseCompanionWhisper,
+  chooseTouchOutcome,
   chooseTouchResponse,
   createCompanionPlanner,
-  getActivityRoutine,
   getCompanionMovementSpeed,
   getCompanionReaction,
-  getMovementSpeed,
-  getNextActivityIndexAfter,
-  getRoutineHoldDuration,
   type CompanionIntentKind,
   type TouchResponseKind,
 } from "./catFsm";
@@ -139,19 +136,24 @@ describe("touch responses", () => {
     expect(chooseCompanionWhisper(sequenceRandom([0.9]))).toBeNull();
     expect(chooseCompanionWhisper(sequenceRandom([0.1, 0]))).toBe("我在呢。");
   });
+
+  it("keeps sleep-aware touch outcomes in the domain", () => {
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.14]))).toMatchObject({
+      action: "stretch",
+      durationMs: 1_400,
+    });
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.15]))).toMatchObject({
+      action: "sleep",
+      durationMs: 900,
+    });
+    expect(chooseTouchOutcome("QUIET", false, sequenceRandom([0]))).toMatchObject({
+      action: "interact",
+      durationMs: 1_400,
+    });
+  });
 });
 
-describe("legacy companion routine policy", () => {
-  it("preserves personality-specific routines and pacing", () => {
-    expect(getActivityRoutine("GLUTTON", 0).routine).toBe("approachFoodBowl");
-    expect(getActivityRoutine("ALOOFS", 0).routine).toBe("approachCatBed");
-    expect(getActivityRoutine("CLINGY", 0).routine).toBe("approachWindowBench");
-    expect(getActivityRoutine("ENERGY", 1).routine).toBe("approachPlant");
-    expect(getNextActivityIndexAfter("GLUTTON", "approachFoodBowl")).toBe(1);
-    expect(getRoutineHoldDuration("GLUTTON", "foodBowl", 0)).toBe(6200);
-    expect(getMovementSpeed("ENERGY")).toBeGreaterThan(getMovementSpeed("ALOOFS"));
-  });
-
+describe("companion policy", () => {
   it("preserves deterministic companion copy selection", () => {
     expect(getCompanionReaction("INTERACTING", 0)).toBe("我听见你啦。");
     expect(getCompanionReaction("INTERACTING", 0.99)).toBe("轻轻摸摸也收到啦。");

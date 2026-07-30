@@ -116,6 +116,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                     key={preset.value}
                     type="button"
                     onClick={() => update("coatPreset", preset.value)}
+                    aria-pressed={form.coatPreset === preset.value}
                     className={`border-4 px-3 py-3 text-left text-sm font-bold shadow-[3px_3px_0px_0px_#4A3E3D] ${
                       form.coatPreset === preset.value
                         ? "border-[#4A3E3D] bg-[#F3D8C7]"
@@ -140,6 +141,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                     key={temperament.value}
                     type="button"
                     onClick={() => update("temperament", temperament.value)}
+                    aria-pressed={form.temperament === temperament.value}
                     className={`border-4 p-3 text-left shadow-[3px_3px_0px_0px_#4A3E3D] ${
                       form.temperament === temperament.value
                         ? "border-[#4A3E3D] bg-[#F3D8C7]"
@@ -153,7 +155,11 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               </div>
             </fieldset>
 
-            {error ? <p className="border-2 border-[#C46B5C] bg-[#FFF2EF] p-3 text-sm">{error}</p> : null}
+            {error ? (
+              <p role="alert" className="border-2 border-[#C46B5C] bg-[#FFF2EF] p-3 text-sm">
+                {error}
+              </p>
+            ) : null}
 
             <button
               type="submit"

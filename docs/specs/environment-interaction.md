@@ -17,14 +17,21 @@ path.
 Runtime scene:
 
 ```text
+src/domain/catFsm.ts
+src/game/CatRoomScene.ts
 src/components/PhaserCatScene.tsx
 public/assets/scenes/window-room/collision.json
 ```
 
+`catFsm.ts` owns companion intent, pacing, and reaction policy.
+`CatRoomScene.ts` translates that policy into Phaser coordinates, animation,
+physics, and scene timing. `PhaserCatScene.tsx` owns only the React lifecycle
+that creates, starts, and destroys the scene.
+
 Runtime review evidence:
 
 ```text
-artifacts/art/runtime-review/2026-07-29/
+artifacts/art/runtime-review/2026-07-30/
 ```
 
 The scene now separates:

@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import {
   chooseCompanionWhisper,
-  chooseTouchResponse,
+  chooseTouchOutcome,
   createCompanionPlanner,
   getCompanionMovementSpeed,
   type CompanionIntent,
@@ -353,15 +353,18 @@ export class CatRoomScene extends Phaser.Scene {
       this.routineHoldUntil = this.time.now + 900;
     }
 
-    const response = chooseTouchResponse(this.temperament, () => Phaser.Math.RND.frac());
     const sleeping = this.routine === "floorSleep";
-    const wakes = sleeping && Phaser.Math.RND.frac() < 0.15;
+    const outcome = chooseTouchOutcome(
+      this.temperament,
+      sleeping,
+      () => Phaser.Math.RND.frac(),
+    );
 
     this.cat.setVelocity(0, 0);
-    this.manualInteractAction = sleeping && !wakes ? "sleep" : wakes ? "stretch" : "interact";
-    this.manualInteractUntil = this.time.now + (sleeping && !wakes ? 900 : 1400);
+    this.manualInteractAction = outcome.action;
+    this.manualInteractUntil = this.time.now + outcome.durationMs;
     this.playCatAction(this.manualInteractAction, true);
-    this.applyTouchMotion(response, sleeping && !wakes);
+    this.applyTouchMotion(outcome.response, outcome.action === "sleep");
     this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
   }
 
