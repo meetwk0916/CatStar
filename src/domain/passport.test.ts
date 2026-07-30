@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { FINAL_LETTER_ID, LETTERS } from "./letters";
-import { completeFarewell, createPassport, markLetterRead, parsePassport } from "./passport";
+import {
+  completeFarewell,
+  createPassport,
+  getLocalDateInputValue,
+  isFuturePassedDate,
+  markLetterRead,
+  parsePassport,
+} from "./passport";
 
 const baseInput = {
   catName: " 小星 ",
@@ -47,6 +54,15 @@ describe("passport domain", () => {
 
   it("rejects empty required names at the domain boundary", () => {
     expect(() => createPassport({ ...baseInput, catName: "  " })).toThrow("catName");
+  });
+
+  it("identifies future memorial departure dates using the local calendar day", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(getLocalDateInputValue(now)).toBe("2026-07-30");
+    expect(isFuturePassedDate("2026-07-31", now)).toBe(true);
+    expect(isFuturePassedDate("2026-07-30", now)).toBe(false);
+    expect(isFuturePassedDate("", now)).toBe(false);
   });
 
   it("migrates a legacy record and applies safe defaults to unsupported traits", () => {

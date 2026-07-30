@@ -1,6 +1,6 @@
 # Window Room Runtime Assets
 
-These files are consumed directly by `src/components/PhaserCatScene.tsx`.
+These files are consumed directly by `src/game/CatRoomScene.ts`.
 
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
 - `foreground-cat-bed.png`: transparent foreground occlusion layer for the cat bed front rim, rendered above the cat so entering/resting in the bed does not read as walking through the prop.

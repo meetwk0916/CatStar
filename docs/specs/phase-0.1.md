@@ -62,7 +62,7 @@ When documents disagree, use this order:
 - Environment-bound movement must follow
   [`environment-interaction.md`](./environment-interaction.md).
 - The renderer decision and exit condition are recorded in
-  [`ADR-0002`](../adr/0002-retain-phaser-for-phase-0.1-scene-rendering.md).
+  [`ADR-0004`](../adr/0004-retain-phaser-for-phase-0.1-scene-rendering.md).
 
 ## Runtime behavior
 

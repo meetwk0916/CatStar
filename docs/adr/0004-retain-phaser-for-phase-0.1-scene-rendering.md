@@ -1,4 +1,4 @@
-# ADR-0002: Retain Phaser for Phase 0.1 scene rendering
+# ADR-0004: Retain Phaser for Phase 0.1 scene rendering
 
 - **Status:** Accepted
 - **Date:** 2026-07-29

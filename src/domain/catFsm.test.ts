@@ -112,6 +112,31 @@ describe("companion planner", () => {
 
     expect(intents.every((intent) => intent.dwellMs >= 1_400 && intent.dwellMs <= 11_000)).toBe(true);
   });
+
+  it("makes lively jump destinations more likely while keeping selection probabilistic", () => {
+    const jumpIntents = new Set<CompanionIntentKind>([
+      "window-watch",
+      "cat-bed-rest",
+      "blanket-rest",
+    ]);
+    const countJumpSelections = (temperament: CatTemperament) =>
+      Array.from({ length: 1_000 }, (_, sample) => {
+        const planner = createCompanionPlanner({
+          temperament,
+          random: sequenceRandom([sample / 1_000, 0.5]),
+        });
+        return planner.next({
+          currentZone: "food-bowl",
+          sessionElapsedMs: 60_000,
+          localHour: 18,
+        }).kind;
+      }).filter((kind) => jumpIntents.has(kind)).length;
+
+    const lively = countJumpSelections("LIVELY");
+    expect(lively).toBeGreaterThan(countJumpSelections("QUIET"));
+    expect(lively).toBeGreaterThan(countJumpSelections("AFFECTIONATE"));
+    expect(lively).toBeLessThan(1_000);
+  });
 });
 
 describe("touch responses", () => {
@@ -139,15 +164,15 @@ describe("touch responses", () => {
 
   it("keeps sleep-aware touch outcomes in the domain", () => {
     expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.14]))).toMatchObject({
-      action: "stretch",
+      disposition: "wake",
       durationMs: 1_400,
     });
     expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.15]))).toMatchObject({
-      action: "sleep",
+      disposition: "remain-asleep",
       durationMs: 900,
     });
     expect(chooseTouchOutcome("QUIET", false, sequenceRandom([0]))).toMatchObject({
-      action: "interact",
+      disposition: "acknowledge",
       durationMs: 1_400,
     });
   });

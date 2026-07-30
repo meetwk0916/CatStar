@@ -8,6 +8,7 @@ import {
   type CompanionIntentKind,
   type CompanionPlanner,
   type CompanionZone,
+  type TouchDisposition,
   type TouchResponseKind,
 } from "../domain/catFsm";
 import type { CatCoatPreset, CatTemperament } from "../types";
@@ -190,6 +191,12 @@ const INTENT_ROUTINES: Record<CompanionIntentKind, CatRoutine> = {
   "approach-user": "approachUser",
 };
 
+const TOUCH_ACTIONS: Record<TouchDisposition, CatAction> = {
+  acknowledge: "interact",
+  "remain-asleep": "sleep",
+  wake: "stretch",
+};
+
 export class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private targetX = WINDOW_BENCH_TAKEOFF_X;
@@ -361,10 +368,14 @@ export class CatRoomScene extends Phaser.Scene {
     );
 
     this.cat.setVelocity(0, 0);
-    this.manualInteractAction = outcome.action;
+    if (outcome.disposition === "wake") {
+      this.startFloorPause(this.time.now);
+    }
+
+    this.manualInteractAction = TOUCH_ACTIONS[outcome.disposition];
     this.manualInteractUntil = this.time.now + outcome.durationMs;
     this.playCatAction(this.manualInteractAction, true);
-    this.applyTouchMotion(outcome.response, outcome.action === "sleep");
+    this.applyTouchMotion(outcome.response, outcome.disposition === "remain-asleep");
     this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
   }
 

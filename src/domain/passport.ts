@@ -41,6 +41,18 @@ const LEGACY_TEMPERAMENTS: Record<CatPersonality, CatTemperament> = {
 };
 const LETTER_IDS = new Set(LETTERS.map((letter) => letter.id));
 
+export function getLocalDateInputValue(now = Date.now()): string {
+  const today = new Date(now);
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function isFuturePassedDate(value: string, now = Date.now()): boolean {
+  return value !== "" && value > getLocalDateInputValue(now);
+}
+
 export function createPassport(input: PassportInput, now = Date.now()): ICatPassport {
   return {
     schemaVersion: 1,

@@ -63,11 +63,11 @@ export interface CompanionPlanner {
 }
 
 export type TouchResponseKind = "slow-blink" | "curious-sniff" | "gentle-nuzzle" | "tail-lift";
-export type TouchActionKind = "interact" | "sleep" | "stretch";
+export type TouchDisposition = "acknowledge" | "remain-asleep" | "wake";
 
 export interface TouchOutcome {
   response: TouchResponseKind;
-  action: TouchActionKind;
+  disposition: TouchDisposition;
   durationMs: number;
 }
 
@@ -134,16 +134,16 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "approach-user": 6,
   },
   LIVELY: {
-    "window-watch": 16,
-    "cat-bed-rest": 6,
-    "blanket-rest": 7,
+    "window-watch": 22,
+    "cat-bed-rest": 17,
+    "blanket-rest": 17,
     eat: 7,
-    "plant-inspect": 17,
-    "floor-sit": 9,
-    "floor-groom": 7,
+    "plant-inspect": 10,
+    "floor-sit": 6,
+    "floor-groom": 4,
     "floor-sleep": 3,
-    "floor-stretch": 14,
-    "approach-user": 14,
+    "floor-stretch": 7,
+    "approach-user": 7,
   },
   AFFECTIONATE: {
     "window-watch": 14,
@@ -282,13 +282,13 @@ export function chooseTouchOutcome(
 ): TouchOutcome {
   const response = chooseTouchResponse(temperament, random);
   if (!sleeping) {
-    return { response, action: "interact", durationMs: 1_400 };
+    return { response, disposition: "acknowledge", durationMs: 1_400 };
   }
 
   const wakes = clampRandom(random()) < 0.15;
   return {
     response,
-    action: wakes ? "stretch" : "sleep",
+    disposition: wakes ? "wake" : "remain-asleep",
     durationMs: wakes ? 1_400 : 900,
   };
 }

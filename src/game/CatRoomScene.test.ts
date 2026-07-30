@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("phaser", () => ({
   Scene: class Scene {},
-  Math: { RND: { frac: vi.fn(() => 0) } },
+  Math: { Between: vi.fn(() => 900), RND: { frac: vi.fn(() => 0) } },
 }));
 
 import { CatRoomScene } from "./CatRoomScene";
@@ -19,6 +19,7 @@ interface SceneInternals {
   routine: string;
   routineHoldUntil: number;
   manualInteractUntil: number;
+  manualInteractAction: string;
   currentZone: string;
   temperament: "AFFECTIONATE";
   time: { now: number };
@@ -62,5 +63,33 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
     expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
+  });
+
+  it("moves a waking sleep response into the floor pause routine", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = {
+      angle: 0,
+      body: { setAllowGravity: vi.fn() },
+      x: 320,
+      setY: vi.fn(),
+      setVelocity: vi.fn(),
+    };
+    internals.routine = "floorSleep";
+    internals.routineHoldUntil = 10_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { add: vi.fn(), killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.routineHoldUntil).toBe(1900);
+    expect(internals.manualInteractAction).toBe("stretch");
+    expect(internals.manualInteractUntil).toBe(2400);
   });
 });
