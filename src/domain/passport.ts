@@ -74,7 +74,7 @@ export function createPassport(input: PassportInput, now = Date.now()): ICatPass
   };
 }
 
-export function parsePassport(value: unknown): ICatPassport | null {
+export function parsePassport(value: unknown, now = Date.now()): ICatPassport | null {
   if (!value || typeof value !== "object") {
     return null;
   }
@@ -106,6 +106,7 @@ export function parsePassport(value: unknown): ICatPassport | null {
   const readLetters = [...new Set(candidate.readLetters.filter((id): id is number => Number.isInteger(id) && LETTER_IDS.has(id)))].sort(
     (a, b) => a - b,
   );
+  const passedDate = normalizePassedDate(candidate.passedDate);
   const passport: ICatPassport = {
     schemaVersion: 1,
     id: candidate.id.trim(),
@@ -114,7 +115,7 @@ export function parsePassport(value: unknown): ICatPassport | null {
     coatPreset: normalizeCoatPreset(candidate.coatPreset, candidate.colorPalette),
     temperament: normalizeTemperament(candidate.temperament, candidate.personality),
     favoriteSnack: candidate.favoriteSnack.trim(),
-    passedDate: normalizePassedDate(candidate.passedDate),
+    passedDate: isFuturePassedDate(passedDate, now) ? "" : passedDate,
     createdAt: candidate.createdAt,
     readLetters,
     isFarewellCompleted: false,

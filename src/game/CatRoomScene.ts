@@ -18,6 +18,7 @@ export interface CatRoomSceneData {
   temperament?: CatTemperament;
   showStardust: boolean;
   onInteract: (message: string | null) => void;
+  onReady?: () => void;
 }
 
 interface CollisionRect {
@@ -219,6 +220,7 @@ export class CatRoomScene extends Phaser.Scene {
   private planner: CompanionPlanner = createCompanionPlanner({ temperament: "AFFECTIONATE" });
   private debugRoutine?: CatRoutine;
   private onInteract: (message: string | null) => void = () => {};
+  private onReady: () => void = () => {};
 
   constructor() {
     super("cat-room");
@@ -234,6 +236,7 @@ export class CatRoomScene extends Phaser.Scene {
       random: () => Phaser.Math.RND.frac(),
     });
     this.onInteract = data.onInteract;
+    this.onReady = data.onReady ?? (() => {});
 
     if (import.meta.env.DEV) {
       const debugRoutine = new URLSearchParams(window.location.search).get("catstarRoutine") as CatRoutine | null;
@@ -280,6 +283,7 @@ export class CatRoomScene extends Phaser.Scene {
     } else {
       this.startReturnEncounter(this.time.now);
     }
+    this.onReady();
   }
 
   update(time: number) {

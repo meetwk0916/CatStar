@@ -1,4 +1,4 @@
-import type { CatFsmState, CatTemperament } from "../types";
+import type { CatTemperament } from "../types";
 
 const TEMPERAMENT_MOVEMENT_SPEEDS: Record<CatTemperament, number> = {
   CURIOUS: 64,
@@ -9,20 +9,6 @@ const TEMPERAMENT_MOVEMENT_SPEEDS: Record<CatTemperament, number> = {
 
 export function getCompanionMovementSpeed(temperament: CatTemperament): number {
   return TEMPERAMENT_MOVEMENT_SPEEDS[temperament];
-}
-
-export function getCompanionReaction(state: CatFsmState, random = Math.random()): string {
-  const reactions: Record<CatFsmState, string[]> = {
-    IDLE: ["我在呢。", "今天的星星很安静。"],
-    WALKING: ["我在云朵草坪上走走。", "这里的路软软的。"],
-    JUMPING: ["刚刚跳得好高。", "你看见那颗星了吗？"],
-    EATING: ["这里也有好吃的。", "我会好好吃饭的。"],
-    SLEEPING: ["我睡得很暖。", "梦里也有小小的家。"],
-    INTERACTING: ["我听见你啦。", "轻轻摸摸也收到啦。"],
-  };
-  const options = reactions[state];
-  const index = Math.min(options.length - 1, Math.max(0, Math.floor(random * options.length)));
-  return options[index];
 }
 
 // Deep domain module: callers provide scene context and receive engine-independent intent.

@@ -26,14 +26,6 @@ export interface ICatPassport {
   isFarewellCompleted: boolean;
 }
 
-export type CatFsmState =
-  | "IDLE"
-  | "WALKING"
-  | "JUMPING"
-  | "EATING"
-  | "SLEEPING"
-  | "INTERACTING";
-
 export interface ILetter {
   id: number;
   deliveryIndex: number;

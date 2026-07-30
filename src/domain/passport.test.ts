@@ -92,6 +92,14 @@ describe("passport domain", () => {
     });
   });
 
+  it("clears future memorial departure dates while parsing persisted data", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(
+      parsePassport(storedPassport({ passedDate: "2026-07-31" }), now),
+    ).toMatchObject({ passedDate: "" });
+  });
+
   it("filters unknown and duplicate letter ids while loading", () => {
     const passport = parsePassport(storedPassport({ readLetters: [2, 999, 1, 2, "3"] }));
 

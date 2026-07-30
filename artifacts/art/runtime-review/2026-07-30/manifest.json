@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-07-30T22:32:14.316651+08:00",
+  "capturedAt": "2026-07-30T22:38:49.402455+08:00",
   "viewport": [
     1280,
     720
   ],
-  "sourceFingerprint": "3970177065df10058549c2a1cd0815b2384849cc8751e937b622b81880af8a3d",
+  "sourceFingerprint": "05a08373b5afe180cd790a74123fbd64ab86bd2b7da74f19c1782fc0ca9e4812",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -83,6 +83,8 @@
     "src/components/ModalDialog.tsx",
     "src/components/OnboardingForm.tsx",
     "src/components/PhaserCatScene.tsx",
+    "src/components/pendingInteractions.test.ts",
+    "src/components/pendingInteractions.ts",
     "src/data/letters.json",
     "src/domain/catFsm.test.ts",
     "src/domain/catFsm.ts",

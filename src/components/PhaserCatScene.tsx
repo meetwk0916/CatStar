@@ -1,14 +1,31 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as Phaser from "phaser";
 import { CatRoomScene, type CatRoomSceneData } from "../game/CatRoomScene";
+import { flushPendingInteractions as flushInteractionQueue } from "./pendingInteractions";
 
-interface PhaserCatSceneProps extends CatRoomSceneData {
+interface PhaserCatSceneProps extends Omit<CatRoomSceneData, "onReady"> {
   interactionSignal?: number;
 }
 
 export default function PhaserCatScene(props: PhaserCatSceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
+  const sceneReadyRef = useRef(false);
+  const pendingInteractionsRef = useRef(0);
+  const lastInteractionSignalRef = useRef(0);
+
+  const flushPendingInteractions = useCallback(() => {
+    const scene = gameRef.current?.scene.getScene("cat-room");
+    if (!(scene instanceof CatRoomScene)) {
+      return;
+    }
+
+    pendingInteractionsRef.current = flushInteractionQueue(
+      pendingInteractionsRef.current,
+      sceneReadyRef.current,
+      () => scene.interact(),
+    );
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -38,27 +55,43 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
       scene: CatRoomScene,
     });
     gameRef.current = game;
+    sceneReadyRef.current = false;
 
-    game.scene.start("cat-room", props);
+    game.scene.start("cat-room", {
+      coatPreset: props.coatPreset,
+      temperament: props.temperament,
+      showStardust: props.showStardust,
+      onInteract: props.onInteract,
+      onReady: () => {
+        sceneReadyRef.current = true;
+        flushPendingInteractions();
+      },
+    });
 
     return () => {
+      sceneReadyRef.current = false;
       game.destroy(true);
       if (gameRef.current === game) {
         gameRef.current = null;
       }
     };
-  }, [props.coatPreset, props.temperament, props.showStardust, props.onInteract]);
+  }, [
+    flushPendingInteractions,
+    props.coatPreset,
+    props.temperament,
+    props.showStardust,
+    props.onInteract,
+  ]);
 
   useEffect(() => {
-    if (!props.interactionSignal) {
-      return;
-    }
-
-    const scene = gameRef.current?.scene.getScene("cat-room");
-    if (scene instanceof CatRoomScene && scene.scene.isActive()) {
-      scene.interact();
-    }
-  }, [props.interactionSignal]);
+    const signal = props.interactionSignal ?? 0;
+    pendingInteractionsRef.current += Math.max(
+      0,
+      signal - lastInteractionSignalRef.current,
+    );
+    lastInteractionSignalRef.current = signal;
+    flushPendingInteractions();
+  }, [flushPendingInteractions, props.interactionSignal]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 }

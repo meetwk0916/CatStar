@@ -5,7 +5,6 @@ import {
   chooseTouchResponse,
   createCompanionPlanner,
   getCompanionMovementSpeed,
-  getCompanionReaction,
   type CompanionIntentKind,
   type TouchResponseKind,
 } from "./catFsm";
@@ -179,11 +178,6 @@ describe("touch responses", () => {
 });
 
 describe("companion policy", () => {
-  it("preserves deterministic companion copy selection", () => {
-    expect(getCompanionReaction("INTERACTING", 0)).toBe("我听见你啦。");
-    expect(getCompanionReaction("INTERACTING", 0.99)).toBe("轻轻摸摸也收到啦。");
-  });
-
   it("owns temperament-specific movement pacing", () => {
     expect(getCompanionMovementSpeed("LIVELY")).toBeGreaterThan(
       getCompanionMovementSpeed("QUIET"),
