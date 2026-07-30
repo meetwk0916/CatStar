@@ -348,9 +348,9 @@ export class CatRoomScene extends Phaser.Scene {
     }
   }
 
-  interact() {
+  interact(): number {
     if (!this.cat) {
-      return;
+      return 0;
     }
 
     if (this.scriptedJump) {
@@ -381,6 +381,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.playCatAction(this.manualInteractAction, true);
     this.applyTouchMotion(outcome.response, outcome.disposition === "remain-asleep");
     this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
+    return outcome.durationMs;
   }
 
   private applyTouchMotion(response: TouchResponseKind, sleeping: boolean) {

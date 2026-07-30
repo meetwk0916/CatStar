@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import * as Phaser from "phaser";
 import { CatRoomScene, type CatRoomSceneData } from "../game/CatRoomScene";
-import { flushPendingInteractions as flushInteractionQueue } from "./pendingInteractions";
+import { PendingInteractionQueue } from "./pendingInteractions";
 
 interface PhaserCatSceneProps extends Omit<CatRoomSceneData, "onReady"> {
   interactionSignal?: number;
@@ -11,8 +11,11 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
   const sceneReadyRef = useRef(false);
-  const pendingInteractionsRef = useRef(0);
+  const interactionQueueRef = useRef<PendingInteractionQueue | null>(null);
   const lastInteractionSignalRef = useRef(0);
+  if (!interactionQueueRef.current) {
+    interactionQueueRef.current = new PendingInteractionQueue();
+  }
 
   const flushPendingInteractions = useCallback(() => {
     const scene = gameRef.current?.scene.getScene("cat-room");
@@ -20,8 +23,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
       return;
     }
 
-    pendingInteractionsRef.current = flushInteractionQueue(
-      pendingInteractionsRef.current,
+    interactionQueueRef.current?.flush(
       sceneReadyRef.current,
       () => scene.interact(),
     );
@@ -70,6 +72,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
 
     return () => {
       sceneReadyRef.current = false;
+      interactionQueueRef.current?.pause();
       game.destroy(true);
       if (gameRef.current === game) {
         gameRef.current = null;
@@ -85,10 +88,10 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
 
   useEffect(() => {
     const signal = props.interactionSignal ?? 0;
-    pendingInteractionsRef.current += Math.max(
+    interactionQueueRef.current?.enqueue(Math.max(
       0,
       signal - lastInteractionSignalRef.current,
-    );
+    ));
     lastInteractionSignalRef.current = signal;
     flushPendingInteractions();
   }, [flushPendingInteractions, props.interactionSignal]);

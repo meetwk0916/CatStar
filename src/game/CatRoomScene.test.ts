@@ -50,7 +50,7 @@ describe("CatRoomScene interactions", () => {
     internals.playCatAction = vi.fn();
     internals.onInteract = vi.fn();
 
-    scene.interact();
+    const durationMs = scene.interact();
 
     expect(internals.scriptedJump).toBeUndefined();
     expect(internals.cat.x).toBe(347);
@@ -64,6 +64,7 @@ describe("CatRoomScene interactions", () => {
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
     expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
     expect(internals.onInteract).toHaveBeenCalledTimes(1);
+    expect(durationMs).toBe(1_400);
   });
 
   it("moves a waking sleep response into the floor pause routine", () => {
