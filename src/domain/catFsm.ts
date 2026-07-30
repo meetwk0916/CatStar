@@ -58,6 +58,13 @@ const PROFILES: Record<CatPersonality, CompanionRoutineProfile> = {
   },
 };
 
+const TEMPERAMENT_MOVEMENT_SPEEDS: Record<CatTemperament, number> = {
+  CURIOUS: 64,
+  QUIET: 56,
+  AFFECTIONATE: 60,
+  LIVELY: 74,
+};
+
 export function getActivityRoutine(personality: CatPersonality, activityIndex: number) {
   const activities = PROFILES[personality].activities;
   const normalizedIndex = Math.max(0, Math.floor(activityIndex));
@@ -77,6 +84,10 @@ export function getRoutineHoldDuration(personality: CatPersonality, kind: Routin
 
 export function getMovementSpeed(personality: CatPersonality): number {
   return PROFILES[personality].speed;
+}
+
+export function getCompanionMovementSpeed(temperament: CatTemperament): number {
+  return TEMPERAMENT_MOVEMENT_SPEEDS[temperament];
 }
 
 export function getCompanionReaction(state: CatFsmState, random = Math.random()): string {

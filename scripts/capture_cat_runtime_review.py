@@ -9,6 +9,7 @@ uses the Playwright CLI to capture key room interaction states.
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import shutil
 import signal
@@ -23,7 +24,7 @@ from urllib.request import ProxyHandler, build_opener
 
 from PIL import Image
 
-from artifact_paths import ARTIFACTS_ART_ROOT
+from artifact_paths import ARTIFACTS_ART_ROOT, REPO_ROOT
 
 
 HOST = "127.0.0.1"
@@ -77,6 +78,18 @@ SHOTS = [
     ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000),
 ]
 SHOT_FILENAMES = [filename for filename, _route, _timeout in SHOTS]
+MANIFEST_FILENAME = "manifest.json"
+FINGERPRINT_PATHS = [
+    REPO_ROOT / "index.html",
+    REPO_ROOT / "package.json",
+    REPO_ROOT / "package-lock.json",
+    REPO_ROOT / "vite.config.ts",
+    REPO_ROOT / "scripts/capture_cat_runtime_review.py",
+]
+FINGERPRINT_TREES = [
+    REPO_ROOT / "src",
+    REPO_ROOT / "public/assets/scenes/window-room",
+]
 
 
 def wait_for_server(timeout_seconds: float = 20) -> None:
@@ -140,14 +153,70 @@ def capture(storage_state: Path) -> None:
         subprocess.run(command, check=True)
         validate_screenshot(OUT_DIR / filename)
 
+    write_manifest()
+
 
 def validate_existing_screenshots() -> None:
+    validate_manifest()
     for filename in SHOT_FILENAMES:
         path = OUT_DIR / filename
         if not path.exists():
             raise RuntimeError(f"Missing runtime review screenshot: {path}")
         validate_screenshot(path)
         print(f"Validated {path}", flush=True)
+
+
+def fingerprint_files() -> list[Path]:
+    files = list(FINGERPRINT_PATHS)
+    for tree in FINGERPRINT_TREES:
+        files.extend(path for path in tree.rglob("*") if path.is_file())
+    return sorted(set(files))
+
+
+def source_fingerprint() -> tuple[str, list[str]]:
+    digest = hashlib.sha256()
+    relative_paths: list[str] = []
+    for path in fingerprint_files():
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        relative_paths.append(relative)
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest(), relative_paths
+
+
+def write_manifest() -> None:
+    fingerprint, source_files = source_fingerprint()
+    manifest = {
+        "schemaVersion": 1,
+        "capturedAt": datetime.now().astimezone().isoformat(),
+        "viewport": list(EXPECTED_VIEWPORT),
+        "sourceFingerprint": fingerprint,
+        "sourceFiles": source_files,
+        "screenshots": SHOT_FILENAMES,
+    }
+    (OUT_DIR / MANIFEST_FILENAME).write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def validate_manifest() -> None:
+    path = OUT_DIR / MANIFEST_FILENAME
+    if not path.exists():
+        raise RuntimeError(f"Missing runtime review manifest: {path}; regenerate runtime evidence")
+
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    fingerprint, source_files = source_fingerprint()
+    if manifest.get("schemaVersion") != 1:
+        raise RuntimeError(f"{path}: unsupported manifest schema")
+    if manifest.get("viewport") != list(EXPECTED_VIEWPORT):
+        raise RuntimeError(f"{path}: viewport does not match {list(EXPECTED_VIEWPORT)}")
+    if manifest.get("screenshots") != SHOT_FILENAMES:
+        raise RuntimeError(f"{path}: screenshot set does not match the current review contract")
+    if manifest.get("sourceFiles") != source_files or manifest.get("sourceFingerprint") != fingerprint:
+        raise RuntimeError(f"{path}: runtime inputs changed; regenerate runtime evidence")
 
 
 def mean_luminance(image: Image.Image) -> float:

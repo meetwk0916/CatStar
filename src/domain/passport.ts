@@ -1,17 +1,44 @@
-import type { CatPalette, CatPersonality, ICatPassport } from "../types";
+import type {
+  CatCoatPreset,
+  CatPalette,
+  CatPersonality,
+  CatTemperament,
+  ICatPassport,
+} from "../types";
 import { hasReadAllOtherLetters, isLetterRead, LETTERS, FINAL_LETTER_ID } from "./letters";
 
 export interface PassportInput {
   catName: string;
   ownerName: string;
-  colorPalette: CatPalette;
-  personality: CatPersonality;
+  coatPreset: CatCoatPreset;
+  temperament: CatTemperament;
   favoriteSnack: string;
   passedDate: string;
 }
 
-const PALETTES = new Set<CatPalette>(["GRAY_WHITE", "ORANGE", "BLACK", "WHITE", "CALICO", "TUXEDO"]);
-const PERSONALITIES = new Set<CatPersonality>(["GLUTTON", "ALOOFS", "CLINGY", "ENERGY"]);
+const COAT_PRESETS = new Set<CatCoatPreset>([
+  "ORANGE_TABBY",
+  "SOLID_BLACK",
+  "SOLID_WHITE",
+  "CALICO",
+  "TUXEDO",
+  "GRAY_WHITE_TABBY",
+]);
+const TEMPERAMENTS = new Set<CatTemperament>(["QUIET", "CURIOUS", "AFFECTIONATE", "LIVELY"]);
+const LEGACY_COAT_PRESETS: Record<CatPalette, CatCoatPreset> = {
+  GRAY_WHITE: "GRAY_WHITE_TABBY",
+  ORANGE: "ORANGE_TABBY",
+  BLACK: "SOLID_BLACK",
+  WHITE: "SOLID_WHITE",
+  CALICO: "CALICO",
+  TUXEDO: "TUXEDO",
+};
+const LEGACY_TEMPERAMENTS: Record<CatPersonality, CatTemperament> = {
+  ALOOFS: "QUIET",
+  GLUTTON: "CURIOUS",
+  CLINGY: "AFFECTIONATE",
+  ENERGY: "LIVELY",
+};
 const LETTER_IDS = new Set(LETTERS.map((letter) => letter.id));
 
 export function createPassport(input: PassportInput, now = Date.now()): ICatPassport {
@@ -20,8 +47,8 @@ export function createPassport(input: PassportInput, now = Date.now()): ICatPass
     id: crypto.randomUUID(),
     catName: requireText(input.catName, "catName"),
     ownerName: requireText(input.ownerName, "ownerName"),
-    colorPalette: input.colorPalette,
-    personality: input.personality,
+    coatPreset: input.coatPreset,
+    temperament: input.temperament,
     favoriteSnack: requireText(input.favoriteSnack, "favoriteSnack"),
     passedDate: normalizePassedDate(input.passedDate),
     createdAt: now,
@@ -67,12 +94,8 @@ export function parsePassport(value: unknown): ICatPassport | null {
     id: candidate.id.trim(),
     catName: candidate.catName.trim(),
     ownerName: candidate.ownerName.trim(),
-    colorPalette: PALETTES.has(candidate.colorPalette as CatPalette)
-      ? (candidate.colorPalette as CatPalette)
-      : "GRAY_WHITE",
-    personality: PERSONALITIES.has(candidate.personality as CatPersonality)
-      ? (candidate.personality as CatPersonality)
-      : "CLINGY",
+    coatPreset: normalizeCoatPreset(candidate.coatPreset, candidate.colorPalette),
+    temperament: normalizeTemperament(candidate.temperament, candidate.personality),
     favoriteSnack: candidate.favoriteSnack.trim(),
     passedDate: normalizePassedDate(candidate.passedDate),
     createdAt: candidate.createdAt,
@@ -85,6 +108,26 @@ export function parsePassport(value: unknown): ICatPassport | null {
     isLetterRead(passport, FINAL_LETTER_ID) &&
     hasReadAllOtherLetters(passport);
   return passport;
+}
+
+function normalizeCoatPreset(
+  coatPreset: CatCoatPreset | undefined,
+  colorPalette: CatPalette | undefined,
+): CatCoatPreset {
+  if (COAT_PRESETS.has(coatPreset as CatCoatPreset)) {
+    return coatPreset as CatCoatPreset;
+  }
+  return LEGACY_COAT_PRESETS[colorPalette as CatPalette] ?? "GRAY_WHITE_TABBY";
+}
+
+function normalizeTemperament(
+  temperament: CatTemperament | undefined,
+  personality: CatPersonality | undefined,
+): CatTemperament {
+  if (TEMPERAMENTS.has(temperament as CatTemperament)) {
+    return temperament as CatTemperament;
+  }
+  return LEGACY_TEMPERAMENTS[personality as CatPersonality] ?? "AFFECTIONATE";
 }
 
 export function markLetterRead(passport: ICatPassport, letterId: number): ICatPassport {

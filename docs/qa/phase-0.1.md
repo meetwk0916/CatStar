@@ -110,7 +110,7 @@ accessibility checks.
 - Open final letter.
 - Confirm final farewell choice appears only after opening the final letter.
 - Select `谢谢你陪我走到这里`.
-- Confirm the mailbox becomes `星河封存`.
+- Confirm the mailbox becomes `信箱封存`.
 - Confirm previous letters remain readable.
 
 ### Re-registration

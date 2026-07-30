@@ -5,8 +5,8 @@ import { completeFarewell, createPassport, markLetterRead, parsePassport } from 
 const baseInput = {
   catName: " 小星 ",
   ownerName: " 家人 ",
-  colorPalette: "GRAY_WHITE" as const,
-  personality: "CLINGY" as const,
+  coatPreset: "GRAY_WHITE_TABBY" as const,
+  temperament: "AFFECTIONATE" as const,
   favoriteSnack: " 小鱼干 ",
   passedDate: "2026-07-01",
 };
@@ -17,8 +17,8 @@ function storedPassport(overrides: Record<string, unknown> = {}) {
     id: "passport-1",
     catName: "小星",
     ownerName: "家人",
-    colorPalette: "GRAY_WHITE",
-    personality: "CLINGY",
+    coatPreset: "GRAY_WHITE_TABBY",
+    temperament: "AFFECTIONATE",
     favoriteSnack: "小鱼干",
     passedDate: "2026-07-01",
     createdAt: 1_700_000_000_000,
@@ -52,6 +52,8 @@ describe("passport domain", () => {
   it("migrates a legacy record and applies safe defaults to unsupported traits", () => {
     const legacy = storedPassport({
       schemaVersion: undefined,
+      coatPreset: undefined,
+      temperament: undefined,
       colorPalette: "BLUE",
       personality: "UNKNOWN",
       passedDate: "2026-02-30",
@@ -59,8 +61,8 @@ describe("passport domain", () => {
 
     expect(parsePassport(legacy)).toMatchObject({
       schemaVersion: 1,
-      colorPalette: "GRAY_WHITE",
-      personality: "CLINGY",
+      coatPreset: "GRAY_WHITE_TABBY",
+      temperament: "AFFECTIONATE",
       passedDate: "",
     });
   });

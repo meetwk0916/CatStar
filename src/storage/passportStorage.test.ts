@@ -63,6 +63,46 @@ describe("passport storage migration", () => {
     });
   });
 
+  it("migrates the original gray-white default", () => {
+    stubStoredPassport({
+      id: "legacy-default",
+      catName: "小灰",
+      ownerName: "家人",
+      colorPalette: "GRAY_WHITE",
+      personality: "CLINGY",
+      favoriteSnack: "小鱼干",
+      passedDate: "2025-12-01",
+      createdAt: 1,
+      readLetters: [],
+      isFarewellCompleted: false,
+    });
+
+    expect(loadPassport()).toMatchObject({
+      coatPreset: "GRAY_WHITE_TABBY",
+      temperament: "AFFECTIONATE",
+    });
+  });
+
+  it("normalizes letter progress and farewell invariants", () => {
+    stubStoredPassport({
+      id: "unsafe-progress",
+      catName: "小灰",
+      ownerName: "家人",
+      coatPreset: "GRAY_WHITE_TABBY",
+      temperament: "AFFECTIONATE",
+      favoriteSnack: "小鱼干",
+      passedDate: "2025-12-01",
+      createdAt: 1,
+      readLetters: [1, 999, 1],
+      isFarewellCompleted: true,
+    });
+
+    expect(loadPassport()).toMatchObject({
+      readLetters: [1],
+      isFarewellCompleted: false,
+    });
+  });
+
   it("rejects malformed reading progress", () => {
     stubStoredPassport({
       id: "broken",

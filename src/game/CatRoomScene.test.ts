@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("phaser", () => ({ Scene: class Scene {} }));
+vi.mock("phaser", () => ({
+  Scene: class Scene {},
+  Math: { RND: { frac: vi.fn(() => 0) } },
+}));
 
 import { CatRoomScene } from "./CatRoomScene";
 
@@ -16,10 +19,12 @@ interface SceneInternals {
   routine: string;
   routineHoldUntil: number;
   manualInteractUntil: number;
-  personality: "CLINGY";
+  currentZone: string;
+  temperament: "AFFECTIONATE";
   time: { now: number };
-  tweens: { add: ReturnType<typeof vi.fn> };
+  tweens: { add: ReturnType<typeof vi.fn>; killTweensOf: ReturnType<typeof vi.fn> };
   playCatAction: ReturnType<typeof vi.fn>;
+  onInteract: ReturnType<typeof vi.fn>;
 }
 
 describe("CatRoomScene interactions", () => {
@@ -37,21 +42,25 @@ describe("CatRoomScene interactions", () => {
     internals.routine = "perchWindowBench";
     internals.routineHoldUntil = 0;
     internals.manualInteractUntil = 0;
-    internals.personality = "CLINGY";
+    internals.currentZone = "window-bench";
+    internals.temperament = "AFFECTIONATE";
     internals.time = { now: 1000 };
-    internals.tweens = { add: vi.fn() };
+    internals.tweens = { add: vi.fn(), killTweensOf: vi.fn() };
     internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
 
-    scene.triggerInteraction();
+    scene.interact();
 
     expect(internals.scriptedJump).toBeUndefined();
     expect(internals.cat.x).toBe(347);
     expect(internals.cat.body.setAllowGravity).toHaveBeenCalledWith(false);
     expect(internals.cat.setY).toHaveBeenCalledWith(225);
+    expect(internals.currentZone).toBe("floor");
     expect(internals.routine).toBe("floorPause");
     expect(internals.routineHoldUntil).toBeGreaterThan(1000);
     expect(internals.manualInteractUntil).toBe(2400);
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
+    expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
   });
 });

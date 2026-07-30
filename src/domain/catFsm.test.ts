@@ -4,6 +4,7 @@ import {
   chooseTouchResponse,
   createCompanionPlanner,
   getActivityRoutine,
+  getCompanionMovementSpeed,
   getCompanionReaction,
   getMovementSpeed,
   getNextActivityIndexAfter,
@@ -154,5 +155,12 @@ describe("legacy companion routine policy", () => {
   it("preserves deterministic companion copy selection", () => {
     expect(getCompanionReaction("INTERACTING", 0)).toBe("我听见你啦。");
     expect(getCompanionReaction("INTERACTING", 0.99)).toBe("轻轻摸摸也收到啦。");
+  });
+
+  it("owns temperament-specific movement pacing", () => {
+    expect(getCompanionMovementSpeed("LIVELY")).toBeGreaterThan(
+      getCompanionMovementSpeed("QUIET"),
+    );
+    expect(getCompanionMovementSpeed("AFFECTIONATE")).toBe(60);
   });
 });
