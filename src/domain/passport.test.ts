@@ -37,7 +37,8 @@ function storedPassport(overrides: Record<string, unknown> = {}) {
 
 describe("passport domain", () => {
   it("creates a versioned passport with normalized required text", () => {
-    const passport = createPassport(baseInput, 1234);
+    const createdAt = new Date(2026, 6, 30, 12, 0, 0).getTime();
+    const passport = createPassport(baseInput, createdAt);
 
     expect(passport).toMatchObject({
       schemaVersion: 1,
@@ -45,7 +46,7 @@ describe("passport domain", () => {
       ownerName: "家人",
       favoriteSnack: "小鱼干",
       passedDate: "2026-07-01",
-      createdAt: 1234,
+      createdAt,
       readLetters: [],
       isFarewellCompleted: false,
     });
@@ -63,6 +64,14 @@ describe("passport domain", () => {
     expect(isFuturePassedDate("2026-07-31", now)).toBe(true);
     expect(isFuturePassedDate("2026-07-30", now)).toBe(false);
     expect(isFuturePassedDate("", now)).toBe(false);
+  });
+
+  it("rejects future memorial departure dates at passport creation", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(() =>
+      createPassport({ ...baseInput, passedDate: "2026-07-31" }, now),
+    ).toThrow("passedDate");
   });
 
   it("migrates a legacy record and applies safe defaults to unsupported traits", () => {

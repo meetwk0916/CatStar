@@ -63,6 +63,7 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
     expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
+    expect(internals.onInteract).toHaveBeenCalledTimes(1);
   });
 
   it("moves a waking sleep response into the floor pause routine", () => {

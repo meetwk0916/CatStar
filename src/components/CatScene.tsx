@@ -1,5 +1,4 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import { getCompanionReaction } from "../domain/catFsm";
 import { getDeliveredLetters, isFinalLetter } from "../domain/letters";
 import type { ICatPassport } from "../types";
 
@@ -37,9 +36,8 @@ export default function CatScene({ passport, now }: CatSceneProps) {
   }, []);
 
   const interactWithCat = useCallback(() => {
-    showReaction(getCompanionReaction("INTERACTING"));
     setInteractionSignal((current) => current + 1);
-  }, [showReaction]);
+  }, []);
 
   return (
     <section className="grid min-w-0 gap-4">
