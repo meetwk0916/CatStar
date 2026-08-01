@@ -1,7 +1,8 @@
 # CatStar Phase 0.1 Current Specification
 
-**Status:** Current  
-**Last aligned:** 2026-07-29
+**Status:** Current
+
+**Last aligned:** 2026-08-01
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in

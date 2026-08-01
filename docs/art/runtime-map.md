@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-07-29
+Last updated: 2026-08-01
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -51,8 +51,8 @@ timing prevent coat choice from changing behavior.
 
 Current accepted browser evidence lives under
 `artifacts/art/runtime-review/2026-08-01/` and contains nine validated
-screenshots covering default movement, the five room targets, grooming,
-stretching, deep sleep, and active approach.
+screenshots covering default movement, window-bench, cat-bed, food-bowl, and
+blanket routines, grooming, stretching, deep sleep, and active approach.
 The accompanying `manifest.json` binds the screenshots to the exact runtime
 input fingerprint; `npm run review:runtime:check` fails after those inputs
 change.

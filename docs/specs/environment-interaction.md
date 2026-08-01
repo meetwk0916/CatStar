@@ -1,7 +1,8 @@
 # Environment Interaction Spec
 
-**Status:** Current specialized behavior contract  
-Last updated: 2026-07-29
+**Status:** Current specialized behavior contract
+
+Last updated: 2026-08-01
 
 ## Purpose
 

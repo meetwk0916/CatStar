@@ -1,7 +1,8 @@
 # CatStar Current Status
 
-**Status:** Living implementation ledger  
-**Last aligned:** 2026-07-29
+**Status:** Living implementation ledger
+
+**Last aligned:** 2026-08-01
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -63,16 +64,9 @@ npm run build
 npm run check:bundle
 ```
 
-Last verified on 2026-07-29:
-
-- All 60 runtime cat sheets passed the six-preset, ten-action asset contract.
-- Nine saved browser-review screenshots passed validation, including grooming,
-  stretching, deep sleep, and active approach.
-- Vitest passed 6 test files and 32 tests, including intent reachability,
-  legacy passport migration, letter rules, and passport invariants.
-- TypeScript and the Vite production build passed.
-- Vite continues to warn that the lazy Phaser chunk exceeds 500 kB; chunk-size
-  review remains listed below.
+The accepted runtime-evidence set is owned by
+[`../art/runtime-map.md`](../art/runtime-map.md). Current test and build results
+belong in the gate or CI output rather than this mutable implementation ledger.
 
 Record durable behavior decisions as ADRs rather than adding historical commit
 hashes or branch information to this file.
