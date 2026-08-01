@@ -162,8 +162,8 @@ Important actions must remain reachable for every temperament so remembered
 **陪伴气质** does not hide core companionship or art content.
 
 Touch responses use the available acknowledgement motion: a soft head turn and
-blink. Temperament may affect wake likelihood and pacing, but must not claim
-distinct gestures that the production motion assets do not render. Do not use
+blink. The domain owns wake likelihood and pacing, but must not claim distinct
+gestures that the production motion assets do not render. Do not use
 hissing, fleeing, startling, or rejection as touch feedback.
 
 Every valid touch produces a visible **陪伴反应**. An occasional

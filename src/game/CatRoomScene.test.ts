@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("phaser", () => ({
   Scene: class Scene {},
@@ -12,10 +12,13 @@ vi.mock("phaser", () => ({
 }));
 
 import { CatRoomScene } from "./CatRoomScene";
+import * as Phaser from "phaser";
 
 interface SceneInternals {
   cat: {
+    anims: { currentAnim?: { key: string } };
     body: { setAllowGravity: ReturnType<typeof vi.fn> };
+    play: ReturnType<typeof vi.fn>;
     x: number;
     setDepth: ReturnType<typeof vi.fn>;
     setFlipX: ReturnType<typeof vi.fn>;
@@ -31,6 +34,7 @@ interface SceneInternals {
   manualInteractUntil: number;
   manualInteractAction: string;
   pendingInteractionCount: number;
+  acceptsInteractions: boolean;
   foregroundTransitionStartedAt: number;
   currentZone: string;
   temperament: "AFFECTIONATE";
@@ -43,7 +47,9 @@ interface SceneInternals {
 
 function createCat(x = 320): SceneInternals["cat"] {
   return {
+    anims: {},
     body: { setAllowGravity: vi.fn() },
+    play: vi.fn(),
     x,
     setDepth: vi.fn(),
     setFlipX: vi.fn(),
@@ -54,6 +60,10 @@ function createCat(x = 320): SceneInternals["cat"] {
     setVelocityX: vi.fn(),
   };
 }
+
+afterEach(() => {
+  vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0);
+});
 
 describe("CatRoomScene interactions", () => {
   it("cancels a scripted jump before responding in place", () => {
@@ -110,6 +120,29 @@ describe("CatRoomScene interactions", () => {
     expect(internals.manualInteractUntil).toBe(2400);
   });
 
+  it("plays the dedicated sleep twitch without waking", () => {
+    vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.5);
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorSleep";
+    internals.routineHoldUntil = 10_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.routine).toBe("floorSleep");
+    expect(internals.manualInteractAction).toBe("sleep-touch");
+    expect(internals.cat.play).toHaveBeenCalledWith("cat-sleep-touch-anim", false);
+    expect(internals.manualInteractUntil).toBe(1900);
+  });
+
   it("owns queued interaction timing inside the scene", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;
@@ -118,6 +151,7 @@ describe("CatRoomScene interactions", () => {
     internals.routineHoldUntil = 0;
     internals.manualInteractUntil = 0;
     internals.pendingInteractionCount = 0;
+    internals.acceptsInteractions = false;
     internals.currentZone = "floor";
     internals.temperament = "AFFECTIONATE";
     internals.time = { now: 1000 };
@@ -125,7 +159,11 @@ describe("CatRoomScene interactions", () => {
     internals.playCatAction = vi.fn();
     internals.onInteract = vi.fn();
 
-    scene.enqueueInteractions(2);
+    expect(scene.enqueueInteractions(2)).toBe(false);
+    expect(internals.pendingInteractionCount).toBe(0);
+
+    internals.acceptsInteractions = true;
+    expect(scene.enqueueInteractions(2)).toBe(true);
     scene.update(1000);
     expect(internals.pendingInteractionCount).toBe(1);
 

@@ -2,11 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   chooseCompanionWhisper,
   chooseTouchOutcome,
-  chooseTouchResponse,
   createCompanionPlanner,
   getCompanionMovementSpeed,
   type CompanionIntentKind,
-  type TouchResponseKind,
 } from "./catFsm";
 import type { CatTemperament } from "../types";
 
@@ -139,31 +137,21 @@ describe("companion planner", () => {
 });
 
 describe("touch responses", () => {
-  it("keeps touch semantics aligned with the acknowledgement motion", () => {
-    for (const temperament of TEMPERAMENTS) {
-      const actual = new Set<TouchResponseKind>();
-      for (let sample = 0; sample < 100; sample += 1) {
-        actual.add(chooseTouchResponse(temperament, () => sample / 100));
-      }
-      expect(actual).toEqual(new Set(["soft-acknowledgement"]));
-    }
-  });
-
   it("shows a short whisper only some of the time", () => {
     expect(chooseCompanionWhisper(sequenceRandom([0.9]))).toBeNull();
     expect(chooseCompanionWhisper(sequenceRandom([0.1, 0]))).toBe("我在呢。");
   });
 
   it("keeps sleep-aware touch outcomes in the domain", () => {
-    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.14]))).toMatchObject({
+    expect(chooseTouchOutcome(true, sequenceRandom([0.14]))).toMatchObject({
       disposition: "wake",
       durationMs: 1_400,
     });
-    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.15]))).toMatchObject({
+    expect(chooseTouchOutcome(true, sequenceRandom([0.15]))).toMatchObject({
       disposition: "remain-asleep",
       durationMs: 900,
     });
-    expect(chooseTouchOutcome("QUIET", false)).toMatchObject({
+    expect(chooseTouchOutcome(false)).toMatchObject({
       disposition: "acknowledge",
       durationMs: 1_400,
     });

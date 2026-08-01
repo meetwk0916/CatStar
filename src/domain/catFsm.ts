@@ -48,11 +48,9 @@ export interface CompanionPlanner {
   next(context: CompanionPlannerContext): CompanionIntent;
 }
 
-export type TouchResponseKind = "soft-acknowledgement";
 export type TouchDisposition = "acknowledge" | "remain-asleep" | "wake";
 
 export interface TouchOutcome {
-  response: TouchResponseKind;
   disposition: TouchDisposition;
   durationMs: number;
 }
@@ -225,26 +223,16 @@ export function createCompanionPlanner({
   };
 }
 
-export function chooseTouchResponse(
-  _temperament: CatTemperament,
-  _random: () => number = Math.random,
-): TouchResponseKind {
-  return "soft-acknowledgement";
-}
-
 export function chooseTouchOutcome(
-  temperament: CatTemperament,
   sleeping: boolean,
   random: () => number = Math.random,
 ): TouchOutcome {
-  const response = chooseTouchResponse(temperament, random);
   if (!sleeping) {
-    return { response, disposition: "acknowledge", durationMs: 1_400 };
+    return { disposition: "acknowledge", durationMs: 1_400 };
   }
 
   const wakes = clampRandom(random()) < 0.15;
   return {
-    response,
     disposition: wakes ? "wake" : "remain-asleep",
     durationMs: wakes ? 1_400 : 900,
   };

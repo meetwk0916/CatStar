@@ -18,6 +18,7 @@ export interface CatRoomSceneData {
   showStardust: boolean;
   onInteract: (message: string | null) => void;
   initialInteractionCount?: number;
+  onReady?: (scene: CatRoomScene) => void;
 }
 
 interface CollisionRect {
@@ -38,6 +39,7 @@ type CatAction =
   | "lie"
   | "groom"
   | "stretch";
+type CatReaction = CatAction | "sleep-touch";
 type CollisionConfig = Record<string, CollisionRect>;
 type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
 type CatRoutine =
@@ -204,9 +206,9 @@ const INTENT_ROUTINES: Record<CompanionIntentKind, CatRoutine> = {
   "approach-user": "approachUser",
 };
 
-const TOUCH_ACTIONS: Record<TouchDisposition, CatAction> = {
+const TOUCH_ACTIONS: Record<TouchDisposition, CatReaction> = {
   acknowledge: "interact",
-  "remain-asleep": "sleep",
+  "remain-asleep": "sleep-touch",
   wake: "stretch",
 };
 
@@ -223,7 +225,7 @@ export class CatRoomScene extends Phaser.Scene {
   private manualInteractUntil = 0;
   private pendingInteractionCount = 0;
   private foregroundTransitionStartedAt = 0;
-  private manualInteractAction: CatAction = "interact";
+  private manualInteractAction: CatReaction = "interact";
   private sessionStartedAt = 0;
   private showStardust = false;
   private coatPreset: CatCoatPreset = "GRAY_WHITE_TABBY";
@@ -233,6 +235,8 @@ export class CatRoomScene extends Phaser.Scene {
   private planner: CompanionPlanner = createCompanionPlanner({ temperament: "AFFECTIONATE" });
   private debugRoutine?: CatRoutine;
   private onInteract: (message: string | null) => void = () => {};
+  private onReady: (scene: CatRoomScene) => void = () => {};
+  private acceptsInteractions = false;
 
   constructor() {
     super("cat-room");
@@ -248,6 +252,8 @@ export class CatRoomScene extends Phaser.Scene {
       random: () => Phaser.Math.RND.frac(),
     });
     this.onInteract = data.onInteract;
+    this.onReady = data.onReady ?? (() => {});
+    this.acceptsInteractions = false;
     this.pendingInteractionCount = Math.max(0, Math.floor(data.initialInteractionCount ?? 0));
 
     if (import.meta.env.DEV) {
@@ -289,6 +295,8 @@ export class CatRoomScene extends Phaser.Scene {
     } else {
       this.startReturnEncounter(this.time.now);
     }
+    this.acceptsInteractions = true;
+    this.onReady(this);
   }
 
   update(time: number) {
@@ -298,7 +306,7 @@ export class CatRoomScene extends Phaser.Scene {
 
     if (time < this.manualInteractUntil) {
       this.cat.setVelocity(0, 0);
-      this.playCatAction(this.manualInteractAction);
+      this.playCatReaction(this.manualInteractAction);
       return;
     }
 
@@ -376,11 +384,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const sleeping = this.routine === "floorSleep";
-    const outcome = chooseTouchOutcome(
-      this.temperament,
-      sleeping,
-      () => Phaser.Math.RND.frac(),
-    );
+    const outcome = chooseTouchOutcome(sleeping, () => Phaser.Math.RND.frac());
 
     this.cat.setVelocity(0, 0);
     if (outcome.disposition === "wake") {
@@ -389,13 +393,17 @@ export class CatRoomScene extends Phaser.Scene {
 
     this.manualInteractAction = TOUCH_ACTIONS[outcome.disposition];
     this.manualInteractUntil = this.time.now + outcome.durationMs;
-    this.playCatAction(this.manualInteractAction, true);
+    this.playCatReaction(this.manualInteractAction, true);
     this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
     return outcome.durationMs;
   }
 
-  enqueueInteractions(count = 1) {
+  enqueueInteractions(count = 1): boolean {
+    if (!this.acceptsInteractions) {
+      return false;
+    }
     this.pendingInteractionCount += Math.max(0, Math.floor(count));
+    return true;
   }
 
   private updatePurposefulRoutine(time: number) {
@@ -996,6 +1004,28 @@ export class CatRoomScene extends Phaser.Scene {
         repeat: config.repeat,
       });
     });
+    this.anims.create({
+      key: "cat-sleep-touch-anim",
+      frames: [3, 2, 3, 0].map((frame) => ({ key: "cat-sleep", frame })),
+      frameRate: 6,
+      repeat: 0,
+    });
+  }
+
+  private playCatReaction(action: CatReaction, restart = false) {
+    if (action !== "sleep-touch") {
+      this.playCatAction(action, restart);
+      return;
+    }
+    if (!this.cat) {
+      return;
+    }
+
+    const key = "cat-sleep-touch-anim";
+    if (!restart && this.cat.anims.currentAnim?.key === key) {
+      return;
+    }
+    this.cat.play(key, !restart);
   }
 
   private playCatAction(action: CatAction, restart = false) {
