@@ -74,9 +74,21 @@ test("cat interaction has a keyboard-accessible control and visible response", a
   const interact = page.getByRole("button", { name: "轻轻摸摸小灰", exact: true });
   const canvas = page.locator("canvas");
   await expect(interact).toBeVisible();
+  await expect.poll(() => canvas.count()).toBeGreaterThan(0);
+  const maxCanvasCountDuringStartup = await page.evaluate(async () => {
+    let maxCanvasCount = 0;
+    const deadline = performance.now() + 250;
+    while (performance.now() < deadline) {
+      maxCanvasCount = Math.max(maxCanvasCount, document.querySelectorAll("canvas").length);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+    return maxCanvasCount;
+  });
+  expect(maxCanvasCountDuringStartup).toBe(1);
   const before = await canvas.screenshot();
   await interact.click();
   await page.waitForTimeout(250);
+  expect(await canvas.count()).toBe(1);
   const after = await canvas.screenshot();
   expect(after.equals(before)).toBe(false);
 });

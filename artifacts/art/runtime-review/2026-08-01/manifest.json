@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-08-01T14:23:45.739140+08:00",
+  "capturedAt": "2026-08-01T15:33:39.055776+08:00",
   "viewport": [
     1280,
     720
   ],
-  "sourceFingerprint": "a1e33e0ad9a83c25087bf32fac054d8b01f62f4d573caf806a4efc47d9d28844",
+  "sourceFingerprint": "8655a458a70333976f2d37d9c27d4767a9d2872e747af5e313abd91d53959921",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
