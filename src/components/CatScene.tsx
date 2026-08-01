@@ -1,5 +1,4 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import { getCompanionReaction } from "../domain/catFsm";
 import { getDeliveredLetters, isFinalLetter } from "../domain/letters";
 import type { ICatPassport } from "../types";
 
@@ -25,7 +24,11 @@ export default function CatScene({ passport, now }: CatSceneProps) {
     return `${passport.catName} 正在喵星的小岛上等下一封信抵达。`;
   }, [now, passport]);
 
-  const showReaction = useCallback((message: string) => {
+  const showReaction = useCallback((message: string | null) => {
+    if (!message) {
+      setReaction("");
+      return;
+    }
     setReaction(message);
     window.setTimeout(() => {
       setReaction("");
@@ -33,9 +36,8 @@ export default function CatScene({ passport, now }: CatSceneProps) {
   }, []);
 
   const interactWithCat = useCallback(() => {
-    showReaction(getCompanionReaction("INTERACTING"));
     setInteractionSignal((current) => current + 1);
-  }, [showReaction]);
+  }, []);
 
   return (
     <section className="grid min-w-0 gap-4">
@@ -52,8 +54,8 @@ export default function CatScene({ passport, now }: CatSceneProps) {
       <div className="relative aspect-[16/9] min-h-0 min-w-0 overflow-hidden border-4 border-[#4A3E3D] bg-[#202433] shadow-[4px_4px_0px_0px_#4A3E3D] md:min-h-72">
         <Suspense fallback={<div className="grid h-full place-items-center text-sm font-black text-[#FFFDF9]">星光正在铺好</div>}>
           <PhaserCatScene
-            palette={passport.colorPalette}
-            personality={passport.personality}
+            coatPreset={passport.coatPreset}
+            temperament={passport.temperament}
             showStardust={passport.isFarewellCompleted}
             onInteract={showReaction}
             interactionSignal={interactionSignal}

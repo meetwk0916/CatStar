@@ -1,7 +1,8 @@
 # Cat Animation Spec
 
 **Status:** Current production animation contract
-Last updated: 2026-07-27
+
+Last updated: 2026-08-01
 
 ## Purpose
 
@@ -32,16 +33,60 @@ Animation non-goals:
 
 All action sheets must depict the same cat.
 
-The current default cat identity:
+The Phase 0.1 production target uses one locked silhouette and face across six
+curated **毛色预设** corresponding to the current passport choices. Each
+preset is an art-reviewed combination of color and pattern, not one axis in an
+unrestricted appearance mixer.
+
+The initial **圆润短毛** prototype supports:
+
+1. orange tabby
+2. solid black
+3. solid white
+4. calico
+5. black-and-white tuxedo
+6. gray-and-white tabby
+Coat variation must preserve:
+
+- face and body proportions
+- ear and tail shape
+- paw placement and contact lines
+- action timing and frame composition
+- outline thickness, pixel density, and lighting direction
+
+The current motion master identity:
 
 - small gray-and-white domestic cat
-- round face
-- large warm amber eyes
+- moderately rounded face with believable muzzle and ear placement
+- readable warm amber eyes without mascot-like oversizing
 - gray tabby cap and back
 - white muzzle, chest, and front legs
-- soft rounded body
+- soft but anatomically believable domestic-cat body
 - medium-length striped tail
 - gentle, slightly curious expression
+
+The production style is stylized-natural: motion and body structure should read
+as a real domestic cat first, with only enough facial simplification and
+softening to remain warm and legible at mobile scale. Avoid chibi head size,
+toy-like short legs, and exaggerated eye-to-face ratios.
+
+The gray-and-white master remains the shape and motion reference; it is not the
+only acceptable Phase 0.1 coat appearance.
+
+Phase 0.1 does not vary **体态**. A future body type must be produced as a
+complete motion master across every supported action. Do not stretch, squash,
+or non-uniformly scale an existing sheet to imitate a different body type.
+Future shape expansion should be organized as observable **外形原型**, not cat
+breed selection. Each prototype needs its own complete, art-directed motion
+master before coat presets are applied.
+
+The Phase 0.1 motion master presents a familiar, healthy adult cat. Future
+**纪念年龄感** options may include young, adult, and older appearances selected
+by the user, but must not recreate illness, injury, or end-of-life frailty.
+
+Phase 0.1 has no accessories. Future **纪念配饰** must reproduce a familiar real
+item and remain visually consistent across the complete action repertoire; do
+not introduce costume or collectible layers.
 
 Do not change between actions:
 
@@ -66,12 +111,23 @@ The cat must match the window-room scene:
 - no hard stage spotlight
 - no glow, halo, wings, or sacred aura
 
+## Gaze And Orientation
+
+- Walking, jumping, and eating use a side view so anatomy and contact remain
+  physically believable.
+- Idle and awake rest may use a gentle three-quarter view and occasionally
+  glance toward the user.
+- Interaction may briefly turn the cat toward the user for a blink, head tilt,
+  or soft approach before returning naturally to the prior activity.
+- Do not make the cat stare continuously out of the scene or read as if it is
+  waiting for a command.
+
 ## Sprite Sheet Standard
 
-Runtime sheets live in:
+Runtime sheets live in one directory per coat preset:
 
 ```text
-public/assets/scenes/window-room/cat/
+public/assets/scenes/window-room/cat/{coat-preset}/
 ```
 
 Frame standard:
@@ -90,12 +146,15 @@ All frames in one sheet must have identical dimensions and be laid out horizonta
 
 ```text
 idle.png      4 frames  -> 384x96
+sit.png       4 frames  -> 384x96
 walk.png      8 frames  -> 768x96
-jump.png      5 frames  -> 480x96
+jump.png      6 frames  -> 576x96
 eat.png       6 frames  -> 576x96
 lie.png       4 frames  -> 384x96
 sleep.png     4 frames  -> 384x96
-interact.png  5 frames  -> 480x96
+groom.png     8 frames  -> 768x96
+stretch.png   6 frames  -> 576x96
+interact.png  6 frames  -> 576x96
 ```
 
 If a different frame count is used, update:
@@ -155,6 +214,29 @@ Constraints:
 - foot contact line must stay stable enough to avoid sliding
 - do not fake walk by rotating or translating one idle pose
 
+### Sit / Loaf
+
+Purpose: the main quiet stationary posture so the cat does not spend long
+periods standing.
+
+Target frames: `4`
+
+Loop: yes
+
+Frame intent:
+
+1. settles into a seated or loaf posture
+2. shows a small breath or ear movement
+3. returns near neutral
+4. gives a slow blink or tail-tip movement
+
+Constraints:
+
+- remain awake and gently attentive
+- keep the body grounded without vertical bobbing
+- preserve a readable silhouette at mobile scale
+- transition cleanly to idle, groom, or walking
+
 ### Eat
 
 Purpose: a calm sniff/eat loop at the food-bowl anchor.
@@ -183,7 +265,7 @@ Constraints:
 
 Purpose: short domestic-cat hop between floor and cushion/bench.
 
-Target frames: `5`
+Target frames: `6`
 
 Loop: no
 
@@ -192,8 +274,9 @@ Frame intent:
 1. crouch/anticipation, body compresses
 2. launch, rear legs extend
 3. rising air frame, body stretched
-4. descending, front paws prepare for landing
-5. landing/recovery, body compresses then can return to idle
+4. top/float frame, tail balances
+5. descending, front paws prepare for landing
+6. landing/recovery, body compresses then can return to idle
 
 Constraints:
 
@@ -245,26 +328,85 @@ Constraints:
 - eyes closed or mostly closed
 - breathing should be subtle
 - posture should fit on cushion or floor without clipping
+- a touch response may add an ear flick, tail-tip motion, brief eye opening, or
+  small posture adjustment without forcing the cat to stand
+- waking fully remains a low-probability outcome rather than a guaranteed
+  response to touch
 
-### Interact
+### Groom
 
-Purpose: short response when the user taps/clicks the cat.
+Purpose: add familiar self-directed domestic-cat behavior during quiet room
+time.
 
-Target frames: `5`
+Target frames: `8`
+
+Loop: yes
+
+Frame intent:
+
+1. settles into a stable seated posture
+2. lifts a front paw
+3. licks the paw
+4. brings the paw toward the face
+5. wipes the cheek or ear
+6. returns the paw for another light lick
+7. lowers the paw
+8. settles back into a loop-compatible seated pose
+
+Constraints:
+
+- keep the body mass and planted contact stable
+- use restrained head and paw motion rather than fast repetitive scrubbing
+- do not let the action read as scratching, injury, or distress
+- support a natural exit to sit or idle
+
+### Stretch
+
+Purpose: connect sleep or rest to walking with a grounded waking transition.
+
+Target frames: `6`
 
 Loop: no
 
 Frame intent:
 
-1. notices user/tap, head turns or ears perk
-2. leans forward
+1. rises from rest
+2. reaches the front paws forward
+3. lowers the chest while the hindquarters remain raised
+4. holds a brief full-body stretch
+5. shifts weight forward and releases
+6. returns to a walk-compatible standing pose
+
+Constraints:
+
+- show believable shoulder, spine, and rear-leg extension
+- keep the front paws anchored during the stretch
+- avoid elastic or cartoon deformation
+- transition cleanly from rest and into walking
+
+### Interact
+
+Purpose: short response when the user taps/clicks the cat.
+
+Target frames: `6`
+
+Loop: no
+
+Frame intent:
+
+1. notices user/tap, head turns toward the user or ears perk
+2. leans forward into a gentle three-quarter view
 3. soft rub/nuzzle or happy blink
-4. returns toward neutral
-5. settles back to idle-compatible pose
+4. tail or cheek follow-through
+5. returns toward neutral
+6. settles back to idle-compatible pose
 
 Constraints:
 
 - must feel like companionship, not performance
+- render the current shared acknowledgement as a soft head turn and blink
+- do not name distinct responses until their production motion is available
+- do not depict hissing, fleeing, startling, or rejection
 - avoid hearts, rewards, sparkles from the cat itself
 - no speech bubble baked into art
 - final frame should transition cleanly back to idle
@@ -289,11 +431,16 @@ Before accepting a sheet, verify:
 
 `src/game/CatRoomScene.ts` expects:
 
-- one PNG sprite sheet per action
+- one PNG sprite sheet per action for each of the six coat presets, including
+  the current `sit`, `groom`, and `stretch` sheets
 - `96x96` frames by default
 - animation metadata in `cat.animations.json`
 - bottom-center visual alignment
 - default right-facing cat
+
+`src/components/PhaserCatScene.tsx` only owns the React lifecycle for the
+Phaser game and does not define animation, coordinate, physics, or companion
+policy.
 
 Physics body currently assumes a standing cat frame:
 
@@ -318,13 +465,22 @@ candidate source sheets. Current runtime-to-source mapping lives in
 [`../art/runtime-map.md`](../art/runtime-map.md), and the current implementation
 state lives in [`../status/current.md`](../status/current.md).
 
+The **外形原型** and curated **毛色预设** model is recorded in
+[`ADR-0003`](../adr/0003-build-cat-identity-from-appearance-prototypes.md).
+
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
-experiment for the `idle`, `walk`, `jump`, `sleep`, and `interact` subset. It
-validates frame counts, anchors, and Phaser metadata for those actions; it is
-not the sole generator for the complete production contract and must not be
-used as the source of production runtime cat art. The six-frame `eat` sheet is
-owned by `scripts/compose_product_cat_eat_v3.py`, and the four-frame `lie`
-sheet is owned by `scripts/compose_product_cat_lie_v4.py`. Production work
-should start from an approved high-fidelity cat mother asset, then create
-hand-authored or art-directed keyframes for each action while preserving the
-same frame size, anchor, and character lock unless Phaser is recalibrated.
+experiment for validating frame counts, anchors, and Phaser metadata. It must
+not be used as the source of production runtime cat art. Production work should
+start from an approved high-fidelity cat mother asset, then create hand-authored
+or art-directed keyframes for each action while preserving the same frame size,
+anchor, and character lock unless Phaser is recalibrated.
+
+Production order:
+
+1. approve the stylized-natural gray-and-white tabby mother asset;
+2. validate a three-action quality slice in the real room at mobile scale:
+   `sit/idle`, `walk`, and `interact`;
+3. after the slice passes, complete and validate the remaining seven action
+   classes;
+4. lock face, anatomy, anchors, lighting, and motion timing;
+5. derive the remaining five **毛色预设** without changing the motion master.

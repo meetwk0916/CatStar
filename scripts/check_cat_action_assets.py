@@ -24,6 +24,26 @@ MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
 ASSET_DIR = Path("public/assets/scenes/window-room/cat")
 SPEC_PATH = ASSET_DIR / "cat.animations.json"
+CAT_PRESETS = (
+    "gray-white-tabby",
+    "orange-tabby",
+    "solid-black",
+    "solid-white",
+    "calico",
+    "tuxedo",
+)
+REQUIRED_ACTIONS = {
+    "idle",
+    "sit",
+    "walk",
+    "jump",
+    "sleep",
+    "interact",
+    "eat",
+    "lie",
+    "groom",
+    "stretch",
+}
 
 
 def iter_component_sizes(alpha: Image.Image) -> Iterable[int]:
@@ -67,18 +87,19 @@ def visible_area(alpha: Image.Image) -> int:
     return sum(alpha.histogram()[ALPHA_THRESHOLD + 1 :])
 
 
-def validate_action(action: str, config: dict[str, object]) -> list[str]:
+def validate_action(preset: str, action: str, config: dict[str, object]) -> list[str]:
     failures: list[str] = []
     frame_count = int(config["frames"])
-    image_path = ASSET_DIR / str(config["file"])
+    label = f"{preset}/{action}"
+    image_path = ASSET_DIR / preset / str(config["file"])
     expected_size = (FRAME * frame_count, FRAME)
 
     if not image_path.exists():
-        return [f"{action}: missing sheet {image_path}"]
+        return [f"{label}: missing sheet {image_path}"]
 
     image = Image.open(image_path).convert("RGBA")
     if image.size != expected_size:
-        failures.append(f"{action}: expected {expected_size}, got {image.size}")
+        failures.append(f"{label}: expected {expected_size}, got {image.size}")
         return failures
 
     areas: list[int] = []
@@ -89,7 +110,7 @@ def validate_action(action: str, config: dict[str, object]) -> list[str]:
         alpha = frame.getchannel("A")
         bbox = alpha.getbbox()
         if bbox is None:
-            failures.append(f"{action}[{frame_index}]: empty frame")
+            failures.append(f"{label}[{frame_index}]: empty frame")
             continue
 
         area = visible_area(alpha)
@@ -97,9 +118,9 @@ def validate_action(action: str, config: dict[str, object]) -> list[str]:
         small_island_area = sum(size for size in components[1:] if size < MAX_SMALL_COMPONENT_AREA)
 
         if area < MIN_FRAME_AREA:
-            failures.append(f"{action}[{frame_index}]: visible area too small: {area}")
+            failures.append(f"{label}[{frame_index}]: visible area too small: {area}")
         if small_island_area:
-            failures.append(f"{action}[{frame_index}]: small detached pixel islands: {small_island_area}px")
+            failures.append(f"{label}[{frame_index}]: small detached pixel islands: {small_island_area}px")
 
         areas.append(area)
         bottoms.append(bbox[3])
@@ -109,10 +130,10 @@ def validate_action(action: str, config: dict[str, object]) -> list[str]:
         max_area = max(areas)
         area_range_ratio = (max_area - min_area) / max_area
         if area_range_ratio > MAX_AREA_RANGE_RATIO:
-            failures.append(f"{action}: frame area range too high: {area_range_ratio:.2%}")
+            failures.append(f"{label}: frame area range too high: {area_range_ratio:.2%}")
 
     if bottoms and max(bottoms) - min(bottoms) > MAX_BOTTOM_RANGE:
-        failures.append(f"{action}: baseline range too high: {max(bottoms) - min(bottoms)}px")
+        failures.append(f"{label}: baseline range too high: {max(bottoms) - min(bottoms)}px")
 
     return failures
 
@@ -123,9 +144,15 @@ def main() -> None:
 
     if spec.get("frameWidth") != FRAME or spec.get("frameHeight") != FRAME:
         failures.append(f"cat.animations.json: expected {FRAME}x{FRAME} frame contract")
+    if set(spec.get("actions", {})) != REQUIRED_ACTIONS:
+        failures.append(
+            "cat.animations.json: expected exactly ten actions: "
+            + ", ".join(sorted(REQUIRED_ACTIONS))
+        )
 
-    for action, config in spec["actions"].items():
-        failures.extend(validate_action(action, config))
+    for preset in CAT_PRESETS:
+        for action, config in spec["actions"].items():
+            failures.extend(validate_action(preset, action, config))
 
     if failures:
         print("Cat action asset check failed:")

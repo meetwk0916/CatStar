@@ -22,10 +22,16 @@ test("primary actions remain legible and implemented memorial traits expose sele
   });
 
   expect(colors.color).not.toBe(colors.backgroundColor);
-  await expect(page.getByRole("group", { name: "毛色" })).toHaveCount(0);
-  await expect(page.getByText(/当前原型统一使用灰白小猫形象/)).toBeVisible();
-  await expect(page.getByRole("button", { name: /喜欢靠近/ })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: /安静独处/ })).toHaveAttribute("aria-pressed", "false");
+  const coatPresets = page.getByRole("group", { name: "毛色预设" });
+  await expect(coatPresets.getByRole("button")).toHaveCount(6);
+  await expect(coatPresets.getByRole("button", { name: "灰白虎斑" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /亲近温柔/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /安静慢热/ })).toHaveAttribute("aria-pressed", "false");
+
+  await coatPresets.getByRole("button", { name: "橘色虎斑" }).click();
+  await page.getByRole("button", { name: /安静慢热/ }).click();
+  await expect(coatPresets.getByRole("button", { name: "橘色虎斑" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /安静慢热/ })).toHaveAttribute("aria-pressed", "true");
 });
 
 for (const width of [320, 375, 414, 768]) {
@@ -63,12 +69,16 @@ test("mailbox uses one focus-managed modal dialog", async ({ page }) => {
   await expect(dialog).toBeHidden();
 });
 
-test("cat interaction has a keyboard-accessible control and live response", async ({ page }) => {
+test("cat interaction has a keyboard-accessible control and visible response", async ({ page }) => {
   await registerPassport(page);
   const interact = page.getByRole("button", { name: "轻轻摸摸小灰", exact: true });
+  const canvas = page.locator("canvas");
   await expect(interact).toBeVisible();
+  const before = await canvas.screenshot();
   await interact.click();
-  await expect(page.getByRole("status")).toContainText(/我听见你啦|轻轻摸摸也收到啦/);
+  await page.waitForTimeout(250);
+  const after = await canvas.screenshot();
+  expect(after.equals(before)).toBe(false);
 });
 
 test("passport and read progress survive a reload", async ({ page }) => {

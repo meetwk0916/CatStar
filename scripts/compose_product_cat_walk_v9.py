@@ -11,7 +11,7 @@ from artifact_paths import ARTIFACTS_ART_ROOT
 
 
 FRAME = 96
-OUT_DIR = ARTIFACTS_ART_ROOT / "candidates" / "active" / "product-cat-actions-v9"
+OUT_DIR = ARTIFACTS_ART_ROOT / "candidates" / "archive" / "product-cat-actions-v9"
 SOURCE = OUT_DIR / "sources" / "walk-slow-cat-step-source.png"
 SHEET_DIR = OUT_DIR / "sprite-sheets-96"
 NORMALIZED_DIR = OUT_DIR / "normalized-96"

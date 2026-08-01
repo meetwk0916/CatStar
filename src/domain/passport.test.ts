@@ -1,12 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { FINAL_LETTER_ID, LETTERS } from "./letters";
-import { completeFarewell, createPassport, markLetterRead, parsePassport } from "./passport";
+import {
+  completeFarewell,
+  createPassport,
+  getLocalDateInputValue,
+  isFuturePassedDate,
+  markLetterRead,
+  parsePassport,
+} from "./passport";
 
 const baseInput = {
   catName: " 小星 ",
   ownerName: " 家人 ",
-  colorPalette: "GRAY_WHITE" as const,
-  personality: "CLINGY" as const,
+  coatPreset: "GRAY_WHITE_TABBY" as const,
+  temperament: "AFFECTIONATE" as const,
   favoriteSnack: " 小鱼干 ",
   passedDate: "2026-07-01",
 };
@@ -17,8 +24,8 @@ function storedPassport(overrides: Record<string, unknown> = {}) {
     id: "passport-1",
     catName: "小星",
     ownerName: "家人",
-    colorPalette: "GRAY_WHITE",
-    personality: "CLINGY",
+    coatPreset: "GRAY_WHITE_TABBY",
+    temperament: "AFFECTIONATE",
     favoriteSnack: "小鱼干",
     passedDate: "2026-07-01",
     createdAt: 1_700_000_000_000,
@@ -30,7 +37,8 @@ function storedPassport(overrides: Record<string, unknown> = {}) {
 
 describe("passport domain", () => {
   it("creates a versioned passport with normalized required text", () => {
-    const passport = createPassport(baseInput, 1234);
+    const createdAt = new Date(2026, 6, 30, 12, 0, 0).getTime();
+    const passport = createPassport(baseInput, createdAt);
 
     expect(passport).toMatchObject({
       schemaVersion: 1,
@@ -38,7 +46,7 @@ describe("passport domain", () => {
       ownerName: "家人",
       favoriteSnack: "小鱼干",
       passedDate: "2026-07-01",
-      createdAt: 1234,
+      createdAt,
       readLetters: [],
       isFarewellCompleted: false,
     });
@@ -49,9 +57,28 @@ describe("passport domain", () => {
     expect(() => createPassport({ ...baseInput, catName: "  " })).toThrow("catName");
   });
 
+  it("identifies future memorial departure dates using the local calendar day", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(getLocalDateInputValue(now)).toBe("2026-07-30");
+    expect(isFuturePassedDate("2026-07-31", now)).toBe(true);
+    expect(isFuturePassedDate("2026-07-30", now)).toBe(false);
+    expect(isFuturePassedDate("", now)).toBe(false);
+  });
+
+  it("rejects future memorial departure dates at passport creation", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(() =>
+      createPassport({ ...baseInput, passedDate: "2026-07-31" }, now),
+    ).toThrow("passedDate");
+  });
+
   it("migrates a legacy record and applies safe defaults to unsupported traits", () => {
     const legacy = storedPassport({
       schemaVersion: undefined,
+      coatPreset: undefined,
+      temperament: undefined,
       colorPalette: "BLUE",
       personality: "UNKNOWN",
       passedDate: "2026-02-30",
@@ -59,10 +86,18 @@ describe("passport domain", () => {
 
     expect(parsePassport(legacy)).toMatchObject({
       schemaVersion: 1,
-      colorPalette: "GRAY_WHITE",
-      personality: "CLINGY",
+      coatPreset: "GRAY_WHITE_TABBY",
+      temperament: "AFFECTIONATE",
       passedDate: "",
     });
+  });
+
+  it("clears future memorial departure dates while parsing persisted data", () => {
+    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
+
+    expect(
+      parsePassport(storedPassport({ passedDate: "2026-07-31" }), now),
+    ).toMatchObject({ passedDate: "" });
   });
 
   it("filters unknown and duplicate letter ids while loading", () => {

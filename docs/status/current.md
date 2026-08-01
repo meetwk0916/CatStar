@@ -1,36 +1,43 @@
 # CatStar Current Status
 
 **Status:** Living implementation ledger
-**Last aligned:** 2026-07-27
+
+**Last aligned:** 2026-08-01
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
 asset provenance; Git history owns completed change history.
 
-## Current release
+## Current local implementation
 
 CatStar Phase 0.1 is a working local-first internal H5 prototype for
 **喵星来信** / **Letters from Cat Star**. It is not yet a public beta or
 production-quality release.
+
+This ledger describes the locally verified implementation. Git integration,
+pull-request, deployment, and production status are separate release facts and
+must not be inferred from this document.
 
 The current implementation includes:
 
 - React, TypeScript, Vite, and Tailwind CSS application shell.
 - Lazy-loaded Phaser room scene embedded in React.
 - One local memorial passport and local letter-reading progress.
-- Prewritten Phase 0.1 letter script with delayed device-local delivery.
+- Prewritten Phase 0 letter script with delayed device-local delivery.
 - Final-letter ordering, farewell choice, **星河陪伴**, and **信箱封存**.
 - Re-registration with confirmation.
 - Runtime image assets under `public/assets/scenes/window-room/`.
-- Environment-aware floor, window-bench, cat-bed, food-bowl, and blanket routines.
-- Personality-specific routine order, duration, and movement pace behind a
-  testable domain policy.
-- Dedicated idle, walk, jump, eat, awake-rest, sleep, and interaction animation contracts.
-- Focus-managed dialogs, keyboard cat interaction, and mobile layouts covered
-  by browser regression tests.
-- Repository configuration adds browser regression and bundle-budget checks
-  plus weekly npm/Actions Dependabot updates. These run on GitHub only after
-  the configuration is committed and integrated there.
+- Six passport-selectable **毛色预设** sharing one locked gray-white motion
+  master and stable action timing.
+- A ten-action runtime contract: idle, sit, walk, jump, eat, awake rest, deep
+  sleep, groom, stretch, and interact.
+- An engine-independent **陪伴例程** planner with temperament weighting,
+  recent-intent suppression, awake session opening, dwell windows, and
+  zone-aware rendering.
+- Environment-aware floor, window-bench, cat-bed, food-bowl, blanket, plant,
+  and one-shot foreground-approach routines.
+- Reliable visible touch response, occasional **陪伴轻语**, and low-probability
+  waking from deep sleep.
 
 Exact runtime art provenance is maintained in
 [`../art/runtime-map.md`](../art/runtime-map.md).
@@ -57,42 +64,31 @@ npm run build
 npm run check:bundle
 ```
 
-Last verified on 2026-07-27:
-
-- Runtime cat asset structure passed.
-- Five browser-review screenshots were regenerated and bound to the current
-  runtime-input fingerprint.
-- Vitest passed 6 test files and 31 tests.
-- Playwright passed 10 flows, including 320, 375, 414, and 768 px layouts,
-  persistence, mailbox/farewell, reset, focus, and keyboard interaction.
-- TypeScript and the Vite production build passed.
-- `npm audit` reports zero known vulnerabilities after moving the build chain
-  to Vite 8.1.5 and `@vitejs/plugin-react` 6.0.4.
-- The entry JavaScript is about 69 kB gzip. The lazy Phaser scene is about
-  323 kB gzip and remains within ADR-0002's internal-prototype budget.
-- Runtime assets were reduced from about 4.4 MB to about 0.8 MB by storing the
-  room layers at their actual 640x360 runtime size.
-
-The 2026-07-27 internal-prototype blockers found by the audit are fixed. No
-automated check substitutes for the manual emotional-tone and low-end-device
-review in the QA checklist.
+The accepted runtime-evidence set is owned by
+[`../art/runtime-map.md`](../art/runtime-map.md). Current test and build results
+belong in the gate or CI output rather than this mutable implementation ledger.
 
 Record durable behavior decisions as ADRs rather than adding historical commit
 hashes or branch information to this file.
 
-## Work before broader release
+## Remaining work
 
-- Complete manual QA on representative low-end phones and review the grief
-  language with humans before any public beta.
-- Re-evaluate whether Phaser remains the long-term H5 scene engine using
-  ADR-0002's public-beta exit criteria.
-- Replace generated candidate motion with hand-authored final art.
+- Polish responsive layout after browser review on mobile and desktop.
+- Validate Phaser against the mobile scene-performance gate before treating
+  engine migration as active work.
+- Replace the reviewed generated motion candidates with commissioned
+  hand-authored final art while preserving the validated contract.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
+- Art-direct the five derived coat presets beyond their current deterministic
+  working treatment, without changing anatomy, anchors, or timing.
+- Defer bespoke **自发玩耍** sheets until after the ten core action classes;
+  reuse walk and interact motion for Phase 0.1 **主动靠近**.
 - Expand zone-aware actions while preserving the current environment contract.
 - Add one-way/top-only platform support before enabling free-form landings.
 - Complete manual pixel cleanup and interaction timing polish before art lock.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.
-- Migrate or prune the 30+ MB candidate archive only through an explicit,
-  recoverable asset-retention change; do not add more retired binaries by default.
+- Review Phaser chunk size after final sprite sheets are introduced.
+- Remove the external Playwright CLI dependency from runtime screenshot
+  regeneration, or add it as an explicit project-managed development tool.

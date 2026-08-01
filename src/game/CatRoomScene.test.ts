@@ -1,57 +1,228 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("phaser", () => ({ Scene: class Scene {} }));
+vi.mock("phaser", () => ({
+  Scene: class Scene {},
+  Math: {
+    Between: vi.fn(() => 900),
+    Clamp: (value: number, min: number, max: number) => Math.min(Math.max(value, min), max),
+    Linear: (from: number, to: number, progress: number) => from + (to - from) * progress,
+    Easing: { Sine: { InOut: (value: number) => value } },
+    RND: { frac: vi.fn(() => 0) },
+  },
+}));
 
 import { CatRoomScene } from "./CatRoomScene";
+import * as Phaser from "phaser";
 
 interface SceneInternals {
   cat: {
-    angle: number;
+    anims: { currentAnim?: { key: string } };
     body: { setAllowGravity: ReturnType<typeof vi.fn> };
+    play: ReturnType<typeof vi.fn>;
     x: number;
+    setDepth: ReturnType<typeof vi.fn>;
+    setFlipX: ReturnType<typeof vi.fn>;
+    setScale: ReturnType<typeof vi.fn>;
+    setX: ReturnType<typeof vi.fn>;
     setY: ReturnType<typeof vi.fn>;
     setVelocity: ReturnType<typeof vi.fn>;
+    setVelocityX: ReturnType<typeof vi.fn>;
   };
   scriptedJump?: object;
   routine: string;
   routineHoldUntil: number;
   manualInteractUntil: number;
-  personality: "CLINGY";
+  manualInteractAction: string;
+  pendingInteractionCount: number;
+  acceptsInteractions: boolean;
+  foregroundTransitionStartedAt: number;
+  currentZone: string;
+  temperament: "AFFECTIONATE";
   time: { now: number };
-  tweens: { add: ReturnType<typeof vi.fn> };
+  tweens: { killTweensOf: ReturnType<typeof vi.fn> };
   playCatAction: ReturnType<typeof vi.fn>;
+  onInteract: ReturnType<typeof vi.fn>;
+  updatePurposefulRoutine: (time: number) => void;
 }
+
+function createCat(x = 320): SceneInternals["cat"] {
+  return {
+    anims: {},
+    body: { setAllowGravity: vi.fn() },
+    play: vi.fn(),
+    x,
+    setDepth: vi.fn(),
+    setFlipX: vi.fn(),
+    setScale: vi.fn(),
+    setX: vi.fn(),
+    setY: vi.fn(),
+    setVelocity: vi.fn(),
+    setVelocityX: vi.fn(),
+  };
+}
+
+afterEach(() => {
+  vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0);
+});
 
 describe("CatRoomScene interactions", () => {
   it("cancels a scripted jump before responding in place", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;
-    internals.cat = {
-      angle: 0,
-      body: { setAllowGravity: vi.fn() },
-      x: 347,
-      setY: vi.fn(),
-      setVelocity: vi.fn(),
-    };
+    internals.cat = createCat(347);
     internals.scriptedJump = {};
     internals.routine = "perchWindowBench";
     internals.routineHoldUntil = 0;
     internals.manualInteractUntil = 0;
-    internals.personality = "CLINGY";
+    internals.currentZone = "window-bench";
+    internals.temperament = "AFFECTIONATE";
     internals.time = { now: 1000 };
-    internals.tweens = { add: vi.fn() };
+    internals.tweens = { killTweensOf: vi.fn() };
     internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
 
-    scene.triggerInteraction();
+    const durationMs = scene.interact();
 
     expect(internals.scriptedJump).toBeUndefined();
     expect(internals.cat.x).toBe(347);
     expect(internals.cat.body.setAllowGravity).toHaveBeenCalledWith(false);
     expect(internals.cat.setY).toHaveBeenCalledWith(225);
+    expect(internals.currentZone).toBe("floor");
     expect(internals.routine).toBe("floorPause");
     expect(internals.routineHoldUntil).toBeGreaterThan(1000);
-    expect(internals.manualInteractUntil).toBe(2400);
+    expect(internals.manualInteractUntil).toBe(2700);
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
+    expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
+    expect(internals.onInteract).toHaveBeenCalledTimes(1);
+    expect(durationMs).toBe(1_700);
+  });
+
+  it("moves a waking sleep response into the floor pause routine", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorSleep";
+    internals.routineHoldUntil = 10_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.routineHoldUntil).toBe(1900);
+    expect(internals.manualInteractAction).toBe("stretch");
+    expect(internals.manualInteractUntil).toBe(2400);
+  });
+
+  it("uses the brief existing-frame response when a full acknowledgement is not selected", () => {
+    vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.9);
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorPause";
+    internals.routineHoldUntil = 0;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    expect(scene.interact()).toBe(700);
+    expect(internals.manualInteractAction).toBe("interact-brief");
+    expect(internals.cat.play).toHaveBeenCalledWith("cat-interact-brief-anim", false);
+    expect(internals.manualInteractUntil).toBe(1700);
+  });
+
+  it("plays the dedicated sleep twitch without waking", () => {
+    vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.5);
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorSleep";
+    internals.routineHoldUntil = 10_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.routine).toBe("floorSleep");
+    expect(internals.manualInteractAction).toBe("sleep-touch");
+    expect(internals.cat.play).toHaveBeenCalledWith("cat-sleep-touch-anim", false);
+    expect(internals.manualInteractUntil).toBe(1900);
+  });
+
+  it("owns queued interaction timing inside the scene", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorPause";
+    internals.routineHoldUntil = 0;
+    internals.manualInteractUntil = 0;
+    internals.pendingInteractionCount = 0;
+    internals.acceptsInteractions = false;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    expect(scene.enqueueInteractions(2)).toBe(false);
+    expect(internals.pendingInteractionCount).toBe(0);
+
+    internals.acceptsInteractions = true;
+    expect(scene.enqueueInteractions(2)).toBe(true);
+    scene.update(1000);
+    expect(internals.pendingInteractionCount).toBe(1);
+
+    scene.update(2000);
+    expect(internals.pendingInteractionCount).toBe(1);
+
+    internals.time.now = 2700;
+    scene.update(2700);
+    expect(internals.pendingInteractionCount).toBe(0);
+    expect(internals.manualInteractUntil).toBe(4400);
+  });
+
+  it("approaches the foreground and returns to floor scale and depth", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(412);
+    internals.routine = "approachUser";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.playCatAction = vi.fn();
+
+    internals.updatePurposefulRoutine(1000);
+    expect(internals.routine).toBe("approachForeground");
+
+    internals.updatePurposefulRoutine(1760);
+    expect(internals.cat.setY).toHaveBeenLastCalledWith(270);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1.18);
+    expect(internals.cat.setDepth).toHaveBeenLastCalledWith(7);
+    expect(internals.routine).toBe("acknowledgeUser");
+
+    internals.updatePurposefulRoutine(internals.routineHoldUntil);
+    expect(internals.routine).toBe("returnFromForeground");
+    internals.updatePurposefulRoutine(internals.routineHoldUntil + 760);
+    expect(internals.cat.setY).toHaveBeenLastCalledWith(225);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(88 / 96);
+    expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
+    expect(internals.routine).toBe("floorPause");
   });
 });

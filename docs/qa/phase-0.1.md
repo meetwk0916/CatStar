@@ -1,7 +1,8 @@
 # CatStar Phase 0.1 QA
 
-**Status:** Current internal-prototype acceptance checklist
-Last updated: 2026-07-27
+**Status:** Current manual acceptance checklist
+
+Last updated: 2026-07-30
 
 ## Scope
 
@@ -24,23 +25,17 @@ npm run dev
 Open `http://127.0.0.1:5173/` on desktop and at 320, 375, 414, and 768 px
 browser viewport widths.
 
-Run the automated browser checks with the local Chrome installation:
+Run the automated browser and bundle checks:
 
 ```bash
 npm run test:e2e
-```
-
-After a production build, enforce the accepted internal-prototype download
-budget:
-
-```bash
 npm run build
 npm run check:bundle
 ```
 
-The browser checks are release-blocking for the internal prototype. The saved
-runtime-review screenshots remain art evidence and do not replace interaction,
-responsive, or accessibility checks.
+These checks are release-blocking for the internal prototype. Saved runtime
+screenshots remain art evidence and do not replace responsive, interaction, or
+accessibility checks.
 
 ## Checklist
 
@@ -48,7 +43,8 @@ responsive, or accessibility checks.
 
 - Open a fresh browser profile or clear `localStorage`.
 - Confirm the onboarding form appears.
-- Fill cat name, family address name, personality, favorite snack, and passed date.
+- Fill cat name, family address name, one of the six coat presets, companion
+  temperament, favorite snack, and optionally passed date.
 - Submit the form.
 - Confirm the main page shows the created passport.
 - Refresh the page.
@@ -62,10 +58,34 @@ responsive, or accessibility checks.
   onto the perch, rests, and returns to the floor without floating.
 - Confirm the food-bowl routine uses the eating animation.
 - Confirm cat-bed and blanket routines use awake resting rather than deep sleep.
+- Use the development routes `?catstarRoutine=floorGroom`,
+  `?catstarRoutine=floorStretch`, and `?catstarRoutine=floorSleep`; confirm
+  grooming, stretching, and deep sleep each use their dedicated sheet.
+- Use `?catstarRoutine=approachUser`; confirm the cat approaches once, briefly
+  acknowledges the foreground, and resumes without an alert or demand.
 - Click or tap the cat.
-- Confirm the cat reacts in place without a vertical jump and a short companion
-  message appears.
+- Confirm the cat always reacts visibly in place without a vertical jump.
+- Repeat the touch several times; confirm a short companion whisper appears
+  only occasionally rather than after every touch.
+- Confirm touching during deep sleep produces a small visible response and
+  usually does not wake the cat.
+- Register at least one light and one dark coat preset; confirm both load the
+  same action timing and remain readable in the room.
 - Confirm farewell-completed passports show stardust particles around the scene.
+
+### Cat Scene Performance
+
+- Run the scene on a representative mid-range phone for 60 seconds.
+- Confirm the scene becomes interactive within 3 seconds after entering the
+  main page.
+- Confirm companion motion remains at or above 30 FPS for most of the run.
+- Confirm there is no crash, sustained freeze, or failed touch interaction.
+- Confirm the cat's silhouette, face direction, and current action remain
+  readable at mobile width without camera zoom.
+- Confirm the touch target is forgiving without making the cat appear larger
+  than its believable room scale.
+- Keep Phaser unless one or more of these checks repeatedly fails; a single
+  transient failure is not sufficient evidence for an engine migration.
 
 ### Mailbox Delivery
 

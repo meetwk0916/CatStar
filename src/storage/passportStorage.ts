@@ -3,6 +3,9 @@ import type { ICatPassport } from "../types";
 
 const STORAGE_KEY = "catstar.passport.v1";
 
+export { createPassport } from "../domain/passport";
+export type { PassportInput } from "../domain/passport";
+
 export function loadPassport(): ICatPassport | null {
   const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
@@ -10,7 +13,11 @@ export function loadPassport(): ICatPassport | null {
   }
 
   try {
-    return parsePassport(JSON.parse(raw));
+    const parsed = parsePassport(JSON.parse(raw));
+    if (!parsed) {
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }

@@ -8,7 +8,7 @@ Generated binaries and processing evidence live under `artifacts/art/`.
 Runtime cat sheets live in:
 
 ```text
-public/assets/scenes/window-room/cat/
+public/assets/scenes/window-room/cat/{coat-preset}/
 ```
 
 Each runtime sheet must follow the `96x96` bottom-center action contract defined
@@ -53,9 +53,11 @@ Regenerate browser review screenshots with:
 npm run review:runtime
 ```
 
-The script starts a local Vite server, injects a review-only local passport, and
-captures default walking plus the window bench, cat bed, food bowl, and blanket
-debug routines.
+The capture command requires a `playwright` CLI on `PATH`; it uses the Chrome
+channel by default and can be overridden with `CATSTAR_PLAYWRIGHT_CHANNEL`.
+It starts a local Vite server, injects a review-only local passport, and
+captures nine states: default movement, window bench, cat bed, food bowl,
+blanket, grooming, stretching, deep sleep, and active approach.
 
 Validate the existing screenshots without starting a browser with:
 
