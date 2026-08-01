@@ -2,43 +2,64 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("phaser", () => ({
   Scene: class Scene {},
-  Math: { Between: vi.fn(() => 900), RND: { frac: vi.fn(() => 0) } },
+  Math: {
+    Between: vi.fn(() => 900),
+    Clamp: (value: number, min: number, max: number) => Math.min(Math.max(value, min), max),
+    Linear: (from: number, to: number, progress: number) => from + (to - from) * progress,
+    Easing: { Sine: { InOut: (value: number) => value } },
+    RND: { frac: vi.fn(() => 0) },
+  },
 }));
 
 import { CatRoomScene } from "./CatRoomScene";
 
 interface SceneInternals {
   cat: {
-    angle: number;
     body: { setAllowGravity: ReturnType<typeof vi.fn> };
     x: number;
+    setDepth: ReturnType<typeof vi.fn>;
+    setFlipX: ReturnType<typeof vi.fn>;
+    setScale: ReturnType<typeof vi.fn>;
+    setX: ReturnType<typeof vi.fn>;
     setY: ReturnType<typeof vi.fn>;
     setVelocity: ReturnType<typeof vi.fn>;
+    setVelocityX: ReturnType<typeof vi.fn>;
   };
   scriptedJump?: object;
   routine: string;
   routineHoldUntil: number;
   manualInteractUntil: number;
   manualInteractAction: string;
+  pendingInteractionCount: number;
+  foregroundTransitionStartedAt: number;
   currentZone: string;
   temperament: "AFFECTIONATE";
   time: { now: number };
-  tweens: { add: ReturnType<typeof vi.fn>; killTweensOf: ReturnType<typeof vi.fn> };
+  tweens: { killTweensOf: ReturnType<typeof vi.fn> };
   playCatAction: ReturnType<typeof vi.fn>;
   onInteract: ReturnType<typeof vi.fn>;
+  updatePurposefulRoutine: (time: number) => void;
+}
+
+function createCat(x = 320): SceneInternals["cat"] {
+  return {
+    body: { setAllowGravity: vi.fn() },
+    x,
+    setDepth: vi.fn(),
+    setFlipX: vi.fn(),
+    setScale: vi.fn(),
+    setX: vi.fn(),
+    setY: vi.fn(),
+    setVelocity: vi.fn(),
+    setVelocityX: vi.fn(),
+  };
 }
 
 describe("CatRoomScene interactions", () => {
   it("cancels a scripted jump before responding in place", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;
-    internals.cat = {
-      angle: 0,
-      body: { setAllowGravity: vi.fn() },
-      x: 347,
-      setY: vi.fn(),
-      setVelocity: vi.fn(),
-    };
+    internals.cat = createCat(347);
     internals.scriptedJump = {};
     internals.routine = "perchWindowBench";
     internals.routineHoldUntil = 0;
@@ -46,7 +67,7 @@ describe("CatRoomScene interactions", () => {
     internals.currentZone = "window-bench";
     internals.temperament = "AFFECTIONATE";
     internals.time = { now: 1000 };
-    internals.tweens = { add: vi.fn(), killTweensOf: vi.fn() };
+    internals.tweens = { killTweensOf: vi.fn() };
     internals.playCatAction = vi.fn();
     internals.onInteract = vi.fn();
 
@@ -70,20 +91,14 @@ describe("CatRoomScene interactions", () => {
   it("moves a waking sleep response into the floor pause routine", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;
-    internals.cat = {
-      angle: 0,
-      body: { setAllowGravity: vi.fn() },
-      x: 320,
-      setY: vi.fn(),
-      setVelocity: vi.fn(),
-    };
+    internals.cat = createCat();
     internals.routine = "floorSleep";
     internals.routineHoldUntil = 10_000;
     internals.manualInteractUntil = 0;
     internals.currentZone = "floor";
     internals.temperament = "AFFECTIONATE";
     internals.time = { now: 1000 };
-    internals.tweens = { add: vi.fn(), killTweensOf: vi.fn() };
+    internals.tweens = { killTweensOf: vi.fn() };
     internals.playCatAction = vi.fn();
     internals.onInteract = vi.fn();
 
@@ -93,5 +108,62 @@ describe("CatRoomScene interactions", () => {
     expect(internals.routineHoldUntil).toBe(1900);
     expect(internals.manualInteractAction).toBe("stretch");
     expect(internals.manualInteractUntil).toBe(2400);
+  });
+
+  it("owns queued interaction timing inside the scene", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorPause";
+    internals.routineHoldUntil = 0;
+    internals.manualInteractUntil = 0;
+    internals.pendingInteractionCount = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.enqueueInteractions(2);
+    scene.update(1000);
+    expect(internals.pendingInteractionCount).toBe(1);
+
+    scene.update(2000);
+    expect(internals.pendingInteractionCount).toBe(1);
+
+    internals.time.now = 2400;
+    scene.update(2400);
+    expect(internals.pendingInteractionCount).toBe(0);
+    expect(internals.manualInteractUntil).toBe(3800);
+  });
+
+  it("approaches the foreground and returns to floor scale and depth", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(412);
+    internals.routine = "approachUser";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.playCatAction = vi.fn();
+
+    internals.updatePurposefulRoutine(1000);
+    expect(internals.routine).toBe("approachForeground");
+
+    internals.updatePurposefulRoutine(1760);
+    expect(internals.cat.setY).toHaveBeenLastCalledWith(270);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1.18);
+    expect(internals.cat.setDepth).toHaveBeenLastCalledWith(7);
+    expect(internals.routine).toBe("acknowledgeUser");
+
+    internals.updatePurposefulRoutine(internals.routineHoldUntil);
+    expect(internals.routine).toBe("returnFromForeground");
+    internals.updatePurposefulRoutine(internals.routineHoldUntil + 760);
+    expect(internals.cat.setY).toHaveBeenLastCalledWith(225);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(88 / 96);
+    expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
+    expect(internals.routine).toBe("floorPause");
   });
 });

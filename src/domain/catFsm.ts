@@ -48,7 +48,7 @@ export interface CompanionPlanner {
   next(context: CompanionPlannerContext): CompanionIntent;
 }
 
-export type TouchResponseKind = "slow-blink" | "curious-sniff" | "gentle-nuzzle" | "tail-lift";
+export type TouchResponseKind = "soft-acknowledgement";
 export type TouchDisposition = "acknowledge" | "remain-asleep" | "wake";
 
 export interface TouchOutcome {
@@ -63,7 +63,6 @@ interface PlannerOptions {
 }
 
 type IntentWeights = Record<CompanionIntentKind, number>;
-type TouchWeights = Record<TouchResponseKind, number>;
 
 const AWAKE_ENTRY_MS = 30_000;
 const RECENT_INTENT_LIMIT = 2;
@@ -142,33 +141,6 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "floor-sleep": 5,
     "floor-stretch": 6,
     "approach-user": 20,
-  },
-};
-
-const TEMPERAMENT_TOUCH_WEIGHTS: Record<CatTemperament, TouchWeights> = {
-  QUIET: {
-    "slow-blink": 44,
-    "curious-sniff": 28,
-    "gentle-nuzzle": 10,
-    "tail-lift": 18,
-  },
-  CURIOUS: {
-    "slow-blink": 24,
-    "curious-sniff": 38,
-    "gentle-nuzzle": 20,
-    "tail-lift": 18,
-  },
-  LIVELY: {
-    "slow-blink": 18,
-    "curious-sniff": 28,
-    "gentle-nuzzle": 18,
-    "tail-lift": 36,
-  },
-  AFFECTIONATE: {
-    "slow-blink": 24,
-    "curious-sniff": 16,
-    "gentle-nuzzle": 42,
-    "tail-lift": 18,
   },
 };
 
@@ -254,11 +226,10 @@ export function createCompanionPlanner({
 }
 
 export function chooseTouchResponse(
-  temperament: CatTemperament,
-  random: () => number = Math.random,
+  _temperament: CatTemperament,
+  _random: () => number = Math.random,
 ): TouchResponseKind {
-  const order: TouchResponseKind[] = ["slow-blink", "curious-sniff", "gentle-nuzzle", "tail-lift"];
-  return chooseWeighted(order, TEMPERAMENT_TOUCH_WEIGHTS[temperament], random);
+  return "soft-acknowledgement";
 }
 
 export function chooseTouchOutcome(

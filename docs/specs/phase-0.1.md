@@ -37,7 +37,7 @@ When documents disagree, use this order:
 
 ## Current architecture
 
-- React, TypeScript, Vite, Tailwind CSS, and Motion provide the application shell.
+- React, TypeScript, Vite, and Tailwind CSS provide the application shell.
 - Phaser remains the Phase 0.1 renderer for the interactive room scene inside
   the React application, subject to the mobile performance gate in
   [`../qa/phase-0.1.md`](../qa/phase-0.1.md).

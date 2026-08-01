@@ -41,6 +41,22 @@ const LEGACY_TEMPERAMENTS: Record<CatPersonality, CatTemperament> = {
 };
 const LETTER_IDS = new Set(LETTERS.map((letter) => letter.id));
 
+interface PersistedPassportCandidate {
+  schemaVersion?: unknown;
+  id?: unknown;
+  catName?: unknown;
+  ownerName?: unknown;
+  coatPreset?: unknown;
+  temperament?: unknown;
+  colorPalette?: unknown;
+  personality?: unknown;
+  favoriteSnack?: unknown;
+  passedDate?: unknown;
+  createdAt?: unknown;
+  readLetters?: unknown;
+  isFarewellCompleted?: unknown;
+}
+
 export function getLocalDateInputValue(now = Date.now()): string {
   const today = new Date(now);
   const year = today.getFullYear();
@@ -79,7 +95,7 @@ export function parsePassport(value: unknown, now = Date.now()): ICatPassport | 
     return null;
   }
 
-  const candidate = value as Partial<ICatPassport>;
+  const candidate = value as PersistedPassportCandidate;
   if (candidate.schemaVersion !== undefined && candidate.schemaVersion !== 1) {
     return null;
   }
@@ -129,8 +145,8 @@ export function parsePassport(value: unknown, now = Date.now()): ICatPassport | 
 }
 
 function normalizeCoatPreset(
-  coatPreset: CatCoatPreset | undefined,
-  colorPalette: CatPalette | undefined,
+  coatPreset: unknown,
+  colorPalette: unknown,
 ): CatCoatPreset {
   if (COAT_PRESETS.has(coatPreset as CatCoatPreset)) {
     return coatPreset as CatCoatPreset;
@@ -139,8 +155,8 @@ function normalizeCoatPreset(
 }
 
 function normalizeTemperament(
-  temperament: CatTemperament | undefined,
-  personality: CatPersonality | undefined,
+  temperament: unknown,
+  personality: unknown,
 ): CatTemperament {
   if (TEMPERAMENTS.has(temperament as CatTemperament)) {
     return temperament as CatTemperament;

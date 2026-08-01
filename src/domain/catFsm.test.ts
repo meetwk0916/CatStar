@@ -139,20 +139,13 @@ describe("companion planner", () => {
 });
 
 describe("touch responses", () => {
-  it("keeps every response available to every temperament", () => {
-    const expected = new Set<TouchResponseKind>([
-      "slow-blink",
-      "curious-sniff",
-      "gentle-nuzzle",
-      "tail-lift",
-    ]);
-
+  it("keeps touch semantics aligned with the acknowledgement motion", () => {
     for (const temperament of TEMPERAMENTS) {
       const actual = new Set<TouchResponseKind>();
       for (let sample = 0; sample < 100; sample += 1) {
         actual.add(chooseTouchResponse(temperament, () => sample / 100));
       }
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(new Set(["soft-acknowledgement"]));
     }
   });
 
@@ -162,15 +155,15 @@ describe("touch responses", () => {
   });
 
   it("keeps sleep-aware touch outcomes in the domain", () => {
-    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.14]))).toMatchObject({
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.14]))).toMatchObject({
       disposition: "wake",
       durationMs: 1_400,
     });
-    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0, 0.15]))).toMatchObject({
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.15]))).toMatchObject({
       disposition: "remain-asleep",
       durationMs: 900,
     });
-    expect(chooseTouchOutcome("QUIET", false, sequenceRandom([0]))).toMatchObject({
+    expect(chooseTouchOutcome("QUIET", false)).toMatchObject({
       disposition: "acknowledge",
       durationMs: 1_400,
     });

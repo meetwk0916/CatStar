@@ -139,7 +139,8 @@ coordinates, tweens, and action playback.
 - `SLEEPING`: uses deep sleep only after the session opening.
 - `EATING`: uses the dedicated bowl-side sniff/eat loop.
 - `GROOMING` and `STRETCHING`: use dedicated floor actions.
-- `INTERACTING`: acknowledges touch or active approach in place.
+- `INTERACTING`: acknowledges touch in place or active approach at the
+  foreground stop.
 
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat
@@ -160,10 +161,10 @@ lock or unlock exclusive actions.
 Important actions must remain reachable for every temperament so remembered
 **陪伴气质** does not hide core companionship or art content.
 
-Touch responses follow the same rule. Slow blink, curious sniff, gentle nuzzle,
-and tail-lift or turning responses remain available to every temperament;
-temperament only weights their likelihood. Do not use hissing, fleeing,
-startling, or rejection as touch feedback.
+Touch responses use the available acknowledgement motion: a soft head turn and
+blink. Temperament may affect wake likelihood and pacing, but must not claim
+distinct gestures that the production motion assets do not render. Do not use
+hissing, fleeing, startling, or rejection as touch feedback.
 
 Every valid touch produces a visible **陪伴反应**. An occasional
 **陪伴轻语** may accompany it, but text must not appear after every touch or

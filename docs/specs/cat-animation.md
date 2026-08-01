@@ -403,10 +403,8 @@ Frame intent:
 Constraints:
 
 - must feel like companionship, not performance
-- support a shared response repertoire such as slow blink, curious sniff,
-  gentle nuzzle, and tail-lift or turning variants
-- let **陪伴气质** weight response likelihood rather than assigning exclusive
-  responses
+- render the current shared acknowledgement as a soft head turn and blink
+- do not name distinct responses until their production motion is available
 - do not depict hissing, fleeing, startling, or rejection
 - avoid hearts, rewards, sparkles from the cat itself
 - no speech bubble baked into art

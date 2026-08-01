@@ -140,7 +140,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
             </fieldset>
 
             <fieldset className="grid gap-3">
-              <legend className="text-sm font-bold">性格</legend>
+              <legend className="text-sm font-bold">陪伴气质</legend>
               <div className="grid gap-3 sm:grid-cols-2">
                 {TEMPERAMENTS.map((temperament) => (
                   <button

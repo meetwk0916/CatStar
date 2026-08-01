@@ -11,14 +11,12 @@ export type CatPalette = "GRAY_WHITE" | "ORANGE" | "BLACK" | "WHITE" | "CALICO" 
 export type CatPersonality = "GLUTTON" | "ALOOFS" | "CLINGY" | "ENERGY";
 
 export interface ICatPassport {
-  schemaVersion?: 1;
+  schemaVersion: 1;
   id: string;
   catName: string;
   ownerName: string;
-  coatPreset?: CatCoatPreset;
-  temperament?: CatTemperament;
-  colorPalette?: CatPalette;
-  personality?: CatPersonality;
+  coatPreset: CatCoatPreset;
+  temperament: CatTemperament;
   favoriteSnack: string;
   passedDate: string;
   createdAt: number;
