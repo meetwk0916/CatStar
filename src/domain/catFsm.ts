@@ -64,6 +64,24 @@ type IntentWeights = Record<CompanionIntentKind, number>;
 
 const AWAKE_ENTRY_MS = 30_000;
 const RECENT_INTENT_LIMIT = 2;
+const TOUCH_ACKNOWLEDGEMENT_MS: Record<CatTemperament, number> = {
+  QUIET: 1_500,
+  CURIOUS: 1_300,
+  AFFECTIONATE: 1_700,
+  LIVELY: 1_000,
+};
+const SLEEP_WAKE_CHANCE: Record<CatTemperament, number> = {
+  QUIET: 0.08,
+  CURIOUS: 0.16,
+  AFFECTIONATE: 0.12,
+  LIVELY: 0.24,
+};
+const WHISPER_CHANCE: Record<CatTemperament, number> = {
+  QUIET: 0.22,
+  CURIOUS: 0.3,
+  AFFECTIONATE: 0.45,
+  LIVELY: 0.28,
+};
 
 const INTENT_ORDER: CompanionIntentKind[] = [
   "window-watch",
@@ -224,22 +242,29 @@ export function createCompanionPlanner({
 }
 
 export function chooseTouchOutcome(
+  temperament: CatTemperament,
   sleeping: boolean,
   random: () => number = Math.random,
 ): TouchOutcome {
   if (!sleeping) {
-    return { disposition: "acknowledge", durationMs: 1_400 };
+    return {
+      disposition: "acknowledge",
+      durationMs: TOUCH_ACKNOWLEDGEMENT_MS[temperament],
+    };
   }
 
-  const wakes = clampRandom(random()) < 0.15;
+  const wakes = clampRandom(random()) < SLEEP_WAKE_CHANCE[temperament];
   return {
     disposition: wakes ? "wake" : "remain-asleep",
     durationMs: wakes ? 1_400 : 900,
   };
 }
 
-export function chooseCompanionWhisper(random: () => number = Math.random): string | null {
-  if (clampRandom(random()) >= 0.35) {
+export function chooseCompanionWhisper(
+  temperament: CatTemperament,
+  random: () => number = Math.random,
+): string | null {
+  if (clampRandom(random()) >= WHISPER_CHANCE[temperament]) {
     return null;
   }
 

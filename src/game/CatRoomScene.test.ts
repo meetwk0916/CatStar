@@ -90,12 +90,12 @@ describe("CatRoomScene interactions", () => {
     expect(internals.currentZone).toBe("floor");
     expect(internals.routine).toBe("floorPause");
     expect(internals.routineHoldUntil).toBeGreaterThan(1000);
-    expect(internals.manualInteractUntil).toBe(2400);
+    expect(internals.manualInteractUntil).toBe(2700);
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
     expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
     expect(internals.onInteract).toHaveBeenCalledTimes(1);
-    expect(durationMs).toBe(1_400);
+    expect(durationMs).toBe(1_700);
   });
 
   it("moves a waking sleep response into the floor pause routine", () => {
@@ -170,10 +170,10 @@ describe("CatRoomScene interactions", () => {
     scene.update(2000);
     expect(internals.pendingInteractionCount).toBe(1);
 
-    internals.time.now = 2400;
-    scene.update(2400);
+    internals.time.now = 2700;
+    scene.update(2700);
     expect(internals.pendingInteractionCount).toBe(0);
-    expect(internals.manualInteractUntil).toBe(3800);
+    expect(internals.manualInteractUntil).toBe(4400);
   });
 
   it("approaches the foreground and returns to floor scale and depth", () => {

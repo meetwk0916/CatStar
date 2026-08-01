@@ -138,22 +138,36 @@ describe("companion planner", () => {
 
 describe("touch responses", () => {
   it("shows a short whisper only some of the time", () => {
-    expect(chooseCompanionWhisper(sequenceRandom([0.9]))).toBeNull();
-    expect(chooseCompanionWhisper(sequenceRandom([0.1, 0]))).toBe("我在呢。");
+    expect(chooseCompanionWhisper("AFFECTIONATE", sequenceRandom([0.9]))).toBeNull();
+    expect(chooseCompanionWhisper("AFFECTIONATE", sequenceRandom([0.1, 0]))).toBe("我在呢。");
+    expect(chooseCompanionWhisper("QUIET", sequenceRandom([0.3]))).toBeNull();
+    expect(chooseCompanionWhisper("AFFECTIONATE", sequenceRandom([0.3, 0]))).toBe("我在呢。");
   });
 
-  it("keeps sleep-aware touch outcomes in the domain", () => {
-    expect(chooseTouchOutcome(true, sequenceRandom([0.14]))).toMatchObject({
+  it("varies acknowledgement pacing and sleep waking by temperament", () => {
+    expect(chooseTouchOutcome("AFFECTIONATE", false)).toEqual({
+      disposition: "acknowledge",
+      durationMs: 1_700,
+    });
+    expect(chooseTouchOutcome("LIVELY", false)).toEqual({
+      disposition: "acknowledge",
+      durationMs: 1_000,
+    });
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.079]))).toMatchObject({
       disposition: "wake",
       durationMs: 1_400,
     });
-    expect(chooseTouchOutcome(true, sequenceRandom([0.15]))).toMatchObject({
+    expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.08]))).toMatchObject({
       disposition: "remain-asleep",
       durationMs: 900,
     });
-    expect(chooseTouchOutcome(false)).toMatchObject({
-      disposition: "acknowledge",
+    expect(chooseTouchOutcome("LIVELY", true, sequenceRandom([0.239]))).toMatchObject({
+      disposition: "wake",
       durationMs: 1_400,
+    });
+    expect(chooseTouchOutcome("LIVELY", true, sequenceRandom([0.24]))).toMatchObject({
+      disposition: "remain-asleep",
+      durationMs: 900,
     });
   });
 });

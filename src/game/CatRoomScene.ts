@@ -384,7 +384,11 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const sleeping = this.routine === "floorSleep";
-    const outcome = chooseTouchOutcome(sleeping, () => Phaser.Math.RND.frac());
+    const outcome = chooseTouchOutcome(
+      this.temperament,
+      sleeping,
+      () => Phaser.Math.RND.frac(),
+    );
 
     this.cat.setVelocity(0, 0);
     if (outcome.disposition === "wake") {
@@ -394,7 +398,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.manualInteractAction = TOUCH_ACTIONS[outcome.disposition];
     this.manualInteractUntil = this.time.now + outcome.durationMs;
     this.playCatReaction(this.manualInteractAction, true);
-    this.onInteract(chooseCompanionWhisper(() => Phaser.Math.RND.frac()));
+    this.onInteract(chooseCompanionWhisper(this.temperament, () => Phaser.Math.RND.frac()));
     return outcome.durationMs;
   }
 
