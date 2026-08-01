@@ -31,7 +31,7 @@ that creates, starts, and destroys the scene.
 Runtime review evidence:
 
 ```text
-artifacts/art/runtime-review/2026-07-30/
+artifacts/art/runtime-review/2026-08-01/
 ```
 
 The scene now separates:
@@ -154,16 +154,17 @@ lock or unlock exclusive actions.
 
 - quiet cats favor awake rest, window watching, and slower transitions;
 - curious cats favor plant inspection and room observation;
-- affectionate cats approach the foreground, linger in touch acknowledgement,
-  and offer optional companion whispers more often;
+- affectionate cats approach the foreground and play the fuller existing
+  acknowledgement sequence more often;
 - lively cats walk and make short grounded jumps more often without becoming
   game-like or hyperactive.
 
 Important actions must remain reachable for every temperament so remembered
 **陪伴气质** does not hide core companionship or art content.
 
-Touch responses use the available acknowledgement motion: a soft head turn and
-blink. The domain varies acknowledgement pacing, optional-whisper likelihood,
+Every awake touch uses the available acknowledgement frames: a brief head-turn
+baseline is guaranteed, while temperament weights whether the fuller head-turn
+and blink sequence plays. The domain also varies optional-whisper likelihood
 and deep-sleep wake likelihood by temperament, but must not claim distinct
 gestures that the production motion assets do not render. Do not use
 hissing, fleeing, startling, or rejection as touch feedback.

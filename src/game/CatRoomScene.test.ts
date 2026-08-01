@@ -120,6 +120,27 @@ describe("CatRoomScene interactions", () => {
     expect(internals.manualInteractUntil).toBe(2400);
   });
 
+  it("uses the brief existing-frame response when a full acknowledgement is not selected", () => {
+    vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.9);
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat();
+    internals.routine = "floorPause";
+    internals.routineHoldUntil = 0;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    expect(scene.interact()).toBe(700);
+    expect(internals.manualInteractAction).toBe("interact-brief");
+    expect(internals.cat.play).toHaveBeenCalledWith("cat-interact-brief-anim", false);
+    expect(internals.manualInteractUntil).toBe(1700);
+  });
+
   it("plays the dedicated sleep twitch without waking", () => {
     vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.5);
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;

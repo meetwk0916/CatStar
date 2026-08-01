@@ -48,7 +48,7 @@ export interface CompanionPlanner {
   next(context: CompanionPlannerContext): CompanionIntent;
 }
 
-export type TouchDisposition = "acknowledge" | "remain-asleep" | "wake";
+export type TouchDisposition = "brief-acknowledge" | "acknowledge" | "remain-asleep" | "wake";
 
 export interface TouchOutcome {
   disposition: TouchDisposition;
@@ -70,6 +70,13 @@ const TOUCH_ACKNOWLEDGEMENT_MS: Record<CatTemperament, number> = {
   AFFECTIONATE: 1_700,
   LIVELY: 1_000,
 };
+const FULL_TOUCH_ACKNOWLEDGEMENT_CHANCE: Record<CatTemperament, number> = {
+  QUIET: 0.35,
+  CURIOUS: 0.6,
+  AFFECTIONATE: 0.85,
+  LIVELY: 0.45,
+};
+const BRIEF_TOUCH_ACKNOWLEDGEMENT_MS = 700;
 const SLEEP_WAKE_CHANCE: Record<CatTemperament, number> = {
   QUIET: 0.08,
   CURIOUS: 0.16,
@@ -247,9 +254,13 @@ export function chooseTouchOutcome(
   random: () => number = Math.random,
 ): TouchOutcome {
   if (!sleeping) {
+    const playsFullAcknowledgement =
+      clampRandom(random()) < FULL_TOUCH_ACKNOWLEDGEMENT_CHANCE[temperament];
     return {
-      disposition: "acknowledge",
-      durationMs: TOUCH_ACKNOWLEDGEMENT_MS[temperament],
+      disposition: playsFullAcknowledgement ? "acknowledge" : "brief-acknowledge",
+      durationMs: playsFullAcknowledgement
+        ? TOUCH_ACKNOWLEDGEMENT_MS[temperament]
+        : BRIEF_TOUCH_ACKNOWLEDGEMENT_MS,
     };
   }
 

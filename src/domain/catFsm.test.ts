@@ -144,15 +144,22 @@ describe("touch responses", () => {
     expect(chooseCompanionWhisper("AFFECTIONATE", sequenceRandom([0.3, 0]))).toBe("我在呢。");
   });
 
-  it("varies acknowledgement pacing and sleep waking by temperament", () => {
-    expect(chooseTouchOutcome("AFFECTIONATE", false)).toEqual({
+  it("varies full acknowledgement frequency and pacing by temperament", () => {
+    expect(chooseTouchOutcome("AFFECTIONATE", false, sequenceRandom([0.5]))).toEqual({
       disposition: "acknowledge",
       durationMs: 1_700,
     });
-    expect(chooseTouchOutcome("LIVELY", false)).toEqual({
-      disposition: "acknowledge",
-      durationMs: 1_000,
+    expect(chooseTouchOutcome("QUIET", false, sequenceRandom([0.5]))).toEqual({
+      disposition: "brief-acknowledge",
+      durationMs: 700,
     });
+    expect(chooseTouchOutcome("AFFECTIONATE", false, sequenceRandom([0.85]))).toEqual({
+      disposition: "brief-acknowledge",
+      durationMs: 700,
+    });
+  });
+
+  it("varies sleep waking by temperament", () => {
     expect(chooseTouchOutcome("QUIET", true, sequenceRandom([0.079]))).toMatchObject({
       disposition: "wake",
       durationMs: 1_400,

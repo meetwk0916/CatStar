@@ -50,7 +50,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-07-30/` and contains nine validated
+`artifacts/art/runtime-review/2026-08-01/` and contains nine validated
 screenshots covering default movement, the five room targets, grooming,
 stretching, deep sleep, and active approach.
 The accompanying `manifest.json` binds the screenshots to the exact runtime

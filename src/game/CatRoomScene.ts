@@ -39,7 +39,7 @@ type CatAction =
   | "lie"
   | "groom"
   | "stretch";
-type CatReaction = CatAction | "sleep-touch";
+type CatReaction = CatAction | "interact-brief" | "sleep-touch";
 type CollisionConfig = Record<string, CollisionRect>;
 type EnvironmentZoneKind = "floor" | "perch" | "rest" | "food" | "blocker";
 type CatRoutine =
@@ -207,6 +207,7 @@ const INTENT_ROUTINES: Record<CompanionIntentKind, CatRoutine> = {
 };
 
 const TOUCH_ACTIONS: Record<TouchDisposition, CatReaction> = {
+  "brief-acknowledge": "interact-brief",
   acknowledge: "interact",
   "remain-asleep": "sleep-touch",
   wake: "stretch",
@@ -1009,6 +1010,12 @@ export class CatRoomScene extends Phaser.Scene {
       });
     });
     this.anims.create({
+      key: "cat-interact-brief-anim",
+      frames: [1, 0, 1, 0].map((frame) => ({ key: "cat-interact", frame })),
+      frameRate: 6,
+      repeat: 0,
+    });
+    this.anims.create({
       key: "cat-sleep-touch-anim",
       frames: [3, 2, 3, 0].map((frame) => ({ key: "cat-sleep", frame })),
       frameRate: 6,
@@ -1017,7 +1024,7 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private playCatReaction(action: CatReaction, restart = false) {
-    if (action !== "sleep-touch") {
+    if (action !== "interact-brief" && action !== "sleep-touch") {
       this.playCatAction(action, restart);
       return;
     }
@@ -1025,7 +1032,7 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    const key = "cat-sleep-touch-anim";
+    const key = action === "interact-brief" ? "cat-interact-brief-anim" : "cat-sleep-touch-anim";
     if (!restart && this.cat.anims.currentAnim?.key === key) {
       return;
     }
