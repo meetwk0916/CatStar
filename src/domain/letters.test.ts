@@ -16,6 +16,7 @@ const createdAt = new Date(2026, 5, 5, 21, 10, 0, 0).getTime();
 
 function makePassport(readLetters: number[] = []): ICatPassport {
   return {
+    schemaVersion: 1,
     id: "test-passport",
     catName: "小橘",
     ownerName: "家人",
