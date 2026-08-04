@@ -119,8 +119,8 @@ This prevents the cat from wandering into prop rectangles or stopping against
 invisible props.
 
 The implemented **陪伴例程** planner selects among window watching, cat-bed
-rest, blanket rest, eating, plant inspection, rare plant touching, floor sitting, grooming, deep
-sleep, stretching, and active approach. Selection:
+rest, blanket rest, eating, plant inspection, rare plant touching, floor
+sitting, grooming, deep sleep, stretching, and active approach. Selection:
 
 - weights preference and pace by **陪伴气质**;
 - keeps every intent reachable for every temperament;
@@ -156,9 +156,10 @@ If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat
 must not remain airborne until a later routine snaps it back into place.
 
-If touch interrupts the plant-touch lifecycle, reset the leaf to its resting
-angle, cancel the prop routine, acknowledge the user in place, and enter the
-full plant-touch cooldown. Do not resume or immediately retry the prop action.
+If touch interrupts the plant-touch approach, reset the leaf, cancel the prop
+routine, and acknowledge the user in place. Once observation has begun, the
+same interruption also enters the full plant-touch cooldown. Do not resume or
+immediately retry the prop action.
 
 ## Companion Temperament
 
@@ -209,15 +210,13 @@ foreground, pause, briefly look toward the user, blink or lift its tail, and
 then resume ordinary room activity. This routine must not display an alert,
 repeat until acknowledged, or punish the user for not interacting.
 
-The repertoire may also include rare **自发玩耍**, such as touching a plant
-leaf, watching a window light, making one gentle pounce at a slow shadow, or
-kneading the blanket. These routines remain brief and low-intensity, require no
-user participation, and do not create rewards, tasks, or repeated high-energy
-movement.
-
-**自发玩耍** is a post-Phase 0.1 enhancement, not a required asset for the
-current ten-action production target. Phase 0.1 **主动靠近** should reuse walking
-and interaction motion rather than add another bespoke action class.
+The current narrow **自发玩耍** slice is `plant-touch`. Broader routines such as
+watching a window light, making one gentle pounce at a slow shadow, or kneading
+the blanket remain post-Phase 0.1 enhancements. Any such routine must stay
+brief and low-intensity, require no user participation, and avoid rewards,
+tasks, or repeated high-energy movement. The current plant touch and
+**主动靠近** both reuse walking and interaction motion rather than adding
+bespoke action classes.
 
 ## Future Upgrade Path
 
@@ -230,8 +229,9 @@ Future behavior work may deepen the current zone-targeted intent model:
 - `LYING` should keep diverging from deep sleep and support more rest surfaces.
 - `RUNNING` should be a higher-speed variant restricted to open floor zones,
   not near blockers or props.
-- `PLANT_INSPECTING` or similar future behavior should let the cat approach the
-  plant edge without colliding with an invisible wall.
+- Plant behavior may deepen only from the existing separate `plant-inspect`
+  and `plant-touch` lifecycles; do not replace them with a generic prop
+  framework prematurely.
 
 ## Acceptance Criteria
 

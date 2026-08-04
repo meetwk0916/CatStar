@@ -73,3 +73,12 @@ Validate the existing screenshots without starting a browser with:
 ```bash
 npm run review:runtime:check
 ```
+
+That command validates the latest desktop evidence. Validate a mobile evidence
+directory with its matching viewport explicitly:
+
+```bash
+CATSTAR_REVIEW_VIEWPORT=375,812 \
+CATSTAR_REVIEW_OUT=artifacts/art/runtime-review-mobile/YYYY-MM-DD \
+npm run review:runtime:check
+```

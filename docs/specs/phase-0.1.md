@@ -2,7 +2,7 @@
 
 **Status:** Current
 
-**Last aligned:** 2026-08-01
+**Last aligned:** 2026-08-05
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in

@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-07-27
+**Last reviewed:** 2026-08-05
 
 The current room and cat art may be used only for CatStar internal prototype
 review. The repository records technical lineage, but the original generation

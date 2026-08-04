@@ -2,7 +2,7 @@
 
 **Status:** Current manual acceptance checklist
 
-Last updated: 2026-07-30
+Last updated: 2026-08-05
 
 ## Scope
 
