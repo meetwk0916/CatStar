@@ -110,9 +110,10 @@ describe("companion planner", () => {
     expect(selected).not.toContain("plant-touch");
   });
 
-  it("requires both ninety seconds and five other intentions before repeating plant touch", () => {
+  it("starts plant touch cooldown on contact and counts only completed other intentions", () => {
     const nextAfterCooldownScenario = (
-      otherIntentions: number,
+      completedIntentions: number,
+      uncompletedIntentions: number,
       sessionElapsedMs: number,
       finalRandom: number,
     ) => {
@@ -121,7 +122,10 @@ describe("companion planner", () => {
         random: sequenceRandom([
           0.81,
           0.5,
-          ...Array.from({ length: otherIntentions }, () => [0, 0.5]).flat(),
+          ...Array.from(
+            { length: completedIntentions + uncompletedIntentions },
+            () => [0, 0.5],
+          ).flat(),
           finalRandom,
           0.5,
         ]),
@@ -134,17 +138,49 @@ describe("companion planner", () => {
         }).kind;
 
       expect(nextAt(30_000)).toBe("plant-touch");
-      Array.from({ length: otherIntentions }, () => nextAt(119_999));
+      planner.recordPlantTouch(35_000);
+      Array.from({ length: completedIntentions }, () => {
+        const kind = nextAt(124_999);
+        planner.recordIntentCompleted(kind);
+      });
+      Array.from({ length: uncompletedIntentions }, () => nextAt(124_999));
       return nextAt(sessionElapsedMs);
     };
-    const sampleSelections = (otherIntentions: number, sessionElapsedMs: number) =>
+    const sampleSelections = (
+      completedIntentions: number,
+      uncompletedIntentions: number,
+      sessionElapsedMs: number,
+    ) =>
       Array.from({ length: 1_000 }, (_, sample) =>
-        nextAfterCooldownScenario(otherIntentions, sessionElapsedMs, sample / 1_000),
+        nextAfterCooldownScenario(
+          completedIntentions,
+          uncompletedIntentions,
+          sessionElapsedMs,
+          sample / 1_000,
+        ),
       );
 
-    expect(sampleSelections(4, 120_001)).not.toContain("plant-touch");
-    expect(sampleSelections(5, 119_999)).not.toContain("plant-touch");
-    expect(sampleSelections(5, 120_001)).toContain("plant-touch");
+    expect(sampleSelections(4, 1, 125_001)).not.toContain("plant-touch");
+    expect(sampleSelections(5, 0, 124_999)).not.toContain("plant-touch");
+    expect(sampleSelections(5, 0, 125_001)).toContain("plant-touch");
+  });
+
+  it("does not start cooldown when plant touch is selected but never reaches contact", () => {
+    const selections = Array.from({ length: 1_000 }, (_, sample) => {
+      const planner = createCompanionPlanner({
+        temperament: "CURIOUS",
+        random: sequenceRandom([0.81, 0.5, 0, 0.5, 0, 0.5, sample / 1_000, 0.5]),
+      });
+      const nextAt = (sessionElapsedMs: number) =>
+        planner.next({ currentZone: "floor", sessionElapsedMs, localHour: 18 }).kind;
+
+      expect(nextAt(30_000)).toBe("plant-touch");
+      nextAt(31_000);
+      nextAt(32_000);
+      return nextAt(33_000);
+    });
+
+    expect(selections).toContain("plant-touch");
   });
 
   it("makes curious cats most likely to touch the plant without excluding any temperament", () => {

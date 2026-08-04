@@ -115,7 +115,6 @@ def visible_area(alpha: Image.Image) -> int:
 
 def validate_action(preset: str, action: str, config: dict[str, object]) -> list[str]:
     failures: list[str] = []
-    failures.extend(validate_environment_assets())
     frame_count = int(config["frames"])
     label = f"{preset}/{action}"
     image_path = ASSET_DIR / preset / str(config["file"])
@@ -167,7 +166,7 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
 
 def main() -> None:
     spec = json.loads(SPEC_PATH.read_text())
-    failures: list[str] = []
+    failures = validate_environment_assets()
 
     if spec.get("frameWidth") != FRAME or spec.get("frameHeight") != FRAME:
         failures.append(f"cat.animations.json: expected {FRAME}x{FRAME} frame contract")

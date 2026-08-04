@@ -47,6 +47,8 @@ export interface CompanionPlannerContext {
 
 export interface CompanionPlanner {
   next(context: CompanionPlannerContext): CompanionIntent;
+  recordPlantTouch(sessionElapsedMs: number): void;
+  recordIntentCompleted(kind: CompanionIntentKind): void;
 }
 
 export type TouchDisposition = "brief-acknowledge" | "acknowledge" | "remain-asleep" | "wake";
@@ -257,15 +259,6 @@ export function createCompanionPlanner({
       }
 
       const kind = chooseWeighted(INTENT_ORDER, weights, random);
-      if (kind === "plant-touch") {
-        lastPlantTouchAt = context.sessionElapsedMs;
-        otherIntentsSincePlantTouch = 0;
-      } else if (lastPlantTouchAt !== null) {
-        otherIntentsSincePlantTouch = Math.min(
-          otherIntentsSincePlantTouch + 1,
-          PLANT_TOUCH_OTHER_INTENTS,
-        );
-      }
       recent.unshift(kind);
       recent.splice(RECENT_INTENT_LIMIT);
 
@@ -273,6 +266,19 @@ export function createCompanionPlanner({
         kind,
         dwellMs: chooseDwellMs(kind, random),
       };
+    },
+    recordPlantTouch(sessionElapsedMs) {
+      lastPlantTouchAt = sessionElapsedMs;
+      otherIntentsSincePlantTouch = 0;
+    },
+    recordIntentCompleted(kind) {
+      if (lastPlantTouchAt === null || kind === "plant-touch") {
+        return;
+      }
+      otherIntentsSincePlantTouch = Math.min(
+        otherIntentsSincePlantTouch + 1,
+        PLANT_TOUCH_OTHER_INTENTS,
+      );
     },
   };
 }
