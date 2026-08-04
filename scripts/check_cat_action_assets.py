@@ -22,7 +22,8 @@ MIN_FRAME_AREA = 2_000
 MAX_SMALL_COMPONENT_AREA = 64
 MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
-ASSET_DIR = Path("public/assets/scenes/window-room/cat")
+SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
+ASSET_DIR = SCENE_ASSET_DIR / "cat"
 SPEC_PATH = ASSET_DIR / "cat.animations.json"
 CAT_PRESETS = (
     "gray-white-tabby",
@@ -44,6 +45,31 @@ REQUIRED_ACTIONS = {
     "groom",
     "stretch",
 }
+
+
+def validate_environment_assets() -> list[str]:
+    failures: list[str] = []
+    background_path = SCENE_ASSET_DIR / "background.png"
+    leaf_path = SCENE_ASSET_DIR / "plant-leaf.png"
+
+    if not background_path.exists():
+        failures.append(f"missing scene background {background_path}")
+    elif Image.open(background_path).size != (640, 360):
+        failures.append("background.png: expected 640x360 runtime composition")
+
+    if not leaf_path.exists():
+        failures.append(f"missing plant interaction leaf {leaf_path}")
+        return failures
+
+    leaf = Image.open(leaf_path).convert("RGBA")
+    if leaf.size != (47, 24):
+        failures.append(f"plant-leaf.png: expected 47x24, got {leaf.size}")
+    alpha = leaf.getchannel("A")
+    if alpha.getbbox() is None:
+        failures.append("plant-leaf.png: leaf is fully transparent")
+    if any(alpha.getpixel(corner) > 0 for corner in ((0, 0), (46, 0), (0, 23), (46, 23))):
+        failures.append("plant-leaf.png: expected transparent corners")
+    return failures
 
 
 def iter_component_sizes(alpha: Image.Image) -> Iterable[int]:
@@ -89,6 +115,7 @@ def visible_area(alpha: Image.Image) -> int:
 
 def validate_action(preset: str, action: str, config: dict[str, object]) -> list[str]:
     failures: list[str] = []
+    failures.extend(validate_environment_assets())
     frame_count = int(config["frames"])
     label = f"{preset}/{action}"
     image_path = ASSET_DIR / preset / str(config["file"])

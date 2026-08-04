@@ -5,6 +5,7 @@ These files are consumed directly by `src/game/CatRoomScene.ts`.
 - `background.png`: full 16:9 room background, displayed into the Phaser `640x360` logical scene.
 - `foreground-cat-bed.png`: transparent foreground occlusion layer for the cat bed front rim, rendered above the cat so entering/resting in the bed does not read as walking through the prop.
 - `foreground-blanket.png`: transparent foreground occlusion layer for the folded blanket stack, rendered above the cat so blanket-top resting reads correctly.
+- `plant-leaf.png`: transparent, pivoted leaf used only by the low-frequency `plant-touch` routine; derived with `scripts/derive_plant_interaction_assets.py`.
 - `cat/{coat-preset}/{action}.png`: one horizontal sprite sheet per action
   and coat preset. The six preset directories are `gray-white-tabby`,
   `orange-tabby`, `solid-black`, `solid-white`, `calico`, and `tuxedo`.
@@ -14,8 +15,9 @@ These files are consumed directly by `src/game/CatRoomScene.ts`.
 - `collision.json`: hand-authored Arcade Physics rectangles in Phaser logical coordinates.
 
 Source/reference images are kept under `artifacts/art/` so generated and runtime assets stay separate.
-Run `npm run check:assets` after changing any cat sheet. The check validates
-all 60 runtime sheets against the shared ten-action contract.
+Run `npm run check:assets` after changing any cat sheet or the split plant
+asset. The check validates all 60 runtime sheets against the shared ten-action
+contract and verifies the background and plant-leaf dimensions and alpha.
 
 The current action sheets use the higher-fidelity visual cat mother asset as a stopgap. They preserve the cat identity better than code-drawn technical sprites, but they are still derived candidates rather than final hand-authored frame-by-frame animation.
 

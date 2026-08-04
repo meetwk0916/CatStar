@@ -67,6 +67,7 @@ Recommended final structure:
 ```text
 public/assets/scenes/window-room/
   background.png
+  plant-leaf.png
   collision.json
   cat/
     cat.animations.json

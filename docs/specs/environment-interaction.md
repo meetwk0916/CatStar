@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-01
+Last updated: 2026-08-04
 
 ## Purpose
 
@@ -94,6 +94,12 @@ fixed rest anchor and lies down rather than walking around on the blanket.
 
 `plant` is a blocker/avoidance zone with an inspection point at its left edge.
 The cat can approach and inspect it without walking into the plant rectangle.
+Ordinary `plant-inspect` remains repeatable and does not move the prop. A
+separate low-frequency `plant-touch` intent reuses walking and interaction
+motion: the cat observes for roughly 800 ms, lightly touches once, watches one
+split leaf sway with damping, settles, and leaves after a roughly three-second
+contact phase. The leaf is a transparent runtime layer derived from the room
+background; it has no collider or pointer interaction.
 
 The active window-bench routine uses fixed visual anchors for floor and perch
 positions. It does not rely on Arcade gravity for routine landing because the
@@ -116,7 +122,7 @@ This prevents the cat from wandering into prop rectangles or stopping against
 invisible props.
 
 The implemented **陪伴例程** planner selects among window watching, cat-bed
-rest, blanket rest, eating, plant inspection, floor sitting, grooming, deep
+rest, blanket rest, eating, plant inspection, rare plant touching, floor sitting, grooming, deep
 sleep, stretching, and active approach. Selection:
 
 - weights preference and pace by **陪伴气质**;
@@ -125,6 +131,12 @@ sleep, stretching, and active approach. Selection:
 - lightly avoids selecting another intent for the current zone;
 - blocks deep sleep during the first 30 seconds of a session;
 - lets device-local hour bias sleep without controlling the encounter.
+
+`plant-touch` is unavailable during the first 30 seconds. After it occurs, it
+requires both 90 elapsed seconds and five completed non-touch intents before it
+can be selected again. It has no per-session maximum and remains probabilistic
+after cooldown. Every temperament can select it; curious cats receive the
+highest weight without exclusive access.
 
 This replaces both a deterministic patrol order and unbounded random floor
 roaming. The selected intent owns a meaningful dwell window; Phaser owns its
@@ -146,6 +158,10 @@ coordinates, tweens, and action playback.
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat
 must not remain airborne until a later routine snaps it back into place.
+
+If touch interrupts the plant-touch lifecycle, reset the leaf to its resting
+angle, cancel the prop routine, acknowledge the user in place, and enter the
+full plant-touch cooldown. Do not resume or immediately retry the prop action.
 
 ## Companion Temperament
 
@@ -228,4 +244,5 @@ Before adding a new movement state:
 - it must define whether the zone is physical, walkable, restable, or visual;
 - it must avoid invisible collision rectangles in the cat's normal route;
 - it must describe entry, loop, and exit behavior;
+- it must define interruption and prop-reset behavior;
 - it must preserve gentle companion tone and avoid game-like reward behavior.

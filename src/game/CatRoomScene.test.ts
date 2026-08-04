@@ -37,12 +37,15 @@ interface SceneInternals {
   acceptsInteractions: boolean;
   foregroundTransitionStartedAt: number;
   currentZone: string;
+  plantLeaf?: { angle: number; setAngle: ReturnType<typeof vi.fn> };
+  plantTouchStartedAt: number;
   temperament: "AFFECTIONATE";
   time: { now: number };
   tweens: { killTweensOf: ReturnType<typeof vi.fn> };
   playCatAction: ReturnType<typeof vi.fn>;
   onInteract: ReturnType<typeof vi.fn>;
   updatePurposefulRoutine: (time: number) => void;
+  moveTowardTarget: ReturnType<typeof vi.fn>;
 }
 
 function createCat(x = 320): SceneInternals["cat"] {
@@ -224,5 +227,57 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setScale).toHaveBeenLastCalledWith(88 / 96);
     expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
     expect(internals.routine).toBe("floorPause");
+  });
+
+  it("runs plant touch through observation, contact, leaf response, and recovery", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(458);
+    internals.routine = "approachPlantTouch";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.plantTouchStartedAt = 0;
+    internals.plantLeaf = { angle: 0, setAngle: vi.fn() };
+    internals.moveTowardTarget = vi.fn(() => true);
+    internals.playCatAction = vi.fn();
+
+    internals.updatePurposefulRoutine(1_000);
+    expect(internals.routine).toBe("touchPlant");
+    expect(internals.plantTouchStartedAt).toBe(1_000);
+    expect(internals.currentZone).toBe("plant");
+
+    internals.updatePurposefulRoutine(1_500);
+    expect(internals.plantLeaf.setAngle).toHaveBeenLastCalledWith(0);
+
+    internals.updatePurposefulRoutine(2_100);
+    expect(internals.plantLeaf.setAngle.mock.calls.at(-1)?.[0]).not.toBe(0);
+
+    internals.updatePurposefulRoutine(4_000);
+    expect(internals.plantLeaf.setAngle).toHaveBeenLastCalledWith(0);
+    expect(internals.routine).toBe("floorPause");
+  });
+
+  it("cancels plant touch, restores the leaf, and responds immediately to touch", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(458);
+    internals.routine = "touchPlant";
+    internals.routineHoldUntil = 4_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "plant";
+    internals.plantTouchStartedAt = 1_000;
+    internals.plantLeaf = { angle: 7, setAngle: vi.fn() };
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 2_000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.plantLeaf.setAngle).toHaveBeenCalledWith(0);
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.currentZone).toBe("floor");
+    expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
   });
 });

@@ -93,6 +93,25 @@ test("cat interaction has a keyboard-accessible control and visible response", a
   expect(after.equals(before)).toBe(false);
 });
 
+test("plant touch moves the room locally and yields immediately to companion touch", async ({ page }) => {
+  await registerPassport(page);
+  await page.goto("/?catstarRoutine=touchPlant");
+  const canvas = page.locator("canvas");
+  const interact = page.getByRole("button", { name: "轻轻摸摸小灰", exact: true });
+  await expect(canvas).toBeVisible();
+
+  await page.waitForTimeout(450);
+  const observing = await canvas.screenshot();
+  await page.waitForTimeout(650);
+  const swaying = await canvas.screenshot();
+  expect(swaying.equals(observing)).toBe(false);
+
+  await interact.click();
+  await page.waitForTimeout(100);
+  const acknowledged = await canvas.screenshot();
+  expect(acknowledged.equals(swaying)).toBe(false);
+});
+
 test("passport and read progress survive a reload", async ({ page }) => {
   await registerPassport(page);
   await page.getByRole("button", { name: /时光信箱/ }).click();
