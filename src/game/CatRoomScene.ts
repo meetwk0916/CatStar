@@ -586,11 +586,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     if (this.routine === "observePlantTouch") {
-      this.currentZone = "plant";
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-      this.cat.setVelocityX(0);
-      this.cat.setFlipX(false);
+      this.holdAtPlant();
       this.resetPlantLeaf();
       this.playCatAction("idle");
 
@@ -604,11 +600,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     if (this.routine === "touchPlant") {
-      this.currentZone = "plant";
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-      this.cat.setVelocityX(0);
-      this.cat.setFlipX(false);
+      this.holdAtPlant();
       this.resetPlantLeaf();
       this.playCatAction("interact");
 
@@ -621,11 +613,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     if (this.routine === "watchPlantSway") {
-      this.currentZone = "plant";
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-      this.cat.setVelocityX(0);
-      this.cat.setFlipX(false);
+      this.holdAtPlant();
       this.playCatAction("idle");
 
       const elapsed = Math.max(time - this.plantTouchStartedAt, 0);
@@ -647,11 +635,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     if (this.routine === "settlePlantTouch") {
-      this.currentZone = "plant";
-      this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-      this.cat.setVelocityX(0);
-      this.cat.setFlipX(false);
+      this.holdAtPlant();
       this.resetPlantLeaf();
       this.playCatAction("idle");
 
@@ -868,6 +852,17 @@ export class CatRoomScene extends Phaser.Scene {
     this.currentZone = "floor";
     this.routine = "floorPause";
     this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
+  }
+
+  private holdAtPlant() {
+    if (!this.cat) {
+      return;
+    }
+    this.currentZone = "plant";
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
+    this.cat.setVelocityX(0);
+    this.cat.setFlipX(false);
   }
 
   private resetPlantLeaf() {
