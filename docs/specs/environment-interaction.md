@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-04
+Last updated: 2026-08-05
 
 ## Purpose
 
@@ -29,11 +29,8 @@ public/assets/scenes/window-room/collision.json
 physics, and scene timing. `PhaserCatScene.tsx` owns only the React lifecycle
 that creates, starts, and destroys the scene.
 
-Runtime review evidence:
-
-```text
-artifacts/art/runtime-review/2026-08-01/
-```
+Runtime review evidence is indexed in the
+[runtime asset map](../art/runtime-map.md#runtime-behavior-notes).
 
 The scene now separates:
 
