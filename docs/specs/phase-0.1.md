@@ -71,8 +71,19 @@ When documents disagree, use this order:
   food bowl, and blanket.
 - Idle/sit, walking, jumping, eating, awake rest, deep sleep, grooming,
   stretching, and interaction use the shared ten-action animation contract.
-- Six curated coat presets share one motion master so appearance does not
-  change anchors, timing, or behavior availability.
+- The approved production target offers three art-directed **外形原型**:
+  rounded short-haired, slender short-haired, and fluffy long-haired. The user
+  chooses an observable silhouette rather than a breed, and every available
+  prototype must have the complete ten-action repertoire before it can be
+  selected in the product.
+- Ten curated **毛色预设** cover orange tabby, solid black, solid white,
+  calico, black-and-white tuxedo, gray-and-white tabby, brown tabby, solid
+  gray, tortoiseshell, and colorpoint. Each is a reviewed complete appearance,
+  not an unrestricted color or marking mixer.
+- Appearance selection is manual and bounded. Phase 0.1 does not upload cat
+  photos, generate a replica, or promise exact visual reproduction.
+- Each prototype preserves its own anchors, timing, and behavior availability
+  across coat presets; do not stretch or reuse another prototype's body art.
 - The domain planner weights intent by temperament, suppresses recent
   repetition, protects the awake session opening, and hands engine-independent
   intent plus dwell time to Phaser.

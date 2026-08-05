@@ -22,6 +22,8 @@ MIN_FRAME_AREA = 2_000
 MAX_SMALL_COMPONENT_AREA = 64
 MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
+MAX_REFINED_PIXEL_COLORS = 128
+REFINED_PIXEL_ACTIONS = {"sit", "walk", "interact"}
 ASSET_DIR = Path("public/assets/scenes/window-room/cat")
 SPEC_PATH = ASSET_DIR / "cat.animations.json"
 CAT_PRESETS = (
@@ -102,11 +104,28 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
         failures.append(f"{label}: expected {expected_size}, got {image.size}")
         return failures
 
+    if action in REFINED_PIXEL_ACTIONS:
+        alpha_values = set(image.getchannel("A").get_flattened_data())
+        if not alpha_values.issubset({0, 255}):
+            failures.append(f"{label}: refined pixel sheet must use binary alpha")
+        opaque_colors = {
+            pixel[:3]
+            for pixel in image.get_flattened_data()
+            if pixel[3] == 255
+        }
+        if len(opaque_colors) > MAX_REFINED_PIXEL_COLORS:
+            failures.append(
+                f"{label}: refined pixel sheet uses {len(opaque_colors)} colors; "
+                f"maximum is {MAX_REFINED_PIXEL_COLORS}"
+            )
+
     areas: list[int] = []
     bottoms: list[int] = []
+    frame_payloads: list[bytes] = []
 
     for frame_index in range(frame_count):
         frame = image.crop((frame_index * FRAME, 0, (frame_index + 1) * FRAME, FRAME))
+        frame_payloads.append(frame.tobytes())
         alpha = frame.getchannel("A")
         bbox = alpha.getbbox()
         if bbox is None:
@@ -134,8 +153,20 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
 
     if bottoms and max(bottoms) - min(bottoms) > MAX_BOTTOM_RANGE:
         failures.append(f"{label}: baseline range too high: {max(bottoms) - min(bottoms)}px")
+    if action in REFINED_PIXEL_ACTIONS and len(set(frame_payloads)) != frame_count:
+        failures.append(f"{label}: refined pixel action must not contain duplicate frames")
 
     return failures
+
+
+def validate_distinct_stationary_actions(preset: str, spec: dict[str, object]) -> list[str]:
+    idle_config = spec["actions"]["idle"]
+    sit_config = spec["actions"]["sit"]
+    idle = Image.open(ASSET_DIR / preset / str(idle_config["file"])).convert("RGBA")
+    sit = Image.open(ASSET_DIR / preset / str(sit_config["file"])).convert("RGBA")
+    if idle.tobytes() == sit.tobytes():
+        return [f"{preset}: idle and sit must use distinct visible motion sheets"]
+    return []
 
 
 def main() -> None:
@@ -153,6 +184,7 @@ def main() -> None:
     for preset in CAT_PRESETS:
         for action, config in spec["actions"].items():
             failures.extend(validate_action(preset, action, config))
+        failures.extend(validate_distinct_stationary_actions(preset, spec))
 
     if failures:
         print("Cat action asset check failed:")

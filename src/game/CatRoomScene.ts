@@ -140,7 +140,7 @@ const findZone = (id: string) => {
 };
 
 const ARRIVAL_DISTANCE = 14;
-const CAT_DISPLAY_SIZE = 88;
+const CAT_DISPLAY_SIZE = 96;
 const CAT_BASE_SCALE = CAT_DISPLAY_SIZE / 96;
 const FLOOR_STAND_Y = 225;
 const FOREGROUND_STAND_Y = 270;
@@ -235,6 +235,7 @@ export class CatRoomScene extends Phaser.Scene {
   private activeIntent?: CompanionIntent;
   private planner: CompanionPlanner = createCompanionPlanner({ temperament: "AFFECTIONATE" });
   private debugRoutine?: CatRoutine;
+  private debugForceFullTouch = false;
   private onInteract: (message: string | null) => void = () => {};
   private onReady: (scene: CatRoomScene) => void = () => {};
   private acceptsInteractions = false;
@@ -258,10 +259,12 @@ export class CatRoomScene extends Phaser.Scene {
     this.pendingInteractionCount = Math.max(0, Math.floor(data.initialInteractionCount ?? 0));
 
     if (import.meta.env.DEV) {
-      const debugRoutine = new URLSearchParams(window.location.search).get("catstarRoutine") as CatRoutine | null;
+      const searchParams = new URLSearchParams(window.location.search);
+      const debugRoutine = searchParams.get("catstarRoutine") as CatRoutine | null;
       if (debugRoutine && DEBUG_ROUTINES.has(debugRoutine)) {
         this.debugRoutine = debugRoutine;
       }
+      this.debugForceFullTouch = searchParams.get("catstarFullTouch") === "1";
     }
   }
 
@@ -289,6 +292,10 @@ export class CatRoomScene extends Phaser.Scene {
     this.createSceneObjects();
     this.createCat();
     this.createForegroundObjects();
+    const cat = this.cat;
+    if (!cat) {
+      throw new Error("Cat sprite was not created");
+    }
     this.sessionStartedAt = this.time.now;
     if (this.debugRoutine) {
       this.routine = this.debugRoutine;
@@ -350,7 +357,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setBounce(0);
     this.cat.setDepth(5);
     this.cat.setInteractive({ useHandCursor: true });
-    this.cat.on("pointerdown", () => this.interact());
+    this.cat.on("pointerdown", (pointer: Phaser.Input.Pointer) => this.interact(pointer.worldX));
 
     this.cat.setSize(48, 76);
     this.cat.setOffset(24, 18);
@@ -368,9 +375,13 @@ export class CatRoomScene extends Phaser.Scene {
     }
   }
 
-  interact(): number {
+  interact(touchWorldX?: number): number {
     if (!this.cat) {
       return 0;
+    }
+
+    if (touchWorldX !== undefined && Number.isFinite(touchWorldX)) {
+      this.cat.setFlipX(touchWorldX < this.cat.x);
     }
 
     if (this.scriptedJump) {
@@ -388,7 +399,7 @@ export class CatRoomScene extends Phaser.Scene {
     const outcome = chooseTouchOutcome(
       this.temperament,
       sleeping,
-      () => Phaser.Math.RND.frac(),
+      () => (this.debugForceFullTouch ? 0 : Phaser.Math.RND.frac()),
     );
 
     this.cat.setVelocity(0, 0);

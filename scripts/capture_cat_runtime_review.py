@@ -40,6 +40,8 @@ OUT_DIR = (
 CHANNEL = os.environ.get("CATSTAR_PLAYWRIGHT_CHANNEL", "chrome")
 VIEWPORT = os.environ.get("CATSTAR_REVIEW_VIEWPORT", "1280,720")
 EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1))
+MOBILE_VIEWPORT = os.environ.get("CATSTAR_REVIEW_MOBILE_VIEWPORT", "390,844")
+EXPECTED_MOBILE_VIEWPORT = tuple(int(value) for value in MOBILE_VIEWPORT.split(",", maxsplit=1))
 ROOM_REVIEW_REGION = (64, 248, 744, 634)
 CANVAS_REVIEW_REGION = (69, 253, 735, 628)
 MIN_ROOM_UNIQUE_COLORS = 10_000
@@ -67,17 +69,28 @@ REVIEW_PASSPORT = {
 }
 
 SHOTS = [
-    ("default-walk-4s.png", "/", 4500),
-    ("window-bench-6s.png", "/?catstarRoutine=approachWindowBench", 6000),
-    ("catbed-rest-10s.png", "/?catstarRoutine=approachCatBed", 10000),
-    ("food-bowl-eat-8s.png", "/?catstarRoutine=approachFoodBowl", 8000),
-    ("blanket-rest-10s.png", "/?catstarRoutine=approachBlanket", 10000),
-    ("floor-groom-2s.png", "/?catstarRoutine=floorGroom", 1800),
-    ("floor-stretch-1s.png", "/?catstarRoutine=floorStretch", 550),
-    ("floor-sleep-2s.png", "/?catstarRoutine=floorSleep", 1800),
-    ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000),
+    ("default-walk-4s.png", "/", 4500, VIEWPORT),
+    ("window-bench-6s.png", "/?catstarRoutine=approachWindowBench", 6000, VIEWPORT),
+    ("catbed-rest-10s.png", "/?catstarRoutine=approachCatBed", 10000, VIEWPORT),
+    ("food-bowl-eat-8s.png", "/?catstarRoutine=approachFoodBowl", 8000, VIEWPORT),
+    ("blanket-rest-10s.png", "/?catstarRoutine=approachBlanket", 10000, VIEWPORT),
+    ("floor-groom-2s.png", "/?catstarRoutine=floorGroom", 1800, VIEWPORT),
+    ("floor-stretch-1s.png", "/?catstarRoutine=floorStretch", 550, VIEWPORT),
+    ("floor-sleep-2s.png", "/?catstarRoutine=floorSleep", 1800, VIEWPORT),
+    ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000, VIEWPORT),
+    ("mobile-sit-2s.png", "/?catstarRoutine=floorSit", 1800, MOBILE_VIEWPORT),
 ]
-SHOT_FILENAMES = [filename for filename, _route, _timeout in SHOTS]
+INTERACTION_SHOTS = [
+    f"interaction-{side}-{frame:02d}.png"
+    for side in ("left", "right")
+    for frame in range(1, 5)
+]
+SHOT_FILENAMES = [filename for filename, _route, _timeout, _viewport in SHOTS] + INTERACTION_SHOTS
+SHOT_VIEWPORTS = {
+    filename: [int(value) for value in viewport.split(",", maxsplit=1)]
+    for filename, _route, _timeout, viewport in SHOTS
+}
+SHOT_VIEWPORTS.update({filename: list(EXPECTED_VIEWPORT) for filename in INTERACTION_SHOTS})
 MANIFEST_FILENAME = "manifest.json"
 FINGERPRINT_PATHS = [
     REPO_ROOT / "index.html",
@@ -134,14 +147,14 @@ def capture(storage_state: Path) -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    for filename, route, timeout in SHOTS:
+    for filename, route, timeout, viewport in SHOTS:
         command = [
             playwright,
             "screenshot",
             "--load-storage",
             str(storage_state),
             "--viewport-size",
-            VIEWPORT,
+            viewport,
             "--wait-for-timeout",
             str(timeout),
         ]
@@ -151,9 +164,25 @@ def capture(storage_state: Path) -> None:
 
         print(f"Capturing {filename} ...", flush=True)
         subprocess.run(command, check=True)
-        validate_screenshot(OUT_DIR / filename)
+        validate_screenshot(OUT_DIR / filename, tuple(SHOT_VIEWPORTS[filename]))
 
+    capture_touch_sequence(storage_state)
     write_manifest()
+
+
+def capture_touch_sequence(storage_state: Path) -> None:
+    command = [
+        shutil.which("node") or "node",
+        str(REPO_ROOT / "scripts/capture_cat_touch_sequence.mjs"),
+        BASE_URL,
+        str(storage_state),
+        str(OUT_DIR),
+        CHANNEL,
+    ]
+    print("Capturing real-pointer interaction sequences ...", flush=True)
+    subprocess.run(command, check=True, cwd=REPO_ROOT)
+    for filename in INTERACTION_SHOTS:
+        validate_screenshot(OUT_DIR / filename, EXPECTED_VIEWPORT)
 
 
 def validate_existing_screenshots() -> None:
@@ -162,7 +191,7 @@ def validate_existing_screenshots() -> None:
         path = OUT_DIR / filename
         if not path.exists():
             raise RuntimeError(f"Missing runtime review screenshot: {path}")
-        validate_screenshot(path)
+        validate_screenshot(path, tuple(SHOT_VIEWPORTS[filename]))
         print(f"Validated {path}", flush=True)
 
 
@@ -189,9 +218,10 @@ def source_fingerprint() -> tuple[str, list[str]]:
 def write_manifest() -> None:
     fingerprint, source_files = source_fingerprint()
     manifest = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "capturedAt": datetime.now().astimezone().isoformat(),
         "viewport": list(EXPECTED_VIEWPORT),
+        "shotViewports": SHOT_VIEWPORTS,
         "sourceFingerprint": fingerprint,
         "sourceFiles": source_files,
         "screenshots": SHOT_FILENAMES,
@@ -209,10 +239,12 @@ def validate_manifest() -> None:
 
     manifest = json.loads(path.read_text(encoding="utf-8"))
     fingerprint, source_files = source_fingerprint()
-    if manifest.get("schemaVersion") != 1:
+    if manifest.get("schemaVersion") != 2:
         raise RuntimeError(f"{path}: unsupported manifest schema")
     if manifest.get("viewport") != list(EXPECTED_VIEWPORT):
         raise RuntimeError(f"{path}: viewport does not match {list(EXPECTED_VIEWPORT)}")
+    if manifest.get("shotViewports") != SHOT_VIEWPORTS:
+        raise RuntimeError(f"{path}: per-shot viewports do not match the current review contract")
     if manifest.get("screenshots") != SHOT_FILENAMES:
         raise RuntimeError(f"{path}: screenshot set does not match the current review contract")
     if manifest.get("sourceFiles") != source_files or manifest.get("sourceFingerprint") != fingerprint:
@@ -225,10 +257,16 @@ def mean_luminance(image: Image.Image) -> float:
     return sum(value * count for value, count in enumerate(histogram)) / pixels
 
 
-def validate_screenshot(path: Path) -> None:
+def validate_screenshot(path: Path, expected_viewport: tuple[int, int]) -> None:
     image = Image.open(path).convert("RGB")
-    if image.size != EXPECTED_VIEWPORT:
-        raise RuntimeError(f"{path}: expected viewport {EXPECTED_VIEWPORT}, got {image.size}")
+    if image.size != expected_viewport:
+        raise RuntimeError(f"{path}: expected viewport {expected_viewport}, got {image.size}")
+
+    if expected_viewport == EXPECTED_MOBILE_VIEWPORT:
+        unique_colors = len(image.getcolors(maxcolors=image.width * image.height) or [])
+        if unique_colors < MIN_ROOM_UNIQUE_COLORS:
+            raise RuntimeError(f"{path}: mobile review looks blank; only {unique_colors} unique colors")
+        return
 
     room = image.crop(ROOM_REVIEW_REGION)
     unique_colors = len(room.getcolors(maxcolors=room.width * room.height) or [])

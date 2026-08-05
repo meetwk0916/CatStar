@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-01
+Last updated: 2026-08-06
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -20,9 +20,10 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 
 | Runtime action | Current source | Status |
 | --- | --- | --- |
-| `idle`, `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Four-frame calm seated loop; shared intentionally so long pauses read as resting rather than waiting. |
-| `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Eight-frame grounded slow cat-step loop. |
-| `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Six-frame attentive blink and head response. |
+| `idle` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Four-frame legacy attentive loop retained as the brief transition posture. |
+| `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Four-frame relaxed long-dwell loop, now visibly distinct from `idle`. |
+| `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Eight independently generated and normalized grounded gait poses. |
+| `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Six-frame in-place lean, held slow blink, and return response. |
 | `groom` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Eight-frame paw and face grooming loop. |
 | `stretch` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Six-frame stand, bow, stretch, and recover action. |
 | `eat` | `artifacts/art/candidates/active/product-cat-actions-v3/` | Six-frame bowl-aligned sniff/eat source; runtime loops the light head-lower frames. |
@@ -50,16 +51,20 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-01/` and contains nine validated
+`artifacts/art/runtime-review/2026-08-06/` and contains eighteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
-blanket routines, grooming, stretching, deep sleep, and active approach.
+blanket routines, grooming, stretching, deep sleep, active approach, the
+in-place interaction across four runtime moments after real pointer input on
+both sides of the cat, and the enlarged cat at a `390x844` mobile viewport.
 The accompanying `manifest.json` binds the screenshots to the exact runtime
 input fingerprint; `npm run review:runtime:check` fails after those inputs
 change.
 
 ## Candidate Retention
 
-- Active motion sources: v3, v4, v5, v8, and quality-slice v10.
+- Active motion sources: v3, v4, v5, v8, quality-slice v10, and quality-slice
+  v11. v10 now supplies `idle`, `groom`, and `stretch`; v11 supplies `sit`,
+  `walk`, and `interact`.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

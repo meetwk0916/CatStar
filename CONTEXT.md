@@ -37,15 +37,15 @@ Real remembered traits of the **小猫** recorded in the **护照**, such as coa
 _Avoid_: 皮肤, 属性, 配置, 角色参数
 
 **纪念外形**:
-A gentle visual approximation of the real **小猫**, composed from a bounded set of remembered traits such as coat color, pattern, and **体态**. It supports recognition without becoming free-form avatar creation.
+A gentle visual approximation of the real **小猫**, composed by choosing from bounded, art-directed **外形原型** and **毛色预设**. It supports recognition without promising an exact replica or becoming free-form avatar creation.
 _Avoid_: 捏猫, 皮肤组合, 角色定制, 精确复刻
 
 **外形原型**:
-An art-directed family of visible shape traits, such as rounded short-haired, slender short-haired, or fluffy long-haired. It helps the **用户** choose a familiar silhouette without requiring breed knowledge or claiming pedigree accuracy.
+An art-directed family of visible shape traits, such as rounded short-haired, slender short-haired, or fluffy long-haired. Each prototype may vary face, ear, body, and coat-length structure while sharing CatStar's calm visual language; it helps the **用户** choose a familiar silhouette without requiring breed knowledge or claiming pedigree accuracy.
 _Avoid_: 品种, 血统, 猫种鉴定, 精确建模
 
 **毛色预设**:
-An art-reviewed combination of coat color and pattern used to approximate the real **小猫** within a consistent **纪念外形**. Presets form a curated library rather than an unrestricted color and pattern mixer.
+A complete, art-reviewed color appearance used to approximate the real **小猫**, including coat color and pattern plus harmonized eye, nose, and paw-pad colors. Presets form a curated library rather than an unrestricted color, pattern, or marking mixer.
 _Avoid_: 皮肤, 自由调色, 任意花纹组合, 染色
 
 **体态**:

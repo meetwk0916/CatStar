@@ -141,6 +141,27 @@ describe("CatRoomScene interactions", () => {
     expect(internals.manualInteractUntil).toBe(1700);
   });
 
+  it("faces the touch before playing an in-place acknowledgement", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(320);
+    internals.routine = "floorPause";
+    internals.routineHoldUntil = 0;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact(250);
+    expect(internals.cat.setFlipX).toHaveBeenLastCalledWith(true);
+
+    scene.interact(390);
+    expect(internals.cat.setFlipX).toHaveBeenLastCalledWith(false);
+  });
+
   it("plays the dedicated sleep twitch without waking", () => {
     vi.mocked(Phaser.Math.RND.frac).mockReturnValue(0.5);
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
@@ -221,7 +242,7 @@ describe("CatRoomScene interactions", () => {
     expect(internals.routine).toBe("returnFromForeground");
     internals.updatePurposefulRoutine(internals.routineHoldUntil + 760);
     expect(internals.cat.setY).toHaveBeenLastCalledWith(225);
-    expect(internals.cat.setScale).toHaveBeenLastCalledWith(88 / 96);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1);
     expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
     expect(internals.routine).toBe("floorPause");
   });

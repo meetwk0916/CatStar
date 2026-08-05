@@ -31,14 +31,18 @@ Animation non-goals:
 
 ## Character Lock
 
-All action sheets must depict the same cat.
+All action sheets for one **外形原型** must depict the same cat. Different
+prototypes may have naturally different face, ear, body, tail, and coat-length
+structure, but they share the same stylized-natural pixel language, calm
+demeanor, and complete behavior repertoire.
 
-The Phase 0.1 production target uses one locked silhouette and face across six
-curated **毛色预设** corresponding to the current passport choices. Each
-preset is an art-reviewed combination of color and pattern, not one axis in an
-unrestricted appearance mixer.
+The Phase 0.1 production target uses three **外形原型**: rounded short-haired,
+slender short-haired, and fluffy long-haired. The user selects the familiar
+visible silhouette, not a breed. A prototype must not become selectable until
+all ten actions exist for it; never stretch, squash, or reuse another
+prototype's body art.
 
-The initial **圆润短毛** prototype supports:
+Each prototype supports ten curated **毛色预设**:
 
 1. orange tabby
 2. solid black
@@ -46,6 +50,16 @@ The initial **圆润短毛** prototype supports:
 4. calico
 5. black-and-white tuxedo
 6. gray-and-white tabby
+7. brown tabby
+8. solid gray
+9. tortoiseshell
+10. colorpoint
+
+Each preset is a complete reviewed appearance, including harmonized eye, nose,
+and paw-pad colors. Phase 0.1 does not upload reference photos, generate exact
+replicas, freely mix colors and patterns, or provide independent local-marking
+edits.
+
 Coat variation must preserve:
 
 - face and body proportions
@@ -54,31 +68,29 @@ Coat variation must preserve:
 - action timing and frame composition
 - outline thickness, pixel density, and lighting direction
 
-The current motion master identity:
+The first new motion master identity:
 
 - small gray-and-white domestic cat
 - moderately rounded face with believable muzzle and ear placement
-- readable warm amber eyes without mascot-like oversizing
+- readable, naturally proportioned eyes without mascot-like oversizing; exact
+  color belongs to the selected **毛色预设**
 - gray tabby cap and back
 - white muzzle, chest, and front legs
 - soft but anatomically believable domestic-cat body
 - medium-length striped tail
-- gentle, slightly curious expression
+- relaxed ordinary-life expression with mild curiosity
 
 The production style is stylized-natural: motion and body structure should read
 as a real domestic cat first, with only enough facial simplification and
 softening to remain warm and legible at mobile scale. Avoid chibi head size,
 toy-like short legs, and exaggerated eye-to-face ratios.
 
-The gray-and-white master remains the shape and motion reference; it is not the
-only acceptable Phase 0.1 coat appearance.
-
-Phase 0.1 does not vary **体态**. A future body type must be produced as a
-complete motion master across every supported action. Do not stretch, squash,
-or non-uniformly scale an existing sheet to imitate a different body type.
-Future shape expansion should be organized as observable **外形原型**, not cat
-breed selection. Each prototype needs its own complete, art-directed motion
-master before coat presets are applied.
+The gray-and-white rounded short-haired master is produced first so it can be
+compared directly with the current runtime. The validated action names, frame
+counts, timing, `96x96` cells, anchors, and contact lines remain the engineering
+contract, but every visible frame is redrawn from one approved character sheet.
+After this workflow passes review, slender short-haired and fluffy long-haired
+receive their own complete motion masters before coat presets are applied.
 
 The Phase 0.1 motion master presents a familiar, healthy adult cat. Future
 **纪念年龄感** options may include young, adult, and older appearances selected
@@ -96,7 +108,7 @@ Do not change between actions:
 - gray/white pattern layout
 - tail length and striping
 - body mass
-- paw color
+- eye, nose, and paw-pad colors within the preset
 - outline thickness
 - pixel density
 - lighting direction
@@ -167,7 +179,8 @@ public/assets/scenes/window-room/cat/cat.animations.json
 
 ### Idle
 
-Purpose: make the cat feel present while waiting.
+Purpose: provide a brief natural standing or attentive transition between
+ordinary activities.
 
 Target frames: `4`
 
@@ -175,7 +188,7 @@ Loop: yes
 
 Frame intent:
 
-1. neutral standing/sitting pose
+1. neutral standing or lightly attentive pose
 2. subtle chest rise, tiny ear or whisker movement
 3. return near neutral
 4. subtle blink or tail-tip movement
@@ -186,6 +199,7 @@ Constraints:
 - paws remain planted
 - head and body proportions remain stable
 - motion should read as breathing or soft attention
+- do not dwell long enough to read as waiting for a command
 
 ### Walk
 
@@ -225,7 +239,7 @@ Loop: yes
 
 Frame intent:
 
-1. settles into a seated or loaf posture
+1. settles into a relaxed seated or loaf posture distinct from `idle`
 2. shows a small breath or ear movement
 3. returns near neutral
 4. gives a slow blink or tail-tip movement
@@ -236,6 +250,7 @@ Constraints:
 - keep the body grounded without vertical bobbing
 - preserve a readable silhouette at mobile scale
 - transition cleanly to idle, groom, or walking
+- carry most long stationary dwell time rather than reusing the `idle` sheet
 
 ### Eat
 
@@ -395,16 +410,16 @@ Loop: no
 Frame intent:
 
 1. notices user/tap, head turns toward the user or ears perk
-2. leans forward into a gentle three-quarter view
-3. soft rub/nuzzle or happy blink
-4. tail or cheek follow-through
+2. leans gently toward the touch direction without depicting a human hand
+3. gives one brief cheek rub/nuzzle
+4. follows with a slow blink and restrained tail-tip lift
 5. returns toward neutral
-6. settles back to idle-compatible pose
+6. settles back to the pose or ordinary activity that was interrupted
 
 Constraints:
 
 - must feel like companionship, not performance
-- render the current shared acknowledgement as a soft head turn and blink
+- acknowledge once without requesting or waiting for another interaction
 - do not name distinct responses until their production motion is available
 - do not depict hissing, fleeing, startling, or rejection
 - avoid hearts, rewards, sparkles from the cat itself
@@ -466,7 +481,8 @@ candidate source sheets. Current runtime-to-source mapping lives in
 state lives in [`../status/current.md`](../status/current.md).
 
 The **外形原型** and curated **毛色预设** model is recorded in
-[`ADR-0003`](../adr/0003-build-cat-identity-from-appearance-prototypes.md).
+[`ADR-0005`](../adr/0005-expand-memorial-appearance-before-art-lock.md),
+which supersedes ADR-0003's narrower Phase 0.1 limit.
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must
@@ -477,10 +493,14 @@ anchor, and character lock unless Phaser is recalibrated.
 
 Production order:
 
-1. approve the stylized-natural gray-and-white tabby mother asset;
-2. validate a three-action quality slice in the real room at mobile scale:
-   `sit/idle`, `walk`, and `interact`;
-3. after the slice passes, complete and validate the remaining seven action
-   classes;
-4. lock face, anatomy, anchors, lighting, and motion timing;
-5. derive the remaining five **毛色预设** without changing the motion master.
+1. compare rounded short-haired, slender short-haired, and fluffy long-haired
+   as gray-and-white static sheets at enlarged, `96x96`, desktop-room, and
+   mobile-room scales;
+2. approve the rounded short-haired character sheet and redraw `sit`, `walk`,
+   and `interact` as the first moving quality slice in the real room;
+3. after the slice passes, complete and validate rounded short-haired's
+   remaining seven action classes;
+4. lock its face, anatomy, anchors, lighting, and motion timing, then build all
+   ten complete **毛色预设** without changing the motion master;
+5. repeat the complete master and preset workflow for slender short-haired and
+   fluffy long-haired before enabling either prototype in registration.

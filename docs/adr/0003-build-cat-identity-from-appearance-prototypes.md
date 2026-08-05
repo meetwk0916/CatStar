@@ -1,6 +1,6 @@
 # ADR-0003: Build cat identity from appearance prototypes
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0005
 - **Date:** 2026-07-29
 
 ## Context
