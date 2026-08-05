@@ -127,7 +127,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
             {isFinalLetter(selected.letter) && !passport.isFarewellCompleted ? (
               <div className="mt-7 border-4 border-[#4A3E3D] bg-[#FBF8F3] p-4">
                 <p className="text-base leading-7 text-[#6C5A57]">
-                  如果你已经读到这里，可以把这段旅程轻轻收好。以后信箱会进入星河陪伴，所有来信仍然可以回看。
+                  如果你已经读到这里，可以把这段旅程轻轻收好。以后信箱会轻轻封存，星河陪伴仍会继续，所有来信仍然可以回看。
                 </p>
                 <button
                   type="button"

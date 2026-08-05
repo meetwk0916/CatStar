@@ -30,6 +30,10 @@ When documents disagree, use this order:
 - Support one real deceased cat and one local memorial passport.
 - Keep passport data and letter progress on the current device.
 - Use prewritten letters from `src/data/letters.json`; do not add generated letters or chat.
+- Treat the **时光信箱** and **陪伴场景** as equally important parts of one
+  **纪念陪伴旅程**. Their ordinary behavior remains independent so neither becomes
+  a task or reward for the other; shared journey transitions such as farewell
+  may update both.
 - Preserve delayed, device-local letter delivery and the final-letter farewell flow.
 - Keep the cat present in **星河陪伴** after **告别选择**.
 - Keep Phase 0.1 silent by default; do not autoplay meows, purring, or ambient

@@ -188,6 +188,7 @@ test("final letter stays gated, then farewell seals only the mailbox", async ({ 
 
   await page.getByRole("button", { name: /最后一封信：窗边还亮着/ }).click();
   await expect(page.getByText(/这不是我消失，也不是要你把想念放下/)).toBeVisible();
+  await expect(page.getByText(/信箱会轻轻封存，星河陪伴仍会继续/)).toBeVisible();
   await page.getByRole("button", { name: "谢谢你陪我走到这里", exact: true }).click();
   await expect(page.getByText("信箱已经封存，星河陪伴仍在继续。", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "关闭", exact: true }).click();

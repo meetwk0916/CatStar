@@ -92,6 +92,10 @@ _Avoid_: 回忆素材, 私人故事库, 记忆训练
 A supportive phrase that offers care without instructing the **用户** how to grieve. Letters may offer companionship and hope, but must not command the user to stop feeling sad or become happy.
 _Avoid_: 你一定要快乐, 别难过了, 快点走出来
 
+**纪念陪伴旅程**:
+The complete memorial companionship experience formed jointly by the paced written companionship of the **时光信箱** and the quiet nonverbal presence of the **陪伴场景**. The two are equally important parts of one experience; neither is merely an accessory to the other.
+_Avoid_: 信件主线, 场景辅助, 电子宠物流程, 任务旅程
+
 **告别**:
 The gentle memorial process completed through delayed **信件**. It is not disappearance, deletion, or breaking contact; it is the movement from active letters into quiet remembrance.
 _Avoid_: 通关, 毕业, 结束服务
