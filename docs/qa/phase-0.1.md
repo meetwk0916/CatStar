@@ -2,7 +2,7 @@
 
 **Status:** Current manual acceptance checklist
 
-Last updated: 2026-07-30
+Last updated: 2026-08-05
 
 ## Scope
 
@@ -63,6 +63,11 @@ accessibility checks.
   grooming, stretching, and deep sleep each use their dedicated sheet.
 - Use `?catstarRoutine=approachUser`; confirm the cat approaches once, briefly
   acknowledges the foreground, and resumes without an alert or demand.
+- Use `?catstarRoutine=touchPlant`; confirm the cat observes once, the split
+  leaf sways locally with damping, and both settle without sound, particles,
+  prompts, rewards, or a clickable prop.
+- Touch the cat during `?catstarRoutine=touchPlant`; confirm the leaf resets,
+  the prop routine does not resume, and the cat acknowledges immediately.
 - Click or tap the cat.
 - Confirm the cat always reacts visibly in place without a vertical jump.
 - Repeat the touch several times; confirm a short companion whisper appears

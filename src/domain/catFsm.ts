@@ -27,6 +27,7 @@ export type CompanionIntentKind =
   | "blanket-rest"
   | "eat"
   | "plant-inspect"
+  | "plant-touch"
   | "floor-sit"
   | "floor-groom"
   | "floor-sleep"
@@ -46,6 +47,8 @@ export interface CompanionPlannerContext {
 
 export interface CompanionPlanner {
   next(context: CompanionPlannerContext): CompanionIntent;
+  recordPlantTouch(sessionElapsedMs: number): void;
+  recordIntentCompleted(kind: CompanionIntentKind): void;
 }
 
 export type TouchDisposition = "brief-acknowledge" | "acknowledge" | "remain-asleep" | "wake";
@@ -64,6 +67,8 @@ type IntentWeights = Record<CompanionIntentKind, number>;
 
 const AWAKE_ENTRY_MS = 30_000;
 const RECENT_INTENT_LIMIT = 2;
+const PLANT_TOUCH_COOLDOWN_MS = 90_000;
+const PLANT_TOUCH_OTHER_INTENTS = 5;
 const TOUCH_ACKNOWLEDGEMENT_MS: Record<CatTemperament, number> = {
   QUIET: 1_500,
   CURIOUS: 1_300,
@@ -96,6 +101,7 @@ const INTENT_ORDER: CompanionIntentKind[] = [
   "blanket-rest",
   "eat",
   "plant-inspect",
+  "plant-touch",
   "floor-sit",
   "floor-groom",
   "floor-sleep",
@@ -109,6 +115,7 @@ const DWELL_RANGES: Record<CompanionIntentKind, readonly [number, number]> = {
   "blanket-rest": [4_200, 6_800],
   eat: [4_200, 6_200],
   "plant-inspect": [2_200, 3_600],
+  "plant-touch": [3_000, 3_000],
   "floor-sit": [3_800, 6_400],
   "floor-groom": [4_800, 7_400],
   "floor-sleep": [7_000, 11_000],
@@ -123,6 +130,7 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "blanket-rest": 14,
     eat: 5,
     "plant-inspect": 7,
+    "plant-touch": 1,
     "floor-sit": 18,
     "floor-groom": 10,
     "floor-sleep": 8,
@@ -135,6 +143,7 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "blanket-rest": 10,
     eat: 10,
     "plant-inspect": 22,
+    "plant-touch": 4,
     "floor-sit": 12,
     "floor-groom": 10,
     "floor-sleep": 6,
@@ -147,6 +156,7 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "blanket-rest": 17,
     eat: 7,
     "plant-inspect": 10,
+    "plant-touch": 2,
     "floor-sit": 6,
     "floor-groom": 4,
     "floor-sleep": 3,
@@ -159,6 +169,7 @@ const TEMPERAMENT_INTENT_WEIGHTS: Record<CatTemperament, IntentWeights> = {
     "blanket-rest": 15,
     eat: 7,
     "plant-inspect": 7,
+    "plant-touch": 1,
     "floor-sit": 14,
     "floor-groom": 8,
     "floor-sleep": 5,
@@ -173,6 +184,7 @@ const INTENT_ZONE: Partial<Record<CompanionIntentKind, CompanionZone>> = {
   "blanket-rest": "blanket",
   eat: "food-bowl",
   "plant-inspect": "plant",
+  "plant-touch": "plant",
   "floor-sit": "floor",
   "floor-groom": "floor",
   "floor-sleep": "floor",
@@ -215,6 +227,8 @@ export function createCompanionPlanner({
   random = Math.random,
 }: PlannerOptions): CompanionPlanner {
   const recent: CompanionIntentKind[] = [];
+  let lastPlantTouchAt: number | null = null;
+  let otherIntentsSincePlantTouch = 0;
 
   return {
     next(context) {
@@ -228,6 +242,14 @@ export function createCompanionPlanner({
         weights["floor-sleep"] = 0;
       } else if (context.localHour >= 22 || context.localHour < 6) {
         weights["floor-sleep"] *= 1.25;
+      }
+
+      const plantTouchCoolingDown =
+        lastPlantTouchAt !== null &&
+        (context.sessionElapsedMs - lastPlantTouchAt < PLANT_TOUCH_COOLDOWN_MS ||
+          otherIntentsSincePlantTouch < PLANT_TOUCH_OTHER_INTENTS);
+      if (context.sessionElapsedMs < AWAKE_ENTRY_MS || plantTouchCoolingDown) {
+        weights["plant-touch"] = 0;
       }
 
       for (const kind of INTENT_ORDER) {
@@ -244,6 +266,19 @@ export function createCompanionPlanner({
         kind,
         dwellMs: chooseDwellMs(kind, random),
       };
+    },
+    recordPlantTouch(sessionElapsedMs) {
+      lastPlantTouchAt = sessionElapsedMs;
+      otherIntentsSincePlantTouch = 0;
+    },
+    recordIntentCompleted(kind) {
+      if (lastPlantTouchAt === null || kind === "plant-touch") {
+        return;
+      }
+      otherIntentsSincePlantTouch = Math.min(
+        otherIntentsSincePlantTouch + 1,
+        PLANT_TOUCH_OTHER_INTENTS,
+      );
     },
   };
 }

@@ -2,7 +2,7 @@
 
 **Status:** Current
 
-**Last aligned:** 2026-08-01
+**Last aligned:** 2026-08-05
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in
@@ -68,7 +68,8 @@ When documents disagree, use this order:
 ## Runtime behavior
 
 - The cat uses environment-aware routines for the floor, window bench, cat bed,
-  food bowl, and blanket.
+  food bowl, blanket, and plant. Ordinary plant inspection is separate from the
+  low-frequency, cooldown-governed leaf-touch interaction.
 - Idle/sit, walking, jumping, eating, awake rest, deep sleep, grooming,
   stretching, and interaction use the shared ten-action animation contract.
 - Six curated coat presets share one motion master so appearance does not

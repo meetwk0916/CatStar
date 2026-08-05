@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-01
+Last updated: 2026-08-05
 
 ## Purpose
 
@@ -29,11 +29,8 @@ public/assets/scenes/window-room/collision.json
 physics, and scene timing. `PhaserCatScene.tsx` owns only the React lifecycle
 that creates, starts, and destroys the scene.
 
-Runtime review evidence:
-
-```text
-artifacts/art/runtime-review/2026-08-01/
-```
+Runtime review evidence is indexed in the
+[runtime asset map](../art/runtime-map.md#runtime-behavior-notes).
 
 The scene now separates:
 
@@ -94,6 +91,12 @@ fixed rest anchor and lies down rather than walking around on the blanket.
 
 `plant` is a blocker/avoidance zone with an inspection point at its left edge.
 The cat can approach and inspect it without walking into the plant rectangle.
+Ordinary `plant-inspect` remains repeatable and does not move the prop. A
+separate low-frequency `plant-touch` intent reuses walking and interaction
+motion: the cat observes for roughly 800 ms, lightly touches once, watches one
+split leaf sway with damping, settles, and leaves after a roughly three-second
+contact phase. The leaf is a transparent runtime layer derived from the room
+background; it has no collider or pointer interaction.
 
 The active window-bench routine uses fixed visual anchors for floor and perch
 positions. It does not rely on Arcade gravity for routine landing because the
@@ -116,8 +119,8 @@ This prevents the cat from wandering into prop rectangles or stopping against
 invisible props.
 
 The implemented **陪伴例程** planner selects among window watching, cat-bed
-rest, blanket rest, eating, plant inspection, floor sitting, grooming, deep
-sleep, stretching, and active approach. Selection:
+rest, blanket rest, eating, plant inspection, rare plant touching, floor
+sitting, grooming, deep sleep, stretching, and active approach. Selection:
 
 - weights preference and pace by **陪伴气质**;
 - keeps every intent reachable for every temperament;
@@ -125,6 +128,12 @@ sleep, stretching, and active approach. Selection:
 - lightly avoids selecting another intent for the current zone;
 - blocks deep sleep during the first 30 seconds of a session;
 - lets device-local hour bias sleep without controlling the encounter.
+
+`plant-touch` is unavailable during the first 30 seconds. After it occurs, it
+requires both 90 elapsed seconds and five completed non-touch intents before it
+can be selected again. It has no per-session maximum and remains probabilistic
+after cooldown. Every temperament can select it; curious cats receive the
+highest weight without exclusive access.
 
 This replaces both a deterministic patrol order and unbounded random floor
 roaming. The selected intent owns a meaningful dwell window; Phaser owns its
@@ -146,6 +155,11 @@ coordinates, tweens, and action playback.
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat
 must not remain airborne until a later routine snaps it back into place.
+
+If touch interrupts the plant-touch approach, reset the leaf, cancel the prop
+routine, and acknowledge the user in place. Once observation has begun, the
+same interruption also enters the full plant-touch cooldown. Do not resume or
+immediately retry the prop action.
 
 ## Companion Temperament
 
@@ -196,15 +210,13 @@ foreground, pause, briefly look toward the user, blink or lift its tail, and
 then resume ordinary room activity. This routine must not display an alert,
 repeat until acknowledged, or punish the user for not interacting.
 
-The repertoire may also include rare **自发玩耍**, such as touching a plant
-leaf, watching a window light, making one gentle pounce at a slow shadow, or
-kneading the blanket. These routines remain brief and low-intensity, require no
-user participation, and do not create rewards, tasks, or repeated high-energy
-movement.
-
-**自发玩耍** is a post-Phase 0.1 enhancement, not a required asset for the
-current ten-action production target. Phase 0.1 **主动靠近** should reuse walking
-and interaction motion rather than add another bespoke action class.
+The current narrow **自发玩耍** slice is `plant-touch`. Broader routines such as
+watching a window light, making one gentle pounce at a slow shadow, or kneading
+the blanket remain post-Phase 0.1 enhancements. Any such routine must stay
+brief and low-intensity, require no user participation, and avoid rewards,
+tasks, or repeated high-energy movement. The current plant touch and
+**主动靠近** both reuse walking and interaction motion rather than adding
+bespoke action classes.
 
 ## Future Upgrade Path
 
@@ -217,8 +229,9 @@ Future behavior work may deepen the current zone-targeted intent model:
 - `LYING` should keep diverging from deep sleep and support more rest surfaces.
 - `RUNNING` should be a higher-speed variant restricted to open floor zones,
   not near blockers or props.
-- `PLANT_INSPECTING` or similar future behavior should let the cat approach the
-  plant edge without colliding with an invisible wall.
+- Plant behavior may deepen only from the existing separate `plant-inspect`
+  and `plant-touch` lifecycles; do not replace them with a generic prop
+  framework prematurely.
 
 ## Acceptance Criteria
 
@@ -228,4 +241,5 @@ Before adding a new movement state:
 - it must define whether the zone is physical, walkable, restable, or visual;
 - it must avoid invisible collision rectangles in the cat's normal route;
 - it must describe entry, loop, and exit behavior;
+- it must define interruption and prop-reset behavior;
 - it must preserve gentle companion tone and avoid game-like reward behavior.

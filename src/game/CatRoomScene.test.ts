@@ -37,12 +37,22 @@ interface SceneInternals {
   acceptsInteractions: boolean;
   foregroundTransitionStartedAt: number;
   currentZone: string;
+  activeIntent?: { kind: string; dwellMs: number };
+  planner: {
+    recordPlantTouch: ReturnType<typeof vi.fn>;
+    recordIntentCompleted: ReturnType<typeof vi.fn>;
+  };
+  plantLeaf?: { angle: number; setAngle: ReturnType<typeof vi.fn> };
+  plantTouchStartedAt: number;
+  plantTouchCooldownStarted: boolean;
+  sessionStartedAt: number;
   temperament: "AFFECTIONATE";
   time: { now: number };
   tweens: { killTweensOf: ReturnType<typeof vi.fn> };
   playCatAction: ReturnType<typeof vi.fn>;
   onInteract: ReturnType<typeof vi.fn>;
   updatePurposefulRoutine: (time: number) => void;
+  moveTowardTarget: ReturnType<typeof vi.fn>;
 }
 
 function createCat(x = 320): SceneInternals["cat"] {
@@ -224,5 +234,92 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setScale).toHaveBeenLastCalledWith(88 / 96);
     expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
     expect(internals.routine).toBe("floorPause");
+  });
+
+  it("runs plant touch through observation, contact, leaf response, and recovery", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(458);
+    internals.routine = "approachPlantTouch";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.activeIntent = { kind: "plant-touch", dwellMs: 3_400 };
+    internals.planner = {
+      recordPlantTouch: vi.fn(),
+      recordIntentCompleted: vi.fn(),
+    };
+    internals.plantTouchStartedAt = 0;
+    internals.plantTouchCooldownStarted = false;
+    internals.sessionStartedAt = 100;
+    internals.plantLeaf = { angle: 0, setAngle: vi.fn() };
+    internals.moveTowardTarget = vi.fn(() => true);
+    internals.playCatAction = vi.fn();
+
+    internals.updatePurposefulRoutine(1_000);
+    expect(internals.routine).toBe("observePlantTouch");
+    expect(internals.plantTouchStartedAt).toBe(1_000);
+    expect(internals.routineHoldUntil).toBe(4_400);
+    expect(internals.currentZone).toBe("plant");
+    expect(internals.planner.recordPlantTouch).not.toHaveBeenCalled();
+    expect(internals.playCatAction).toHaveBeenLastCalledWith("idle", true);
+
+    internals.updatePurposefulRoutine(1_700);
+    expect(internals.routine).toBe("observePlantTouch");
+    expect(internals.playCatAction).not.toHaveBeenCalledWith("interact", true);
+    expect(internals.plantLeaf.setAngle).toHaveBeenLastCalledWith(0);
+
+    internals.updatePurposefulRoutine(1_800);
+    expect(internals.routine).toBe("touchPlant");
+    expect(internals.planner.recordPlantTouch).toHaveBeenCalledWith(1_700);
+    expect(internals.playCatAction).toHaveBeenLastCalledWith("interact", true);
+
+    internals.updatePurposefulRoutine(2_200);
+    expect(internals.routine).toBe("watchPlantSway");
+    expect(internals.playCatAction).toHaveBeenLastCalledWith("idle", true);
+
+    internals.updatePurposefulRoutine(2_300);
+    expect(internals.plantLeaf.setAngle.mock.calls.at(-1)?.[0]).not.toBe(0);
+
+    internals.updatePurposefulRoutine(3_400);
+    expect(internals.routine).toBe("settlePlantTouch");
+    expect(internals.plantLeaf.setAngle).toHaveBeenLastCalledWith(0);
+
+    internals.updatePurposefulRoutine(4_400);
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.planner.recordIntentCompleted).toHaveBeenCalledWith("plant-touch");
+  });
+
+  it("cancels plant touch, restores the leaf, and responds immediately to touch", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(458);
+    internals.routine = "observePlantTouch";
+    internals.routineHoldUntil = 4_000;
+    internals.manualInteractUntil = 0;
+    internals.currentZone = "plant";
+    internals.activeIntent = { kind: "plant-touch", dwellMs: 3_000 };
+    internals.planner = {
+      recordPlantTouch: vi.fn(),
+      recordIntentCompleted: vi.fn(),
+    };
+    internals.plantTouchStartedAt = 1_000;
+    internals.plantTouchCooldownStarted = false;
+    internals.sessionStartedAt = 0;
+    internals.plantLeaf = { angle: 7, setAngle: vi.fn() };
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 2_000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    scene.interact();
+
+    expect(internals.plantLeaf.setAngle).toHaveBeenCalledWith(0);
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.currentZone).toBe("floor");
+    expect(internals.activeIntent).toBeUndefined();
+    expect(internals.planner.recordPlantTouch).toHaveBeenCalledWith(2_000);
+    expect(internals.planner.recordIntentCompleted).not.toHaveBeenCalled();
+    expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
   });
 });

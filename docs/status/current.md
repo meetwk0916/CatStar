@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-01
+**Last aligned:** 2026-08-04
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -36,6 +36,9 @@ The current implementation includes:
   zone-aware rendering.
 - Environment-aware floor, window-bench, cat-bed, food-bowl, blanket, plant,
   and one-shot foreground-approach routines.
+- A low-frequency plant-leaf touch vertical slice with a split prop layer,
+  temperament weighting, 30-second opening protection, 90-second plus
+  five-other-intent cooldown, and safe touch interruption.
 - Reliable visible touch response, occasional **陪伴轻语**, and low-probability
   waking from deep sleep.
 
@@ -84,7 +87,8 @@ hashes or branch information to this file.
   working treatment, without changing anatomy, anchors, or timing.
 - Defer bespoke **自发玩耍** sheets until after the ten core action classes;
   reuse walk and interact motion for Phase 0.1 **主动靠近**.
-- Expand zone-aware actions while preserving the current environment contract.
+- Use the plant-touch lifecycle as evidence before extracting a general prop
+  interaction framework or expanding other zones.
 - Add one-way/top-only platform support before enabling free-form landings.
 - Complete manual pixel cleanup and interaction timing polish before art lock.
 - Split foreground occlusion elements after the scene composition stabilizes.

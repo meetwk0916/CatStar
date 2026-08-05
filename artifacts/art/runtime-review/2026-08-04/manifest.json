@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-08-01T15:33:39.055776+08:00",
+  "capturedAt": "2026-08-04T23:56:32.458485+08:00",
   "viewport": [
     1280,
     720
   ],
-  "sourceFingerprint": "8655a458a70333976f2d37d9c27d4767a9d2872e747af5e313abd91d53959921",
+  "sourceFingerprint": "6f997944176450e0d3df0fe7b3a3668bc71bd0c60f5fbb2345f281f664982d06",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -76,6 +76,7 @@
     "public/assets/scenes/window-room/collision.json",
     "public/assets/scenes/window-room/foreground-blanket.png",
     "public/assets/scenes/window-room/foreground-cat-bed.png",
+    "public/assets/scenes/window-room/plant-leaf.png",
     "scripts/capture_cat_runtime_review.py",
     "src/App.tsx",
     "src/components/CatScene.tsx",
@@ -113,6 +114,7 @@
     "floor-groom-2s.png",
     "floor-stretch-1s.png",
     "floor-sleep-2s.png",
-    "approach-user-4s.png"
+    "approach-user-4s.png",
+    "plant-touch-1s.png"
   ]
 }

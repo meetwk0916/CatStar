@@ -2,7 +2,7 @@
 
 **Status:** Current visual direction
 
-Last updated: 2026-07-29
+Last updated: 2026-08-05
 
 ## Priority
 
@@ -67,6 +67,7 @@ Recommended final structure:
 ```text
 public/assets/scenes/window-room/
   background.png
+  plant-leaf.png
   collision.json
   cat/
     cat.animations.json

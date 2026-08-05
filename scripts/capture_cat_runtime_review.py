@@ -76,6 +76,7 @@ SHOTS = [
     ("floor-stretch-1s.png", "/?catstarRoutine=floorStretch", 550),
     ("floor-sleep-2s.png", "/?catstarRoutine=floorSleep", 1800),
     ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000),
+    ("plant-touch-1s.png", "/?catstarRoutine=touchPlant", 1100),
 ]
 SHOT_FILENAMES = [filename for filename, _route, _timeout in SHOTS]
 MANIFEST_FILENAME = "manifest.json"

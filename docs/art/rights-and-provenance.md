@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-07-27
+**Last reviewed:** 2026-08-05
 
 The current room and cat art may be used only for CatStar internal prototype
 review. The repository records technical lineage, but the original generation
@@ -14,6 +14,7 @@ incomplete rights chain, not proof of production rights.
 | Runtime group | Technical source | Provider/model | License or terms evidence | Allowed use |
 | --- | --- | --- | --- | --- |
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
+| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
 | Cat action sheets | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the two groups above | Inherits unresolved source status | Internal review only |
 

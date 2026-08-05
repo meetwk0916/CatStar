@@ -27,13 +27,14 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
   }, []);
 
   useEffect(() => {
-    if (!containerRef.current) {
+    const container = containerRef.current;
+    if (!container) {
       return;
     }
 
     const game = new Phaser.Game({
       type: Phaser.AUTO,
-      parent: containerRef.current,
+      parent: container,
       width: 640,
       height: 360,
       backgroundColor: "#202433",
@@ -72,6 +73,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
 
     return () => {
       game.destroy(true);
+      container.replaceChildren();
       if (gameRef.current === game) {
         gameRef.current = null;
       }
