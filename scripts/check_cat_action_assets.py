@@ -24,7 +24,8 @@ MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
 MAX_REFINED_PIXEL_COLORS = 128
 REFINED_PIXEL_ACTIONS = {"sit", "walk", "interact"}
-ASSET_DIR = Path("public/assets/scenes/window-room/cat")
+SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
+ASSET_DIR = SCENE_ASSET_DIR / "cat"
 SPEC_PATH = ASSET_DIR / "cat.animations.json"
 CAT_PRESETS = (
     "gray-white-tabby",
@@ -46,6 +47,31 @@ REQUIRED_ACTIONS = {
     "groom",
     "stretch",
 }
+
+
+def validate_environment_assets() -> list[str]:
+    failures: list[str] = []
+    background_path = SCENE_ASSET_DIR / "background.png"
+    leaf_path = SCENE_ASSET_DIR / "plant-leaf.png"
+
+    if not background_path.exists():
+        failures.append(f"missing scene background {background_path}")
+    elif Image.open(background_path).size != (640, 360):
+        failures.append("background.png: expected 640x360 runtime composition")
+
+    if not leaf_path.exists():
+        failures.append(f"missing plant interaction leaf {leaf_path}")
+        return failures
+
+    leaf = Image.open(leaf_path).convert("RGBA")
+    if leaf.size != (47, 24):
+        failures.append(f"plant-leaf.png: expected 47x24, got {leaf.size}")
+    alpha = leaf.getchannel("A")
+    if alpha.getbbox() is None:
+        failures.append("plant-leaf.png: leaf is fully transparent")
+    if any(alpha.getpixel(corner) > 0 for corner in ((0, 0), (46, 0), (0, 23), (46, 23))):
+        failures.append("plant-leaf.png: expected transparent corners")
+    return failures
 
 
 def iter_component_sizes(alpha: Image.Image) -> Iterable[int]:
@@ -171,7 +197,7 @@ def validate_distinct_stationary_actions(preset: str, spec: dict[str, object]) -
 
 def main() -> None:
     spec = json.loads(SPEC_PATH.read_text())
-    failures: list[str] = []
+    failures = validate_environment_assets()
 
     if spec.get("frameWidth") != FRAME or spec.get("frameHeight") != FRAME:
         failures.append(f"cat.animations.json: expected {FRAME}x{FRAME} frame contract")

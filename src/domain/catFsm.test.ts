@@ -27,6 +27,7 @@ describe("companion planner", () => {
       "blanket-rest",
       "eat",
       "plant-inspect",
+      "plant-touch",
       "floor-sit",
       "floor-groom",
       "floor-sleep",
@@ -36,10 +37,10 @@ describe("companion planner", () => {
 
     for (const temperament of TEMPERAMENTS) {
       const actual = new Set<CompanionIntentKind>();
-      for (let sample = 0; sample < 200; sample += 1) {
+      for (let sample = 0; sample < 2_000; sample += 1) {
         const planner = createCompanionPlanner({
           temperament,
-          random: sequenceRandom([sample / 200, 0.5]),
+          random: sequenceRandom([sample / 2_000, 0.5]),
         });
         actual.add(
           planner.next({
@@ -91,6 +92,119 @@ describe("companion planner", () => {
     );
 
     expect(selected.every((intent) => intent.kind !== "floor-sleep")).toBe(true);
+  });
+
+  it("keeps plant touch unavailable during the opening window", () => {
+    const selected = Array.from({ length: 200 }, (_, sample) => {
+      const planner = createCompanionPlanner({
+        temperament: "CURIOUS",
+        random: sequenceRandom([sample / 200, 0.5]),
+      });
+      return planner.next({
+        currentZone: "floor",
+        sessionElapsedMs: 29_999,
+        localHour: 18,
+      }).kind;
+    });
+
+    expect(selected).not.toContain("plant-touch");
+  });
+
+  it("starts plant touch cooldown on contact and counts only completed other intentions", () => {
+    const nextAfterCooldownScenario = (
+      completedIntentions: number,
+      uncompletedIntentions: number,
+      sessionElapsedMs: number,
+      finalRandom: number,
+    ) => {
+      const planner = createCompanionPlanner({
+        temperament: "CURIOUS",
+        random: sequenceRandom([
+          0.81,
+          0.5,
+          ...Array.from(
+            { length: completedIntentions + uncompletedIntentions },
+            () => [0, 0.5],
+          ).flat(),
+          finalRandom,
+          0.5,
+        ]),
+      });
+      const nextAt = (elapsedMs: number) =>
+        planner.next({
+          currentZone: "floor",
+          sessionElapsedMs: elapsedMs,
+          localHour: 18,
+        }).kind;
+
+      expect(nextAt(30_000)).toBe("plant-touch");
+      planner.recordPlantTouch(35_000);
+      Array.from({ length: completedIntentions }, () => {
+        const kind = nextAt(124_999);
+        planner.recordIntentCompleted(kind);
+      });
+      Array.from({ length: uncompletedIntentions }, () => nextAt(124_999));
+      return nextAt(sessionElapsedMs);
+    };
+    const sampleSelections = (
+      completedIntentions: number,
+      uncompletedIntentions: number,
+      sessionElapsedMs: number,
+    ) =>
+      Array.from({ length: 1_000 }, (_, sample) =>
+        nextAfterCooldownScenario(
+          completedIntentions,
+          uncompletedIntentions,
+          sessionElapsedMs,
+          sample / 1_000,
+        ),
+      );
+
+    expect(sampleSelections(4, 1, 125_001)).not.toContain("plant-touch");
+    expect(sampleSelections(5, 0, 124_999)).not.toContain("plant-touch");
+    expect(sampleSelections(5, 0, 125_001)).toContain("plant-touch");
+  });
+
+  it("does not start cooldown when plant touch is selected but never reaches contact", () => {
+    const selections = Array.from({ length: 1_000 }, (_, sample) => {
+      const planner = createCompanionPlanner({
+        temperament: "CURIOUS",
+        random: sequenceRandom([0.81, 0.5, 0, 0.5, 0, 0.5, sample / 1_000, 0.5]),
+      });
+      const nextAt = (sessionElapsedMs: number) =>
+        planner.next({ currentZone: "floor", sessionElapsedMs, localHour: 18 }).kind;
+
+      expect(nextAt(30_000)).toBe("plant-touch");
+      nextAt(31_000);
+      nextAt(32_000);
+      return nextAt(33_000);
+    });
+
+    expect(selections).toContain("plant-touch");
+  });
+
+  it("makes curious cats most likely to touch the plant without excluding any temperament", () => {
+    const countPlantTouches = (temperament: CatTemperament) =>
+      Array.from({ length: 2_000 }, (_, sample) => {
+        const planner = createCompanionPlanner({
+          temperament,
+          random: sequenceRandom([sample / 2_000, 0.5]),
+        });
+        return planner.next({
+          currentZone: "floor",
+          sessionElapsedMs: 30_000,
+          localHour: 18,
+        }).kind;
+      }).filter((kind) => kind === "plant-touch").length;
+
+    const counts = Object.fromEntries(
+      TEMPERAMENTS.map((temperament) => [temperament, countPlantTouches(temperament)]),
+    ) as Record<CatTemperament, number>;
+
+    expect(counts.CURIOUS).toBeGreaterThan(counts.QUIET);
+    expect(counts.CURIOUS).toBeGreaterThan(counts.LIVELY);
+    expect(counts.CURIOUS).toBeGreaterThan(counts.AFFECTIONATE);
+    expect(Object.values(counts).every((count) => count > 0)).toBe(true);
   });
 
   it("keeps dwell timing inside the domain-owned range", () => {

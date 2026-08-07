@@ -56,11 +56,29 @@ npm run review:runtime
 The capture command requires a `playwright` CLI on `PATH`; it uses the Chrome
 channel by default and can be overridden with `CATSTAR_PLAYWRIGHT_CHANNEL`.
 It starts a local Vite server, injects a review-only local passport, and
-captures nine states: default movement, window bench, cat bed, food bowl,
-blanket, grooming, stretching, deep sleep, and active approach.
+captures ten states: default movement, window bench, cat bed, food bowl,
+blanket, grooming, stretching, deep sleep, active approach, and plant touch.
+
+For the accepted narrow mobile pass, run the same capture contract with an
+explicit viewport and separate evidence root:
+
+```bash
+CATSTAR_REVIEW_VIEWPORT=375,812 \
+CATSTAR_REVIEW_OUT=artifacts/art/runtime-review-mobile/YYYY-MM-DD \
+npm run review:runtime
+```
 
 Validate the existing screenshots without starting a browser with:
 
 ```bash
+npm run review:runtime:check
+```
+
+That command validates the latest desktop evidence. Validate a mobile evidence
+directory with its matching viewport explicitly:
+
+```bash
+CATSTAR_REVIEW_VIEWPORT=375,812 \
+CATSTAR_REVIEW_OUT=artifacts/art/runtime-review-mobile/YYYY-MM-DD \
 npm run review:runtime:check
 ```

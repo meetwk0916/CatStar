@@ -51,6 +51,11 @@ type CatRoutine =
   | "eatFoodBowl"
   | "approachPlant"
   | "inspectPlant"
+  | "approachPlantTouch"
+  | "observePlantTouch"
+  | "touchPlant"
+  | "watchPlantSway"
+  | "settlePlantTouch"
   | "approachBlanket"
   | "restBlanket"
   | "floorSit"
@@ -169,6 +174,14 @@ const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
 const FOOD_BOWL_X = FOOD_ZONE.xMin - 34;
 const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 34;
 const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
+const PLANT_TOUCH_X = PLANT_ZONE.xMin - 18;
+const PLANT_LEAF_PIVOT_X = 534;
+const PLANT_LEAF_PIVOT_Y = 158;
+const PLANT_TOUCH_OBSERVE_MS = 800;
+const PLANT_TOUCH_CONTACT_MS = 400;
+const PLANT_LEAF_SWAY_MS = 1_200;
+const PLANT_TOUCH_DURATION_MS = 3_000;
+const PLANT_LEAF_SWAY_DEGREES = 8;
 const BLANKET_STAND_Y = 196;
 const BLANKET_REST_X = 558;
 const BLANKET_TAKEOFF_X = 482;
@@ -189,6 +202,11 @@ const DEBUG_ROUTINES = new Set<CatRoutine>([
   "approachBlanket",
   "approachFoodBowl",
   "approachPlant",
+  "approachPlantTouch",
+  "observePlantTouch",
+  "touchPlant",
+  "watchPlantSway",
+  "settlePlantTouch",
   ...(Object.keys(FLOOR_ROUTINE_ACTIONS) as FloorRoutine[]),
   "approachUser",
 ]);
@@ -199,6 +217,7 @@ const INTENT_ROUTINES: Record<CompanionIntentKind, CatRoutine> = {
   "blanket-rest": "approachBlanket",
   eat: "approachFoodBowl",
   "plant-inspect": "approachPlant",
+  "plant-touch": "approachPlantTouch",
   "floor-sit": "floorSit",
   "floor-groom": "floorGroom",
   "floor-sleep": "floorSleep",
@@ -215,6 +234,7 @@ const TOUCH_ACTIONS: Record<TouchDisposition, CatReaction> = {
 
 export class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private plantLeaf?: Phaser.GameObjects.Image;
   private routine: CatRoutine = "approachWindowBench";
   private routineHoldUntil = 0;
   private scriptedJump?: ScriptedJump;
@@ -228,6 +248,8 @@ export class CatRoomScene extends Phaser.Scene {
   private foregroundTransitionStartedAt = 0;
   private manualInteractAction: CatReaction = "interact";
   private sessionStartedAt = 0;
+  private plantTouchStartedAt = 0;
+  private plantTouchCooldownStarted = false;
   private showStardust = false;
   private coatPreset: CatCoatPreset = "GRAY_WHITE_TABBY";
   private temperament: CatTemperament = "AFFECTIONATE";
@@ -272,6 +294,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
     this.load.image("window-room-foreground-cat-bed", `${SCENE_ASSET_ROOT}/foreground-cat-bed.png`);
     this.load.image("window-room-foreground-blanket", `${SCENE_ASSET_ROOT}/foreground-blanket.png`);
+    this.load.image("window-room-plant-leaf", `${SCENE_ASSET_ROOT}/plant-leaf.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
     this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
     const coatDirectory = COAT_ASSET_DIRECTORIES[this.coatPreset];
@@ -288,6 +311,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.createPhysicsTexture();
     this.createParticleTexture();
     this.add.image(320, 180, "window-room-background").setDisplaySize(640, 360).setDepth(0);
+    this.createPlantLeaf();
     this.createCatAnimations();
     this.createSceneObjects();
     this.createCat();
@@ -299,7 +323,17 @@ export class CatRoomScene extends Phaser.Scene {
     this.sessionStartedAt = this.time.now;
     if (this.debugRoutine) {
       this.routine = this.debugRoutine;
-      this.routineHoldUntil = isFloorRoutine(this.debugRoutine) ? this.time.now + 20_000 : 0;
+      if (this.debugRoutine === "touchPlant") {
+        this.cat?.setPosition(PLANT_TOUCH_X, FLOOR_STAND_Y);
+        this.cat?.setFlipX(false);
+        this.currentZone = "plant";
+        this.plantTouchStartedAt = this.time.now - PLANT_TOUCH_OBSERVE_MS;
+        this.routineHoldUntil =
+          this.time.now + PLANT_TOUCH_DURATION_MS - PLANT_TOUCH_OBSERVE_MS;
+        this.playCatAction("interact", true);
+      } else {
+        this.routineHoldUntil = isFloorRoutine(this.debugRoutine) ? this.time.now + 20_000 : 0;
+      }
     } else {
       this.startReturnEncounter(this.time.now);
     }
@@ -393,6 +427,17 @@ export class CatRoomScene extends Phaser.Scene {
       this.currentZone = "floor";
       this.routine = "floorPause";
       this.routineHoldUntil = this.time.now + 900;
+      this.activeIntent = undefined;
+    }
+
+    if (
+      this.routine === "approachPlantTouch" ||
+      this.routine === "observePlantTouch" ||
+      this.routine === "touchPlant" ||
+      this.routine === "watchPlantSway" ||
+      this.routine === "settlePlantTouch"
+    ) {
+      this.cancelPlantTouch(this.time.now);
     }
 
     const sleeping = this.routine === "floorSleep";
@@ -471,6 +516,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction("lie");
 
       if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
         this.startScriptedJump(time, {
           toX: CAT_BED_EXIT_X,
           toY: FLOOR_STAND_Y,
@@ -509,6 +555,7 @@ export class CatRoomScene extends Phaser.Scene {
 
       if (time >= this.routineHoldUntil) {
         this.cat.setY(FLOOR_STAND_Y);
+        this.completeActiveIntent();
         this.startFloorPause(time);
       }
       return;
@@ -530,6 +577,88 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    if (this.routine === "approachPlantTouch") {
+      if (this.waitOnFloorUntil(time)) {
+        return;
+      }
+
+      if (this.moveTowardTarget(PLANT_TOUCH_X)) {
+        this.cat.setVelocityX(0);
+        this.cat.setFlipX(false);
+        this.routine = "observePlantTouch";
+        this.plantTouchStartedAt = time;
+        this.routineHoldUntil = time + this.activeDwellMs(PLANT_TOUCH_DURATION_MS);
+        this.currentZone = "plant";
+        this.resetPlantLeaf();
+        this.plantTouchCooldownStarted = false;
+        this.playCatAction("idle", true);
+      }
+      return;
+    }
+
+    if (this.routine === "observePlantTouch") {
+      this.holdAtPlant();
+      this.resetPlantLeaf();
+      this.playCatAction("idle");
+
+      const elapsed = Math.max(time - this.plantTouchStartedAt, 0);
+      if (elapsed >= PLANT_TOUCH_OBSERVE_MS) {
+        this.startPlantTouchCooldown(time);
+        this.routine = "touchPlant";
+        this.playCatAction("interact", true);
+      }
+      return;
+    }
+
+    if (this.routine === "touchPlant") {
+      this.holdAtPlant();
+      this.resetPlantLeaf();
+      this.playCatAction("interact");
+
+      const elapsed = Math.max(time - this.plantTouchStartedAt, 0);
+      if (elapsed >= PLANT_TOUCH_OBSERVE_MS + PLANT_TOUCH_CONTACT_MS) {
+        this.routine = "watchPlantSway";
+        this.playCatAction("idle", true);
+      }
+      return;
+    }
+
+    if (this.routine === "watchPlantSway") {
+      this.holdAtPlant();
+      this.playCatAction("idle");
+
+      const elapsed = Math.max(time - this.plantTouchStartedAt, 0);
+      const swayProgress = Phaser.Math.Clamp(
+        (elapsed - PLANT_TOUCH_OBSERVE_MS - PLANT_TOUCH_CONTACT_MS) / PLANT_LEAF_SWAY_MS,
+        0,
+        1,
+      );
+      const angle =
+        Math.sin(swayProgress * Math.PI * 5) *
+        PLANT_LEAF_SWAY_DEGREES *
+        (1 - swayProgress);
+      this.plantLeaf?.setAngle(angle);
+      if (swayProgress >= 1) {
+        this.routine = "settlePlantTouch";
+        this.resetPlantLeaf();
+      }
+      return;
+    }
+
+    if (this.routine === "settlePlantTouch") {
+      this.holdAtPlant();
+      this.resetPlantLeaf();
+      this.playCatAction("idle");
+
+      if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
+        this.plantTouchStartedAt = 0;
+        this.plantTouchCooldownStarted = false;
+        this.startFloorPause(time);
+      }
+      return;
+    }
+
     if (this.routine === "inspectPlant") {
       this.currentZone = "plant";
       this.cat.body.setAllowGravity(false);
@@ -539,6 +668,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction(time > this.routineHoldUntil - 1000 ? "idle" : "interact");
 
       if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
         this.startFloorPause(time);
       }
       return;
@@ -570,6 +700,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction("lie");
 
       if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
         this.startScriptedJump(time, {
           toX: BLANKET_RETURN_X,
           toY: FLOOR_STAND_Y,
@@ -588,6 +719,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.cat.setY(WINDOW_BENCH_SURFACE.y);
 
       if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
         this.startScriptedJump(time, {
           toX: FLOOR_RETURN_X,
           toY: FLOOR_STAND_Y,
@@ -626,6 +758,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction(FLOOR_ROUTINE_ACTIONS[this.routine]);
 
       if (time >= this.routineHoldUntil) {
+        this.completeActiveIntent();
         this.startFloorPause(time);
       }
       return;
@@ -732,6 +865,52 @@ export class CatRoomScene extends Phaser.Scene {
     this.routineHoldUntil = time + Phaser.Math.Between(700, 1200);
   }
 
+  private holdAtPlant() {
+    if (!this.cat) {
+      return;
+    }
+    this.currentZone = "plant";
+    this.cat.body.setAllowGravity(false);
+    this.cat.setY(FLOOR_STAND_Y);
+    this.cat.setVelocityX(0);
+    this.cat.setFlipX(false);
+  }
+
+  private resetPlantLeaf() {
+    this.plantLeaf?.setAngle(0);
+  }
+
+  private cancelPlantTouch(time: number) {
+    if (this.routine !== "approachPlantTouch") {
+      this.startPlantTouchCooldown(time);
+    }
+    this.resetPlantLeaf();
+    this.plantTouchStartedAt = 0;
+    this.plantTouchCooldownStarted = false;
+    this.activeIntent = undefined;
+    this.startFloorPause(time);
+  }
+
+  private startPlantTouchCooldown(time: number) {
+    if (this.plantTouchCooldownStarted) {
+      return;
+    }
+    this.planner.recordPlantTouch(this.sessionElapsedMs(time));
+    this.plantTouchCooldownStarted = true;
+  }
+
+  private completeActiveIntent() {
+    if (!this.activeIntent) {
+      return;
+    }
+    this.planner.recordIntentCompleted(this.activeIntent.kind);
+    this.activeIntent = undefined;
+  }
+
+  private sessionElapsedMs(time: number) {
+    return Math.max(time - this.sessionStartedAt, 0);
+  }
+
   private startReturnEncounter(time: number) {
     if (!this.cat) {
       return;
@@ -803,7 +982,7 @@ export class CatRoomScene extends Phaser.Scene {
   private scheduleNextIntent(time: number) {
     const intent = this.planner.next({
       currentZone: this.currentZone,
-      sessionElapsedMs: Math.max(time - this.sessionStartedAt, 0),
+      sessionElapsedMs: this.sessionElapsedMs(time),
       localHour: new Date().getHours(),
     });
     this.beginIntent(intent, time);
@@ -854,6 +1033,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.cat.setY(FLOOR_STAND_Y);
       this.cat.setScale(CAT_BASE_SCALE);
       this.cat.setDepth(5);
+      this.completeActiveIntent();
       this.startFloorPause(time);
       return;
     }
@@ -999,6 +1179,13 @@ export class CatRoomScene extends Phaser.Scene {
   private createForegroundObjects() {
     this.add.image(320, 180, "window-room-foreground-cat-bed").setDisplaySize(640, 360).setDepth(6);
     this.add.image(320, 180, "window-room-foreground-blanket").setDisplaySize(640, 360).setDepth(6);
+  }
+
+  private createPlantLeaf() {
+    this.plantLeaf = this.add
+      .image(PLANT_LEAF_PIVOT_X, PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
+      .setOrigin(43 / 47, 15 / 24)
+      .setDepth(6);
   }
 
   private createCatAnimations() {

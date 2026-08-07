@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-06
+Last updated: 2026-08-07
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -15,6 +15,13 @@ public/assets/scenes/window-room/cat/{coat-preset}/{action}.png
 
 The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 `solid-black`, `solid-white`, `calico`, and `tuxedo`.
+
+## Environment Interaction Assets
+
+| Runtime asset | Current source | Status |
+| --- | --- | --- |
+| `background.png` | `artifacts/art/sources/plant-interaction-v1/background-before-leaf-split.png` via `scripts/derive_plant_interaction_assets.py` | Local repair under the split leaf; room composition otherwise unchanged. |
+| `plant-leaf.png` | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` via `scripts/derive_plant_interaction_assets.py` | `47x24` transparent internal-prototype prop with a fixed Phaser pivot. |
 
 ## Motion Master
 
@@ -48,17 +55,22 @@ timing prevent coat choice from changing behavior.
   intentionally occasional rather than guaranteed.
 - `approach-user` reuses `walk` and `interact`; it does not alert, demand, or
   wait for acknowledgement.
+- `plant-touch` remains distinct from ordinary `plant-inspect`; it reuses
+  `walk` and `interact`, moves only the split leaf, and resets on user touch.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-06/` and contains eighteen validated
+`artifacts/art/runtime-review/2026-08-07/` and contains nineteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
 blanket routines, grooming, stretching, deep sleep, active approach, the
 in-place interaction across four runtime moments after real pointer input on
-both sides of the cat, and the enlarged cat at a `390x844` mobile viewport.
-The accompanying `manifest.json` binds the screenshots to the exact runtime
-input fingerprint; `npm run review:runtime:check` fails after those inputs
-change.
+both sides of the cat, plant touch, and the enlarged cat at a `390x844` mobile
+viewport.
+The plant-touch desktop evidence lives under
+`artifacts/art/runtime-review/2026-08-04/`; the matching `375x812` evidence
+lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
+accompanying `manifest.json` binds its screenshots to the exact runtime input
+fingerprint; `npm run review:runtime:check` fails after those inputs change.
 
 ## Candidate Retention
 

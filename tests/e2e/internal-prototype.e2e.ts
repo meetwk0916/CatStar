@@ -1,4 +1,22 @@
-import { expect, test, type Page } from "playwright/test";
+import { expect, test, type Locator, type Page } from "playwright/test";
+
+async function screenshotPlantRegion(page: Page, canvas: Locator) {
+  const box = await canvas.boundingBox();
+  if (!box) {
+    throw new Error("Cat room canvas is not visible");
+  }
+
+  const scaleX = box.width / 640;
+  const scaleY = box.height / 360;
+  return page.screenshot({
+    clip: {
+      x: box.x + 486 * scaleX,
+      y: box.y + 132 * scaleY,
+      width: 62 * scaleX,
+      height: 48 * scaleY,
+    },
+  });
+}
 
 async function registerPassport(page: Page) {
   await page.getByLabel("小猫叫什么名字？", { exact: true }).fill("小灰");
@@ -91,6 +109,42 @@ test("cat interaction has a keyboard-accessible control and visible response", a
   expect(await canvas.count()).toBe(1);
   const after = await canvas.screenshot();
   expect(after.equals(before)).toBe(false);
+});
+
+test("plant touch moves the room locally and yields immediately to companion touch", async ({ page }) => {
+  await registerPassport(page);
+  const canvas = page.locator("canvas");
+  const interact = page.getByRole("button", { name: "轻轻摸摸小灰", exact: true });
+
+  await page.goto("/?catstarRoutine=floorSit");
+  await expect(canvas).toBeVisible();
+  await page.waitForTimeout(100);
+  const restingPlant = await screenshotPlantRegion(page, canvas);
+
+  await page.goto("/?catstarRoutine=touchPlant");
+  await expect(canvas).toBeVisible();
+  let swayingPlant = restingPlant;
+  await expect
+    .poll(
+      async () => {
+        swayingPlant = await screenshotPlantRegion(page, canvas);
+        return swayingPlant.equals(restingPlant);
+      },
+      { timeout: 2_000, intervals: [50] },
+    )
+    .toBe(false);
+  const swayingCanvas = await canvas.screenshot();
+
+  await interact.click();
+  await page.waitForTimeout(100);
+  const resetPlant = await screenshotPlantRegion(page, canvas);
+  const acknowledgedCanvas = await canvas.screenshot();
+  expect(acknowledgedCanvas.equals(swayingCanvas)).toBe(false);
+  expect(resetPlant.equals(restingPlant)).toBe(true);
+
+  await page.waitForTimeout(2_200);
+  const settledPlant = await screenshotPlantRegion(page, canvas);
+  expect(settledPlant.equals(restingPlant)).toBe(true);
 });
 
 test("passport and read progress survive a reload", async ({ page }) => {

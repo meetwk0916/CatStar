@@ -78,6 +78,7 @@ SHOTS = [
     ("floor-stretch-1s.png", "/?catstarRoutine=floorStretch", 550, VIEWPORT),
     ("floor-sleep-2s.png", "/?catstarRoutine=floorSleep", 1800, VIEWPORT),
     ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000, VIEWPORT),
+    ("plant-touch-1s.png", "/?catstarRoutine=touchPlant", 1100, VIEWPORT),
     ("mobile-sit-2s.png", "/?catstarRoutine=floorSit", 1800, MOBILE_VIEWPORT),
 ]
 INTERACTION_SHOTS = [

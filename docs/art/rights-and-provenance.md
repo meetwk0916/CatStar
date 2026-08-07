@@ -14,6 +14,7 @@ incomplete rights chain, not proof of production rights.
 | Runtime group | Technical source | Provider/model | License or terms evidence | Allowed use |
 | --- | --- | --- | --- | --- |
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
+| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
 | Cat action sheets | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
 | Rounded short-haired v11 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` plus `scripts/compose_product_cat_quality_slice_v11.py` | OpenAI built-in image generation; specific model/version not exposed | Missing | Internal prototype only |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the two groups above | Inherits unresolved source status | Internal review only |
