@@ -29,19 +29,19 @@
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.37.1",
-    "@tailwindcss/postcss": "^4.2.1",
-    "@types/node": "^22.19.19",
+    "@cloudflare/vite-plugin": "^1.51.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.1.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
-    "@vitejs/plugin-rsc": "^0.5.26",
-    "playwright": "1.61.1",
-    "react-server-dom-webpack": "^19.2.6",
-    "typescript": "^5.9.3",
-    "vinext": "^1.0.0-beta.2",
-    "vite": "^8.1.5",
-    "vitest": "^4.1.8",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-rsc": "^0.5.32",
+    "playwright": "1.62.1",
+    "react-server-dom-webpack": "^19.2.8",
+    "typescript": "^7.0.2",
+    "vinext": "^1.0.0-beta.4",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.10",
     "wrangler": "^4.92.0"
   }
 }
