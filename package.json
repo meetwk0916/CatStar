@@ -7,12 +7,19 @@
     "dev": "vite",
     "build": "tsc -b && vinext build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run && npm run test:assets && npm run test:motion-review",
+    "test:assets": "sh scripts/run_python_with_pillow.sh scripts/test_check_cat_action_assets.py",
+    "test:motion-review": "sh scripts/run_python_with_pillow.sh scripts/test_cat_motion_review.py",
     "test:e2e": "playwright test",
     "check:bundle": "python3 scripts/check_bundle_budget.py",
     "check:assets": "sh scripts/run_python_with_pillow.sh scripts/check_cat_action_assets.py",
+    "check:assets:release": "sh scripts/run_python_with_pillow.sh scripts/check_cat_action_assets.py --profile first-release",
     "review:runtime": "sh scripts/run_python_with_pillow.sh scripts/capture_cat_runtime_review.py",
-    "review:runtime:check": "CATSTAR_REVIEW_VALIDATE_ONLY=1 sh scripts/run_python_with_pillow.sh scripts/capture_cat_runtime_review.py"
+    "review:runtime:check": "CATSTAR_REVIEW_VALIDATE_ONLY=1 sh scripts/run_python_with_pillow.sh scripts/capture_cat_runtime_review.py",
+    "review:motion": "sh scripts/run_python_with_pillow.sh scripts/capture_cat_motion_review.py",
+    "review:motion:check": "sh scripts/run_python_with_pillow.sh scripts/capture_cat_motion_review.py --validate-only",
+    "review:motion:check:release": "sh scripts/run_python_with_pillow.sh scripts/capture_cat_motion_review.py --validate-only --require-human-pass",
+    "review:motion:record": "sh scripts/run_python_with_pillow.sh scripts/record_cat_motion_review.py"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",

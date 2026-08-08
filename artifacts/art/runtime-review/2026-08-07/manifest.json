@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "capturedAt": "2026-08-07T22:05:38.537440+08:00",
+  "capturedAt": "2026-08-07T23:41:58.099545+08:00",
   "viewport": [
     1280,
     720
@@ -83,7 +83,7 @@
       720
     ]
   },
-  "sourceFingerprint": "7baf3d2cc300b2cf7a41cd45dcfbd97dafc8b8d2811361395a7205cd49675181",
+  "sourceFingerprint": "d179e4cbcab1507bd9d76b5fb0c0fcb0bf841ac80439137d91ad670eeb1d5248",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
