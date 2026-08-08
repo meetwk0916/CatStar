@@ -134,6 +134,51 @@ class AssetProfileTests(unittest.TestCase):
         self.assertTrue(any("gray-white-tabby/idle" in failure for failure in failures))
         self.assertTrue(any("unable to decode sheet" in failure for failure in failures))
 
+    def test_rounded_short_haired_idle_rejects_a_short_standing_silhouette(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        idle_path = scene_dir / "cat" / "gray-white-tabby" / "idle.png"
+        short_idle = Image.new("RGBA", (96 * 4, 96), (0, 0, 0, 0))
+        for frame_index in range(4):
+            short_idle.paste(
+                (90 + frame_index, 100, 110, 255),
+                (frame_index * 96 + 7, 33, frame_index * 96 + 89, 92),
+            )
+        short_idle.save(idle_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(
+            any("rounded short-haired idle standing height" in failure for failure in failures)
+        )
+
+    def test_idle_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        orange_idle_path = scene_dir / "cat" / "orange-tabby" / "idle.png"
+        orange_idle = Image.open(orange_idle_path).convert("RGBA")
+        orange_idle.putpixel((12, 12), (0, 0, 0, 0))
+        orange_idle.save(orange_idle_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(any("idle alpha must match gray-white-tabby" in failure for failure in failures))
+
+    def test_rounded_short_haired_idle_rejects_low_mass_relative_to_walk(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        idle_path = scene_dir / "cat" / "gray-white-tabby" / "idle.png"
+        low_mass_idle = Image.new("RGBA", (96 * 4, 96), (0, 0, 0, 0))
+        for frame_index in range(4):
+            low_mass_idle.paste(
+                (100 + frame_index, 110, 120, 255),
+                (frame_index * 96 + 28, 20, frame_index * 96 + 68, 92),
+            )
+        low_mass_idle.save(idle_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(
+            any("idle visible mass is too low relative to walk" in failure for failure in failures)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

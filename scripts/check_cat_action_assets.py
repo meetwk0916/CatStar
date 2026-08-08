@@ -14,6 +14,7 @@ import json
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from statistics import median
 
 from PIL import Image, UnidentifiedImageError
 
@@ -25,7 +26,9 @@ MAX_SMALL_COMPONENT_AREA = 64
 MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
 MAX_REFINED_PIXEL_COLORS = 128
-REFINED_PIXEL_ACTIONS = {"sit", "walk", "interact"}
+MIN_ROUNDED_IDLE_HEIGHT = 68
+MIN_IDLE_TO_WALK_MASS_RATIO = 0.85
+REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact"}
 SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
 CURRENT_CAT_PRESETS = (
     "gray-white-tabby",
@@ -213,6 +216,7 @@ def validate_action(
 
     areas: list[int] = []
     bottoms: list[int] = []
+    heights: list[int] = []
     frame_payloads: list[bytes] = []
 
     for frame_index in range(frame_count):
@@ -237,6 +241,7 @@ def validate_action(
 
         areas.append(area)
         bottoms.append(bbox[3])
+        heights.append(bbox[3] - bbox[1])
 
     if areas:
         min_area = min(areas)
@@ -247,6 +252,13 @@ def validate_action(
 
     if bottoms and max(bottoms) - min(bottoms) > MAX_BOTTOM_RANGE:
         failures.append(f"{label}: baseline range too high: {max(bottoms) - min(bottoms)}px")
+    if preset == "gray-white-tabby" and action == "idle" and heights:
+        shortest_height = min(heights)
+        if shortest_height < MIN_ROUNDED_IDLE_HEIGHT:
+            failures.append(
+                f"{label}: rounded short-haired idle standing height is too short: "
+                f"{shortest_height}px; minimum is {MIN_ROUNDED_IDLE_HEIGHT}px"
+            )
     if action in REFINED_PIXEL_ACTIONS and len(set(frame_payloads)) != frame_count:
         failures.append(f"{label}: refined pixel action must not contain duplicate frames")
 
@@ -269,6 +281,78 @@ def validate_distinct_stationary_actions(
         return []
     if idle.tobytes() == sit.tobytes():
         return [f"{preset}: idle and sit must use distinct visible motion sheets"]
+    return []
+
+
+def validate_shared_idle_alpha(
+    asset_dir: Path,
+    presets: tuple[str, ...],
+    config: dict[str, object],
+) -> list[str]:
+    file_name = config.get("file")
+    if not isinstance(file_name, str) or not file_name:
+        return []
+    master_path = asset_dir / "gray-white-tabby" / file_name
+    try:
+        with Image.open(master_path) as source:
+            master_alpha = source.convert("RGBA").getchannel("A").tobytes()
+    except (OSError, UnidentifiedImageError):
+        return []
+
+    failures: list[str] = []
+    for preset in presets:
+        if preset == "gray-white-tabby":
+            continue
+        candidate_path = asset_dir / preset / file_name
+        try:
+            with Image.open(candidate_path) as source:
+                candidate_alpha = source.convert("RGBA").getchannel("A").tobytes()
+        except (OSError, UnidentifiedImageError):
+            continue
+        if candidate_alpha != master_alpha:
+            failures.append(f"{preset}/idle: idle alpha must match gray-white-tabby")
+    return failures
+
+
+def action_frame_areas(
+    asset_dir: Path,
+    preset: str,
+    config: dict[str, object],
+) -> list[int]:
+    file_name = config.get("file")
+    frame_count = config.get("frames")
+    if not isinstance(file_name, str) or not isinstance(frame_count, int):
+        return []
+    try:
+        with Image.open(asset_dir / preset / file_name) as source:
+            image = source.convert("RGBA")
+    except (OSError, UnidentifiedImageError):
+        return []
+    if image.size != (FRAME * frame_count, FRAME):
+        return []
+    return [
+        visible_area(
+            image.crop((index * FRAME, 0, (index + 1) * FRAME, FRAME)).getchannel("A")
+        )
+        for index in range(frame_count)
+    ]
+
+
+def validate_idle_walk_mass(
+    asset_dir: Path,
+    idle_config: dict[str, object],
+    walk_config: dict[str, object],
+) -> list[str]:
+    idle_areas = action_frame_areas(asset_dir, "gray-white-tabby", idle_config)
+    walk_areas = action_frame_areas(asset_dir, "gray-white-tabby", walk_config)
+    if not idle_areas or not walk_areas:
+        return []
+    ratio = min(idle_areas) / median(walk_areas)
+    if ratio < MIN_IDLE_TO_WALK_MASS_RATIO:
+        return [
+            "gray-white-tabby/idle: idle visible mass is too low relative to walk: "
+            f"{ratio:.2%}; minimum is {MIN_IDLE_TO_WALK_MASS_RATIO:.0%}"
+        ]
     return []
 
 
@@ -351,6 +435,13 @@ def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
             idle_file = sit_file = None
         if idle_file is not None and sit_file is not None and idle_file.exists() and sit_file.exists():
             failures.extend(validate_distinct_stationary_actions(asset_dir, preset, spec))
+
+    idle_config = actions.get("idle")
+    if isinstance(idle_config, dict):
+        failures.extend(validate_shared_idle_alpha(asset_dir, profile.presets, idle_config))
+        walk_config = actions.get("walk")
+        if isinstance(walk_config, dict):
+            failures.extend(validate_idle_walk_mass(asset_dir, idle_config, walk_config))
 
     return failures
 

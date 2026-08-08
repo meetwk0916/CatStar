@@ -18,6 +18,9 @@ QUALITY_SLICE_V10_DIR = Path(
 QUALITY_SLICE_V11_DIR = Path(
     "artifacts/art/candidates/active/product-cat-quality-slice-v11/sprite-sheets-96"
 )
+IDLE_V3_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-idle-v3/sprite-sheets-96"
+)
 PREVIEW_DIR = Path("artifacts/art/candidates/active/cat-coat-presets-v1")
 FRAME = 96
 
@@ -31,7 +34,7 @@ COAT_PRESETS = (
 )
 
 MOTION_SOURCES = {
-    "idle": QUALITY_SLICE_V10_DIR / "sit.png",
+    "idle": IDLE_V3_DIR / "idle.png",
     "sit": QUALITY_SLICE_V11_DIR / "sit.png",
     "walk": QUALITY_SLICE_V11_DIR / "walk.png",
     "jump": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v5/sprite-sheets-96/jump.png",
@@ -157,7 +160,7 @@ def load_motion_source(action: str, expected_frames: int) -> Image.Image:
 
 
 def make_preview(spec: dict[str, object]) -> None:
-    actions = ("sit", "walk", "interact", "groom", "stretch")
+    actions = ("idle", "sit", "walk", "interact", "groom", "stretch")
     label_width = 118
     header_height = 24
     row_height = FRAME + 18

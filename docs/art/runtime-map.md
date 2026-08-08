@@ -27,7 +27,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 
 | Runtime action | Current source | Status |
 | --- | --- | --- |
-| `idle` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Four-frame legacy attentive loop retained as the brief transition posture. |
+| `idle` | `artifacts/art/candidates/active/product-cat-idle-v3/` | Four-frame standing loop redrawn directly from the approved model sheet after v1 normalized too small and v2 retained the same slender body proportions. Desktop and mobile `sit` exits are human-approved. |
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Four-frame relaxed long-dwell loop, now visibly distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Eight independently generated and normalized grounded gait poses. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Six-frame in-place lean, held slow blink, and return response. |
@@ -74,9 +74,11 @@ fingerprint; `npm run review:runtime:check` fails after those inputs change.
 
 ## Candidate Retention
 
-- Active motion sources: v3, v4, v5, v8, quality-slice v10, and quality-slice
-  v11. v10 now supplies `idle`, `groom`, and `stretch`; v11 supplies `sit`,
-  `walk`, and `interact`.
+- Active motion sources: v3, v4, v5, v8, product-cat-idle v3, quality-slice
+  v10, and quality-slice v11. Product-cat-idle v3 supplies the approved
+  `idle`; v10 supplies `groom` and `stretch`; v11 supplies `sit`, `walk`, and
+  `interact`. Product-cat-idle v1 and v2 are retained as rejected review
+  history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.
