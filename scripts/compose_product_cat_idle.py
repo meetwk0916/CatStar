@@ -16,8 +16,11 @@ FRAME = 96
 FRAME_COUNT = 4
 MAX_SUBJECT_WIDTH = 90
 MAX_SUBJECT_HEIGHT = 84
-ACTIVE_CANDIDATE_DIR = Path("artifacts/art/candidates/active")
-IDLE_CANDIDATES = ("product-cat-idle-v1", "product-cat-idle-v2", "product-cat-idle-v3")
+CANDIDATE_DIRS = {
+    "product-cat-idle-v1": Path("artifacts/art/candidates/archive/product-cat-idle-v1"),
+    "product-cat-idle-v2": Path("artifacts/art/candidates/archive/product-cat-idle-v2"),
+    "product-cat-idle-v3": Path("artifacts/art/candidates/active/product-cat-idle-v3"),
+}
 
 
 def normalize_subjects(subjects: list[Image.Image]) -> tuple[list[Image.Image], list[dict[str, object]]]:
@@ -46,7 +49,7 @@ def normalize_subjects(subjects: list[Image.Image]) -> tuple[list[Image.Image], 
 
 
 def compose(candidate: str) -> None:
-    output_dir = ACTIVE_CANDIDATE_DIR / candidate
+    output_dir = CANDIDATE_DIRS[candidate]
     source_path = output_dir / "alpha/idle-source-alpha.png"
     normalized_dir = output_dir / "normalized-96/idle"
     sheet_dir = output_dir / "sprite-sheets-96"
@@ -90,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--candidate",
-        choices=IDLE_CANDIDATES,
+        choices=tuple(CANDIDATE_DIRS),
         default="product-cat-idle-v3",
         help="idle candidate package to rebuild (default: product-cat-idle-v3)",
     )
