@@ -1,9 +1,9 @@
 # Product Cat Quality Slice v11
 
-**Status:** Active internal-prototype motion source
+**Status:** Superseded motion-planning history; not a runtime source
 
-This candidate applies the approved rounded short-haired gray-and-white
-identity to the first production quality slice:
+This candidate applied the approved rounded short-haired gray-and-white
+direction to the first moving quality-slice iteration:
 
 - `sit`: 4 relaxed long-dwell frames distinct from standing `idle`
 - `walk`: 8 grounded right-facing gait frames
@@ -26,5 +26,6 @@ The earlier `quality-slice-concept-v1.png` is retained as a rejected combined
 layout experiment because its walk row contained only seven poses. It is not a
 runtime source.
 
-These generated assets remain internal-prototype-only pending complete rights
-and provenance clearance.
+v12 now owns the runtime `sit`, `walk`, and `interact` sheets. This package is
+retained only as the permitted motion-phase reference and remains
+internal-prototype-only pending complete rights and provenance clearance.

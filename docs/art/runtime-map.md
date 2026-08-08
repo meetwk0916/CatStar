@@ -6,8 +6,9 @@ This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
 
 Rights and distribution status are tracked separately in
-[`rights-and-provenance.md`](rights-and-provenance.md); current generated
-assets remain internal-prototype-only while that evidence is incomplete.
+[`rights-and-provenance.md`](rights-and-provenance.md); the assembled runtime
+remains internal-prototype-only while any required asset evidence is
+incomplete.
 
 ```text
 public/assets/scenes/window-room/cat/{coat-preset}/{action}.png

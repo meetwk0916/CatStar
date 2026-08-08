@@ -462,7 +462,7 @@ Physics body currently assumes a standing cat frame:
 ```text
 body size: 48x76
 body offset: 24,18
-display size: 88x88
+display size: 96x96
 ```
 
 If production art changes frame composition, update body size/offset in Phaser and verify:

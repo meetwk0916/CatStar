@@ -16,11 +16,11 @@ production rights.
 | --- | --- | --- | --- | --- |
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
 | Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
-| Cat action sheets | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
+| Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved production authority |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved for the moving quality slice |
 | Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved supporting transition; not release art |
-| Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the two groups above | Inherits unresolved source status | Internal review only |
+| Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
 ## Production intake requirements
 

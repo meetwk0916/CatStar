@@ -7,8 +7,10 @@ outside `docs/` so documentation remains lightweight and navigable.
 
 ```text
 candidates/
-  active/      Current candidate source packages referenced by the runtime map
-  archive/     Retired or research-only candidate packages
+  active/      Current production inputs and retained working/reference packages
+  archive/     Rejected or retired review-history packages
+runtime-motion-review/
+  <dated-name>/ Continuous desktop/mobile motion evidence and decisions
 runtime-review/
   YYYY-MM-DD/  Browser screenshots captured by the runtime review script
 sources/       Generated source and concept images

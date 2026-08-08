@@ -20,7 +20,8 @@ must not be inferred from this document.
 
 The current implementation includes:
 
-- React, TypeScript, Vite, and Tailwind CSS application shell.
+- React, TypeScript, Vite, and Tailwind CSS application shell, with a
+  Sites-compatible Vinext/Cloudflare Worker production build.
 - Lazy-loaded Phaser room scene embedded in React.
 - One local memorial passport and local letter-reading progress.
 - Prewritten Phase 0 letter script with delayed device-local delivery.

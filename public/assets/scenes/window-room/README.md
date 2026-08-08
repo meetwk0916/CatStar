@@ -19,9 +19,12 @@ Run `npm run check:assets` after changing any cat sheet or the split plant
 asset. The check validates all 60 runtime sheets against the shared ten-action
 contract and verifies the background and plant-leaf dimensions and alpha.
 
-The current action sheets use the higher-fidelity visual cat mother asset as a stopgap. They preserve the cat identity better than code-drawn technical sprites, but they are still derived candidates rather than final hand-authored frame-by-frame animation.
-
-Replace them with hand-authored frame-by-frame sprite sheets when commissioning final product art, but preserve the same action contract unless Phaser is recalibrated. `scripts/generate_cat_animation_assets.py` is retained only for local motion experiments and must not be treated as production art source.
+The exact source, approval, and release status of each current action sheet is
+owned by `docs/art/runtime-map.md` and `docs/art/rights-and-provenance.md`.
+Do not infer that the whole ten-action set is production-complete from an
+approved subset. Preserve the action contract unless Phaser is recalibrated.
+`scripts/generate_cat_animation_assets.py` is retained only for local motion
+experiments and must not be treated as a production art source.
 
 Room behavior should follow `docs/specs/environment-interaction.md`: props like the plant and tray should be modeled as interaction/avoidance zones before they become physical collision blockers.
 
