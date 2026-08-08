@@ -28,7 +28,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 
 | Runtime action | Current source | Status |
 | --- | --- | --- |
-| `idle` | `artifacts/art/candidates/active/product-cat-idle-v3/` | Four-frame supporting standing loop that fixes the visible thin-cat `sit` exit. It predates the production model sheet and remains internal quality-slice support rather than final release art. |
+| `idle` | `artifacts/art/candidates/active/product-cat-idle-v3/` | Four-frame temporary compatibility loop that fixes the visible thin-cat `sit` exit. It predates the production model sheet, is a pre-authority exception, and remains internal quality-slice support rather than final release art. |
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |

@@ -2,7 +2,7 @@
 
 **Status:** Current manual acceptance checklist
 
-Last updated: 2026-08-05
+Last updated: 2026-08-08
 
 ## Scope
 
@@ -77,6 +77,26 @@ accessibility checks.
 - Register at least one light and one dark coat preset; confirm both load the
   same action timing and remain readable in the room.
 - Confirm farewell-completed passports show stardust particles around the scene.
+
+### Production Cat Motion Release Gate
+
+- Review idle, sit, walk, jump, eat, lie, sleep, groom, stretch, and interact
+  as complete continuous motions in the real room on desktop and mobile.
+- Review each loop or one-shot action from entry through exit; confirm the cat
+  keeps one identity and does not show foot or body sliding, implausible weight,
+  transition pops, loop seams, prop clipping, or unreadable mobile silhouettes.
+- Capture enough time-based evidence to evaluate the complete motion. Sprite
+  sheets and isolated screenshots may support the review but do not satisfy it
+  by themselves.
+- Treat a failure in any one of the ten actions as release-blocking for the
+  rounded short-haired motion master.
+- Do not waive failures because an action is infrequent. The three early
+  quality-slice actions determine production order, while all ten actions share
+  the same final release threshold.
+- Review all hundred combinations of ten release coat presets and ten actions
+  for marking continuity, harmonized eye/nose/paw-pad colors, scene contrast,
+  and identity consistency. Side-by-side loops or review boards may batch the
+  work; sampling does not satisfy the release gate.
 
 ### Cat Scene Performance
 

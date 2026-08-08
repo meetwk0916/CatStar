@@ -17,9 +17,9 @@ production rights.
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
 | Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
 | Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
-| Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved production authority |
-| Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved for the moving quality slice |
-| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below | Approved supporting transition; not release art |
+| Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Production identity authority recorded; public clearance pending |
+| Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; final human confirmation and immutable terms snapshot still missing | Internal quality-slice evidence; not public-release clearance |
+| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Temporary compatibility support; not release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
 ## Production intake requirements
@@ -41,6 +41,10 @@ Replace unresolved assets or complete their records before changing the
 “internal prototype only” classification. `runtime-map.md` remains the
 technical runtime-to-source map; this document owns the rights gate.
 
+The linked Terms page is a mutable web document. A dated review note is not an
+immutable terms snapshot; archive the applicable text or provider record in the
+repository before relying on it for public, paid, marketing, or app-store use.
+
 ## Rounded short-haired model-sheet approval record
 
 **Status:** Approved production model sheet
@@ -55,7 +59,7 @@ technical runtime-to-source map; this document owns the rights gate.
 | Identity anchors | Natural small triangular ears, amber eyes, a wider white muzzle, and a calm curious expression; four white-socked paws with clear floor contact; and a medium gray-and-white tabby ringed tail that rests naturally on the floor or around the body. |
 | Gray-and-white marking map | White muzzle, chest through belly, lower legs, and paws; gray tabby across crown, back, flank, and tail. Pose perspective may reshape the marks, but may not remove the white chest, relocate the white socks, or reverse the back-and-tail color relationship. |
 | Rendering baseline | Controlled pixel clusters and a restrained dark soft outline; no blurred paint, photographic texture, or excessive shine. Warm nighttime interior light must preserve readability of the gray-and-white coat and amber eyes. |
-| Scale review | The source sheet was approved enlarged. Its derived v12 action cells were approved at `96x96` and continuously in the desktop and `390x844` mobile rooms through `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`. |
+| Scale review | The source sheet was approved enlarged. The dedicated model sheet has no standalone `96x96` runtime-cell or in-room evidence; the separately recorded v12 action evidence covers the derived action cells in the desktop and `390x844` mobile rooms. |
 | Creator and account owner | Project owner (self-attested) |
 | Design reviewer | wakun |
 | Formal approval | Approved by wakun on 2026-08-08 as CatStar's production model sheet and the sole identity and visual baseline for subsequent cat action work. |
@@ -63,12 +67,12 @@ technical runtime-to-source map; this document owns the rights gate.
 | Final generation date | 2026-08-08, before the v12 action sources were generated. |
 | Source brief | Gray-and-white tabby, healthy adult, rounded short-haired domestic cat; natural proportions rather than chibi; broad chest, compact torso, short sturdy legs, wider cheeks; calm curious expression; controlled pixel clusters and soft indoor light. |
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. The project owner records that, as between the owner and OpenAI, the output is owned by the owner, subject to applicable law and the Terms. |
-| Distribution status | Cleared for the project owner's public distribution as this production model sheet and action identity baseline. This approval does not clear the separate current runtime asset groups whose provenance remains unresolved above. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. The page is mutable and no immutable repository snapshot is recorded yet; the owner-use statement remains subject to applicable law and the Terms. |
+| Distribution status | Production identity authority recorded for internal work. Public distribution clearance remains pending an immutable terms snapshot and complete runtime rights-chain review. |
 
 ## Rounded short-haired moving quality-slice approval record
 
-**Status:** Rights source recorded; motion approved
+**Status:** Rights source recorded; runtime evidence recorded, final human confirmation pending
 
 | Field | Record |
 | --- | --- |
@@ -80,13 +84,13 @@ technical runtime-to-source map; this document owns the rights gate.
 | Source brief | Redraw every visible pose from the approved production model sheet: a stable long-dwell `sit`, a grounded eight-pose `walk`, and one calm `interact` acknowledgement that leans, holds a slow blink, and returns to ordinary posture. v11 was permitted only as a motion-phase reference. |
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
 | Transformation lineage | The three chroma-key sources are background-removed into `alpha/`, then deterministically extracted, nearest-neighbor normalized, alpha-hardened, palette-limited, and assembled into transparent `96x96` sheets by `scripts/compose_product_cat_quality_slice_v12.py`. Runtime coat derivatives are built separately by `scripts/build_cat_coat_presets.py`. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. The project owner records that, as between the owner and OpenAI, the output is owned by the owner, subject to applicable law and the Terms. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`, covering the production-model-derived `sit`, `walk`, and `interact` on desktop and mobile from entry through exit. Structural validation passed, and wakun approved all six entries on 2026-08-08. |
-| Distribution status | Approved for the rounded short-haired moving quality slice. This record does not clear the room art or the other seven action sources. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet. The owner-use statement remains subject to applicable law and the Terms. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`, covering the production-model-derived `sit`, `walk`, and `interact` on desktop and mobile from entry through exit. Structural validation passed; the manifest's human-review entries require a fresh confirmation against the v5 boards before they are treated as final release approval. |
+| Distribution status | Internal rounded short-haired moving quality-slice evidence only. This record does not clear the room art, the other seven action sources, or public distribution. |
 
 ## Rounded short-haired idle v3 intake record
 
-**Status:** Rights source recorded; transition approved
+**Status:** Rights source recorded; temporary compatibility transition only
 
 | Field | Record |
 | --- | --- |
@@ -98,6 +102,6 @@ technical runtime-to-source map; this document owns the rights gate.
 | Source brief | Four right-facing standing idle poses redrawn directly as the approved low, broad, deep-bodied rounded short-haired adult, with restrained breathing, one slow blink, a small close-tail shift, and one shared ground line. The exact normalized request is retained in `generation-prompt.md`. |
 | Reference inputs | The direction-only rounded concept plus the project-owned v11 `sit` and `walk` sources. This supporting idle predates the dedicated production model sheet and is not represented as model-sheet-derived release art. Rejected idle v1 and v2 were explicitly excluded as generation inputs. No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
 | Transformation lineage | Built-in ImageGen chroma-key source → recorded chroma-key removal → shared-scale nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheet via `scripts/compose_product_cat_idle.py` → deterministic coat derivatives via `scripts/build_cat_coat_presets.py`. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08, subject to applicable law and the Terms. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`; structural validation passed, and wakun approved both desktop and mobile `sit` exits on 2026-08-08. |
-| Distribution status | Approved as the supporting `sit` exit for the moving quality slice, but not as final release art. The later full ten-action production master must redraw idle from the production model sheet. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`; structural validation passed and the manifest records desktop and mobile `sit` entries, but a fresh human confirmation against the v5 boards is still required. |
+| Distribution status | Temporary internal quality-slice support for the `sit` exit, not final release art or public distribution clearance. The later full ten-action production master must redraw idle from the production model sheet. |
