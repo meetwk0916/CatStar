@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 
 from PIL import Image, ImageChops
 
@@ -161,8 +162,13 @@ def make_preview(sheet: Image.Image) -> Image.Image:
     return preview
 
 
-def extract_action(row: ActionRow) -> list[dict[str, object]]:
-    source = Image.open(SOURCE_DIR / row.source).convert("RGBA")
+def extract_action(
+    row: ActionRow,
+    source_dir: Path,
+    normalized_dir: Path,
+    sheet_dir: Path,
+) -> list[dict[str, object]]:
+    source = Image.open(source_dir / row.source).convert("RGBA")
     subject_boxes = find_subject_boxes(source)
     if len(subject_boxes) != row.frames:
         raise ValueError(
@@ -171,7 +177,7 @@ def extract_action(row: ActionRow) -> list[dict[str, object]]:
     frames: list[Image.Image] = []
     metadata: list[dict[str, object]] = []
 
-    action_dir = NORMALIZED_DIR / row.action
+    action_dir = normalized_dir / row.action
     action_dir.mkdir(parents=True, exist_ok=True)
 
     for index, (x_min, local_y_min, x_max, local_y_max) in enumerate(subject_boxes):
@@ -204,18 +210,28 @@ def extract_action(row: ActionRow) -> list[dict[str, object]]:
         sheet.crop((index * FRAME, 0, (index + 1) * FRAME, FRAME)).save(
             action_dir / f"{row.action}-{index + 1:02d}.png"
         )
-    sheet.save(SHEET_DIR / f"{row.action}.png")
-    make_preview(sheet).save(SHEET_DIR / f"{row.action}-preview.png")
+    sheet.save(sheet_dir / f"{row.action}.png")
+    make_preview(sheet).save(sheet_dir / f"{row.action}-preview.png")
     return metadata
 
 
-def main() -> None:
-    NORMALIZED_DIR.mkdir(parents=True, exist_ok=True)
-    SHEET_DIR.mkdir(parents=True, exist_ok=True)
+def compose(output_dir: Path) -> None:
+    source_dir = output_dir / "alpha"
+    normalized_dir = output_dir / "normalized-96"
+    sheet_dir = output_dir / "sprite-sheets-96"
+    normalized_dir.mkdir(parents=True, exist_ok=True)
+    sheet_dir.mkdir(parents=True, exist_ok=True)
 
-    metadata = {row.action: extract_action(row) for row in ACTION_ROWS}
-    (OUT_DIR / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    print(f"Wrote {len(ACTION_ROWS)} quality-slice sheets to {SHEET_DIR}")
+    metadata = {
+        row.action: extract_action(row, source_dir, normalized_dir, sheet_dir)
+        for row in ACTION_ROWS
+    }
+    (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    print(f"Wrote {len(ACTION_ROWS)} quality-slice sheets to {sheet_dir}")
+
+
+def main() -> None:
+    compose(OUT_DIR)
 
 
 if __name__ == "__main__":

@@ -15,8 +15,8 @@ ACTIVE_CANDIDATE_DIR = Path("artifacts/art/candidates/active")
 QUALITY_SLICE_V10_DIR = Path(
     "artifacts/art/candidates/active/product-cat-quality-slice-v10/sprite-sheets-96"
 )
-QUALITY_SLICE_V11_DIR = Path(
-    "artifacts/art/candidates/active/product-cat-quality-slice-v11/sprite-sheets-96"
+QUALITY_SLICE_V12_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-quality-slice-v12/sprite-sheets-96"
 )
 IDLE_V3_DIR = Path(
     "artifacts/art/candidates/active/product-cat-idle-v3/sprite-sheets-96"
@@ -35,11 +35,11 @@ COAT_PRESETS = (
 
 MOTION_SOURCES = {
     "idle": IDLE_V3_DIR / "idle.png",
-    "sit": QUALITY_SLICE_V11_DIR / "sit.png",
-    "walk": QUALITY_SLICE_V11_DIR / "walk.png",
+    "sit": QUALITY_SLICE_V12_DIR / "sit.png",
+    "walk": QUALITY_SLICE_V12_DIR / "walk.png",
     "jump": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v5/sprite-sheets-96/jump.png",
     "sleep": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v8/sprite-sheets-96/sleep.png",
-    "interact": QUALITY_SLICE_V11_DIR / "interact.png",
+    "interact": QUALITY_SLICE_V12_DIR / "interact.png",
     "eat": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v3/sprite-sheets-96/eat.png",
     "lie": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v4/sprite-sheets-96/lie.png",
     "groom": QUALITY_SLICE_V10_DIR / "groom.png",
