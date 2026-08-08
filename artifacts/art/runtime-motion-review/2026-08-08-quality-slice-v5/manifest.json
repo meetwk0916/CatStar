@@ -29,6 +29,11 @@
       "video": "videos/gray-white-tabby/1280x720/sit.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/sit-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/sit-exit.png",
+      "evidenceSha256": {
+        "video": "df2abbf98e2a944828e08282a7e2f05f5499979a2d964c8c58eea0f78eabccdd",
+        "entryPoster": "4cf9a0221d8acc8c61bd8a45eb77841c1b9b8b37ffb25474a6baba160a9aad32",
+        "exitPoster": "eb58cb72aac19d4b0935f349419cf9fda29cbf38887503d7e7d6220c63aef353"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -49,6 +54,11 @@
       "video": "videos/gray-white-tabby/390x844/sit.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/sit-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/sit-exit.png",
+      "evidenceSha256": {
+        "video": "07428599e70103e214e0da7d1464d1a69e1f0040a60c971b4c25d00b22ac0365",
+        "entryPoster": "a8ee643dabd9ebc5825fafded6f78c4b1647752170fcf03fdd6379e2f23c233c",
+        "exitPoster": "623f6f7107074cf8c6910c520e903d9ac554eb09e7e3f3afe20313b624dc3d5a"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -69,6 +79,11 @@
       "video": "videos/gray-white-tabby/1280x720/walk.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/walk-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/walk-exit.png",
+      "evidenceSha256": {
+        "video": "6d6fe3c513e27d14b82f296d6364e8f08d92cb77a6fd15e7ee2fe2cdf43254d6",
+        "entryPoster": "3096267a04f5835a16b09dc2df8e9622f76208f8396cbbbe4d77cae4fdd62427",
+        "exitPoster": "525c02a53321e133435911fbc5f01ad91804a28e10cbdf95ccf9f831b24f2d96"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -89,6 +104,11 @@
       "video": "videos/gray-white-tabby/390x844/walk.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/walk-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/walk-exit.png",
+      "evidenceSha256": {
+        "video": "09e001ca97d6c92c69c54ffbed44ed246aad8ac434148998dd9b37bd096728f2",
+        "entryPoster": "20c72429f7a67fdae6f2ef2b9704b405afd65fe66221ed212258679acda7e466",
+        "exitPoster": "0576d70425c1206637145e5d03e11282c5e39a13fc227559a48b645d72672221"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -109,6 +129,11 @@
       "video": "videos/gray-white-tabby/1280x720/interact.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/interact-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/interact-exit.png",
+      "evidenceSha256": {
+        "video": "57bbcf286c17149ba191db3c25ed9713d4ef4bf4f2859a50dff22a5919569397",
+        "entryPoster": "f689f2f41014303d15989f9ec4dd4820980b56efa00aa7f56c9f99ab997edee6",
+        "exitPoster": "d99c3fb33cda4a0a67dcfaf26515add3a515f013daf0e71e64123ec26ba954bf"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -129,6 +154,11 @@
       "video": "videos/gray-white-tabby/390x844/interact.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/interact-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/interact-exit.png",
+      "evidenceSha256": {
+        "video": "be95f0d5823040fcd05acb712735a80b12a5afbee9fd0490fe69a56d88aa7230",
+        "entryPoster": "388688a3636254b5b089940350df53fc9350a147fb57367ab865541857d0b90e",
+        "exitPoster": "d2576e98e73dae3099bc7e0c63ea796ac436c7cc7d3c7b200585fc0cee0e01e6"
+      },
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
@@ -151,7 +181,7 @@
     "boards/mobile/interact.png",
     "boards/mobile/interact.html"
   ],
-  "sourceFingerprint": "a685a96c450be1c22f5fdbce373e588f53d5f6148d26f37a5bdea885ab58a228",
+  "sourceFingerprint": "ef83a997025a6cee738350a0cace3c87dd3e0bd2cf5c17ca7619bf74876bc6c0",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

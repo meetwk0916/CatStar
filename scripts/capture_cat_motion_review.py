@@ -12,6 +12,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
@@ -45,6 +46,13 @@ ACTION_SCENARIOS = {
     "stretch": ("/?catstarRoutine=floorStretch", 4_000),
     "interact": ("/?catstarRoutine=floorSit&catstarFullTouch=1", 4_000),
 }
+REQUIRED_HUMAN_PASS_MATRIX = frozenset(
+    (preset, action, viewport)
+    for preset in ("gray-white-tabby",)
+    for action in ("sit", "walk", "interact")
+    for viewport in ("1280x720", "390x844")
+)
+EVIDENCE_FIELDS = ("video", "entryPoster", "exitPoster")
 
 
 def preset_to_runtime_value(preset: str) -> str:
@@ -117,6 +125,21 @@ def matrix_keys(
     presets: Iterable[str], actions: Iterable[str], viewports: Iterable[str]
 ) -> set[tuple[str, str, str]]:
     return {(preset, action, viewport) for preset in presets for action in actions for viewport in viewports}
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def evidence_digests(entry: dict[str, object], output_dir: Path) -> dict[str, str]:
+    return {
+        field: file_sha256(output_dir / str(entry[field]))
+        for field in EVIDENCE_FIELDS
+    }
 
 
 def make_storage_state(path: Path, coat_preset: str) -> None:
@@ -215,6 +238,7 @@ def run_capture(
                             "reviewer": "",
                             "notes": "",
                         }
+                        entry["evidenceSha256"] = evidence_digests(entry, output_dir)
                         entries.append(entry)
     finally:
         if server.poll() is None:
@@ -296,7 +320,11 @@ def build_review_boards(
     return boards
 
 
-def validate_manifest_data(manifest: dict[str, object], output_dir: Path) -> list[str]:
+def validate_manifest_data(
+    manifest: dict[str, object],
+    output_dir: Path,
+    required_matrix: frozenset[tuple[str, str, str]] | None = None,
+) -> list[str]:
     failures: list[str] = []
     if manifest.get("schemaVersion") != 1:
         failures.append("manifest: expected schemaVersion 1")
@@ -305,10 +333,14 @@ def validate_manifest_data(manifest: dict[str, object], output_dir: Path) -> lis
     viewports = [str(value) for value in manifest.get("viewports", [])]
     expected = matrix_keys(presets, actions, viewports)
     entries = manifest.get("entries", [])
-    actual = {
+    actual_keys = [
         (str(entry.get("coatPreset")), str(entry.get("action")), str(entry.get("viewport")))
         for entry in entries
-    }
+    ]
+    actual = set(actual_keys)
+    duplicates = sorted(key for key, count in Counter(actual_keys).items() if count > 1)
+    if duplicates:
+        failures.append(f"manifest: duplicate motion evidence {duplicates}")
     if actual != expected:
         missing = sorted(expected - actual)
         extra = sorted(actual - expected)
@@ -316,6 +348,13 @@ def validate_manifest_data(manifest: dict[str, object], output_dir: Path) -> lis
             failures.append(f"manifest: missing motion evidence {missing}")
         if extra:
             failures.append(f"manifest: unexpected motion evidence {extra}")
+    if required_matrix is not None and actual != required_matrix:
+        missing = sorted(required_matrix - actual)
+        extra = sorted(actual - required_matrix)
+        if missing:
+            failures.append(f"manifest: missing required human-review evidence {missing}")
+        if extra:
+            failures.append(f"manifest: unexpected human-review evidence {extra}")
     for entry in entries:
         coat_preset = entry.get("coatPreset")
         expected_runtime_value = (
@@ -330,10 +369,21 @@ def validate_manifest_data(manifest: dict[str, object], output_dir: Path) -> lis
             failures.append(
                 f"manifest: incomplete motion state for {coat_preset}/{entry.get('action')}"
             )
-        for field in ("video", "entryPoster", "exitPoster"):
+        recorded_digests = entry.get("evidenceSha256")
+        for field in EVIDENCE_FIELDS:
             relative = entry.get(field)
-            if not isinstance(relative, str) or not (output_dir / relative).exists():
+            evidence_path = output_dir / relative if isinstance(relative, str) else None
+            if evidence_path is None or not evidence_path.is_file():
                 failures.append(f"manifest: missing {field} for {entry.get('coatPreset')}/{entry.get('action')}")
+                continue
+            recorded_digest = (
+                recorded_digests.get(field) if isinstance(recorded_digests, dict) else None
+            )
+            if not isinstance(recorded_digest, str) or recorded_digest != file_sha256(evidence_path):
+                failures.append(
+                    f"manifest: {field} digest mismatch for "
+                    f"{entry.get('coatPreset')}/{entry.get('action')}/{entry.get('viewport')}"
+                )
         human_review = entry.get("humanReview")
         if not isinstance(human_review, dict) or human_review.get("status") not in {"pending", "pass", "fail"}:
             failures.append(
@@ -421,7 +471,8 @@ def validate_existing(output_dir: Path, require_human_pass: bool = False) -> Non
     if not manifest_path.exists():
         raise RuntimeError(f"Missing motion review manifest: {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    failures = validate_manifest_data(manifest, output_dir)
+    required_matrix = REQUIRED_HUMAN_PASS_MATRIX if require_human_pass else None
+    failures = validate_manifest_data(manifest, output_dir, required_matrix)
     counts = human_review_counts(manifest)
     if require_human_pass and (counts["pending"] or counts["fail"]):
         failures.append(

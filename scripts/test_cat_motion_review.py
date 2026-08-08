@@ -63,21 +63,21 @@ class MotionReviewTests(unittest.TestCase):
                         path = output_dir / relative
                         path.parent.mkdir(parents=True, exist_ok=True)
                         path.write_bytes(b"review evidence")
-                    entries.append(
-                        {
-                            "coatPreset": preset,
-                            "runtimeCoatPreset": REVIEW.preset_to_runtime_value(preset),
-                            "action": action,
-                            "viewport": viewport,
-                            "motionState": "complete",
-                            "humanReview": {
-                                "status": "pending",
-                                "reviewer": "",
-                                "notes": "",
-                            },
-                            **paths,
-                        }
-                    )
+                    entry = {
+                        "coatPreset": preset,
+                        "runtimeCoatPreset": REVIEW.preset_to_runtime_value(preset),
+                        "action": action,
+                        "viewport": viewport,
+                        "motionState": "complete",
+                        "humanReview": {
+                            "status": "pending",
+                            "reviewer": "",
+                            "notes": "",
+                        },
+                        **paths,
+                    }
+                    entry["evidenceSha256"] = REVIEW.evidence_digests(entry, output_dir)
+                    entries.append(entry)
         manifest = {
             "schemaVersion": 1,
             "profile": "prototype",
@@ -93,6 +93,90 @@ class MotionReviewTests(unittest.TestCase):
         entries[0]["humanReview"] = {"status": "pass", "reviewer": "", "notes": ""}
         failures = REVIEW.validate_manifest_data(manifest, output_dir)
         self.assertTrue(any("human reviewer is required" in failure for failure in failures))
+
+    def test_manifest_validation_rejects_duplicate_entries(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-duplicate-test-"))
+        fingerprint, source_files = REVIEW.source_fingerprint()
+        evidence = output_dir / "sit.webm"
+        evidence.write_bytes(b"review evidence")
+        digest = REVIEW.file_sha256(evidence)
+        entry = {
+            "coatPreset": "gray-white-tabby",
+            "runtimeCoatPreset": "GRAY_WHITE_TABBY",
+            "action": "sit",
+            "viewport": "1280x720",
+            "motionState": "complete",
+            "video": "sit.webm",
+            "entryPoster": "sit.webm",
+            "exitPoster": "sit.webm",
+            "evidenceSha256": {field: digest for field in REVIEW.EVIDENCE_FIELDS},
+            "humanReview": {"status": "pending", "reviewer": "", "notes": ""},
+        }
+        manifest = {
+            "schemaVersion": 1,
+            "presets": ["gray-white-tabby"],
+            "actions": ["sit"],
+            "viewports": ["1280x720"],
+            "entries": [entry, entry.copy()],
+            "boards": [],
+            "sourceFingerprint": fingerprint,
+            "sourceFiles": source_files,
+        }
+
+        failures = REVIEW.validate_manifest_data(manifest, output_dir)
+
+        self.assertTrue(any("duplicate motion evidence" in failure for failure in failures))
+
+    def test_human_pass_requires_independent_quality_slice_matrix(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-required-matrix-test-"))
+        fingerprint, source_files = REVIEW.source_fingerprint()
+        manifest = {
+            "schemaVersion": 1,
+            "presets": [],
+            "actions": [],
+            "viewports": [],
+            "entries": [],
+            "boards": [],
+            "sourceFingerprint": fingerprint,
+            "sourceFiles": source_files,
+        }
+        (output_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+        with self.assertRaisesRegex(RuntimeError, "missing required human-review evidence"):
+            REVIEW.validate_existing(output_dir, require_human_pass=True)
+
+    def test_manifest_validation_rejects_changed_evidence(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-digest-test-"))
+        fingerprint, source_files = REVIEW.source_fingerprint()
+        evidence = output_dir / "sit.webm"
+        evidence.write_bytes(b"approved evidence")
+        entry = {
+            "coatPreset": "gray-white-tabby",
+            "runtimeCoatPreset": "GRAY_WHITE_TABBY",
+            "action": "sit",
+            "viewport": "1280x720",
+            "motionState": "complete",
+            "video": "sit.webm",
+            "entryPoster": "sit.webm",
+            "exitPoster": "sit.webm",
+            "humanReview": {"status": "pending", "reviewer": "", "notes": ""},
+        }
+        entry["evidenceSha256"] = REVIEW.evidence_digests(entry, output_dir)
+        evidence.write_bytes(b"changed evidence")
+        manifest = {
+            "schemaVersion": 1,
+            "presets": ["gray-white-tabby"],
+            "actions": ["sit"],
+            "viewports": ["1280x720"],
+            "entries": [entry],
+            "boards": [],
+            "sourceFingerprint": fingerprint,
+            "sourceFiles": source_files,
+        }
+
+        failures = REVIEW.validate_manifest_data(manifest, output_dir)
+
+        self.assertTrue(any("digest mismatch" in failure for failure in failures))
 
     def test_manifest_validation_rejects_runtime_coat_mismatch(self) -> None:
         output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-runtime-coat-test-"))
@@ -110,6 +194,7 @@ class MotionReviewTests(unittest.TestCase):
         }
         for field in ("video", "entryPoster", "exitPoster"):
             (output_dir / entry[field]).write_bytes(b"review evidence")
+        entry["evidenceSha256"] = REVIEW.evidence_digests(entry, output_dir)
         manifest = {
             "schemaVersion": 1,
             "profile": "prototype",
