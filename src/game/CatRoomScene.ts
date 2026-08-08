@@ -58,6 +58,8 @@ type CatRoutine =
   | "settlePlantTouch"
   | "approachBlanket"
   | "restBlanket"
+  | "floorIdle"
+  | "floorWalk"
   | "floorSit"
   | "floorGroom"
   | "floorSleep"
@@ -68,7 +70,7 @@ type CatRoutine =
   | "returnFromForeground"
   | "floorPause";
 
-type FloorRoutine = "floorSit" | "floorGroom" | "floorSleep" | "floorStretch";
+type FloorRoutine = "floorIdle" | "floorSit" | "floorGroom" | "floorSleep" | "floorStretch";
 
 interface EnvironmentZone {
   id: string;
@@ -189,7 +191,9 @@ const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
 const USER_APPROACH_X = FLOOR_CENTER_ZONE.xMax - 18;
+const DEBUG_REVIEW_DWELL_MS = 2_400;
 const FLOOR_ROUTINE_ACTIONS: Record<FloorRoutine, CatAction> = {
+  floorIdle: "idle",
   floorSit: "sit",
   floorGroom: "groom",
   floorSleep: "sleep",
@@ -208,6 +212,7 @@ const DEBUG_ROUTINES = new Set<CatRoutine>([
   "watchPlantSway",
   "settlePlantTouch",
   ...(Object.keys(FLOOR_ROUTINE_ACTIONS) as FloorRoutine[]),
+  "floorWalk",
   "approachUser",
 ]);
 
@@ -257,6 +262,8 @@ export class CatRoomScene extends Phaser.Scene {
   private activeIntent?: CompanionIntent;
   private planner: CompanionPlanner = createCompanionPlanner({ temperament: "AFFECTIONATE" });
   private debugRoutine?: CatRoutine;
+  private debugMotionReview = false;
+  private debugFloorWalkDirection = 1;
   private debugForceFullTouch = false;
   private onInteract: (message: string | null) => void = () => {};
   private onReady: (scene: CatRoomScene) => void = () => {};
@@ -282,6 +289,10 @@ export class CatRoomScene extends Phaser.Scene {
 
     if (import.meta.env.DEV) {
       const searchParams = new URLSearchParams(window.location.search);
+      this.debugMotionReview = searchParams.get("catstarMotionReview") === "1";
+      if (this.debugMotionReview) {
+        document.documentElement.dataset.catstarMotionState = "running";
+      }
       const debugRoutine = searchParams.get("catstarRoutine") as CatRoutine | null;
       if (debugRoutine && DEBUG_ROUTINES.has(debugRoutine)) {
         this.debugRoutine = debugRoutine;
@@ -331,8 +342,16 @@ export class CatRoomScene extends Phaser.Scene {
         this.routineHoldUntil =
           this.time.now + PLANT_TOUCH_DURATION_MS - PLANT_TOUCH_OBSERVE_MS;
         this.playCatAction("interact", true);
+      } else if (this.debugRoutine === "floorWalk") {
+        this.cat?.setPosition(FLOOR_LEFT_ZONE.xMin + 24, FLOOR_STAND_Y);
+        this.cat?.setFlipX(false);
+        this.currentZone = "floor";
+        this.debugFloorWalkDirection = 1;
+        this.routineHoldUntil = this.time.now + this.debugHoldDuration(20_000);
       } else {
-        this.routineHoldUntil = isFloorRoutine(this.debugRoutine) ? this.time.now + 20_000 : 0;
+        this.routineHoldUntil = isFloorRoutine(this.debugRoutine)
+          ? this.time.now + this.debugHoldDuration(20_000)
+          : 0;
       }
     } else {
       this.startReturnEncounter(this.time.now);
@@ -345,6 +364,8 @@ export class CatRoomScene extends Phaser.Scene {
     if (!this.cat) {
       return;
     }
+
+    this.publishDebugMotionState();
 
     if (time < this.manualInteractUntil) {
       this.cat.setVelocity(0, 0);
@@ -764,6 +785,24 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    if (this.routine === "floorWalk") {
+      this.currentZone = "floor";
+      this.cat.body.setAllowGravity(false);
+      this.cat.setY(FLOOR_STAND_Y);
+      if (time >= this.routineHoldUntil) {
+        this.startFloorPause(time);
+        return;
+      }
+      const target =
+        this.debugFloorWalkDirection > 0
+          ? FLOOR_CENTER_ZONE.xMax - 24
+          : FLOOR_LEFT_ZONE.xMin + 24;
+      if (this.moveTowardTarget(target)) {
+        this.debugFloorWalkDirection *= -1;
+      }
+      return;
+    }
+
     if (this.routine === "approachUser") {
       this.currentZone = "floor";
       this.cat.body.setAllowGravity(false);
@@ -999,7 +1038,22 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private activeDwellMs(fallback: number) {
-    return this.activeIntent?.dwellMs ?? fallback;
+    const dwell = this.activeIntent?.dwellMs ?? fallback;
+    return this.debugMotionReview ? Math.min(dwell, DEBUG_REVIEW_DWELL_MS) : dwell;
+  }
+
+  private debugHoldDuration(fallback: number) {
+    return this.debugMotionReview ? Math.min(fallback, DEBUG_REVIEW_DWELL_MS) : fallback;
+  }
+
+  private publishDebugMotionState() {
+    if (!this.debugMotionReview) {
+      return;
+    }
+
+    document.documentElement.dataset.catstarMotionRoutine = this.routine;
+    document.documentElement.dataset.catstarMotionState =
+      this.routine === "floorPause" ? "complete" : "running";
   }
 
   private updateForegroundTransition(time: number, returning: boolean) {

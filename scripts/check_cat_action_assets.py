@@ -9,11 +9,14 @@ mass changes.
 
 from __future__ import annotations
 
+import argparse
 import json
 from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
+from statistics import median
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 
 FRAME = 96
@@ -23,11 +26,11 @@ MAX_SMALL_COMPONENT_AREA = 64
 MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
 MAX_REFINED_PIXEL_COLORS = 128
-REFINED_PIXEL_ACTIONS = {"sit", "walk", "interact"}
+MIN_ROUNDED_IDLE_HEIGHT = 68
+MIN_IDLE_TO_WALK_MASS_RATIO = 0.85
+REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact"}
 SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
-ASSET_DIR = SCENE_ASSET_DIR / "cat"
-SPEC_PATH = ASSET_DIR / "cat.animations.json"
-CAT_PRESETS = (
+CURRENT_CAT_PRESETS = (
     "gray-white-tabby",
     "orange-tabby",
     "solid-black",
@@ -35,6 +38,24 @@ CAT_PRESETS = (
     "calico",
     "tuxedo",
 )
+FIRST_RELEASE_CAT_PRESETS = CURRENT_CAT_PRESETS + (
+    "brown-tabby",
+    "solid-gray",
+    "tortoiseshell",
+    "colorpoint",
+)
+
+
+@dataclass(frozen=True)
+class AssetProfile:
+    name: str
+    presets: tuple[str, ...]
+
+
+ASSET_PROFILES = {
+    "prototype": AssetProfile("prototype", CURRENT_CAT_PRESETS),
+    "first-release": AssetProfile("first-release", FIRST_RELEASE_CAT_PRESETS),
+}
 REQUIRED_ACTIONS = {
     "idle",
     "sit",
@@ -47,23 +68,45 @@ REQUIRED_ACTIONS = {
     "groom",
     "stretch",
 }
+EXPECTED_ACTION_FRAMES = {
+    "idle": 4,
+    "sit": 4,
+    "walk": 8,
+    "jump": 6,
+    "sleep": 4,
+    "interact": 6,
+    "eat": 6,
+    "lie": 4,
+    "groom": 8,
+    "stretch": 6,
+}
 
 
-def validate_environment_assets() -> list[str]:
+def validate_environment_assets(scene_asset_dir: Path) -> list[str]:
     failures: list[str] = []
-    background_path = SCENE_ASSET_DIR / "background.png"
-    leaf_path = SCENE_ASSET_DIR / "plant-leaf.png"
+    background_path = scene_asset_dir / "background.png"
+    leaf_path = scene_asset_dir / "plant-leaf.png"
 
     if not background_path.exists():
         failures.append(f"missing scene background {background_path}")
-    elif Image.open(background_path).size != (640, 360):
-        failures.append("background.png: expected 640x360 runtime composition")
+    else:
+        try:
+            with Image.open(background_path) as background:
+                if background.size != (640, 360):
+                    failures.append("background.png: expected 640x360 runtime composition")
+        except (OSError, UnidentifiedImageError) as error:
+            failures.append(f"background.png: unable to decode image: {error}")
 
     if not leaf_path.exists():
         failures.append(f"missing plant interaction leaf {leaf_path}")
         return failures
 
-    leaf = Image.open(leaf_path).convert("RGBA")
+    try:
+        with Image.open(leaf_path) as source_leaf:
+            leaf = source_leaf.convert("RGBA")
+    except (OSError, UnidentifiedImageError) as error:
+        failures.append(f"plant-leaf.png: unable to decode image: {error}")
+        return failures
     if leaf.size != (47, 24):
         failures.append(f"plant-leaf.png: expected 47x24, got {leaf.size}")
     alpha = leaf.getchannel("A")
@@ -115,17 +158,43 @@ def visible_area(alpha: Image.Image) -> int:
     return sum(alpha.histogram()[ALPHA_THRESHOLD + 1 :])
 
 
-def validate_action(preset: str, action: str, config: dict[str, object]) -> list[str]:
+def validate_action(
+    asset_dir: Path,
+    preset: str,
+    action: str,
+    config: dict[str, object],
+) -> list[str]:
     failures: list[str] = []
-    frame_count = int(config["frames"])
     label = f"{preset}/{action}"
-    image_path = ASSET_DIR / preset / str(config["file"])
+    file_name = config.get("file")
+    frame_value = config.get("frames")
+    if (
+        not isinstance(file_name, str)
+        or not file_name
+        or not isinstance(frame_value, int)
+        or isinstance(frame_value, bool)
+        or frame_value <= 0
+    ):
+        return [f"{label}: invalid action metadata; expected file and positive integer frames"]
+
+    frame_count = frame_value
+    expected_frames = EXPECTED_ACTION_FRAMES.get(action)
+    if expected_frames is not None and frame_count != expected_frames:
+        failures.append(
+            f"{label}: expected {expected_frames} frames in the ten-action contract, got {frame_count}"
+        )
+
+    image_path = asset_dir / preset / file_name
     expected_size = (FRAME * frame_count, FRAME)
 
     if not image_path.exists():
         return [f"{label}: missing sheet {image_path}"]
 
-    image = Image.open(image_path).convert("RGBA")
+    try:
+        with Image.open(image_path) as source_image:
+            image = source_image.convert("RGBA")
+    except (OSError, UnidentifiedImageError) as error:
+        return [f"{label}: unable to decode sheet {image_path}: {error}"]
     if image.size != expected_size:
         failures.append(f"{label}: expected {expected_size}, got {image.size}")
         return failures
@@ -147,6 +216,7 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
 
     areas: list[int] = []
     bottoms: list[int] = []
+    heights: list[int] = []
     frame_payloads: list[bytes] = []
 
     for frame_index in range(frame_count):
@@ -157,6 +227,8 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
         if bbox is None:
             failures.append(f"{label}[{frame_index}]: empty frame")
             continue
+        if alpha.getextrema()[0] > 0:
+            failures.append(f"{label}[{frame_index}]: expected transparent background")
 
         area = visible_area(alpha)
         components = sorted(iter_component_sizes(alpha), reverse=True)
@@ -169,6 +241,7 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
 
         areas.append(area)
         bottoms.append(bbox[3])
+        heights.append(bbox[3] - bbox[1])
 
     if areas:
         min_area = min(areas)
@@ -179,46 +252,229 @@ def validate_action(preset: str, action: str, config: dict[str, object]) -> list
 
     if bottoms and max(bottoms) - min(bottoms) > MAX_BOTTOM_RANGE:
         failures.append(f"{label}: baseline range too high: {max(bottoms) - min(bottoms)}px")
+    if preset == "gray-white-tabby" and action == "idle" and heights:
+        shortest_height = min(heights)
+        if shortest_height < MIN_ROUNDED_IDLE_HEIGHT:
+            failures.append(
+                f"{label}: rounded short-haired idle standing height is too short: "
+                f"{shortest_height}px; minimum is {MIN_ROUNDED_IDLE_HEIGHT}px"
+            )
     if action in REFINED_PIXEL_ACTIONS and len(set(frame_payloads)) != frame_count:
         failures.append(f"{label}: refined pixel action must not contain duplicate frames")
 
     return failures
 
 
-def validate_distinct_stationary_actions(preset: str, spec: dict[str, object]) -> list[str]:
+def validate_distinct_stationary_actions(
+    asset_dir: Path,
+    preset: str,
+    spec: dict[str, object],
+) -> list[str]:
     idle_config = spec["actions"]["idle"]
     sit_config = spec["actions"]["sit"]
-    idle = Image.open(ASSET_DIR / preset / str(idle_config["file"])).convert("RGBA")
-    sit = Image.open(ASSET_DIR / preset / str(sit_config["file"])).convert("RGBA")
+    try:
+        with Image.open(asset_dir / preset / str(idle_config["file"])) as idle_source:
+            idle = idle_source.convert("RGBA")
+        with Image.open(asset_dir / preset / str(sit_config["file"])) as sit_source:
+            sit = sit_source.convert("RGBA")
+    except (OSError, UnidentifiedImageError):
+        return []
     if idle.tobytes() == sit.tobytes():
         return [f"{preset}: idle and sit must use distinct visible motion sheets"]
     return []
 
 
-def main() -> None:
-    spec = json.loads(SPEC_PATH.read_text())
-    failures = validate_environment_assets()
+def validate_shared_idle_alpha(
+    asset_dir: Path,
+    presets: tuple[str, ...],
+    config: dict[str, object],
+) -> list[str]:
+    file_name = config.get("file")
+    if not isinstance(file_name, str) or not file_name:
+        return []
+    master_path = asset_dir / "gray-white-tabby" / file_name
+    try:
+        with Image.open(master_path) as source:
+            master_alpha = source.convert("RGBA").getchannel("A").tobytes()
+    except (OSError, UnidentifiedImageError):
+        return []
+
+    failures: list[str] = []
+    for preset in presets:
+        if preset == "gray-white-tabby":
+            continue
+        candidate_path = asset_dir / preset / file_name
+        try:
+            with Image.open(candidate_path) as source:
+                candidate_alpha = source.convert("RGBA").getchannel("A").tobytes()
+        except (OSError, UnidentifiedImageError):
+            continue
+        if candidate_alpha != master_alpha:
+            failures.append(f"{preset}/idle: idle alpha must match gray-white-tabby")
+    return failures
+
+
+def action_frame_areas(
+    asset_dir: Path,
+    preset: str,
+    config: dict[str, object],
+) -> list[int]:
+    file_name = config.get("file")
+    frame_count = config.get("frames")
+    if not isinstance(file_name, str) or not isinstance(frame_count, int):
+        return []
+    try:
+        with Image.open(asset_dir / preset / file_name) as source:
+            image = source.convert("RGBA")
+    except (OSError, UnidentifiedImageError):
+        return []
+    if image.size != (FRAME * frame_count, FRAME):
+        return []
+    return [
+        visible_area(
+            image.crop((index * FRAME, 0, (index + 1) * FRAME, FRAME)).getchannel("A")
+        )
+        for index in range(frame_count)
+    ]
+
+
+def validate_idle_walk_mass(
+    asset_dir: Path,
+    idle_config: dict[str, object],
+    walk_config: dict[str, object],
+) -> list[str]:
+    idle_areas = action_frame_areas(asset_dir, "gray-white-tabby", idle_config)
+    walk_areas = action_frame_areas(asset_dir, "gray-white-tabby", walk_config)
+    if not idle_areas or not walk_areas:
+        return []
+    ratio = min(idle_areas) / median(walk_areas)
+    if ratio < MIN_IDLE_TO_WALK_MASS_RATIO:
+        return [
+            "gray-white-tabby/idle: idle visible mass is too low relative to walk: "
+            f"{ratio:.2%}; minimum is {MIN_IDLE_TO_WALK_MASS_RATIO:.0%}"
+        ]
+    return []
+
+
+def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
+    asset_dir = scene_asset_dir / "cat"
+    spec_path = asset_dir / "cat.animations.json"
+    if not spec_path.exists():
+        return [f"missing animation metadata {spec_path}"]
+
+    try:
+        spec = json.loads(spec_path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        return [f"invalid animation metadata {spec_path}: {error}"]
+    if not isinstance(spec, dict):
+        return [f"invalid animation metadata {spec_path}: expected an object"]
+    failures = validate_environment_assets(scene_asset_dir)
 
     if spec.get("frameWidth") != FRAME or spec.get("frameHeight") != FRAME:
         failures.append(f"cat.animations.json: expected {FRAME}x{FRAME} frame contract")
-    if set(spec.get("actions", {})) != REQUIRED_ACTIONS:
+    if spec.get("anchor") != "bottom-center":
+        failures.append("cat.animations.json: expected bottom-center anchor")
+
+    actions = spec.get("actions")
+    if not isinstance(actions, dict):
+        return failures + ["cat.animations.json: actions must be an object"]
+    if set(actions) != REQUIRED_ACTIONS:
         failures.append(
             "cat.animations.json: expected exactly ten actions: "
             + ", ".join(sorted(REQUIRED_ACTIONS))
         )
 
-    for preset in CAT_PRESETS:
-        for action, config in spec["actions"].items():
-            failures.extend(validate_action(preset, action, config))
-        failures.extend(validate_distinct_stationary_actions(preset, spec))
+    actual_presets = {
+        path.name for path in asset_dir.iterdir() if path.is_dir()
+    }
+    allowed_presets = (
+        set(FIRST_RELEASE_CAT_PRESETS)
+        if profile.name == "prototype"
+        else set(profile.presets)
+    )
+    unexpected_presets = sorted(actual_presets - allowed_presets)
+    if unexpected_presets:
+        failures.append(
+            f"{profile.name} profile: unexpected coat presets: "
+            + ", ".join(unexpected_presets)
+        )
+
+    for action in sorted(REQUIRED_ACTIONS):
+        config = actions.get(action)
+        if not isinstance(config, dict):
+            failures.append(f"{action}: invalid action metadata; expected an object")
+            continue
+        frame_rate = config.get("frameRate")
+        if (
+            not isinstance(frame_rate, (int, float))
+            or isinstance(frame_rate, bool)
+            or frame_rate <= 0
+        ):
+            failures.append(f"{action}: invalid frameRate; expected a positive number")
+        repeat = config.get("repeat")
+        if not isinstance(repeat, int) or isinstance(repeat, bool) or repeat < -1:
+            failures.append(f"{action}: invalid repeat; expected -1 or a non-negative integer")
+
+    for preset in profile.presets:
+        for action in sorted(REQUIRED_ACTIONS):
+            config = actions.get(action)
+            if isinstance(config, dict):
+                failures.extend(validate_action(asset_dir, preset, action, config))
+        preset_dir = asset_dir / preset
+        idle_config = actions.get("idle")
+        sit_config = actions.get("sit")
+        if (
+            isinstance(idle_config, dict)
+            and isinstance(sit_config, dict)
+            and isinstance(idle_config.get("file"), str)
+            and isinstance(sit_config.get("file"), str)
+        ):
+            idle_file = preset_dir / idle_config["file"]
+            sit_file = preset_dir / sit_config["file"]
+        else:
+            idle_file = sit_file = None
+        if idle_file is not None and sit_file is not None and idle_file.exists() and sit_file.exists():
+            failures.extend(validate_distinct_stationary_actions(asset_dir, preset, spec))
+
+    idle_config = actions.get("idle")
+    if isinstance(idle_config, dict):
+        failures.extend(validate_shared_idle_alpha(asset_dir, profile.presets, idle_config))
+        walk_config = actions.get("walk")
+        if isinstance(walk_config, dict):
+            failures.extend(validate_idle_walk_mass(asset_dir, idle_config, walk_config))
+
+    return failures
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--profile",
+        choices=tuple(ASSET_PROFILES),
+        default="prototype",
+        help="asset contract to validate (default: prototype)",
+    )
+    parser.add_argument(
+        "--scene-asset-dir",
+        type=Path,
+        default=SCENE_ASSET_DIR,
+        help="scene asset root, primarily for isolated contract tests",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    profile = ASSET_PROFILES[args.profile]
+    failures = validate_assets(args.scene_asset_dir, profile)
 
     if failures:
-        print("Cat action asset check failed:")
+        print(f"Cat action asset check failed ({profile.name} profile):")
         for failure in failures:
             print(f"- {failure}")
         raise SystemExit(1)
 
-    print("Cat action asset check passed.")
+    print(f"Cat action asset check passed ({profile.name} profile).")
 
 
 if __name__ == "__main__":

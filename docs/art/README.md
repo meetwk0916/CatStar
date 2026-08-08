@@ -22,6 +22,9 @@ npm run check:assets
 
 The checker validates sheet dimensions, non-empty alpha frames, stable baselines,
 reasonable visible-area changes, and the absence of small detached pixel islands.
+`npm run check:assets:release` applies the future first-release profile with all
+ten coat presets; it is not evidence that the incomplete release set already
+passes.
 
 ## Candidate Layout
 
@@ -81,4 +84,28 @@ directory with its matching viewport explicitly:
 CATSTAR_REVIEW_VIEWPORT=375,812 \
 CATSTAR_REVIEW_OUT=artifacts/art/runtime-review-mobile/YYYY-MM-DD \
 npm run review:runtime:check
+```
+
+## Continuous Motion Review Workflow
+
+Capture entry-through-exit video, posters, and review boards for the selected
+actions on desktop and mobile with:
+
+```bash
+npm run review:motion -- \
+  --output artifacts/art/runtime-motion-review/YYYY-MM-DD-candidate
+```
+
+The manifest binds the evidence to its runtime inputs. Record explicit human
+decisions with `npm run review:motion:record` and its required `--manifest`,
+`--status`, and `--reviewer` arguments; optional preset, action, and viewport
+filters limit the decision to matching entries. Structural validation permits
+pending decisions, while the release gate requires the complete approval
+matrix:
+
+```bash
+npm run review:motion:check -- \
+  --output artifacts/art/runtime-motion-review/YYYY-MM-DD-candidate
+npm run review:motion:check:release -- \
+  --output artifacts/art/runtime-motion-review/YYYY-MM-DD-candidate
 ```

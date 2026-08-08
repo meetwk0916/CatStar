@@ -1,10 +1,18 @@
 node_modules/
 dist/
+.next/
+.wrangler/
 *.tsbuildinfo
 __pycache__/
 *.py[cod]
 vite.config.js
 vite.config.d.ts
+vite.config.site.js
+vite.config.site.d.ts
+build/*.js
+build/*.d.ts
+worker/*.js
+worker/*.d.ts
 # Added by code-review-graph
 .code-review-graph/
 playwright-report/

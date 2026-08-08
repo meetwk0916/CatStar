@@ -1,13 +1,14 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-07
+Last updated: 2026-08-08
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
 
 Rights and distribution status are tracked separately in
-[`rights-and-provenance.md`](rights-and-provenance.md); current generated
-assets remain internal-prototype-only while that evidence is incomplete.
+[`rights-and-provenance.md`](rights-and-provenance.md); the assembled runtime
+remains internal-prototype-only while any required asset evidence is
+incomplete.
 
 ```text
 public/assets/scenes/window-room/cat/{coat-preset}/{action}.png
@@ -27,10 +28,10 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 
 | Runtime action | Current source | Status |
 | --- | --- | --- |
-| `idle` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Four-frame legacy attentive loop retained as the brief transition posture. |
-| `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Four-frame relaxed long-dwell loop, now visibly distinct from `idle`. |
-| `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Eight independently generated and normalized grounded gait poses. |
-| `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v11/` | Six-frame in-place lean, held slow blink, and return response. |
+| `idle` | `artifacts/art/candidates/active/product-cat-idle-v3/` | Four-frame supporting standing loop that fixes the visible thin-cat `sit` exit. It predates the production model sheet and remains internal quality-slice support rather than final release art. |
+| `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
+| `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
+| `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |
 | `groom` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Eight-frame paw and face grooming loop. |
 | `stretch` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Six-frame stand, bow, stretch, and recover action. |
 | `eat` | `artifacts/art/candidates/active/product-cat-actions-v3/` | Six-frame bowl-aligned sniff/eat source; runtime loops the light head-lower frames. |
@@ -60,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-07/` and contains nineteen validated
+`artifacts/art/runtime-review/2026-08-08/` and contains nineteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
 blanket routines, grooming, stretching, deep sleep, active approach, the
 in-place interaction across four runtime moments after real pointer input on
@@ -74,9 +75,11 @@ fingerprint; `npm run review:runtime:check` fails after those inputs change.
 
 ## Candidate Retention
 
-- Active motion sources: v3, v4, v5, v8, quality-slice v10, and quality-slice
-  v11. v10 now supplies `idle`, `groom`, and `stretch`; v11 supplies `sit`,
-  `walk`, and `interact`.
+- Active motion sources: v3, v4, v5, v8, product-cat-idle v3, quality-slice
+  v10, and quality-slice v12. Product-cat-idle v3 supplies the approved
+  supporting `idle`; v10 supplies `groom` and `stretch`; v12 supplies `sit`,
+  `walk`, and `interact`. Product-cat-idle v1/v2 and quality-slice v11 are
+  retained as review and motion-planning history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

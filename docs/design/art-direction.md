@@ -65,11 +65,12 @@ Base scene: `640x360` Phaser logical canvas.
 
 Current source assets can be larger than 640x360, but they must be composed for clean downscaling into a 16:9 H5 scene.
 
-Keep the cat at a believable scale within the room. The next production master
-should target an approximately 8–10% larger display than the current runtime
-cat, then confirm the result on mobile through silhouette, face pixels,
-background contrast, lighting at routine anchors, and a forgiving transparent
-hit area. Do not use interaction zoom or a following camera in Phase 0.1.
+Keep the cat at a believable scale within the room. Use the current `96x96`
+display as the production baseline, and confirm every new master on mobile
+through silhouette, face pixels, background contrast, lighting at routine
+anchors, and a forgiving transparent hit area. Do not enlarge it further
+without repeating that review. Do not use interaction zoom or a following
+camera in Phase 0.1.
 
 Recommended final structure:
 

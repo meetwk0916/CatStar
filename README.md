@@ -52,12 +52,14 @@ npm run check:bundle
 ```
 
 This checks runtime cat sprite-sheet structure, validates saved browser review
-screenshots, runs domain and browser regression tests, builds the Vite app, and
-enforces the accepted internal-prototype bundle budget.
+screenshots, runs domain and browser regression tests, builds the
+Sites-compatible Vinext/Cloudflare Worker app, and enforces the accepted
+internal-prototype bundle budget.
 
 ## Project Structure
 
 ```text
+app/                        Vinext production entry
 src/
   components/              UI components
   data/letters.json         Phase 0 prewritten test letters
@@ -68,6 +70,7 @@ src/
 docs/                       Specifications, status, QA, ADRs, and documentation indexes
 artifacts/art/              Generated art sources, candidates, and review evidence
 public/assets/              Runtime assets consumed by the app
+build/ and worker/          Sites build adapter and Cloudflare Worker entry
 ```
 
 ## Documentation

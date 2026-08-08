@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-04
+**Last aligned:** 2026-08-08
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -20,7 +20,8 @@ must not be inferred from this document.
 
 The current implementation includes:
 
-- React, TypeScript, Vite, and Tailwind CSS application shell.
+- React, TypeScript, Vite, and Tailwind CSS application shell, with a
+  Sites-compatible Vinext/Cloudflare Worker production build.
 - Lazy-loaded Phaser room scene embedded in React.
 - One local memorial passport and local letter-reading progress.
 - Prewritten Phase 0 letter script with delayed device-local delivery.
@@ -41,12 +42,12 @@ The current implementation includes:
   five-other-intent cooldown, and safe touch interruption.
 - Reliable visible touch response, occasional **陪伴轻语**, and low-probability
   waking from deep sleep.
-- The approved rounded short-haired v11 quality slice now supplies distinct
-  `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets;
-  the cat displays at `96x96`, approximately 9% larger than the prior runtime.
-- The approved static appearance direction is
-  `artifacts/art/candidates/active/product-cat-prototypes-v1/concept-sheet-a-v2.png`,
-  comparing rounded short-haired, slender short-haired, and fluffy long-haired.
+- The approved rounded short-haired v12 quality slice now supplies distinct
+  `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets,
+  all redrawn after approval of the dedicated production model sheet.
+- The production identity authority is
+  `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
+  three-prototype comparison remains visual-direction reference only.
 
 Exact runtime art provenance is maintained in
 [`../art/runtime-map.md`](../art/runtime-map.md).
@@ -85,12 +86,11 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Replace the reviewed generated motion candidates with commissioned
-  hand-authored final art while preserving the validated contract.
-- Complete rounded short-haired's remaining seven actions from the approved
-  character direction, then produce independent ten-action masters for slender
-  short-haired and fluffy long-haired before exposing those prototypes in the
-  passport.
+- Complete rounded short-haired's remaining seven actions—including a final
+  model-sheet-derived `idle`—through the same rights-cleared production
+  process as the approved v12 quality slice. Then produce independent
+  ten-action masters for slender short-haired and fluffy long-haired before
+  exposing those prototypes in the passport.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
 - Replace the six current deterministic coat derivatives with ten reviewed
