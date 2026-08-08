@@ -42,9 +42,11 @@ The current implementation includes:
   five-other-intent cooldown, and safe touch interruption.
 - Reliable visible touch response, occasional **陪伴轻语**, and low-probability
   waking from deep sleep.
-- The approved rounded short-haired v12 quality slice now supplies distinct
+- The rounded short-haired v12 quality slice now supplies distinct
   `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets,
   all redrawn after approval of the dedicated production model sheet.
+  It remains internal quality-slice evidence while final human confirmation and
+  the complete rights-chain gate are pending.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -90,7 +92,8 @@ hashes or branch information to this file.
   model-sheet-derived `idle`—through the same rights-cleared production
   process as the approved v12 quality slice. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
-  exposing those prototypes in the passport.
+  exposing those prototypes in the passport; they do not block the first
+  release.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
 - Replace the six current deterministic coat derivatives with ten reviewed
@@ -99,6 +102,9 @@ hashes or branch information to this file.
   nose, and paw-pad colors without enabling free mixing or local markings.
 - Defer bespoke **自发玩耍** sheets until after the ten core action classes;
   reuse walk and interact motion for Phase 0.1 **主动靠近**.
+- Keep the first-release repertoire frozen at the ten core action classes;
+  kneading, belly-up, chase, zoomie, and additional bespoke play motions are
+  follow-up scope rather than release blockers.
 - Use the plant-touch lifecycle as evidence before extracting a general prop
   interaction framework or expanding other zones.
 - Add one-way/top-only platform support before enabling free-form landings.

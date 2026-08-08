@@ -2,7 +2,7 @@
 
 **Status:** Current
 
-**Last aligned:** 2026-08-05
+**Last aligned:** 2026-08-08
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in
@@ -64,6 +64,8 @@ When documents disagree, use this order:
   [`environment-interaction.md`](./environment-interaction.md).
 - The renderer decision and exit condition are recorded in
   [`ADR-0004`](../adr/0004-retain-phaser-for-phase-0.1-scene-rendering.md).
+- The staged appearance release boundary is recorded in
+  [`ADR-0006`](../adr/0006-release-with-one-complete-appearance-prototype.md).
 
 ## Runtime behavior
 
@@ -72,15 +74,19 @@ When documents disagree, use this order:
   low-frequency, cooldown-governed leaf-touch interaction.
 - Idle/sit, walking, jumping, eating, awake rest, deep sleep, grooming,
   stretching, and interaction use the shared ten-action animation contract.
-- The approved production target offers three art-directed **外形原型**:
-  rounded short-haired, slender short-haired, and fluffy long-haired. The user
-  chooses an observable silhouette rather than a breed, and every available
-  prototype must have the complete ten-action repertoire before it can be
-  selected in the product.
+- The approved product direction includes three art-directed **外形原型**:
+  rounded short-haired, slender short-haired, and fluffy long-haired. The first
+  releasable art scope requires only a coherent, production-quality rounded
+  short-haired prototype with the complete ten-action repertoire; the other
+  two prototypes do not block that release. The user chooses an observable
+  silhouette rather than a breed, and every available prototype must have the
+  complete ten-action repertoire before it can be selected in the product.
 - Ten curated **毛色预设** cover orange tabby, solid black, solid white,
   calico, black-and-white tuxedo, gray-and-white tabby, brown tabby, solid
   gray, tortoiseshell, and colorpoint. Each is a reviewed complete appearance,
-  not an unrestricted color or marking mixer.
+  not an unrestricted color or marking mixer. All ten are required for the
+  first releasable rounded short-haired prototype; the six current
+  deterministic derivatives are implementation evidence, not release art.
 - Appearance selection is manual and bounded. Phase 0.1 does not upload cat
   photos, generate a replica, or promise exact visual reproduction.
 - Each prototype preserves its own anchors, timing, and behavior availability

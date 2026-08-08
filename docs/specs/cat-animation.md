@@ -2,13 +2,13 @@
 
 **Status:** Current production animation contract
 
-Last updated: 2026-08-01
+Last updated: 2026-08-08
 
 ## Purpose
 
 This spec defines the production target for CatStar cat animation assets.
 
-The current runtime sheets under `public/assets/scenes/window-room/cat/` are MVP derived motion sheets. They prove the Phaser animation pipeline, but they are not production-quality motion assets. Production cat animation must be drawn as coherent frame-by-frame motion of the same cat.
+The current runtime sheets under `public/assets/scenes/window-room/cat/` are MVP derived motion sheets. They prove the Phaser animation pipeline, but they are not production-quality motion assets. Production cat animation must be drawn as coherent frame-by-frame motion of the same cat. Current AI-generated candidates may remain design, motion-planning, and engineering references, but they must not ship as final runtime art. The release master must come from one rights-cleared, identity-consistent production process across all ten actions.
 
 ## Product Role
 
@@ -28,6 +28,8 @@ Animation non-goals:
 - combat or challenge motion
 - reward/level-up effects
 - magical ascension, angel, halo, or religious movement language
+- an eleventh bespoke action class for the first release; kneading, belly-up,
+  chase, zoomie, and additional play motions remain follow-up scope
 
 ## Character Lock
 
@@ -36,11 +38,12 @@ prototypes may have naturally different face, ear, body, tail, and coat-length
 structure, but they share the same stylized-natural pixel language, calm
 demeanor, and complete behavior repertoire.
 
-The Phase 0.1 production target uses three **外形原型**: rounded short-haired,
-slender short-haired, and fluffy long-haired. The user selects the familiar
-visible silhouette, not a breed. A prototype must not become selectable until
-all ten actions exist for it; never stretch, squash, or reuse another
-prototype's body art.
+The product direction uses three **外形原型**: rounded short-haired, slender
+short-haired, and fluffy long-haired. The first releasable art scope requires
+only the rounded short-haired prototype; the other two do not block that
+release. The user selects the familiar visible silhouette, not a breed. A
+prototype must not become selectable until all ten actions exist for it; never
+stretch, squash, or reuse another prototype's body art.
 
 Each prototype supports ten curated **毛色预设**:
 
@@ -84,6 +87,11 @@ The production style is stylized-natural: motion and body structure should read
 as a real domestic cat first, with only enough facial simplification and
 softening to remain warm and legible at mobile scale. Avoid chibi head size,
 toy-like short legs, and exaggerated eye-to-face ratios.
+
+If cuteness conflicts with believable anatomy, contact, or weight, physical
+credibility has veto power. Use restrained expression, calm timing, scene
+lighting, and pixel treatment to create warmth instead of weakening the cat's
+structure or motion.
 
 The gray-and-white rounded short-haired master is produced first so it can be
 compared directly with the current runtime. The validated action names, frame
@@ -442,6 +450,13 @@ Before accepting a sheet, verify:
 - readable at mobile scale
 - Phaser can play it without recalibrating collision unless intentionally changed
 
+These checks must be performed on each complete action while it plays in the
+real room at desktop and mobile sizes. Review the full loop or one-shot motion,
+including its entry and exit, for identity drift, contact sliding, weight,
+transition pops, loop seams, clipping, and mobile readability. Sprite sheets
+and isolated runtime screenshots are supporting evidence, not substitutes for
+continuous-motion review.
+
 ## Phaser Integration Contract
 
 `src/game/CatRoomScene.ts` expects:
@@ -483,6 +498,9 @@ state lives in [`../status/current.md`](../status/current.md).
 The **外形原型** and curated **毛色预设** model is recorded in
 [`ADR-0005`](../adr/0005-expand-memorial-appearance-before-art-lock.md),
 which supersedes ADR-0003's narrower Phase 0.1 limit.
+The first-release boundary for one complete rounded short-haired prototype is
+recorded in
+[`ADR-0006`](../adr/0006-release-with-one-complete-appearance-prototype.md).
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must
@@ -496,11 +514,37 @@ Production order:
 1. compare rounded short-haired, slender short-haired, and fluffy long-haired
    as gray-and-white static sheets at enlarged, `96x96`, desktop-room, and
    mobile-room scales;
-2. approve the rounded short-haired character sheet and redraw `sit`, `walk`,
-   and `interact` as the first moving quality slice in the real room;
-3. after the slice passes, complete and validate rounded short-haired's
+2. produce and approve a rights-cleared rounded short-haired production model
+   sheet that locks principal views, anatomy, face landmarks, tail, marking
+   boundaries, contact lines, `96x96` pixel treatment, and in-room scale; the
+   current generated concept sheet approves direction only;
+3. redraw `sit`, `walk`, and `interact` as the first moving quality slice in
+   the real room;
+4. after the slice passes, complete and validate rounded short-haired's
    remaining seven action classes;
-4. lock its face, anatomy, anchors, lighting, and motion timing, then build all
+5. lock its face, anatomy, anchors, lighting, and motion timing, then build all
    ten complete **毛色预设** without changing the motion master;
-5. repeat the complete master and preset workflow for slender short-haired and
+6. repeat the complete master and preset workflow for slender short-haired and
    fluffy long-haired before enabling either prototype in registration.
+
+The moving quality slice controls production order only. It does not permit a
+lower release standard for idle, jump, eat, lie, sleep, groom, or stretch; all
+ten actions share the same final identity-consistency, physical-credibility,
+and pixel-finish threshold.
+
+The first-release action repertoire is frozen at these ten classes. Composite
+routines such as approaching the user and touching the plant reuse approved
+core motion; no additional bespoke action class blocks release.
+
+Release gate: the rounded short-haired prototype may ship after its own full
+motion master and all ten complete **毛色预设** pass art review. The current six
+deterministic coat derivatives do not satisfy this gate. Slender short-haired
+and fluffy long-haired remain follow-up scope and do not block that first
+release.
+
+Review coverage must include every combination of the ten coat presets and ten
+actions. Batch the hundred combinations into side-by-side loops or review
+boards so reviewers can compare marking continuity, eye/nose/paw-pad harmony,
+scene contrast, and identity without relying on sampling. Automated checks for
+frame count, dimensions, alpha, palette, and anchors support but do not replace
+human art review.

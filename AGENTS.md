@@ -64,6 +64,10 @@ committing code or runtime asset changes.
 
 Issues and PRDs are tracked in this repository's GitHub Issues via the `gh` CLI. See `docs/agents/issue-tracker.md`.
 
+### Triage labels
+
+The five canonical triage roles and their current tracker availability are documented in `docs/agents/triage-labels.md`. Do not assume a role is configured when that file marks its label as missing.
+
 ### Domain docs
 
 This is a single-context repository using root-level `CONTEXT.md` and `docs/adr/`. See `docs/agents/domain.md`.

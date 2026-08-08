@@ -2,7 +2,7 @@
 
 **Status:** Current visual direction
 
-Last updated: 2026-08-05
+Last updated: 2026-08-08
 
 ## Priority
 
@@ -30,6 +30,10 @@ CatStar is a local-first memorial companion tool, not a game-first product. The 
 - Cat: a familiar domestic cat with believable anatomy and motion, lightly
   simplified facial features for mobile readability, three art-directed
   **外形原型**, ten curated **毛色预设**, and no angel or religious treatment.
+- Acceptance priority: when cuteness conflicts with believable domestic-cat
+  anatomy, contact, or weight, physical credibility wins. Warmth comes from
+  restrained expression, timing, lighting, and pixel treatment rather than
+  chibi proportions or toy-like motion.
 - Identity priority: the cat is first a gentle approximation of the user's
   remembered cat, not a fixed brand mascot. Unify art style, calm demeanor,
   and motion quality rather than imposing one shared face across prototypes.
@@ -122,6 +126,10 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
   identical color and lighting. Each prototype must include enlarged design
   poses, `96x96` key-pose previews, and in-room desktop and mobile previews so
   silhouette preference is not confused with coat preference.
+- Treat the current generated prototype comparison as direction approval only.
+  Before batch animation, approve a rights-cleared production model sheet that
+  locks principal views, anatomy, facial landmarks, tail, marking boundaries,
+  contact lines, `96x96` pixel treatment, and in-room scale.
 - After the static prototype review, produce rounded short-haired first as the
   new complete motion master. Retain the validated frame counts, timing,
   `96x96` cells, anchors, and contact lines, but redraw every visible frame from
@@ -129,19 +137,30 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
 - Approve `sit`, `walk`, and `interact` as a moving quality slice before
   completing the remaining actions. Static approval alone does not authorize
   the full action set.
-- Rounded short-haired, slender short-haired, and fluffy long-haired must each
-  receive their own complete ten-action motion master before becoming selectable.
-  Never stretch, squash, or reuse another prototype's body art.
+- The first release may ship with only the complete rounded short-haired
+  prototype. Slender short-haired and fluffy long-haired remain part of the
+  product direction but do not block that release. Each prototype must receive
+  its own complete ten-action motion master before becoming selectable; never
+  stretch, squash, or reuse another prototype's body art.
 - After a motion master passes review, apply ten complete **毛色预设**: orange
   tabby, solid black, solid white, calico, black-and-white tuxedo,
   gray-and-white tabby, brown tabby, solid gray, tortoiseshell, and colorpoint.
   Each preset owns reviewed coat, eye, nose, and paw-pad colors; Phase 0.1 does
-  not offer free color mixing or independent local-marking edits.
+  not offer free color mixing or independent local-marking edits. All ten are
+  required for the first release; deterministic recoloring alone does not pass
+  the art-review gate.
+- Human art review covers all hundred coat-preset/action combinations. Use
+  side-by-side loops or review boards to make full coverage practical; do not
+  substitute sampling or automated structural checks for visual approval.
 - Do not use code-drawn cat sprites as production art.
   `scripts/generate_cat_animation_assets.py` is only an experiment for frame
   counts, anchors, and metadata. The dedicated eat and lie production
   candidates remain owned by `scripts/compose_product_cat_eat_v3.py` and
   `scripts/compose_product_cat_lie_v4.py`.
+- Treat current AI-generated cat candidates as design, motion-planning, and
+  engineering references only. Final release sheets must come from one
+  rights-cleared, identity-consistent production process across all ten
+  actions; do not ship an incrementally repaired mix of the current candidates.
 - Preserve `96x96` frame size and bottom-center anchor unless the Phaser scene is recalibrated.
 - Follow `docs/specs/cat-animation.md` for character consistency, motion breakdown, frame counts, anchors, and Phaser integration.
 - Follow `docs/specs/environment-interaction.md` when tying walk, jump, rest, food, crouch, or future run states to room props.
