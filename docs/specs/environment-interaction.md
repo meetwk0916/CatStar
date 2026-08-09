@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-05
+Last updated: 2026-08-09
 
 ## Purpose
 
