@@ -19,7 +19,7 @@ const ACTIONS = {
   stretch: 6,
 } as const;
 
-const EAT_MIN_SPRITE_HEIGHT = 56;
+const EAT_MIN_SPRITE_HEIGHT = 64;
 const EAT_MAX_HEIGHT_SPREAD = 12;
 
 describe('daily-life motion slice', () => {

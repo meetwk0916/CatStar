@@ -39,7 +39,9 @@ class ActionSpec:
 
 
 ACTION_SPECS = {
-    "eat": ActionSpec(columns=3, rows=2, frames=6, max_width=84, max_height=84),
+    # Keep the bowl-side loop on the same horizontal scale as the standing
+    # master; the head motion supplies the pose change, not a smaller cat.
+    "eat": ActionSpec(columns=3, rows=2, frames=6, max_width=92, max_height=84),
     "groom": ActionSpec(columns=4, rows=2, frames=8, max_width=82, max_height=84),
     "stretch": ActionSpec(columns=3, rows=2, frames=6, max_width=96, max_height=74),
 }
