@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-08/` and contains nineteen validated
+`artifacts/art/runtime-review/2026-08-09/` and contains nineteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
 blanket routines, grooming, stretching, deep sleep, active approach, the
 in-place interaction across four runtime moments after real pointer input on
@@ -73,9 +73,12 @@ lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
 accompanying `manifest.json` binds its screenshots to the exact runtime input
 fingerprint; `npm run review:runtime:check` fails after those inputs change.
 The quiet-motion continuous evidence lives under
-`artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and covers
-`idle`, `lie`, and `sleep` from entry through exit at `1280x720` and
-`390x844`; wakun approved all six human-review entries on 2026-08-09.
+`artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and
+`artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`.
+Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
+through exit at `1280x720` and `390x844`; wakun approved all eight
+human-review entries on 2026-08-09, and both manifests pass the release-grade
+human-review gate.
 
 ## Candidate Retention
 

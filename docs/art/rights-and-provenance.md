@@ -105,7 +105,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
 | Transformation lineage | Built-in ImageGen chroma-key sources → recorded chroma-key removal → connected-pose extraction → nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheets via `scripts/compose_product_cat_quiet_motion_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/`, covering `idle`, awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Structural validation passes; wakun approved all six human-review decisions on 2026-08-09. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`, covering `idle`, cat-bed and blanket awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Both release-grade structural gates pass; wakun approved all eight human-review decisions on 2026-08-09. |
 | Distribution status | Internal quiet-motion evidence only. Public distribution remains blocked by an immutable terms snapshot and the remaining runtime rights chain. |
 
 ## Rounded short-haired idle v3 intake record

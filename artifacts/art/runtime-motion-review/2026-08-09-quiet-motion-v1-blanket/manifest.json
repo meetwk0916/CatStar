@@ -2,14 +2,12 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T11:41:06.619255+08:00",
+  "capturedAt": "2026-08-09T11:41:45.174197+08:00",
   "presets": [
     "gray-white-tabby"
   ],
   "actions": [
-    "idle",
-    "lie",
-    "sleep"
+    "lie"
   ],
   "viewports": [
     "1280x720",
@@ -19,76 +17,26 @@
     {
       "coatPreset": "gray-white-tabby",
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
-      "action": "idle",
-      "viewport": "1280x720",
-      "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
-      "durationMs": 2259,
-      "captureTimeoutMs": 4000,
-      "motionState": "complete",
-      "startedAt": "2026-08-09T03:40:28.380Z",
-      "video": "videos/gray-white-tabby/1280x720/idle.webm",
-      "entryPoster": "posters/gray-white-tabby/1280x720/idle-entry.png",
-      "exitPoster": "posters/gray-white-tabby/1280x720/idle-exit.png",
-      "humanReview": {
-        "status": "pass",
-        "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.754027+08:00"
-      },
-      "evidenceSha256": {
-        "video": "0d7af6f6776bfe5e4d9004dcb800e76030edeeb7588dfe12d4dc3ec3aba27169",
-        "entryPoster": "53abe27fa905ad32f984b2b84abab8d0ae44fe9f4715cf53a138aac625e3b488",
-        "exitPoster": "4e8ba36caf919394a7e82861265d5db259f52ebcef28ecef894082e411cebe6b"
-      }
-    },
-    {
-      "coatPreset": "gray-white-tabby",
-      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
-      "action": "idle",
-      "viewport": "390x844",
-      "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
-      "durationMs": 1984,
-      "captureTimeoutMs": 4000,
-      "motionState": "complete",
-      "startedAt": "2026-08-09T03:40:32.497Z",
-      "video": "videos/gray-white-tabby/390x844/idle.webm",
-      "entryPoster": "posters/gray-white-tabby/390x844/idle-entry.png",
-      "exitPoster": "posters/gray-white-tabby/390x844/idle-exit.png",
-      "humanReview": {
-        "status": "pass",
-        "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.754406+08:00"
-      },
-      "evidenceSha256": {
-        "video": "35928cf7aeda3fde45916056d91038cf867f27b5d255556b9c58fd7e4ec83cfc",
-        "entryPoster": "f3aacff9311ab39571096092086744e1bdc617b06e49e4ea45e2c7c1dad7fb1b",
-        "exitPoster": "c33383a6978ed8cf8dbdfa4b8c776f411343f8f5ddd17f5bc16588e84db47279"
-      }
-    },
-    {
-      "coatPreset": "gray-white-tabby",
-      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "lie",
       "viewport": "1280x720",
-      "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
-      "durationMs": 9078,
+      "route": "/?catstarRoutine=approachBlanket&catstarMotionReview=1",
+      "durationMs": 8851,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:40:36.586Z",
+      "startedAt": "2026-08-09T03:41:24.364Z",
       "video": "videos/gray-white-tabby/1280x720/lie.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/lie-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.754743+08:00"
+        "notes": "Approved final blanket lie anchor on desktop and mobile: stable top-surface contact, no sliding, clipping, or transition pop.",
+        "reviewedAt": "2026-08-09T11:41:56.923497+08:00"
       },
       "evidenceSha256": {
-        "video": "306cce97489ca17a1c175a26b9fb8058fdd770b7ea3f4305caf2a55cedf00b84",
-        "entryPoster": "4fcecb466d2030f7e7fdc7b0bfbb337e828cb833aa8640feca884a0682ca5d1d",
-        "exitPoster": "307875c59a5b47ad21348c40cc5d436e810149d37595a88ec277f704197088bf"
+        "video": "2b6f8af203713b392a4d629849e745f6e194de82dd7bac97578921ebd3d599fa",
+        "entryPoster": "4ca1902be041327f1013572f2ea788b1739ac206390d56e7dca713c085c98490",
+        "exitPoster": "1954c92f4ad705eecbc3d9dd6335739be3685f54802edab7ceb82fa03a241d74"
       }
     },
     {
@@ -96,90 +44,32 @@
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "lie",
       "viewport": "390x844",
-      "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
-      "durationMs": 9100,
+      "route": "/?catstarRoutine=approachBlanket&catstarMotionReview=1",
+      "durationMs": 8573,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:40:47.783Z",
+      "startedAt": "2026-08-09T03:41:35.081Z",
       "video": "videos/gray-white-tabby/390x844/lie.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/lie-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.755065+08:00"
+        "notes": "Approved final blanket lie anchor on desktop and mobile: stable top-surface contact, no sliding, clipping, or transition pop.",
+        "reviewedAt": "2026-08-09T11:41:56.923875+08:00"
       },
       "evidenceSha256": {
-        "video": "481bd9ec079219c4f0028c417197bd586b2447779ef890c4b8e378b80c2efc87",
-        "entryPoster": "d7179f11ba138d85ccf7b0cbfb600b4d9934d7320bc406d61ff21aa27c965d06",
-        "exitPoster": "23f771aba0b3563560c441e8fa282dec54e79197f5b062fc5393566f144128d2"
-      }
-    },
-    {
-      "coatPreset": "gray-white-tabby",
-      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
-      "action": "sleep",
-      "viewport": "1280x720",
-      "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
-      "durationMs": 1992,
-      "captureTimeoutMs": 4000,
-      "motionState": "complete",
-      "startedAt": "2026-08-09T03:40:58.966Z",
-      "video": "videos/gray-white-tabby/1280x720/sleep.webm",
-      "entryPoster": "posters/gray-white-tabby/1280x720/sleep-entry.png",
-      "exitPoster": "posters/gray-white-tabby/1280x720/sleep-exit.png",
-      "humanReview": {
-        "status": "pass",
-        "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.755383+08:00"
-      },
-      "evidenceSha256": {
-        "video": "21832ddb69c6b157ff9deff64403c8b3666295b2bd5b746565d5179239e56456",
-        "entryPoster": "0013a5333000b06b1b87c41ee8366cfde0d78adbea44bce3bba3a75e3441c4fc",
-        "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
-      }
-    },
-    {
-      "coatPreset": "gray-white-tabby",
-      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
-      "action": "sleep",
-      "viewport": "390x844",
-      "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
-      "durationMs": 1959,
-      "captureTimeoutMs": 4000,
-      "motionState": "complete",
-      "startedAt": "2026-08-09T03:41:03.103Z",
-      "video": "videos/gray-white-tabby/390x844/sleep.webm",
-      "entryPoster": "posters/gray-white-tabby/390x844/sleep-entry.png",
-      "exitPoster": "posters/gray-white-tabby/390x844/sleep-exit.png",
-      "humanReview": {
-        "status": "pass",
-        "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:41:56.755726+08:00"
-      },
-      "evidenceSha256": {
-        "video": "52ea5458f58eefefccc1315891d9d96f8f4f2f705412c62de9240cb325fd9d23",
-        "entryPoster": "cb9b1d548b7294c3649332736a60d1fda1580882c06f8dec115eb6cac4b24bbc",
-        "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
+        "video": "32f4bc7c19a246fbd9359cf937125fff658c7d39272860fbc77f37a236ec8652",
+        "entryPoster": "95cac211b05a373d4bd13610719596e654b0ab9138d3d8ede5be7ac465567e3f",
+        "exitPoster": "96b5d196f4996f0caeb4059362eb7581201b8260910f74e10ac7d8d24434e421"
       }
     }
   ],
   "boards": [
-    "boards/desktop/idle.png",
-    "boards/desktop/idle.html",
     "boards/desktop/lie.png",
     "boards/desktop/lie.html",
-    "boards/desktop/sleep.png",
-    "boards/desktop/sleep.html",
-    "boards/mobile/idle.png",
-    "boards/mobile/idle.html",
     "boards/mobile/lie.png",
-    "boards/mobile/lie.html",
-    "boards/mobile/sleep.png",
-    "boards/mobile/sleep.html"
+    "boards/mobile/lie.html"
   ],
   "sourceFingerprint": "a9833ad565e25154f2cc8c7abd19ff6bb10f7a1ccb907824f48e5a8e32062d6f",
   "sourceFiles": [

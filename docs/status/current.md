@@ -50,7 +50,8 @@ The current implementation includes:
 - The production-model-derived quiet-motion v1 candidate supplies `idle`,
   awake-rest `lie`, and deep `sleep` across all six current coat presets.
   Structural asset validation and fingerprint-bound desktop/mobile continuous
-  evidence pass; all six motion entries were approved by wakun on 2026-08-09.
+  evidence pass; all eight floor, cat-bed, and blanket motion entries were
+  approved by wakun on 2026-08-09.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.

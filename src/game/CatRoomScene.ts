@@ -167,9 +167,8 @@ const WINDOW_BENCH_SURFACE = {
 };
 const WINDOW_BENCH_TAKEOFF_X = WINDOW_BENCH_ZONE.xMax - 28;
 const CAT_BED_SURFACE = {
-  xMin: CAT_BED_ZONE.xMin + 14,
-  xMax: CAT_BED_ZONE.xMax - 10,
-  y: FLOOR_STAND_Y,
+  x: CAT_BED_ZONE.xMin + 38,
+  y: 202,
 };
 const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
 const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
@@ -184,8 +183,8 @@ const PLANT_TOUCH_CONTACT_MS = 400;
 const PLANT_LEAF_SWAY_MS = 1_200;
 const PLANT_TOUCH_DURATION_MS = 3_000;
 const PLANT_LEAF_SWAY_DEGREES = 8;
-const BLANKET_STAND_Y = 196;
-const BLANKET_REST_X = 558;
+const BLANKET_STAND_Y = 158;
+const BLANKET_REST_X = 578;
 const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
@@ -246,7 +245,7 @@ export class CatRoomScene extends Phaser.Scene {
   private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
   private windowBenchDecisionAt = 0;
   private windowBenchStillUntil = 0;
-  private catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
+  private catBedRestX = CAT_BED_SURFACE.x;
   private walkPaceSeed = 0;
   private manualInteractUntil = 0;
   private pendingInteractionCount = 0;
@@ -517,7 +516,7 @@ export class CatRoomScene extends Phaser.Scene {
       }
 
       if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
-        this.catBedRestX = this.chooseCatBedRestX();
+        this.catBedRestX = CAT_BED_SURFACE.x;
         this.startScriptedJump(time, {
           toX: this.catBedRestX,
           toY: CAT_BED_SURFACE.y,
@@ -977,7 +976,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "cat-bed-rest") {
       this.currentZone = "cat-bed";
       this.routine = "restCatBed";
-      this.catBedRestX = (CAT_BED_SURFACE.xMin + CAT_BED_SURFACE.xMax) / 2;
+      this.catBedRestX = CAT_BED_SURFACE.x;
       this.cat.setPosition(this.catBedRestX, CAT_BED_SURFACE.y);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("lie", true);
@@ -1109,10 +1108,6 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     return nextX;
-  }
-
-  private chooseCatBedRestX() {
-    return Phaser.Math.Between(CAT_BED_SURFACE.xMin, CAT_BED_SURFACE.xMax);
   }
 
   private moveOnWindowBenchSurface(targetX: number) {
