@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-08
+**Last reviewed:** 2026-08-09
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. The repository records
@@ -19,6 +19,7 @@ production rights.
 | Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; final human confirmation and immutable terms snapshot still missing | Internal quality-slice evidence; not public-release clearance |
+| Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; human confirmation complete; immutable terms snapshot still missing | Internal quiet-motion evidence; not public-release clearance |
 | Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Temporary compatibility support; not release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
@@ -87,6 +88,25 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet. The owner-use statement remains subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`, covering the production-model-derived `sit`, `walk`, and `interact` on desktop and mobile from entry through exit. Structural validation passed; the manifest's human-review entries require a fresh confirmation against the v5 boards before they are treated as final release approval. |
 | Distribution status | Internal rounded short-haired moving quality-slice evidence only. This record does not clear the room art, the other seven action sources, or public distribution. |
+
+## Rounded short-haired quiet-motion v1 intake record
+
+**Status:** Rights source recorded; structural and human runtime review passed
+
+| Field | Record |
+| --- | --- |
+| Candidate package | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` |
+| Source SHA-256 | `idle-source-chromakey.png`: `40c0dbe49df82902ad781a6df03061e1f790555005ba31e4b4853b83dad1bb87`; `lie-source-chromakey.png`: `209b532f4a913e2d3a3a8b7353e81f85bd91ad08fdc1a196ba7adf8934912e00`; `sleep-source-chromakey.png`: `5a2a56eca3058c3e347b42aa43cb63bd7d0a6312aac100728fdb7fbd4743f4bf`. |
+| Runtime-master SHA-256 | `idle.png`: `3ee5f6047f00084a5371961b58130c447e0b9de27a9436f0d673f0513bd82a06`; `lie.png`: `8e09e93453620821f88b653fd5e2fbe80bbf64e68d00b1519524845ac6eac0df`; `sleep.png`: `7d35254ca6c811071543cf4c17207e43c0f3742bc60471f4a699a35840c896d4`. |
+| Creator and account context | Generated with built-in ImageGen in the project owner's Codex session. |
+| Tool and date | Built-in ImageGen; exact version not exposed; generated 2026-08-09. |
+| Identity authority | The approved `product-cat-model-sheet-v1` was the sole anatomy, face, marking, palette, and pixel-style authority. The approved v12 `sit` source supplied production-action identity context. |
+| Source brief | Four-frame `idle` with restrained breathing and blink; four-frame awake-rest `lie` with raised head and open-eye return; four-frame curled `sleep` with closed eyes and minimal breathing. Earlier action sources supplied motion layout only. The exact normalized requests are retained in `generation-prompts.md`. |
+| Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
+| Transformation lineage | Built-in ImageGen chroma-key sources → recorded chroma-key removal → connected-pose extraction → nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheets via `scripts/compose_product_cat_quiet_motion_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/`, covering `idle`, awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Structural validation passes; wakun approved all six human-review decisions on 2026-08-09. |
+| Distribution status | Internal quiet-motion evidence only. Public distribution remains blocked by an immutable terms snapshot and the remaining runtime rights chain. |
 
 ## Rounded short-haired idle v3 intake record
 
