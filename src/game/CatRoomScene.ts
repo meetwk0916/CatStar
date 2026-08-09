@@ -245,7 +245,6 @@ export class CatRoomScene extends Phaser.Scene {
   private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
   private windowBenchDecisionAt = 0;
   private windowBenchStillUntil = 0;
-  private catBedRestX = CAT_BED_SURFACE.x;
   private walkPaceSeed = 0;
   private manualInteractUntil = 0;
   private pendingInteractionCount = 0;
@@ -516,9 +515,8 @@ export class CatRoomScene extends Phaser.Scene {
       }
 
       if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
-        this.catBedRestX = CAT_BED_SURFACE.x;
         this.startScriptedJump(time, {
-          toX: this.catBedRestX,
+          toX: CAT_BED_SURFACE.x,
           toY: CAT_BED_SURFACE.y,
           duration: 700,
           peakHeight: 34,
@@ -976,8 +974,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "cat-bed-rest") {
       this.currentZone = "cat-bed";
       this.routine = "restCatBed";
-      this.catBedRestX = CAT_BED_SURFACE.x;
-      this.cat.setPosition(this.catBedRestX, CAT_BED_SURFACE.y);
+      this.cat.setPosition(CAT_BED_SURFACE.x, CAT_BED_SURFACE.y);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("lie", true);
       return;
