@@ -20,7 +20,7 @@ production rights.
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; final human confirmation and immutable terms snapshot still missing | Internal quality-slice evidence; not public-release clearance |
 | Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; human confirmation complete; immutable terms snapshot still missing | Internal quiet-motion evidence; not public-release clearance |
-| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Temporary compatibility support; not release art |
+| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Historical internal support; not current runtime or release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
 ## Production intake requirements
@@ -110,7 +110,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 
 ## Rounded short-haired idle v3 intake record
 
-**Status:** Rights source recorded; temporary compatibility transition only
+**Status:** Rights source recorded; historical compatibility evidence only
 
 | Field | Record |
 | --- | --- |
@@ -124,4 +124,4 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Transformation lineage | Built-in ImageGen chroma-key source → recorded chroma-key removal → shared-scale nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheet via `scripts/compose_product_cat_idle.py` → deterministic coat derivatives via `scripts/build_cat_coat_presets.py`. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`; structural validation passed and the manifest records desktop and mobile `sit` entries, but a fresh human confirmation against the v5 boards is still required. |
-| Distribution status | Temporary internal quality-slice support for the `sit` exit, not final release art or public distribution clearance. The later full ten-action production master must redraw idle from the production model sheet. |
+| Distribution status | Historical internal quality-slice support for the `sit` exit, not current runtime art or public distribution clearance. The production-model-derived quiet-motion v1 package now supplies runtime `idle`. |

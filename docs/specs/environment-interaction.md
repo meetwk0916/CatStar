@@ -141,9 +141,10 @@ coordinates, tweens, and action playback.
 
 ## Current Action Behavior
 
-- `IDLE` / `SIT`: use the calm seated loop for ordinary floor and perch pauses.
-- `WALKING`: walks toward the active routine target with the
-  product-cat-quality-slice v10 slow cat-step loop.
+- `IDLE`: uses the restrained standing loop for brief attentive floor pauses.
+- `SIT`: uses the calm seated loop for longer floor and perch pauses.
+- `WALKING`: walks toward the active routine target with the grounded
+  eight-frame production-model loop.
 - `JUMPING`: uses a scripted arc for window-bench and blanket up/down travel.
 - `LYING`: uses awake rest on the cat bed and blanket.
 - `SLEEPING`: uses deep sleep only after the session opening.
