@@ -62,9 +62,9 @@ one-way/top-only platform behavior rather than turning the full prop rectangle
 into a normal collider.
 
 `catBed` is a small floor-level rest surface. The cat walks to the bed opening,
-then uses a short scripted hop into a chosen rest position inside the bed. This
-keeps the cat from reading as if it walked through the bed rim. After the
-lying/rest loop, it hops back out through the opening before returning to the
+then uses a short scripted hop onto the fixed approved rest anchor inside the
+bed. This keeps the cat from reading as if it walked through the bed rim. After
+the lying/rest loop, it hops back out through the opening before returning to the
 floor routine.
 
 `rightTray` currently stands for the food bowl area. The cat walks to the bowl
