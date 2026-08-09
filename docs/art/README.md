@@ -40,6 +40,22 @@ Technical lineage does not establish distribution rights. The current
 rights-chain gate and production intake requirements live in
 [`rights-and-provenance.md`](rights-and-provenance.md).
 
+## Production model-sheet review
+
+Regenerate the mobile review derivative for the approved rounded short-haired
+production model sheet with:
+
+```bash
+npm run review:model-sheet
+```
+
+The output is
+`artifacts/art/review/rounded-short-haired-model-sheet-v1/mobile-review-375w.png`.
+It combines the dedicated production model source, a `96x96` runtime strip,
+and room crops from the fingerprint-bound desktop and `390x844` mobile review
+screenshots. It is review evidence only and does not change the rights gate or
+grant public distribution clearance.
+
 ## Runtime Review Workflow
 
 Browser review evidence is stored by capture date under:
