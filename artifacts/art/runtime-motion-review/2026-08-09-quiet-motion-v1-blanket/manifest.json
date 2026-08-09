@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T11:41:45.174197+08:00",
+  "capturedAt": "2026-08-09T11:50:11.237986+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,10 +20,10 @@
       "action": "lie",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachBlanket&catstarMotionReview=1",
-      "durationMs": 8851,
+      "durationMs": 8549,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:41:24.364Z",
+      "startedAt": "2026-08-09T03:49:50.485Z",
       "video": "videos/gray-white-tabby/1280x720/lie.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/lie-exit.png",
@@ -31,11 +31,11 @@
         "status": "pass",
         "reviewer": "wakun",
         "notes": "Approved final blanket lie anchor on desktop and mobile: stable top-surface contact, no sliding, clipping, or transition pop.",
-        "reviewedAt": "2026-08-09T11:41:56.923497+08:00"
+        "reviewedAt": "2026-08-09T11:50:21.770237+08:00"
       },
       "evidenceSha256": {
-        "video": "2b6f8af203713b392a4d629849e745f6e194de82dd7bac97578921ebd3d599fa",
-        "entryPoster": "4ca1902be041327f1013572f2ea788b1739ac206390d56e7dca713c085c98490",
+        "video": "990563f9be19e4fdb2eb8e1da33d97a102219d86bb0dc7cd975d7d0aad925186",
+        "entryPoster": "cd35731642f6d633bc98248f19665cb57d068f683548f132f34a9e09145bcdb3",
         "exitPoster": "1954c92f4ad705eecbc3d9dd6335739be3685f54802edab7ceb82fa03a241d74"
       }
     },
@@ -45,10 +45,10 @@
       "action": "lie",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachBlanket&catstarMotionReview=1",
-      "durationMs": 8573,
+      "durationMs": 8537,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:41:35.081Z",
+      "startedAt": "2026-08-09T03:50:01.173Z",
       "video": "videos/gray-white-tabby/390x844/lie.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/lie-exit.png",
@@ -56,11 +56,11 @@
         "status": "pass",
         "reviewer": "wakun",
         "notes": "Approved final blanket lie anchor on desktop and mobile: stable top-surface contact, no sliding, clipping, or transition pop.",
-        "reviewedAt": "2026-08-09T11:41:56.923875+08:00"
+        "reviewedAt": "2026-08-09T11:50:21.770641+08:00"
       },
       "evidenceSha256": {
-        "video": "32f4bc7c19a246fbd9359cf937125fff658c7d39272860fbc77f37a236ec8652",
-        "entryPoster": "95cac211b05a373d4bd13610719596e654b0ab9138d3d8ede5be7ac465567e3f",
+        "video": "2405e8b42b186a93f8e4143994b3dba0eef9896e08f4e349bb98a406d759dd60",
+        "entryPoster": "dd5118f35ed9ed072712f0c401b37b8280bd34afb1eb0e28b0f34c7c8180145c",
         "exitPoster": "96b5d196f4996f0caeb4059362eb7581201b8260910f74e10ac7d8d24434e421"
       }
     }
@@ -71,7 +71,7 @@
     "boards/mobile/lie.png",
     "boards/mobile/lie.html"
   ],
-  "sourceFingerprint": "a9833ad565e25154f2cc8c7abd19ff6bb10f7a1ccb907824f48e5a8e32062d6f",
+  "sourceFingerprint": "00014f239d4bd745e43894cffda1c406913cabc779558de344cb5d1604a94ae9",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

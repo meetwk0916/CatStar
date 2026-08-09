@@ -30,14 +30,12 @@ class MotionReviewTests(unittest.TestCase):
         self.assertEqual(len(keys), 8)
         self.assertIn(("solid-black", "walk", "390x844"), keys)
 
-    def test_required_human_pass_matrix_follows_the_manifest(self) -> None:
-        manifest = {
-            "presets": ["gray-white-tabby"],
-            "actions": ["idle", "lie", "sleep"],
-            "viewports": ["1280x720", "390x844"],
-        }
-
-        required = REVIEW.required_human_pass_matrix(manifest)
+    def test_required_human_pass_matrix_comes_from_external_scope(self) -> None:
+        required = REVIEW.required_human_pass_matrix(
+            ["gray-white-tabby"],
+            ["idle", "lie", "sleep"],
+            ["1280x720", "390x844"],
+        )
 
         self.assertEqual(len(required), 6)
         self.assertIn(("gray-white-tabby", "sleep", "390x844"), required)
@@ -155,7 +153,7 @@ class MotionReviewTests(unittest.TestCase):
 
         self.assertTrue(any("duplicate motion evidence" in failure for failure in failures))
 
-    def test_human_pass_rejects_an_empty_manifest_matrix(self) -> None:
+    def test_human_pass_rejects_manifest_missing_external_matrix(self) -> None:
         output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-required-matrix-test-"))
         fingerprint, source_files = REVIEW.source_fingerprint()
         manifest = {
@@ -170,8 +168,9 @@ class MotionReviewTests(unittest.TestCase):
         }
         (output_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
 
-        with self.assertRaisesRegex(RuntimeError, "human-review matrix is empty"):
-            REVIEW.validate_existing(output_dir, require_human_pass=True)
+        required = frozenset({("gray-white-tabby", "idle", "1280x720")})
+        with self.assertRaisesRegex(RuntimeError, "missing required human-review evidence"):
+            REVIEW.validate_existing(output_dir, required_matrix=required)
 
     def test_manifest_validation_rejects_changed_evidence(self) -> None:
         output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-digest-test-"))

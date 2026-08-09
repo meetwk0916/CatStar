@@ -138,14 +138,10 @@ def matrix_keys(
     return {(preset, action, viewport) for preset in presets for action in actions for viewport in viewports}
 
 
-def required_human_pass_matrix(manifest: dict[str, object]) -> frozenset[tuple[str, str, str]]:
-    return frozenset(
-        matrix_keys(
-            [str(value) for value in manifest.get("presets", [])],
-            [str(value) for value in manifest.get("actions", [])],
-            [str(value) for value in manifest.get("viewports", [])],
-        )
-    )
+def required_human_pass_matrix(
+    presets: Iterable[str], actions: Iterable[str], viewports: Iterable[str]
+) -> frozenset[tuple[str, str, str]]:
+    return frozenset(matrix_keys(presets, actions, viewports))
 
 
 def file_sha256(path: Path) -> str:
@@ -486,17 +482,19 @@ def latest_output_dir() -> Path:
     return candidates[-1]
 
 
-def validate_existing(output_dir: Path, require_human_pass: bool = False) -> None:
+def validate_existing(
+    output_dir: Path,
+    required_matrix: frozenset[tuple[str, str, str]] | None = None,
+) -> None:
     manifest_path = output_dir / "manifest.json"
     if not manifest_path.exists():
         raise RuntimeError(f"Missing motion review manifest: {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    required_matrix = required_human_pass_matrix(manifest) if require_human_pass else None
     failures = validate_manifest_data(manifest, output_dir, required_matrix)
     counts = human_review_counts(manifest)
-    if require_human_pass and not required_matrix:
+    if required_matrix is not None and not required_matrix:
         failures.append("manifest: human-review matrix is empty")
-    if require_human_pass and (counts["pending"] or counts["fail"]):
+    if required_matrix is not None and (counts["pending"] or counts["fail"]):
         failures.append(
             "manifest: human pass required; "
             f"pending={counts['pending']} fail={counts['fail']}"
@@ -518,7 +516,15 @@ def main() -> None:
     args = parse_args()
     if args.validate_only:
         output_dir = args.output or latest_output_dir()
-        validate_existing(output_dir, args.require_human_pass)
+        required_matrix = None
+        if args.require_human_pass:
+            presets, actions, viewports = selected_matrix(args)
+            required_matrix = required_human_pass_matrix(
+                presets,
+                actions,
+                [f"{width}x{height}" for width, height in viewports.values()],
+            )
+        validate_existing(output_dir, required_matrix)
         return
 
     presets, actions, viewports = selected_matrix(args)

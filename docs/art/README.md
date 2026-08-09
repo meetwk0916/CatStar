@@ -100,12 +100,16 @@ The manifest binds the evidence to its runtime inputs. Record explicit human
 decisions with `npm run review:motion:record` and its required `--manifest`,
 `--status`, and `--reviewer` arguments; optional preset, action, and viewport
 filters limit the decision to matching entries. Structural validation permits
-pending decisions, while the release gate requires the complete approval
-matrix:
+pending decisions. The release gate requires the complete approval matrix to
+be supplied independently with preset, action, and named-viewport selectors;
+it never treats the manifest's own declared scope as the release contract:
 
 ```bash
 npm run review:motion:check -- \
   --output artifacts/art/runtime-motion-review/YYYY-MM-DD-candidate
 npm run review:motion:check:release -- \
+  --preset gray-white-tabby \
+  --action sit --action walk --action interact \
+  --viewport desktop --viewport mobile \
   --output artifacts/art/runtime-motion-review/YYYY-MM-DD-candidate
 ```
