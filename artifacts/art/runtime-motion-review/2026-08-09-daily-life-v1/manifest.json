@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T18:12:28.815696+08:00",
+  "capturedAt": "2026-08-09T19:22:32.885862+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -22,10 +22,10 @@
       "action": "eat",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 7094,
+      "durationMs": 4741,
       "captureTimeoutMs": 9000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:11:55.505Z",
+      "startedAt": "2026-08-09T11:22:03.742Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
@@ -35,8 +35,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "2362cb771e05c4b00e86c5de1cc79d3a0435b6b1c6fd7b87f2e43b3ed1cae7fc",
-        "entryPoster": "71aaded489092f1c7f38eaee0cf98700bec7e94211b4c9d6b1dc44fb22a02e68",
+        "video": "9da4cf3a2b6a4b9a02d322ee71589d4b08c57c4b43b2f2385ca8c59a7029cb31",
+        "entryPoster": "4ca1902be041327f1013572f2ea788b1739ac206390d56e7dca713c085c98490",
         "exitPoster": "ef66c15949e128bc48adb3f5137e9b985003eaebc6867d077933a0135bfac6b8"
       }
     },
@@ -46,10 +46,10 @@
       "action": "eat",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 6765,
+      "durationMs": 4453,
       "captureTimeoutMs": 9000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:12:04.377Z",
+      "startedAt": "2026-08-09T11:22:10.378Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
@@ -59,8 +59,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "e613d45f5d5f140f438859cde1ac316ef579a2f202859bceb22801e29cfea7d9",
-        "entryPoster": "b1d6b7a784aee4be7396c76722d5b0d8b9a80adbb9e5cc556d40d91f6f486048",
+        "video": "3dafe500102a7d03372e9ef55c2ddcda7883f19f20071c632aa983f6017438a2",
+        "entryPoster": "d21199816d9b7b59d76f48ef10b380d7aa807a01c0700c993d501806c8c7f083",
         "exitPoster": "0901c2354c75d43dfd9ab53208f9868280536d4a6f378cab33f4c9a2cef6b468"
       }
     },
@@ -70,10 +70,10 @@
       "action": "groom",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
-      "durationMs": 1941,
+      "durationMs": 1957,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:12:13.171Z",
+      "startedAt": "2026-08-09T11:22:16.958Z",
       "video": "videos/gray-white-tabby/1280x720/groom.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/groom-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/groom-exit.png",
@@ -83,8 +83,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "9cd6bd35af8db331fc803d5141d2d1c2ff5945ecd87f32f84dd64a4b4eaeb71c",
-        "entryPoster": "6a00087b5cabb76669616965268253c5ace3024102583cb4682c46869ce799cf",
+        "video": "749c0bac3c77582b03b661769801dcf90d0b799b9b2e3b0c691adeea32f07562",
+        "entryPoster": "f36b67d1657a3d8836bff527f53a7592a580120e77ed251814130eb4e0a8f617",
         "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
       }
     },
@@ -94,10 +94,10 @@
       "action": "groom",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
-      "durationMs": 1817,
+      "durationMs": 2032,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:12:17.207Z",
+      "startedAt": "2026-08-09T11:22:21.079Z",
       "video": "videos/gray-white-tabby/390x844/groom.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/groom-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/groom-exit.png",
@@ -107,8 +107,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "e69187cd42ad55b11edf431bd23c27d77136eab17d57fb5e73ff57a41f4676ad",
-        "entryPoster": "747ac1dfaf70ab34452ef56e78fe85700ea028464e2fd8392f30302ec745ed9d",
+        "video": "766387294909f65741823dd30a2f8f793170d6d7512fea056e915e4614b2bb0e",
+        "entryPoster": "d07e74bb60f0d4e1c1c78d83c536b71e56c5a83ad8f6f6bda3b2b11186bc7816",
         "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
       }
     },
@@ -118,10 +118,10 @@
       "action": "stretch",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
-      "durationMs": 1851,
+      "durationMs": 1965,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:12:21.216Z",
+      "startedAt": "2026-08-09T11:22:25.224Z",
       "video": "videos/gray-white-tabby/1280x720/stretch.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/stretch-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/stretch-exit.png",
@@ -131,8 +131,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "62914f26921c066275b4eb19723f3d042a82285fc5a84831315966982fc89500",
-        "entryPoster": "e7d653c5b4d26862f493e2dc20612e1ef7d5fe4175bc96426a8b96acf88e7fb1",
+        "video": "93af0192a4caa2d986c58945909984b3ca93fc0db5c5075b93b8092d97e6f456",
+        "entryPoster": "a3270ac383c011b31e29ce469cab826462601b4a39c6e4f74003072486162960",
         "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
       }
     },
@@ -142,10 +142,10 @@
       "action": "stretch",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
-      "durationMs": 1978,
+      "durationMs": 1999,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T10:12:25.298Z",
+      "startedAt": "2026-08-09T11:22:29.333Z",
       "video": "videos/gray-white-tabby/390x844/stretch.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/stretch-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/stretch-exit.png",
@@ -155,8 +155,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "150f6238568f736fd3420eaae43e7bd038abeb73aac8f7132a4fa5ebd9f1cdac",
-        "entryPoster": "70a33fd29c38aa50fc1df83ec7bc42f8e2da55465a7a4e004ff96afb7c2db443",
+        "video": "6f14af42abad8ce70e10bab0d71ea115a840c05d2cade83bff8e518d2fda5fa4",
+        "entryPoster": "d80299f2b477f6b8406575b82c719cb6f5da1c37e06d2fbeaa91a95ccbf5b716",
         "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
       }
     }
@@ -175,7 +175,7 @@
     "boards/mobile/stretch.png",
     "boards/mobile/stretch.html"
   ],
-  "sourceFingerprint": "c8b5391f0a7b5d0c8dd3b941eb8da971af12cf4e59f397a463b6dda8ea983d82",
+  "sourceFingerprint": "07a3c1681f8e81058e89c08b12ff8f29fcbe44e501d6d073e0867c88b01fca9c",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

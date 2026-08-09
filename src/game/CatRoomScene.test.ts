@@ -6,7 +6,7 @@ vi.mock("phaser", () => ({
     Between: vi.fn(() => 900),
     Clamp: (value: number, min: number, max: number) => Math.min(Math.max(value, min), max),
     Linear: (from: number, to: number, progress: number) => from + (to - from) * progress,
-    Easing: { Sine: { InOut: (value: number) => value } },
+    Easing: { Sine: { InOut: (value: number) => value, Out: (value: number) => value } },
     RND: { frac: vi.fn(() => 0) },
   },
 }));
@@ -17,12 +17,13 @@ import * as Phaser from "phaser";
 interface SceneInternals {
   cat: {
     anims: { currentAnim?: { key: string } };
-    body: { setAllowGravity: ReturnType<typeof vi.fn> };
+    body: { setAllowGravity: ReturnType<typeof vi.fn>; velocity: { x: number; y: number } };
     play: ReturnType<typeof vi.fn>;
     x: number;
     setDepth: ReturnType<typeof vi.fn>;
     setFlipX: ReturnType<typeof vi.fn>;
     setScale: ReturnType<typeof vi.fn>;
+    setPosition: ReturnType<typeof vi.fn>;
     setX: ReturnType<typeof vi.fn>;
     setY: ReturnType<typeof vi.fn>;
     setVelocity: ReturnType<typeof vi.fn>;
@@ -58,12 +59,13 @@ interface SceneInternals {
 function createCat(x = 320): SceneInternals["cat"] {
   return {
     anims: {},
-    body: { setAllowGravity: vi.fn() },
+    body: { setAllowGravity: vi.fn(), velocity: { x: 0, y: 0 } },
     play: vi.fn(),
     x,
     setDepth: vi.fn(),
     setFlipX: vi.fn(),
     setScale: vi.fn(),
+    setPosition: vi.fn(),
     setX: vi.fn(),
     setY: vi.fn(),
     setVelocity: vi.fn(),
@@ -122,6 +124,60 @@ describe("CatRoomScene interactions", () => {
         repeat: config.repeat,
       });
     }
+  });
+
+  it("takes a smooth floor-to-bowl route before starting the eating action", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(320);
+    internals.routine = "approachFoodBowl";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.playCatAction = vi.fn();
+
+    for (let time = 1000; time <= 4000; time += 100) {
+      internals.updatePurposefulRoutine(time);
+    }
+
+    const routePositions = internals.cat.setPosition.mock.calls as Array<[number, number]>;
+    expect(routePositions.length).toBeGreaterThan(3);
+    expect(routePositions.some(([, y]) => y > 225 && y < 259)).toBe(true);
+    expect(routePositions.at(-1)?.[1]).toBe(259);
+    expect(internals.routine).toBe("eatFoodBowl");
+    expect(internals.currentZone).toBe("food-bowl");
+    expect(internals.playCatAction).toHaveBeenCalledWith("walk");
+    expect(internals.playCatAction).toHaveBeenCalledWith("idle", true);
+    expect(internals.playCatAction).toHaveBeenCalledWith("eat", true);
+  });
+
+  it("cancels the bowl route on touch without resuming it", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(320);
+    internals.routine = "approachFoodBowl";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.activeIntent = { kind: "eat", dwellMs: 5_000 };
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.tweens = { killTweensOf: vi.fn() };
+    internals.playCatAction = vi.fn();
+    internals.onInteract = vi.fn();
+
+    internals.updatePurposefulRoutine(1000);
+    scene.interact();
+
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.currentZone).toBe("floor");
+    expect(internals.activeIntent).toBeUndefined();
+    expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
+    expect(internals.cat.setY).not.toHaveBeenCalledWith(259);
+
+    internals.updatePurposefulRoutine(1100);
+    expect(internals.routine).toBe("floorPause");
+    expect(internals.playCatAction).not.toHaveBeenCalledWith("eat", true);
   });
 
   it("cancels a scripted jump before responding in place", () => {

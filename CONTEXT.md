@@ -120,6 +120,18 @@ _Avoid_: 宠物养成, 玩法, 任务状态, 技能状态
 A calm sequence of ordinary **陪伴表现** grounded in places within the **陪伴场景**. The sequence belongs to the CatStar experience rather than to any particular scene engine.
 _Avoid_: AI 决策, 游戏 AI, Phaser 状态, 随机玩法
 
+**陪伴路线**:
+A purposeful movement sequence that brings the **小猫** from its current place to a meaningful room destination within a **陪伴例程**. It conveys intention and quiet presence rather than free roaming, patrol, or player-directed navigation.
+_Avoid_: 寻路, 巡逻路线, 导航路径, 游戏移动
+
+**航点**:
+A small intermediate place within a **陪伴路线** that lets the **小猫** turn, ease its pace, or settle before reaching the meaningful destination. A **航点** is part of the remembered room rhythm, not a visible task marker or random wander target.
+_Avoid_: 随机点, 导航节点, 路径节点, 任务点
+
+**到达过渡**:
+The calm handoff from a **陪伴路线** into the destination's **陪伴表现**, preserving body contact, pace, and place instead of snapping directly between coordinates or actions.
+_Avoid_: 瞬移, 传送, 硬切, 动画切换
+
 **陪伴意图**:
 The engine-independent description of the next meaningful action and place in a **陪伴例程**. It expresses what the **小猫** is doing without coordinates, tween settings, sprite keys, or other renderer details.
 _Avoid_: 坐标指令, 动画键, Phaser 命令, 渲染状态

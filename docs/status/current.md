@@ -56,6 +56,10 @@ The current implementation includes:
   `groom`, and `stretch` across all six current coat presets. Structural asset
   validation passes, and dedicated gray-white master continuous desktop/mobile
   evidence is recorded; six human-review entries remain pending.
+- The first purposeful **陪伴路线** slice now carries the cat from the floor
+  to the food bowl through an authored **航点**, a 200 ms arrival deceleration,
+  and a 150 ms stable contact before eating. Touch cancels this route without
+  resuming it; other zone routes remain on their existing scripted routines.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -117,6 +121,9 @@ hashes or branch information to this file.
   follow-up scope rather than release blockers.
 - Use the plant-touch lifecycle as evidence before extracting a general prop
   interaction framework or expanding other zones.
+- Extend the named-route treatment to plant inspection/touch and foreground
+  approach only after the floor-to-food-bowl slice has human-reviewed motion
+  evidence.
 - Add one-way/top-only platform support before enabling free-form landings.
 - Complete manual pixel cleanup and interaction timing polish before art lock.
 - Split foreground occlusion elements after the scene composition stabilizes.

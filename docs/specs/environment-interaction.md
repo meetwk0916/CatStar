@@ -153,6 +153,38 @@ coordinates, tweens, and action playback.
 - `INTERACTING`: acknowledges touch in place or active approach at the
   foreground stop.
 
+## Companion Route Contract
+
+Purposeful movement between room zones is a **陪伴路线**, not general
+pathfinding. Each route belongs to one **陪伴意图** and names its start zone,
+destination zone, optional **航点**, destination action, and interruption
+behavior. A route may use one primary waypoint and, only when the room shape
+requires it, a second waypoint; it must not become a random patrol or a visible
+navigation task.
+
+Routes preserve the cat's current heading when that remains plausible, then use
+one or two gentle turns rather than a pronounced arc or arbitrary lateral
+drift. A waypoint may ease the pace or create a short hesitation, but it does
+not play a generic pause animation: the food route aligns and slows at the
+bowl, the plant route approaches and observes, and the foreground route slows
+and settles before acknowledging the user.
+
+Every route ends with an **到达过渡**: roughly 200 ms of deceleration, roughly
+150 ms of stable contact, and then the destination action. Any height or anchor
+change is eased during this handoff; a route must not snap the cat between
+floor and prop baselines. Existing scripted jumps remain the route form for
+raised surfaces such as the window bench, cat bed, and blanket.
+
+The first **归来相遇** may place the cat directly into a plausible activity so
+the opening does not become a mandatory traversal. Subsequent purposeful travel
+should show the route. If the user touches the cat during a route, cancel it,
+settle at the current place, play the response, and do not resume the cancelled
+route.
+
+The first route slice to validate is floor-to-food-bowl. Continuous desktop and
+mobile evidence must show no vertical snap, no foot sliding, a stable arrival
+handoff, and safe touch interruption; a final screenshot alone is insufficient.
+
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat
 must not remain airborne until a later routine snaps it back into place.
