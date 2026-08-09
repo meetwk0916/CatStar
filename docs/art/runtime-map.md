@@ -32,9 +32,9 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |
-| `groom` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Eight-frame paw and face grooming loop. |
-| `stretch` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Six-frame stand, bow, stretch, and recover action. |
-| `eat` | `artifacts/art/candidates/active/product-cat-actions-v3/` | Six-frame bowl-aligned sniff/eat source; runtime loops the light head-lower frames. |
+| `groom` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Eight-frame production-model-derived paw-and-face grooming loop with stable seated mass. |
+| `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch, hold, and recovery action. |
+| `eat` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived bowl-oriented head-lowering loop; the room supplies the bowl prop. |
 | `lie` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model awake rest with elevated head, open-eye return, and stable cat-bed/blanket contact. |
 | `jump` | `artifacts/art/candidates/active/product-cat-actions-v5/` | Five generated key poses plus one held settle frame to satisfy the six-frame runtime contract. |
 | `sleep` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model deep curled sleep with closed eyes and restrained breathing. |
@@ -82,11 +82,11 @@ human-review gate.
 
 ## Candidate Retention
 
-- Active motion sources: v3, v5, quiet-motion v1, quality-slice v10, and
-  quality-slice v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; v10
-  supplies `groom` and `stretch`; v12 supplies `sit`, `walk`, and `interact`.
-  Product-cat-idle v1/v2/v3, action v4/v8, and quality-slice v11 are retained
-  as review and motion-planning history.
+- Active motion sources: v5, daily-life v1, quiet-motion v1, and quality-slice
+  v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; daily-life v1
+  supplies `eat`, `groom`, and `stretch`; v12 supplies `sit`, `walk`, and
+  `interact`. Product-cat-idle v1/v2/v3, action v3/v4/v8, and quality-slice
+  v10/v11 are retained as review and motion-planning history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

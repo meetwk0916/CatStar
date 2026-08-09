@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "identityAuthority": "artifacts/art/candidates/active/product-cat-model-sheet-v1/sources/model-sheet-chromakey.png",
+  "distributionStatus": "internal prototype only",
+  "actions": {
+    "eat": {
+      "frames": 6,
+      "grid": [
+        3,
+        2
+      ],
+      "source": "artifacts/art/candidates/active/product-cat-daily-life-v1/sources/eat-source-chromakey.png",
+      "sourceSha256": "34c149426322fcfa093711decb8f0f823697328e214e9638addb7857d1415ae5",
+      "alpha": "artifacts/art/candidates/active/product-cat-daily-life-v1/alpha/eat-source.png",
+      "alphaSha256": "cc1ea978e97ac4832da0d92cff1ce9d82469fb1ae9260437fc1d4579b90b2e83",
+      "framesMetadata": [
+        {
+          "frame": 1,
+          "subject_size": [
+            469,
+            300
+          ],
+          "sprite_size": [
+            84,
+            54
+          ],
+          "paste": [
+            6,
+            38
+          ]
+        },
+        {
+          "frame": 2,
+          "subject_size": [
+            451,
+            219
+          ],
+          "sprite_size": [
+            81,
+            39
+          ],
+          "paste": [
+            7,
+            53
+          ]
+        },
+        {
+          "frame": 3,
+          "subject_size": [
+            461,
+            216
+          ],
+          "sprite_size": [
+            83,
+            39
+          ],
+          "paste": [
+            6,
+            53
+          ]
+        },
+        {
+          "frame": 4,
+          "subject_size": [
+            454,
+            215
+          ],
+          "sprite_size": [
+            81,
+            39
+          ],
+          "paste": [
+            7,
+            53
+          ]
+        },
+        {
+          "frame": 5,
+          "subject_size": [
+            431,
+            288
+          ],
+          "sprite_size": [
+            77,
+            52
+          ],
+          "paste": [
+            9,
+            40
+          ]
+        },
+        {
+          "frame": 6,
+          "subject_size": [
+            425,
+            287
+          ],
+          "sprite_size": [
+            76,
+            51
+          ],
+          "paste": [
+            10,
+            41
+          ]
+        }
+      ]
+    },
+    "groom": {
+      "frames": 8,
+      "grid": [
+        4,
+        2
+      ],
+      "source": "artifacts/art/candidates/active/product-cat-daily-life-v1/sources/groom-source-chromakey.png",
+      "sourceSha256": "c12f199476a28ac0449b5c5b878c493538f66922ab465db7ea9d64503fe56eed",
+      "alpha": "artifacts/art/candidates/active/product-cat-daily-life-v1/alpha/groom-source.png",
+      "alphaSha256": "b6043bea44a9b761de5df2655ea56659de854b05d56f113933c01f46a78bd045",
+      "framesMetadata": [
+        {
+          "frame": 1,
+          "subject_size": [
+            273,
+            307
+          ],
+          "sprite_size": [
+            75,
+            84
+          ],
+          "paste": [
+            10,
+            8
+          ]
+        },
+        {
+          "frame": 2,
+          "subject_size": [
+            266,
+            305
+          ],
+          "sprite_size": [
+            73,
+            83
+          ],
+          "paste": [
+            11,
+            9
+          ]
+        },
+        {
+          "frame": 3,
+          "subject_size": [
+            264,
+            306
+          ],
+          "sprite_size": [
+            72,
+            84
+          ],
+          "paste": [
+            12,
+            8
+          ]
+        },
+        {
+          "frame": 4,
+          "subject_size": [
+            271,
+            298
+          ],
+          "sprite_size": [
+            74,
+            82
+          ],
+          "paste": [
+            11,
+            10
+          ]
+        },
+        {
+          "frame": 5,
+          "subject_size": [
+            273,
+            300
+          ],
+          "sprite_size": [
+            75,
+            82
+          ],
+          "paste": [
+            10,
+            10
+          ]
+        },
+        {
+          "frame": 6,
+          "subject_size": [
+            272,
+            297
+          ],
+          "sprite_size": [
+            74,
+            81
+          ],
+          "paste": [
+            11,
+            11
+          ]
+        },
+        {
+          "frame": 7,
+          "subject_size": [
+            262,
+            291
+          ],
+          "sprite_size": [
+            72,
+            80
+          ],
+          "paste": [
+            12,
+            12
+          ]
+        },
+        {
+          "frame": 8,
+          "subject_size": [
+            260,
+            297
+          ],
+          "sprite_size": [
+            71,
+            81
+          ],
+          "paste": [
+            12,
+            11
+          ]
+        }
+      ]
+    },
+    "stretch": {
+      "frames": 6,
+      "grid": [
+        3,
+        2
+      ],
+      "source": "artifacts/art/candidates/active/product-cat-daily-life-v1/sources/stretch-source-chromakey.png",
+      "sourceSha256": "fddb03629bcd5f10f5fb8542ca8dd0e5faeee62363b2205571266e76936234ae",
+      "alpha": "artifacts/art/candidates/active/product-cat-daily-life-v1/alpha/stretch-source.png",
+      "alphaSha256": "a4d0d5711e6445afaf759e24406747ed27c3475d79168814bcb9c0615aab9fd7",
+      "framesMetadata": [
+        {
+          "frame": 1,
+          "subject_size": [
+            432,
+            301
+          ],
+          "sprite_size": [
+            86,
+            60
+          ],
+          "paste": [
+            5,
+            32
+          ]
+        },
+        {
+          "frame": 2,
+          "subject_size": [
+            485,
+            236
+          ],
+          "sprite_size": [
+            96,
+            47
+          ],
+          "paste": [
+            0,
+            45
+          ]
+        },
+        {
+          "frame": 3,
+          "subject_size": [
+            446,
+            237
+          ],
+          "sprite_size": [
+            88,
+            47
+          ],
+          "paste": [
+            4,
+            45
+          ]
+        },
+        {
+          "frame": 4,
+          "subject_size": [
+            485,
+            279
+          ],
+          "sprite_size": [
+            96,
+            55
+          ],
+          "paste": [
+            0,
+            37
+          ]
+        },
+        {
+          "frame": 5,
+          "subject_size": [
+            485,
+            215
+          ],
+          "sprite_size": [
+            96,
+            43
+          ],
+          "paste": [
+            0,
+            49
+          ]
+        },
+        {
+          "frame": 6,
+          "subject_size": [
+            417,
+            274
+          ],
+          "sprite_size": [
+            83,
+            54
+          ],
+          "paste": [
+            6,
+            38
+          ]
+        }
+      ]
+    }
+  }
+}

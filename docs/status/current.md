@@ -52,6 +52,10 @@ The current implementation includes:
   Structural asset validation and fingerprint-bound desktop/mobile continuous
   evidence pass; all eight floor, cat-bed, and blanket motion entries were
   approved by wakun on 2026-08-09.
+- The production-model-derived daily-life v1 candidate now supplies `eat`,
+  `groom`, and `stretch` across all six current coat presets. Structural asset
+  validation passes, and dedicated gray-white master continuous desktop/mobile
+  evidence is recorded; six human-review entries remain pending.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -93,9 +97,10 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Complete rounded short-haired's remaining four actions (`jump`, `eat`,
-  `groom`, and `stretch`) through the same rights-recorded production process
-  as the v12 quality slice. Then produce independent
+- Complete rounded short-haired's remaining `jump` action through the same
+  rights-recorded production process as the v12 quality slice. The daily-life
+  `eat`, `groom`, and `stretch` candidate now exists but still needs dedicated
+  continuous review evidence. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
   exposing those prototypes in the passport; they do not block the first
   release.
