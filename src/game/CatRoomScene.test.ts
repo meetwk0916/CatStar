@@ -76,6 +76,54 @@ afterEach(() => {
 });
 
 describe("CatRoomScene interactions", () => {
+  it("uses the complete production frame range for every action loop", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as {
+      cache: { json: { get: ReturnType<typeof vi.fn> } };
+      anims: {
+        generateFrameNumbers: ReturnType<typeof vi.fn>;
+        create: ReturnType<typeof vi.fn>;
+      };
+    };
+    const actions = {
+      eat: { file: "eat.png", frames: 6, frameRate: 5, repeat: -1 },
+      groom: { file: "groom.png", frames: 8, frameRate: 6, repeat: -1 },
+      stretch: { file: "stretch.png", frames: 6, frameRate: 5, repeat: -1 },
+    };
+    internals.cache = {
+      json: {
+        get: vi.fn(() => ({ actions })),
+      },
+    };
+    internals.anims = {
+      generateFrameNumbers: vi.fn((key: string, range: { start: number; end: number }) =>
+        Array.from({ length: range.end - range.start + 1 }, (_, offset) => ({
+          key,
+          frame: range.start + offset,
+        })),
+      ),
+      create: vi.fn(),
+    };
+
+    (scene as unknown as { createCatAnimations: () => void }).createCatAnimations();
+
+    for (const [action, config] of Object.entries(actions)) {
+      expect(internals.anims.generateFrameNumbers).toHaveBeenCalledWith(`cat-${action}`, {
+        start: 0,
+        end: config.frames - 1,
+      });
+      expect(internals.anims.create).toHaveBeenCalledWith({
+        key: `cat-${action}-anim`,
+        frames: expect.arrayContaining([
+          { key: `cat-${action}`, frame: 0 },
+          { key: `cat-${action}`, frame: config.frames - 1 },
+        ]),
+        frameRate: config.frameRate,
+        repeat: config.repeat,
+      });
+    }
+  });
+
   it("cancels a scripted jump before responding in place", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;

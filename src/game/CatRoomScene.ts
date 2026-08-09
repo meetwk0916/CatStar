@@ -1238,18 +1238,15 @@ export class CatRoomScene extends Phaser.Scene {
     const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
     (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
       const config = spec.actions[action];
-      const frames =
-        action === "eat"
-          ? [1, 2, 1, 2].map((frame) => ({ key: `cat-${action}`, frame }))
-          : this.anims.generateFrameNumbers(`cat-${action}`, {
-              start: 0,
-              end: config.frames - 1,
-            });
+      const frames = this.anims.generateFrameNumbers(`cat-${action}`, {
+        start: 0,
+        end: config.frames - 1,
+      });
 
       this.anims.create({
         key: `cat-${action}-anim`,
         frames,
-        frameRate: action === "eat" ? 5 : config.frameRate,
+        frameRate: config.frameRate,
         repeat: config.repeat,
       });
     });

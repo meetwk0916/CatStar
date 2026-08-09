@@ -19,6 +19,9 @@ const ACTIONS = {
   stretch: 6,
 } as const;
 
+const EAT_MIN_SPRITE_HEIGHT = 56;
+const EAT_MAX_HEIGHT_SPREAD = 12;
+
 describe('daily-life motion slice', () => {
   it('binds every action to the production model sheet lineage', async () => {
     await expect(access(MODEL_SOURCE)).resolves.toBeUndefined();
@@ -69,6 +72,22 @@ describe('daily-life motion slice', () => {
       }
     },
   );
+
+  it('keeps the eat motion at a stable standing scale', async () => {
+    const metadata = JSON.parse(
+      await readFile(join(DAILY_LIFE_DIR, 'metadata.json'), 'utf8'),
+    ) as {
+      actions?: Record<string, { framesMetadata?: Array<{ sprite_size?: [number, number] }> }>;
+    };
+    const eatFrames = metadata.actions?.eat?.framesMetadata ?? [];
+    const heights = eatFrames.map((frame) => frame.sprite_size?.[1] ?? 0);
+
+    expect(heights).toHaveLength(ACTIONS.eat);
+    expect(Math.min(...heights)).toBeGreaterThanOrEqual(EAT_MIN_SPRITE_HEIGHT);
+    expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(
+      EAT_MAX_HEIGHT_SPREAD,
+    );
+  });
 
   it('records complete desktop and mobile motion evidence for the master coat', async () => {
     const manifest = JSON.parse(
