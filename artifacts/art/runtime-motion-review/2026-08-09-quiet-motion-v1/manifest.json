@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T11:49:34.006212+08:00",
+  "capturedAt": "2026-08-09T12:14:58.454753+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -22,22 +22,22 @@
       "action": "idle",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
-      "durationMs": 2266,
+      "durationMs": 1952,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:48:55.754Z",
+      "startedAt": "2026-08-09T04:14:20.484Z",
       "video": "videos/gray-white-tabby/1280x720/idle.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/idle-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/idle-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.575303+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790092+08:00"
       },
       "evidenceSha256": {
-        "video": "4c85cc8827beef2f38ec1b94ec67d5d6d56fbb9215bd0a02b639ba61e4877fbe",
-        "entryPoster": "53abe27fa905ad32f984b2b84abab8d0ae44fe9f4715cf53a138aac625e3b488",
+        "video": "05c738a50712c6c6a0fbeff92573c8fb8d417e4c7cb7cf3fd9058d97f60921b1",
+        "entryPoster": "05fb08ee0b4f7ad7573dac2daed037d3a393f5756039b29c8c11f8893b60d685",
         "exitPoster": "4e8ba36caf919394a7e82861265d5db259f52ebcef28ecef894082e411cebe6b"
       }
     },
@@ -47,21 +47,21 @@
       "action": "idle",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
-      "durationMs": 1967,
+      "durationMs": 2015,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:48:59.879Z",
+      "startedAt": "2026-08-09T04:14:24.542Z",
       "video": "videos/gray-white-tabby/390x844/idle.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/idle-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/idle-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.575729+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790101+08:00"
       },
       "evidenceSha256": {
-        "video": "be8f8cd26474bc8a98c810c86d13eb0c60708c1b0538f1686858a1ca0c6f9b7f",
+        "video": "de6b90b8acb29dbbf5877ddb3df277d006f17550e7eec322ebb471df999076bd",
         "entryPoster": "f3aacff9311ab39571096092086744e1bdc617b06e49e4ea45e2c7c1dad7fb1b",
         "exitPoster": "c33383a6978ed8cf8dbdfa4b8c776f411343f8f5ddd17f5bc16588e84db47279"
       }
@@ -72,22 +72,22 @@
       "action": "lie",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
-      "durationMs": 9108,
+      "durationMs": 9074,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:49:03.994Z",
+      "startedAt": "2026-08-09T04:14:28.611Z",
       "video": "videos/gray-white-tabby/1280x720/lie.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/lie-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.576095+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790104+08:00"
       },
       "evidenceSha256": {
-        "video": "3311900d356f409e00576ae6f8d10c8f2f6e7d4456b8ec91a1d7363b2f14a010",
-        "entryPoster": "5d2fff0ff9c8613d928dce8ba168e8a2a0aef81a3dfc68e75d586db47307199b",
+        "video": "2aeeda7cfb0f726f8e63194e3d56c93833e61d391953b007e9eb553616507fe3",
+        "entryPoster": "5b101685ccba0f57fe744f0285a5dd9589d12b731e664a63e3e3d7cad1a1af8a",
         "exitPoster": "307875c59a5b47ad21348c40cc5d436e810149d37595a88ec277f704197088bf"
       }
     },
@@ -97,22 +97,22 @@
       "action": "lie",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
-      "durationMs": 9011,
+      "durationMs": 8995,
       "captureTimeoutMs": 11000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:49:15.229Z",
+      "startedAt": "2026-08-09T04:14:39.762Z",
       "video": "videos/gray-white-tabby/390x844/lie.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/lie-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/lie-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.576517+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790106+08:00"
       },
       "evidenceSha256": {
-        "video": "3da62275ca0ff381db7fba1ab0c4b37c114262bbba758fe024391f0adcbdcbee",
-        "entryPoster": "d7179f11ba138d85ccf7b0cbfb600b4d9934d7320bc406d61ff21aa27c965d06",
+        "video": "18922850a17a387b915758239f7a2c7becdd12fe46df60f2f71e11dc2cd4f0ff",
+        "entryPoster": "258a0afee77b44ec59f100f49f91ce459bb09030683ab12a30d8a65a97bf5146",
         "exitPoster": "23f771aba0b3563560c441e8fa282dec54e79197f5b062fc5393566f144128d2"
       }
     },
@@ -122,21 +122,21 @@
       "action": "sleep",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
-      "durationMs": 1980,
+      "durationMs": 1975,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:49:26.349Z",
+      "startedAt": "2026-08-09T04:14:50.857Z",
       "video": "videos/gray-white-tabby/1280x720/sleep.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/sleep-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/sleep-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.576954+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790108+08:00"
       },
       "evidenceSha256": {
-        "video": "6beb46faf5d2e3c9a94dd3715d2b7c2c52477899d0646554edab94bd34904420",
+        "video": "e3529f4325ac0c6513b6dcb7b80e4653ce733ce31f5578dd60a3f82d49b45c2b",
         "entryPoster": "0013a5333000b06b1b87c41ee8366cfde0d78adbea44bce3bba3a75e3441c4fc",
         "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
       }
@@ -147,21 +147,21 @@
       "action": "sleep",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
-      "durationMs": 1984,
+      "durationMs": 1979,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T03:49:30.480Z",
+      "startedAt": "2026-08-09T04:14:54.907Z",
       "video": "videos/gray-white-tabby/390x844/sleep.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/sleep-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/sleep-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "wakun",
-        "notes": "Approved final quiet-motion behavior and fixed cat-bed anchor: stable attentive idle, precise cat-bed contact, distinct awake lie, restrained sleep, clean desktop/mobile entry and exit.",
-        "reviewedAt": "2026-08-09T11:50:21.577372+08:00"
+        "notes": "Carry-forward approval authorized after non-visual equivalent fixes: exact Phaser 3.90.0 pin and fixed CAT_BED_SURFACE.x state simplification.",
+        "reviewedAt": "2026-08-09T12:16:57.790110+08:00"
       },
       "evidenceSha256": {
-        "video": "e03a7a686c3ae28f7f89b0dc9d1c5cd5d3798faf49b344174f45b4f84fc18e62",
+        "video": "e7b233dad048fb20760b75b9f9192180903868574c14ae2ead2b944c4d374bae",
         "entryPoster": "cb9b1d548b7294c3649332736a60d1fda1580882c06f8dec115eb6cac4b24bbc",
         "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
       }
@@ -181,7 +181,7 @@
     "boards/mobile/sleep.png",
     "boards/mobile/sleep.html"
   ],
-  "sourceFingerprint": "00014f239d4bd745e43894cffda1c406913cabc779558de344cb5d1604a94ae9",
+  "sourceFingerprint": "5b8592dae9ab991e3f5fd9685f864d541d4a27fb502c4bc6fb072c65ad9d6650",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
