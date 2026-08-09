@@ -258,6 +258,25 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setFlipX).toHaveBeenLastCalledWith(true);
   });
 
+  it("skips the left bowl waypoint when already past it", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(458);
+    internals.routine = "approachFoodBowl";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.manualInteractUntil = 0;
+    internals.playCatAction = vi.fn();
+
+    scene.update(1000);
+    scene.update(1100);
+
+    const positions = internals.cat.setPosition.mock.calls as Array<[number, number]>;
+    expect(positions.every(([x]) => x >= 458)).toBe(true);
+  });
+
   it("cancels a scripted jump before responding in place", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;

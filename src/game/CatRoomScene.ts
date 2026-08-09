@@ -928,16 +928,18 @@ export class CatRoomScene extends Phaser.Scene {
     const direction = FOOD_BOWL_X >= fromX ? 1 : -1;
     const waypointX =
       direction > 0
-        ? FOOD_BOWL_ROUTE_WAYPOINTS.fromLeft
-        : FOOD_BOWL_ROUTE_WAYPOINTS.fromRight;
+        ? Math.max(fromX, FOOD_BOWL_ROUTE_WAYPOINTS.fromLeft)
+        : Math.min(fromX, FOOD_BOWL_ROUTE_WAYPOINTS.fromRight);
     const cruiseDistance = Math.abs(waypointX - fromX);
     const cruiseDuration = Math.max(
-      FOOD_BOWL_ROUTE_MIN_CRUISE_MS,
-      Math.round(
-        (cruiseDistance / getCompanionMovementSpeed(this.temperament)) *
-          1000 *
-          FOOD_BOWL_ROUTE_CRUISE_FACTOR,
-      ),
+      cruiseDistance > 0
+        ? Math.round(
+            (cruiseDistance / getCompanionMovementSpeed(this.temperament)) *
+              1000 *
+              FOOD_BOWL_ROUTE_CRUISE_FACTOR,
+          )
+        : 0,
+      cruiseDistance > 0 ? FOOD_BOWL_ROUTE_MIN_CRUISE_MS : 0,
     );
 
     this.foodBowlRoute = {
@@ -972,7 +974,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.body.setAllowGravity(false);
     this.cat.setVelocity(0, 0);
 
-    if (elapsed <= cruiseEnd) {
+    if (route.cruiseDuration > 0 && elapsed <= cruiseEnd) {
       const progress = elapsed / route.cruiseDuration;
       const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
       this.cat.setPosition(

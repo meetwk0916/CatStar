@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T19:37:05.224883+08:00",
+  "capturedAt": "2026-08-09T19:43:36.239167+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -22,10 +22,10 @@
       "action": "eat",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 4771,
+      "durationMs": 4744,
       "captureTimeoutMs": 9000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:36:36.070Z",
+      "startedAt": "2026-08-09T11:43:07.174Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
@@ -35,7 +35,7 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "b34f667a3275102f3c5644e769060c5b9b752e79c47542ee83c81868ee308405",
+        "video": "79d92d9f73666319a9f4d51cc7aae793c505c6192abfc986b2f58865a7568bf9",
         "entryPoster": "4ca1902be041327f1013572f2ea788b1739ac206390d56e7dca713c085c98490",
         "exitPoster": "ef66c15949e128bc48adb3f5137e9b985003eaebc6867d077933a0135bfac6b8"
       }
@@ -46,10 +46,10 @@
       "action": "eat",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 4465,
+      "durationMs": 4452,
       "captureTimeoutMs": 9000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:36:42.735Z",
+      "startedAt": "2026-08-09T11:43:13.756Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
@@ -59,8 +59,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "c3fc39797336f0b4457d6bec721551dcf022098135cee53afb63899b1d1f84b3",
-        "entryPoster": "cea29e189393ed278b3d5d8224735e9e2fde615d19297f2407395be167b1df44",
+        "video": "37d9b90c846e63454df997171e8ad8ad53497c55ac9775eb0db0a125c1d7ad6e",
+        "entryPoster": "aecb9fceb5731364dd991ea9657f649d676b7f194f91ff8b7433cefcfe23ea5f",
         "exitPoster": "0901c2354c75d43dfd9ab53208f9868280536d4a6f378cab33f4c9a2cef6b468"
       }
     },
@@ -70,10 +70,10 @@
       "action": "groom",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
-      "durationMs": 1980,
+      "durationMs": 1998,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:36:49.320Z",
+      "startedAt": "2026-08-09T11:43:20.308Z",
       "video": "videos/gray-white-tabby/1280x720/groom.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/groom-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/groom-exit.png",
@@ -83,7 +83,7 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "f35aa2f7bba5117ee35b63a4f51e4b6a1d5cc6238bac08e4b390ecb89466e43e",
+        "video": "224c5a8d43f1a76a520b2204b455595358e1a1ccd3b658079a95345c88076b24",
         "entryPoster": "f36b67d1657a3d8836bff527f53a7592a580120e77ed251814130eb4e0a8f617",
         "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
       }
@@ -94,10 +94,10 @@
       "action": "groom",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
-      "durationMs": 1833,
+      "durationMs": 1997,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:36:53.436Z",
+      "startedAt": "2026-08-09T11:43:24.458Z",
       "video": "videos/gray-white-tabby/390x844/groom.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/groom-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/groom-exit.png",
@@ -107,8 +107,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "2d933db0c346611cb6751e9cb69a4becef585e06d0a4fb10d544e041c9765c30",
-        "entryPoster": "747ac1dfaf70ab34452ef56e78fe85700ea028464e2fd8392f30302ec745ed9d",
+        "video": "99f57286c50ab70881690d2dfa0ee25c65cefa40c00b105e3aac4583ab9be725",
+        "entryPoster": "d07e74bb60f0d4e1c1c78d83c536b71e56c5a83ad8f6f6bda3b2b11186bc7816",
         "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
       }
     },
@@ -118,10 +118,10 @@
       "action": "stretch",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
-      "durationMs": 2251,
+      "durationMs": 2245,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:36:57.536Z",
+      "startedAt": "2026-08-09T11:43:28.557Z",
       "video": "videos/gray-white-tabby/1280x720/stretch.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/stretch-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/stretch-exit.png",
@@ -131,7 +131,7 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "aa0b2ed6b1257279dce990c2bed8ee2144d57fdccc1c2ccc80ae32c82b8ebefa",
+        "video": "787cfe8b33e804aa82505fe81a4b14b15d8d184305ae364db15ecf9b976b84c9",
         "entryPoster": "ff74420408b4a70c1cb11f2bf4535c9cf3525b529811c66c032b7ad7e8e0ae02",
         "exitPoster": "d34f0f876e6bb90ac57cbc38d63375dabfa93a7562d4647c09ebf48bfb3da7bd"
       }
@@ -142,10 +142,10 @@
       "action": "stretch",
       "viewport": "390x844",
       "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
-      "durationMs": 1838,
+      "durationMs": 1995,
       "captureTimeoutMs": 4000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T11:37:01.653Z",
+      "startedAt": "2026-08-09T11:43:32.691Z",
       "video": "videos/gray-white-tabby/390x844/stretch.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/stretch-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/stretch-exit.png",
@@ -155,8 +155,8 @@
         "notes": ""
       },
       "evidenceSha256": {
-        "video": "c34230018fa5bbc702438565dda82eaa9b2095c7ab58d2ccdbf05e8a80a4e2b3",
-        "entryPoster": "70a33fd29c38aa50fc1df83ec7bc42f8e2da55465a7a4e004ff96afb7c2db443",
+        "video": "6e186f76354f873eec53f2d393ff8991a5046d24e67242b8e72c73a14f51b0a6",
+        "entryPoster": "d80299f2b477f6b8406575b82c719cb6f5da1c37e06d2fbeaa91a95ccbf5b716",
         "exitPoster": "2e920a182e06932c6a01e3804b2e157177d25c3649f7f8114b51af74c407efe7"
       }
     }
@@ -175,7 +175,7 @@
     "boards/mobile/stretch.png",
     "boards/mobile/stretch.html"
   ],
-  "sourceFingerprint": "4d7303ea54610b60845e91387ec223c11e8d09db589f459954fc3fe784176ae1",
+  "sourceFingerprint": "4382679a881bb30a845fc678a985237b3b2979f52f3204e017f4fc089b7aedcb",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
