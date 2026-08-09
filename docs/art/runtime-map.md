@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-08
+Last updated: 2026-08-09
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -28,16 +28,16 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 
 | Runtime action | Current source | Status |
 | --- | --- | --- |
-| `idle` | `artifacts/art/candidates/active/product-cat-idle-v3/` | Four-frame temporary compatibility loop that fixes the visible thin-cat `sit` exit. It predates the production model sheet, is a pre-authority exception, and remains internal quality-slice support rather than final release art. |
+| `idle` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model redraw with restrained breathing, one slow blink, and a stable rounded standing identity. |
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |
 | `groom` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Eight-frame paw and face grooming loop. |
 | `stretch` | `artifacts/art/candidates/active/product-cat-quality-slice-v10/` | Six-frame stand, bow, stretch, and recover action. |
 | `eat` | `artifacts/art/candidates/active/product-cat-actions-v3/` | Six-frame bowl-aligned sniff/eat source; runtime loops the light head-lower frames. |
-| `lie` | `artifacts/art/candidates/active/product-cat-actions-v4/` | Four-frame awake rest for the cat bed and blanket. |
+| `lie` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model awake rest with elevated head, open-eye return, and stable cat-bed/blanket contact. |
 | `jump` | `artifacts/art/candidates/active/product-cat-actions-v5/` | Five generated key poses plus one held settle frame to satisfy the six-frame runtime contract. |
-| `sleep` | `artifacts/art/candidates/active/product-cat-actions-v8/` | Four-frame deep curled sleeping loop. |
+| `sleep` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model deep curled sleep with closed eyes and restrained breathing. |
 
 The reviewed gray-white tabby is the motion master. The other five coat
 presets are deterministic working derivatives built by
@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-08/` and contains nineteen validated
+`artifacts/art/runtime-review/2026-08-09/` and contains nineteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
 blanket routines, grooming, stretching, deep sleep, active approach, the
 in-place interaction across four runtime moments after real pointer input on
@@ -72,14 +72,21 @@ The plant-touch desktop evidence lives under
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
 accompanying `manifest.json` binds its screenshots to the exact runtime input
 fingerprint; `npm run review:runtime:check` fails after those inputs change.
+The quiet-motion continuous evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and
+`artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`.
+Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
+through exit at `1280x720` and `390x844`; wakun approved all eight
+human-review entries on 2026-08-09, and both manifests pass the release-grade
+human-review gate.
 
 ## Candidate Retention
 
-- Active motion sources: v3, v4, v5, v8, product-cat-idle v3, quality-slice
-  v10, and quality-slice v12. Product-cat-idle v3 supplies the approved
-  supporting `idle`; v10 supplies `groom` and `stretch`; v12 supplies `sit`,
-  `walk`, and `interact`. Product-cat-idle v1/v2 and quality-slice v11 are
-  retained as review and motion-planning history.
+- Active motion sources: v3, v5, quiet-motion v1, quality-slice v10, and
+  quality-slice v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; v10
+  supplies `groom` and `stretch`; v12 supplies `sit`, `walk`, and `interact`.
+  Product-cat-idle v1/v2/v3, action v4/v8, and quality-slice v11 are retained
+  as review and motion-planning history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

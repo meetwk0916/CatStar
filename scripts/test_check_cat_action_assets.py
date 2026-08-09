@@ -162,6 +162,50 @@ class AssetProfileTests(unittest.TestCase):
 
         self.assertTrue(any("idle alpha must match gray-white-tabby" in failure for failure in failures))
 
+    def test_awake_rest_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        orange_lie_path = scene_dir / "cat" / "orange-tabby" / "lie.png"
+        orange_lie = Image.open(orange_lie_path).convert("RGBA")
+        orange_lie.putpixel((12, 12), (0, 0, 0, 0))
+        orange_lie.save(orange_lie_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(any("lie alpha must match gray-white-tabby" in failure for failure in failures))
+
+    def test_deep_sleep_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        orange_sleep_path = scene_dir / "cat" / "orange-tabby" / "sleep.png"
+        orange_sleep = Image.open(orange_sleep_path).convert("RGBA")
+        orange_sleep.putpixel((12, 12), (0, 0, 0, 0))
+        orange_sleep.save(orange_sleep_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(any("sleep alpha must match gray-white-tabby" in failure for failure in failures))
+
+    def test_awake_rest_requires_binary_alpha_for_pixel_finish(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        lie_path = scene_dir / "cat" / "gray-white-tabby" / "lie.png"
+        lie = Image.open(lie_path).convert("RGBA")
+        lie.putpixel((20, 20), (90, 100, 110, 128))
+        lie.save(lie_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(any("gray-white-tabby/lie: refined pixel sheet" in failure for failure in failures))
+
+    def test_deep_sleep_requires_binary_alpha_for_pixel_finish(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        sleep_path = scene_dir / "cat" / "gray-white-tabby" / "sleep.png"
+        sleep = Image.open(sleep_path).convert("RGBA")
+        sleep.putpixel((20, 20), (90, 100, 110, 128))
+        sleep.save(sleep_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(any("gray-white-tabby/sleep: refined pixel sheet" in failure for failure in failures))
+
     def test_rounded_short_haired_idle_rejects_low_mass_relative_to_walk(self) -> None:
         scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
         idle_path = scene_dir / "cat" / "gray-white-tabby" / "idle.png"

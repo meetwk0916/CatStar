@@ -2,13 +2,22 @@
 
 **Status:** Current production animation contract
 
-Last updated: 2026-08-08
+Last updated: 2026-08-09
 
 ## Purpose
 
 This spec defines the production target for CatStar cat animation assets.
 
-The current runtime sheets under `public/assets/scenes/window-room/cat/` are MVP derived motion sheets. They prove the Phaser animation pipeline, but they are not production-quality motion assets. Production cat animation must be drawn as coherent frame-by-frame motion of the same cat. Current AI-generated candidates may remain design, motion-planning, and engineering references, but they must not ship as final runtime art. The release master must come from one rights-cleared, identity-consistent production process across all ten actions.
+The current runtime sheets under `public/assets/scenes/window-room/cat/` are an
+internal, mixed-stage assembly. They prove the Phaser animation pipeline and
+include production-model redraws, but they do not yet form a complete,
+rights-cleared ten-action release master. The exact runtime-to-candidate
+selection is owned by [`../art/runtime-map.md`](../art/runtime-map.md), and the
+public-distribution gate is owned by
+[`../art/rights-and-provenance.md`](../art/rights-and-provenance.md).
+Production cat animation must be drawn as coherent frame-by-frame motion of the
+same cat. The release master must come from one rights-cleared,
+identity-consistent production process across all ten actions.
 
 ## Product Role
 

@@ -46,12 +46,6 @@ ACTION_SCENARIOS = {
     "stretch": ("/?catstarRoutine=floorStretch", 4_000),
     "interact": ("/?catstarRoutine=floorSit&catstarFullTouch=1", 4_000),
 }
-REQUIRED_HUMAN_PASS_MATRIX = frozenset(
-    (preset, action, viewport)
-    for preset in ("gray-white-tabby",)
-    for action in ("sit", "walk", "interact")
-    for viewport in ("1280x720", "390x844")
-)
 EVIDENCE_FIELDS = ("video", "entryPoster", "exitPoster")
 
 
@@ -84,6 +78,10 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--preset", action="append", help="limit review to a preset directory")
     parser.add_argument("--action", action="append", choices=tuple(ACTION_SCENARIOS), help="limit review to an action")
+    parser.add_argument(
+        "--route-override",
+        help="capture one selected action against a different real room route",
+    )
     parser.add_argument("--viewport", action="append", help="limit review to a viewport name")
     parser.add_argument(
         "--viewports",
@@ -121,10 +119,29 @@ def selected_matrix(args: argparse.Namespace) -> tuple[list[str], list[str], dic
     return presets, actions, viewports
 
 
+def selected_action_scenarios(
+    actions: list[str], route_override: str | None = None
+) -> dict[str, tuple[str, int]]:
+    if route_override and len(actions) != 1:
+        raise ValueError("A route override requires exactly one action")
+    scenarios = {action: ACTION_SCENARIOS[action] for action in actions}
+    if route_override:
+        action = actions[0]
+        _route, duration_ms = scenarios[action]
+        scenarios[action] = (route_override, duration_ms)
+    return scenarios
+
+
 def matrix_keys(
     presets: Iterable[str], actions: Iterable[str], viewports: Iterable[str]
 ) -> set[tuple[str, str, str]]:
     return {(preset, action, viewport) for preset in presets for action in actions for viewport in viewports}
+
+
+def required_human_pass_matrix(
+    presets: Iterable[str], actions: Iterable[str], viewports: Iterable[str]
+) -> frozenset[tuple[str, str, str]]:
+    return frozenset(matrix_keys(presets, actions, viewports))
 
 
 def file_sha256(path: Path) -> str:
@@ -193,7 +210,7 @@ def source_fingerprint() -> tuple[str, list[str]]:
 def run_capture(
     output_dir: Path,
     presets: list[str],
-    actions: list[str],
+    action_scenarios: dict[str, tuple[str, int]],
     viewports: dict[str, tuple[int, int]],
 ) -> list[dict[str, object]]:
     server = subprocess.Popen(
@@ -210,8 +227,7 @@ def run_capture(
             for preset in presets:
                 storage_state = storage_directory / f"{preset}.json"
                 make_storage_state(storage_state, preset)
-                for action in actions:
-                    route, duration_ms = ACTION_SCENARIOS[action]
+                for action, (route, duration_ms) in action_scenarios.items():
                     review_route = f"{route}&catstarMotionReview=1"
                     for viewport_name, (width, height) in viewports.items():
                         viewport = f"{width}x{height}"
@@ -466,15 +482,19 @@ def latest_output_dir() -> Path:
     return candidates[-1]
 
 
-def validate_existing(output_dir: Path, require_human_pass: bool = False) -> None:
+def validate_existing(
+    output_dir: Path,
+    required_matrix: frozenset[tuple[str, str, str]] | None = None,
+) -> None:
     manifest_path = output_dir / "manifest.json"
     if not manifest_path.exists():
         raise RuntimeError(f"Missing motion review manifest: {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    required_matrix = REQUIRED_HUMAN_PASS_MATRIX if require_human_pass else None
     failures = validate_manifest_data(manifest, output_dir, required_matrix)
     counts = human_review_counts(manifest)
-    if require_human_pass and (counts["pending"] or counts["fail"]):
+    if required_matrix is not None and not required_matrix:
+        failures.append("manifest: human-review matrix is empty")
+    if required_matrix is not None and (counts["pending"] or counts["fail"]):
         failures.append(
             "manifest: human pass required; "
             f"pending={counts['pending']} fail={counts['fail']}"
@@ -496,10 +516,19 @@ def main() -> None:
     args = parse_args()
     if args.validate_only:
         output_dir = args.output or latest_output_dir()
-        validate_existing(output_dir, args.require_human_pass)
+        required_matrix = None
+        if args.require_human_pass:
+            presets, actions, viewports = selected_matrix(args)
+            required_matrix = required_human_pass_matrix(
+                presets,
+                actions,
+                [f"{width}x{height}" for width, height in viewports.values()],
+            )
+        validate_existing(output_dir, required_matrix)
         return
 
     presets, actions, viewports = selected_matrix(args)
+    action_scenarios = selected_action_scenarios(actions, args.route_override)
     profile = asset_checker.ASSET_PROFILES[args.profile]
     failures = asset_checker.validate_assets(REPO_ROOT / "public/assets/scenes/window-room", profile)
     if failures:
@@ -510,7 +539,7 @@ def main() -> None:
 
     output_dir = args.output or OUT_ROOT / datetime.now().strftime("%Y-%m-%d")
     output_dir.mkdir(parents=True, exist_ok=True)
-    entries = run_capture(output_dir, presets, actions, viewports)
+    entries = run_capture(output_dir, presets, action_scenarios, viewports)
     boards = build_review_boards(output_dir, entries, presets, actions, viewports)
     write_manifest(output_dir, args.profile, presets, actions, viewports, entries, boards)
     print(f"Continuous motion review written to {output_dir}")

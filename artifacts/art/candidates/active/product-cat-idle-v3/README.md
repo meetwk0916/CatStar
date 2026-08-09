@@ -1,6 +1,6 @@
 # Product Cat Idle v3
 
-**Status:** Approved for the rounded short-haired moving quality slice
+**Status:** Historical rounded short-haired quality-slice evidence
 
 This package replaces the rejected v1 and v2 standing-idle experiments. v1
 was normalized too small because of its long tail. v2 corrected scale and tail
@@ -21,8 +21,11 @@ The generated chroma-key source is retained under `sources/`;
 `scripts/compose_product_cat_idle.py --candidate product-cat-idle-v3` applies
 one shared scale across all four poses, then uses nearest-neighbor resizing,
 binary alpha, a single 64-color palette, and bottom-center placement to build
-the transparent `96x96` runtime candidate. `scripts/build_cat_coat_presets.py`
-derives every current coat preset from the same alpha shape.
+the transparent `96x96` candidate. `scripts/build_cat_coat_presets.py` can
+derive every supported coat preset from the same alpha shape. The
+production-model-derived quiet-motion v1 package now owns runtime `idle`; see
+[`../../../../../docs/art/runtime-map.md`](../../../../../docs/art/runtime-map.md)
+for the current selection.
 
 ## Generation and provenance
 

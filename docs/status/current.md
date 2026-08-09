@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-08
+**Last aligned:** 2026-08-09
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -47,6 +47,11 @@ The current implementation includes:
   all redrawn after approval of the dedicated production model sheet.
   It remains internal quality-slice evidence while final human confirmation and
   the complete rights-chain gate are pending.
+- The production-model-derived quiet-motion v1 candidate supplies `idle`,
+  awake-rest `lie`, and deep `sleep` across all six current coat presets.
+  Structural asset validation and fingerprint-bound desktop/mobile continuous
+  evidence pass; all eight floor, cat-bed, and blanket motion entries were
+  approved by wakun on 2026-08-09.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -88,9 +93,9 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Complete rounded short-haired's remaining seven actions—including a final
-  model-sheet-derived `idle`—through the same rights-cleared production
-  process as the approved v12 quality slice. Then produce independent
+- Complete rounded short-haired's remaining four actions (`jump`, `eat`,
+  `groom`, and `stretch`) through the same rights-recorded production process
+  as the v12 quality slice. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
   exposing those prototypes in the passport; they do not block the first
   release.

@@ -28,7 +28,7 @@ MAX_AREA_RANGE_RATIO = 0.28
 MAX_REFINED_PIXEL_COLORS = 128
 MIN_ROUNDED_IDLE_HEIGHT = 68
 MIN_IDLE_TO_WALK_MASS_RATIO = 0.85
-REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact"}
+REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact", "lie", "sleep"}
 SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
 CURRENT_CAT_PRESETS = (
     "gray-white-tabby",
@@ -284,9 +284,10 @@ def validate_distinct_stationary_actions(
     return []
 
 
-def validate_shared_idle_alpha(
+def validate_shared_action_alpha(
     asset_dir: Path,
     presets: tuple[str, ...],
+    action: str,
     config: dict[str, object],
 ) -> list[str]:
     file_name = config.get("file")
@@ -310,7 +311,9 @@ def validate_shared_idle_alpha(
         except (OSError, UnidentifiedImageError):
             continue
         if candidate_alpha != master_alpha:
-            failures.append(f"{preset}/idle: idle alpha must match gray-white-tabby")
+            failures.append(
+                f"{preset}/{action}: {action} alpha must match gray-white-tabby"
+            )
     return failures
 
 
@@ -438,10 +441,24 @@ def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
 
     idle_config = actions.get("idle")
     if isinstance(idle_config, dict):
-        failures.extend(validate_shared_idle_alpha(asset_dir, profile.presets, idle_config))
+        failures.extend(
+            validate_shared_action_alpha(asset_dir, profile.presets, "idle", idle_config)
+        )
         walk_config = actions.get("walk")
         if isinstance(walk_config, dict):
             failures.extend(validate_idle_walk_mass(asset_dir, idle_config, walk_config))
+
+    lie_config = actions.get("lie")
+    if isinstance(lie_config, dict):
+        failures.extend(
+            validate_shared_action_alpha(asset_dir, profile.presets, "lie", lie_config)
+        )
+
+    sleep_config = actions.get("sleep")
+    if isinstance(sleep_config, dict):
+        failures.extend(
+            validate_shared_action_alpha(asset_dir, profile.presets, "sleep", sleep_config)
+        )
 
     return failures
 
