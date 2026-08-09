@@ -49,6 +49,7 @@ type CatRoutine =
   | "restCatBed"
   | "approachFoodBowl"
   | "eatFoodBowl"
+  | "returnFromFoodBowl"
   | "approachPlant"
   | "inspectPlant"
   | "approachPlantTouch"
@@ -104,17 +105,30 @@ interface ScriptedJump {
   landingRoutine: CatRoutine;
 }
 
-interface FoodBowlRoute {
-  fromX: number;
-  fromY: number;
-  waypointX: number;
-  waypointY: number;
-  startedAt: number;
-  cruiseDuration: number;
+interface FoodBowlPath {
+  waypoints: FoodBowlWaypoint[];
+  waypointIndex: number;
 }
 
-interface FoodBowlCancellation {
+interface FoodBowlRoute extends FoodBowlPath {
+  startedAt: number;
+  arrivalStartedAt?: number;
+  arrivalFromX?: number;
+  arrivalFromY?: number;
+}
+
+interface FoodBowlWaypoint {
+  x: number;
+  y: number;
+}
+
+interface FoodBowlVerticalTransition {
   fromY: number;
+  toY: number;
+  startedAt: number;
+}
+
+interface FoodBowlReturnRoute extends FoodBowlPath {
   startedAt: number;
 }
 
@@ -188,15 +202,14 @@ const CAT_BED_ENTRY_X = CAT_BED_ZONE.xMax + 16;
 const CAT_BED_EXIT_X = CAT_BED_ENTRY_X + 20;
 const FOOD_BOWL_X = FOOD_ZONE.xMin - 34;
 const FOOD_BOWL_STAND_Y = FLOOR_STAND_Y + 34;
-const FOOD_BOWL_WAYPOINT_OFFSET_X = 36;
-const FOOD_BOWL_ROUTE_WAYPOINTS = {
-  fromLeft: FOOD_BOWL_X - FOOD_BOWL_WAYPOINT_OFFSET_X,
-  fromRight: FOOD_BOWL_X + FOOD_BOWL_WAYPOINT_OFFSET_X,
-} as const;
-const FOOD_BOWL_ROUTE_MIN_CRUISE_MS = 900;
-const FOOD_BOWL_ROUTE_CRUISE_FACTOR = 1.1;
 const FOOD_BOWL_ROUTE_DECELERATION_MS = 200;
 const FOOD_BOWL_ROUTE_CONTACT_MS = 150;
+const FOOD_BOWL_WAYPOINT_TOLERANCE = 4;
+const FOOD_BOWL_ROUTE_OUTER_OFFSET_X = 72;
+const FOOD_BOWL_ROUTE_INNER_OFFSET_X = 24;
+const FOOD_BOWL_ROUTE_OUTER_Y = FLOOR_STAND_Y + 5;
+const FOOD_BOWL_ROUTE_INNER_Y = FOOD_BOWL_STAND_Y - 12;
+const FOOD_BOWL_RETURN_OFFSET_X = 80;
 const PLANT_INSPECT_X = PLANT_ZONE.xMin - 22;
 const PLANT_TOUCH_X = PLANT_ZONE.xMin - 18;
 const PLANT_LEAF_PIVOT_X = 534;
@@ -266,7 +279,8 @@ export class CatRoomScene extends Phaser.Scene {
   private routineHoldUntil = 0;
   private scriptedJump?: ScriptedJump;
   private foodBowlRoute?: FoodBowlRoute;
-  private foodBowlCancellation?: FoodBowlCancellation;
+  private foodBowlCancellation?: FoodBowlVerticalTransition;
+  private foodBowlReturn?: FoodBowlReturnRoute;
   private foodBowlFacingLeft = false;
   private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
   private windowBenchDecisionAt = 0;
@@ -476,7 +490,12 @@ export class CatRoomScene extends Phaser.Scene {
       this.activeIntent = undefined;
     }
 
-    if (this.routine === "approachFoodBowl" || this.foodBowlRoute) {
+    if (
+      this.routine === "approachFoodBowl" ||
+      this.routine === "returnFromFoodBowl" ||
+      this.foodBowlRoute ||
+      this.foodBowlReturn
+    ) {
       this.cancelFoodBowlRoute(this.time.now);
     }
 
@@ -595,10 +614,20 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction("eat");
 
       if (time >= this.routineHoldUntil) {
-        this.cat.setY(FLOOR_STAND_Y);
+        this.foodBowlReturn = {
+          waypoints: this.foodBowlReturnWaypoints(),
+          waypointIndex: 0,
+          startedAt: time,
+        };
         this.completeActiveIntent();
-        this.startFloorPause(time);
+        this.routine = "returnFromFoodBowl";
+        this.advanceFoodBowlReturn(time);
       }
+      return;
+    }
+
+    if (this.routine === "returnFromFoodBowl") {
+      this.advanceFoodBowlReturn(time);
       return;
     }
 
@@ -888,15 +917,7 @@ export class CatRoomScene extends Phaser.Scene {
       return true;
     }
 
-    const baseSpeed = getCompanionMovementSpeed(this.temperament);
-    const distanceEase = Phaser.Math.Clamp(Math.abs(distance) / 92, 0.22, 0.94);
-    const time = this.time.now;
-    const curiousSlowdown = 0.82 + Math.sin(time * 0.0024 + this.walkPaceSeed) * 0.1;
-    const tinyHesitation = Math.sin(time * 0.0015 + this.walkPaceSeed * 0.7) > 0.96 ? 0.7 : 1;
-    const speed = baseSpeed * distanceEase * curiousSlowdown * tinyHesitation;
-    const targetVelocityX = distance > 0 ? speed : -speed;
-    const easedVelocityX = Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.08);
-    this.cat.setVelocityX(easedVelocityX);
+    this.cat.setVelocityX(this.nextCompanionWalkVelocity(distance));
     this.cat.setFlipX(distance < 0);
     this.playCatAction("walk");
     return false;
@@ -908,11 +929,11 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     this.cat.body.setAllowGravity(false);
-    this.cat.setY(FLOOR_STAND_Y);
     if (time >= this.routineHoldUntil) {
       return false;
     }
 
+    this.cat.setY(FLOOR_STAND_Y);
     this.cat.setVelocityX(0);
     this.playCatAction("idle");
     return true;
@@ -924,33 +945,38 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const fromX = this.cat.x;
-    const fromY = this.cat.y;
     const direction = FOOD_BOWL_X >= fromX ? 1 : -1;
-    const waypointX =
+    const approachWaypoints =
       direction > 0
-        ? Math.max(fromX, FOOD_BOWL_ROUTE_WAYPOINTS.fromLeft)
-        : Math.min(fromX, FOOD_BOWL_ROUTE_WAYPOINTS.fromRight);
-    const cruiseDistance = Math.abs(waypointX - fromX);
-    const cruiseDuration = Math.max(
-      cruiseDistance > 0
-        ? Math.round(
-            (cruiseDistance / getCompanionMovementSpeed(this.temperament)) *
-              1000 *
-              FOOD_BOWL_ROUTE_CRUISE_FACTOR,
-          )
-        : 0,
-      cruiseDistance > 0 ? FOOD_BOWL_ROUTE_MIN_CRUISE_MS : 0,
+        ? [
+            { x: FOOD_BOWL_X - FOOD_BOWL_ROUTE_OUTER_OFFSET_X, y: FOOD_BOWL_ROUTE_OUTER_Y },
+            { x: FOOD_BOWL_X - FOOD_BOWL_ROUTE_INNER_OFFSET_X, y: FOOD_BOWL_ROUTE_INNER_Y },
+          ]
+        : [
+            { x: FOOD_BOWL_X + FOOD_BOWL_ROUTE_OUTER_OFFSET_X, y: FOOD_BOWL_ROUTE_OUTER_Y },
+            { x: FOOD_BOWL_X + FOOD_BOWL_ROUTE_INNER_OFFSET_X, y: FOOD_BOWL_ROUTE_INNER_Y },
+          ];
+    const waypoints = approachWaypoints.filter((waypoint) =>
+      direction > 0
+        ? waypoint.x > fromX + FOOD_BOWL_WAYPOINT_TOLERANCE
+        : waypoint.x < fromX - FOOD_BOWL_WAYPOINT_TOLERANCE,
     );
 
     this.foodBowlRoute = {
-      fromX,
-      fromY,
-      waypointX,
-      waypointY: FLOOR_STAND_Y,
+      waypoints,
+      waypointIndex: 0,
       startedAt: time,
-      cruiseDuration,
     };
     this.foodBowlFacingLeft = direction < 0;
+  }
+
+  private foodBowlReturnWaypoints(): FoodBowlWaypoint[] {
+    const direction = this.foodBowlFacingLeft ? 1 : -1;
+    return [
+      { x: FOOD_BOWL_X + direction * FOOD_BOWL_ROUTE_INNER_OFFSET_X, y: FOOD_BOWL_ROUTE_INNER_Y },
+      { x: FOOD_BOWL_X + direction * FOOD_BOWL_ROUTE_OUTER_OFFSET_X, y: FOOD_BOWL_ROUTE_OUTER_Y },
+      { x: FOOD_BOWL_X + direction * FOOD_BOWL_RETURN_OFFSET_X, y: FLOOR_STAND_Y },
+    ];
   }
 
   private advanceFoodBowlRoute(time: number) {
@@ -966,32 +992,47 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    const elapsed = Math.max(time - route.startedAt, 0);
-    const cruiseEnd = route.cruiseDuration;
-    const arrivalEnd = cruiseEnd + FOOD_BOWL_ROUTE_DECELERATION_MS;
-    const settleEnd = arrivalEnd + FOOD_BOWL_ROUTE_CONTACT_MS;
-
     this.cat.body.setAllowGravity(false);
-    this.cat.setVelocity(0, 0);
 
-    if (route.cruiseDuration > 0 && elapsed <= cruiseEnd) {
-      const progress = elapsed / route.cruiseDuration;
-      const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
-      this.cat.setPosition(
-        Phaser.Math.Linear(route.fromX, route.waypointX, easedProgress),
-        Phaser.Math.Linear(route.fromY, route.waypointY, easedProgress),
-      );
-      this.cat.setFlipX(route.waypointX < route.fromX);
-      this.playCatAction("walk");
-      return;
+    if (route.arrivalStartedAt === undefined) {
+      const waypoint = route.waypoints[route.waypointIndex];
+      if (waypoint) {
+        const distanceX = waypoint.x - this.cat.x;
+        const distanceY = waypoint.y - this.cat.y;
+        const distance = Math.hypot(distanceX, distanceY);
+        if (distance > FOOD_BOWL_WAYPOINT_TOLERANCE) {
+          const speed = this.nextCompanionWalkRouteSpeed(
+            this.foodBowlPathRemainingDistance(route, { x: FOOD_BOWL_X, y: FOOD_BOWL_STAND_Y }),
+          );
+          this.cat.setVelocityX((distanceX / distance) * speed);
+          this.cat.setVelocityY((distanceY / distance) * speed);
+          this.cat.setFlipX(distanceX < 0);
+          this.playCatAction("walk");
+          return;
+        }
+
+        route.waypointIndex += 1;
+        this.advanceFoodBowlRoute(time);
+        return;
+      }
+
+      this.cat.setVelocityX(0);
+      this.cat.setVelocityY(0);
+      route.arrivalStartedAt = time;
+      route.arrivalFromX = this.cat.x;
+      route.arrivalFromY = this.cat.y;
     }
 
-    if (elapsed <= arrivalEnd) {
-      const progress = (elapsed - cruiseEnd) / FOOD_BOWL_ROUTE_DECELERATION_MS;
+    const arrivalElapsed = Math.max(time - route.arrivalStartedAt, 0);
+    const arrivalEnd = FOOD_BOWL_ROUTE_DECELERATION_MS;
+    const settleEnd = arrivalEnd + FOOD_BOWL_ROUTE_CONTACT_MS;
+
+    if (arrivalElapsed <= arrivalEnd) {
+      const progress = arrivalElapsed / FOOD_BOWL_ROUTE_DECELERATION_MS;
       const easedProgress = Phaser.Math.Easing.Sine.Out(progress);
       this.cat.setPosition(
-        Phaser.Math.Linear(route.waypointX, FOOD_BOWL_X, easedProgress),
-        Phaser.Math.Linear(route.waypointY, FOOD_BOWL_STAND_Y, easedProgress),
+        Phaser.Math.Linear(route.arrivalFromX ?? this.cat.x, FOOD_BOWL_X, easedProgress),
+        Phaser.Math.Linear(route.arrivalFromY ?? this.cat.y, FOOD_BOWL_STAND_Y, easedProgress),
       );
       this.cat.setFlipX(this.foodBowlFacingLeft);
       this.playCatAction("walk");
@@ -1000,7 +1041,7 @@ export class CatRoomScene extends Phaser.Scene {
 
     this.cat.setPosition(FOOD_BOWL_X, FOOD_BOWL_STAND_Y);
     this.cat.setFlipX(this.foodBowlFacingLeft);
-    if (elapsed <= settleEnd) {
+    if (arrivalElapsed <= settleEnd) {
       this.playCatAction("idle", true);
       return;
     }
@@ -1016,16 +1057,18 @@ export class CatRoomScene extends Phaser.Scene {
   private cancelFoodBowlRoute(time: number) {
     if (
       !this.cat ||
-      (this.routine !== "approachFoodBowl" && !this.foodBowlRoute)
+      (this.routine !== "approachFoodBowl" && this.routine !== "returnFromFoodBowl" && !this.foodBowlRoute && !this.foodBowlReturn)
     ) {
       return;
     }
 
     this.foodBowlCancellation = {
       fromY: this.cat.y,
+      toY: FLOOR_STAND_Y,
       startedAt: time,
     };
     this.foodBowlRoute = undefined;
+    this.foodBowlReturn = undefined;
     this.cat.body.setAllowGravity(false);
     this.cat.setVelocity(0, 0);
     this.currentZone = "floor";
@@ -1048,13 +1091,93 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setY(
       Phaser.Math.Linear(
         this.foodBowlCancellation.fromY,
-        FLOOR_STAND_Y,
+        this.foodBowlCancellation.toY,
         easedProgress,
       ),
     );
     if (progress >= 1) {
       this.foodBowlCancellation = undefined;
     }
+  }
+
+  private advanceFoodBowlReturn(time: number) {
+    if (!this.cat || !this.foodBowlReturn) {
+      return;
+    }
+
+    const route = this.foodBowlReturn;
+    this.currentZone = "floor";
+    this.cat.body.setAllowGravity(false);
+    const waypoint = route.waypoints[route.waypointIndex];
+    if (waypoint) {
+      const distanceX = waypoint.x - this.cat.x;
+      const distanceY = waypoint.y - this.cat.y;
+      const distance = Math.hypot(distanceX, distanceY);
+      if (distance > FOOD_BOWL_WAYPOINT_TOLERANCE) {
+        const speed = this.nextCompanionWalkRouteSpeed(this.foodBowlPathRemainingDistance(route));
+        this.cat.setVelocityX((distanceX / distance) * speed);
+        this.cat.setVelocityY((distanceY / distance) * speed);
+        this.cat.setFlipX(distanceX < 0);
+        this.playCatAction("walk");
+        return;
+      }
+
+      route.waypointIndex += 1;
+      this.advanceFoodBowlReturn(time);
+      return;
+    }
+
+    this.cat.setVelocity(0, 0);
+    const exit = route.waypoints.at(-1);
+    if (exit) {
+      this.cat.setPosition(exit.x, exit.y);
+    }
+    this.foodBowlReturn = undefined;
+    this.startFloorPause(time);
+    this.playCatAction("idle", true);
+  }
+
+  private nextCompanionWalkVelocity(distance: number) {
+    if (!this.cat) {
+      return 0;
+    }
+
+    const speed = this.companionWalkTargetSpeed(Math.abs(distance));
+    const targetVelocityX = distance > 0 ? speed : -speed;
+    return Phaser.Math.Linear(this.cat.body.velocity.x, targetVelocityX, 0.08);
+  }
+
+  private nextCompanionWalkRouteSpeed(distance: number) {
+    if (!this.cat) {
+      return 0;
+    }
+
+    const currentSpeed = Math.hypot(this.cat.body.velocity.x, this.cat.body.velocity.y);
+    return Phaser.Math.Linear(currentSpeed, this.companionWalkTargetSpeed(distance), 0.08);
+  }
+
+  private foodBowlPathRemainingDistance(path: FoodBowlPath, finalPoint?: FoodBowlWaypoint) {
+    if (!this.cat) {
+      return 0;
+    }
+
+    const points = [...path.waypoints.slice(path.waypointIndex), ...(finalPoint ? [finalPoint] : [])];
+    let previousPoint = { x: this.cat.x, y: this.cat.y };
+    return points.reduce((total, point) => {
+      const segment = Math.hypot(point.x - previousPoint.x, point.y - previousPoint.y);
+      previousPoint = point;
+      return total + segment;
+    }, 0);
+  }
+
+  private companionWalkTargetSpeed(distance: number) {
+    const baseSpeed = getCompanionMovementSpeed(this.temperament);
+    const distanceEase = Phaser.Math.Clamp(distance / 92, 0.22, 0.94);
+    const time = this.time?.now ?? 0;
+    const walkPaceSeed = this.walkPaceSeed ?? 0;
+    const curiousSlowdown = 0.82 + Math.sin(time * 0.0024 + walkPaceSeed) * 0.1;
+    const tinyHesitation = Math.sin(time * 0.0015 + walkPaceSeed * 0.7) > 0.96 ? 0.7 : 1;
+    return baseSpeed * distanceEase * curiousSlowdown * tinyHesitation;
   }
 
   private startFloorPause(time: number) {

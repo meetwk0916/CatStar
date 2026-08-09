@@ -67,12 +67,14 @@ bed. This keeps the cat from reading as if it walked through the bed rim. After
 the lying/rest loop, it hops back out through the opening before returning to the
 floor routine.
 
-`rightTray` currently stands for the food bowl area. The cat walks to the bowl
-side and plays the dedicated `eat` sniff/eat sheet at a stable bowl-side
-anchor. Because the food bowl sits on the foreground tray, its eating anchor is
-slightly below the normal walking baseline and horizontally aligned to the main
-food bowl so the cat reads as standing behind the tray and lowering its head to
-the bowl rim.
+`rightTray` currently stands for the food bowl area. The cat follows a named
+floor-to-bowl route with two gentle foreground waypoints, keeps its normal
+walking pace through both turns, and plays the dedicated `eat` sniff/eat sheet
+at a stable bowl-side anchor. After eating, the cat follows those waypoints in
+reverse at the same pace before settling on the floor. Because the food bowl
+sits on the foreground tray, its eating anchor is slightly below the normal
+walking baseline and horizontally aligned to the main food bowl so the cat
+reads as standing behind the tray and lowering its head to the bowl rim.
 
 Eating remains self-directed companionship behavior. The bowl never creates a
 hunger state, empties, asks the user to refill it, or implies that the cat
@@ -183,7 +185,8 @@ route.
 
 The first route slice to validate is floor-to-food-bowl. Continuous desktop and
 mobile evidence must show no vertical snap, no foot sliding, a stable arrival
-handoff, and safe touch interruption; a final screenshot alone is insufficient.
+handoff, consistent pace through the outbound and reverse return paths, and
+safe touch interruption; a final screenshot alone is insufficient.
 
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat

@@ -10,18 +10,18 @@
         2
       ],
       "source": "artifacts/art/candidates/active/product-cat-daily-life-v1/sources/eat-source-chromakey.png",
-      "sourceSha256": "694db3b17ac609be9b168af6959fbf62b05620cb3c1096bab98689d8bbb0f90d",
+      "sourceSha256": "b95a09da6c5026355826dda493b52aa708662d0d0cd3b08a439b1e1e245f8a45",
       "alpha": "artifacts/art/candidates/active/product-cat-daily-life-v1/alpha/eat-source.png",
-      "alphaSha256": "2816e99d746fc3ada223ba0d44ad03d569fe68bdf0ee653f9318d44e4f7c07f6",
+      "alphaSha256": "52ff176e31fbc63ca02c43535cb10b322390a10f43885fb565124d6b92058e4f",
       "framesMetadata": [
         {
           "frame": 1,
           "subject_size": [
-            414,
-            302
+            411,
+            301
           ],
           "sprite_size": [
-            92,
+            91,
             67
           ],
           "paste": [
@@ -32,76 +32,76 @@
         {
           "frame": 2,
           "subject_size": [
-            391,
-            288
+            416,
+            243
           ],
           "sprite_size": [
-            87,
-            64
+            92,
+            54
           ],
           "paste": [
-            4,
-            28
+            2,
+            38
           ]
         },
         {
           "frame": 3,
           "subject_size": [
-            393,
-            288
+            415,
+            223
           ],
           "sprite_size": [
-            87,
-            64
+            92,
+            49
           ],
           "paste": [
-            4,
-            28
+            2,
+            43
           ]
         },
         {
           "frame": 4,
           "subject_size": [
-            403,
-            290
+            416,
+            257
           ],
           "sprite_size": [
-            90,
-            64
+            92,
+            57
           ],
           "paste": [
-            3,
-            28
+            2,
+            35
           ]
         },
         {
           "frame": 5,
           "subject_size": [
-            376,
-            328
+            373,
+            327
           ],
           "sprite_size": [
-            84,
-            73
+            82,
+            72
           ],
           "paste": [
-            6,
-            19
+            7,
+            20
           ]
         },
         {
           "frame": 6,
           "subject_size": [
-            392,
-            307
+            387,
+            325
           ],
           "sprite_size": [
-            87,
-            68
+            86,
+            72
           ],
           "paste": [
-            4,
-            24
+            5,
+            20
           ]
         }
       ]

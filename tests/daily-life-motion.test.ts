@@ -19,8 +19,8 @@ const ACTIONS = {
   stretch: 6,
 } as const;
 
-const EAT_MIN_SPRITE_HEIGHT = 64;
-const EAT_MAX_HEIGHT_SPREAD = 12;
+const EAT_MIN_SPRITE_WIDTH = 80;
+const EAT_MAX_WIDTH_SPREAD = 12;
 
 describe('daily-life motion slice', () => {
   it('binds every action to the production model sheet lineage', async () => {
@@ -73,20 +73,29 @@ describe('daily-life motion slice', () => {
     },
   );
 
-  it('keeps the eat motion at a stable standing scale', async () => {
+  it('keeps the eat motion at a stable standing scale and contact line', async () => {
     const metadata = JSON.parse(
       await readFile(join(DAILY_LIFE_DIR, 'metadata.json'), 'utf8'),
     ) as {
-      actions?: Record<string, { framesMetadata?: Array<{ sprite_size?: [number, number] }> }>;
+      actions?: Record<string, {
+        framesMetadata?: Array<{
+          sprite_size?: [number, number];
+          paste?: [number, number];
+        }>;
+      }>;
     };
     const eatFrames = metadata.actions?.eat?.framesMetadata ?? [];
-    const heights = eatFrames.map((frame) => frame.sprite_size?.[1] ?? 0);
-
-    expect(heights).toHaveLength(ACTIONS.eat);
-    expect(Math.min(...heights)).toBeGreaterThanOrEqual(EAT_MIN_SPRITE_HEIGHT);
-    expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(
-      EAT_MAX_HEIGHT_SPREAD,
+    const widths = eatFrames.map((frame) => frame.sprite_size?.[0] ?? 0);
+    const baselines = eatFrames.map(
+      (frame) => (frame.paste?.[1] ?? 0) + (frame.sprite_size?.[1] ?? 0),
     );
+
+    expect(widths).toHaveLength(ACTIONS.eat);
+    expect(Math.min(...widths)).toBeGreaterThanOrEqual(EAT_MIN_SPRITE_WIDTH);
+    expect(Math.max(...widths) - Math.min(...widths)).toBeLessThanOrEqual(
+      EAT_MAX_WIDTH_SPREAD,
+    );
+    expect(new Set(baselines)).toEqual(new Set([92]));
   });
 
   it('records complete desktop and mobile motion evidence for the master coat', async () => {

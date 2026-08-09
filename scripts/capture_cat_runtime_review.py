@@ -72,7 +72,7 @@ SHOTS = [
     ("default-walk-4s.png", "/", 4500, VIEWPORT),
     ("window-bench-6s.png", "/?catstarRoutine=approachWindowBench", 6000, VIEWPORT),
     ("catbed-rest-10s.png", "/?catstarRoutine=approachCatBed", 10000, VIEWPORT),
-    ("food-bowl-eat-8s.png", "/?catstarRoutine=approachFoodBowl", 8000, VIEWPORT),
+    ("food-bowl-eat-14s.png", "/?catstarRoutine=approachFoodBowl", 14000, VIEWPORT),
     ("blanket-rest-10s.png", "/?catstarRoutine=approachBlanket", 10000, VIEWPORT),
     ("floor-groom-2s.png", "/?catstarRoutine=floorGroom", 1800, VIEWPORT),
     ("floor-stretch-1s.png", "/?catstarRoutine=floorStretch", 550, VIEWPORT),

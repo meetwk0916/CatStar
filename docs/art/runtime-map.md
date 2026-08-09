@@ -60,13 +60,16 @@ timing prevent coat choice from changing behavior.
   `walk` and `interact`, moves only the split leaf, and resets on user touch.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
-Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-09/` and contains nineteen validated
-screenshots covering default movement, window-bench, cat-bed, food-bowl, and
-blanket routines, grooming, stretching, deep sleep, active approach, the
-in-place interaction across four runtime moments after real pointer input on
-both sides of the cat, plant touch, and the enlarged cat at a `390x844` mobile
-viewport.
+The browser evidence root is
+`artifacts/art/runtime-review/2026-08-09/`, covering default movement,
+window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
+active approach, pointer interactions on both sides of the cat, plant touch,
+and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
+regenerated after the latest purposeful-route code change and passes
+`npm run review:runtime:check`.
+The dedicated food-bowl continuous motion evidence is separate at
+`artifacts/art/runtime-motion-review/2026-08-09-food-bowl-acceptance/`; it is
+structurally valid for desktop and mobile, with human review still pending.
 The plant-touch desktop evidence lives under
 `artifacts/art/runtime-review/2026-08-04/`; the matching `375x812` evidence
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
