@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-11T22:07:59.506437+08:00",
+  "capturedAt": "2026-08-11T23:09:47.765322+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,7 +20,7 @@
       "action": "eat",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16427,
+      "durationMs": 16233,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -29,19 +29,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-11T14:07:23.255Z",
+      "startedAt": "2026-08-11T15:09:11.602Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
         "status": "pending",
         "reviewer": "",
-        "notes": "Automated Codex visual QA completed; human review remains pending."
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "cf881f792938047bcbc38eee72e7046a8bcf6b7be0e2a3188cd6cbe9e2be2302",
-        "entryPoster": "46e662bdfe2e282e8d39db946e740a02fabc00292a5e39c1658841cc2d5eec21",
-        "exitPoster": "1d4578e77a4c47948121474fdab30faf13f60bd85c72bf400f19b804a9a6dea1"
+        "video": "207e0a7ab0526719028c7c6db20989422faa5a4a2eef868d6fec932cf027f61f",
+        "entryPoster": "50474d722f6a898f3030a537d22f2dcf923177c4a5d4972bdcc69a0b1f262221",
+        "exitPoster": "cd0da2a53c5b3218c675c4047118963f97dfa4e71909e5fecb7ca5eda6a45c96"
       }
     },
     {
@@ -50,7 +50,7 @@
       "action": "eat",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16136,
+      "durationMs": 16119,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -59,19 +59,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-11T14:07:41.813Z",
+      "startedAt": "2026-08-11T15:09:30.059Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
         "status": "pending",
         "reviewer": "",
-        "notes": "Automated Codex visual QA completed; human review remains pending."
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "29a54bea3e157b86995c5a85ee25cedf2b2229a728b435532589d73000dcc8f6",
+        "video": "5444bf1961d16303c6bd6b85ae78f367c2eab9752db320532d900dee0d5a9cd8",
         "entryPoster": "8167624be4b269e864989bfb92714a35c774c567a406dc59ba7e5760c980abff",
-        "exitPoster": "83b130ecd22c0a712ce6e416b0ac756d4f8474608c520c3ebce541c47ec8051a"
+        "exitPoster": "ce046a63219d2c07229b68559c69a34bff041681646c72c994f417424b68a4d1"
       }
     }
   ],
@@ -81,7 +81,7 @@
     "boards/mobile/eat.png",
     "boards/mobile/eat.html"
   ],
-  "sourceFingerprint": "9843330bb78277a2ac95d203f8f6ca224426a19c1f6581dfa75cba8816d36959",
+  "sourceFingerprint": "3c86b075b1b0c8b722eed3b4064293e55c5126048965c6a1b00b8a8bec8d4275",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

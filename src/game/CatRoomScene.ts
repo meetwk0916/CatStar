@@ -114,8 +114,8 @@ interface FoodBowlRoute extends FoodBowlPath {
   startedAt: number;
   destination: FoodBowlWaypoint;
   arrivalStartedAt?: number;
-  arrivalFromX?: number;
-  arrivalFromY?: number;
+  arrivalVelocityX?: number;
+  arrivalVelocityY?: number;
 }
 
 interface FoodBowlWaypoint {
@@ -1103,26 +1103,23 @@ export class CatRoomScene extends Phaser.Scene {
         return this.advanceFoodBowlTraversal(route, time, facingLeft);
       }
 
-      this.cat.setVelocityX(0);
-      this.cat.setVelocityY(0);
       route.arrivalStartedAt = time;
-      route.arrivalFromX = this.cat.x;
-      route.arrivalFromY = this.cat.y;
+      route.arrivalVelocityX = this.cat.body.velocity.x;
+      route.arrivalVelocityY = this.cat.body.velocity.y;
     }
 
     const arrivalElapsed = Math.max(time - route.arrivalStartedAt, 0);
     if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS) {
       const progress = arrivalElapsed / FOOD_BOWL_ROUTE_DECELERATION_MS;
-      const easedProgress = Phaser.Math.Easing.Sine.Out(progress);
-      this.cat.setPosition(
-        Phaser.Math.Linear(route.arrivalFromX ?? this.cat.x, route.destination.x, easedProgress),
-        Phaser.Math.Linear(route.arrivalFromY ?? this.cat.y, route.destination.y, easedProgress),
-      );
+      const deceleration = 1 - Phaser.Math.Easing.Sine.Out(progress);
+      this.cat.setVelocityX((route.arrivalVelocityX ?? 0) * deceleration);
+      this.cat.setVelocityY((route.arrivalVelocityY ?? 0) * deceleration);
       this.cat.setFlipX(facingLeft);
       this.playCatAction("walk");
       return false;
     }
 
+    this.cat.setVelocity(0, 0);
     this.cat.setPosition(route.destination.x, route.destination.y);
     this.cat.setFlipX(facingLeft);
     if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS + FOOD_BOWL_ROUTE_CONTACT_MS) {

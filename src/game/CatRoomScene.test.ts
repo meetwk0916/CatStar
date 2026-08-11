@@ -52,6 +52,9 @@ interface SceneInternals {
     destination: { x: number; y: number };
     arrivalStartedAt?: number;
   };
+  foodBowlRoute?: {
+    arrivalStartedAt?: number;
+  };
   activeIntent?: { kind: string; dwellMs: number };
   planner: {
     recordPlantTouch: ReturnType<typeof vi.fn>;
@@ -175,9 +178,11 @@ describe("CatRoomScene interactions", () => {
     internals.playCatAction = vi.fn();
 
     let previousTime = 1000;
+    const routeYs: number[] = [];
     for (let time = 1000; time <= 22_000; time += 100) {
       advanceMockPhysics(internals.cat, time - previousTime);
       scene.update(time);
+      routeYs.push(internals.cat.y);
       previousTime = time;
       if (internals.routine === "eatFoodBowl") {
         break;
@@ -185,8 +190,7 @@ describe("CatRoomScene interactions", () => {
     }
 
     const routePositions = internals.cat.setPosition.mock.calls as Array<[number, number]>;
-    expect(routePositions.length).toBeGreaterThan(3);
-    expect(routePositions.some(([, y]) => y > 225 && y < 259)).toBe(true);
+    expect(routeYs.some((y) => y > 225 && y < 259)).toBe(true);
     expect(routePositions.at(-1)?.[1]).toBe(259);
     expect(internals.routine).toBe("eatFoodBowl");
     expect(internals.currentZone).toBe("food-bowl");
@@ -233,7 +237,9 @@ describe("CatRoomScene interactions", () => {
       }
     }
 
-    expect(internals.cat.setVelocity.mock.calls).not.toContainEqual([0, 0]);
+    expect(
+      internals.cat.setVelocityX.mock.calls.some(([velocity]) => Math.abs(velocity as number) > 0),
+    ).toBe(true);
   });
 
   it("uses the same gradual walking pace before the bowl arrival deceleration", () => {
@@ -305,6 +311,44 @@ describe("CatRoomScene interactions", () => {
     expect(internals.cat.setPosition).not.toHaveBeenCalled();
     expect(internals.cat.setVelocityX).toHaveBeenLastCalledWith(expect.any(Number));
     expect(internals.cat.setVelocityX.mock.calls.at(-1)?.[0]).toBeGreaterThan(0);
+  });
+
+  it("decelerates the moving bowl arrival over 200ms before stable contact", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(320);
+    internals.routine = "approachFoodBowl";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.temperament = "AFFECTIONATE";
+    internals.time = { now: 1000 };
+    internals.playCatAction = vi.fn();
+
+    let previousTime = 1000;
+    let arrivalStartedAt: number | undefined;
+    for (let time = 1000; time <= 22_000; time += 16) {
+      advanceMockPhysics(internals.cat, time - previousTime);
+      scene.update(time);
+      previousTime = time;
+      arrivalStartedAt = internals.foodBowlRoute?.arrivalStartedAt;
+      if (arrivalStartedAt !== undefined) {
+        break;
+      }
+    }
+
+    expect(arrivalStartedAt).toBeDefined();
+    const arrivalSpeed = Math.hypot(internals.cat.body.velocity.x, internals.cat.body.velocity.y);
+    expect(arrivalSpeed).toBeGreaterThan(0);
+    const positionCallsBeforeDeceleration = internals.cat.setPosition.mock.calls.length;
+
+    advanceMockPhysics(internals.cat, 100);
+    scene.update((arrivalStartedAt ?? 0) + 100);
+
+    const slowedSpeed = Math.hypot(internals.cat.body.velocity.x, internals.cat.body.velocity.y);
+    expect(slowedSpeed).toBeGreaterThan(0);
+    expect(slowedSpeed).toBeLessThan(arrivalSpeed);
+    expect(internals.cat.setPosition).toHaveBeenCalledTimes(positionCallsBeforeDeceleration);
+    expect(internals.routine).toBe("approachFoodBowl");
   });
 
   it("walks away from the bowl while returning to the floor baseline", () => {

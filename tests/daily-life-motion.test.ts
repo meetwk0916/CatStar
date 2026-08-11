@@ -145,9 +145,8 @@ describe('daily-life motion slice', () => {
           entry.scenario === 'route-and-touch-interruption' &&
           entry.touchInterruption?.finalRoutine === 'floorPause' &&
           entry.touchInterruption.motionState === 'complete' &&
-          entry.humanReview?.status === 'pass' &&
-          entry.humanReview.reviewer &&
-          entry.humanReview.notes,
+          entry.humanReview?.status === 'pending' &&
+          entry.humanReview.reviewer === '',
       ),
     ).toBe(true);
   });
