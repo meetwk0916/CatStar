@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-09
+Last updated: 2026-08-11
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
