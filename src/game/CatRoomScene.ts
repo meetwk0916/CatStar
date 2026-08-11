@@ -112,6 +112,7 @@ interface FoodBowlPath {
 
 interface FoodBowlRoute extends FoodBowlPath {
   startedAt: number;
+  destination: FoodBowlWaypoint;
   arrivalStartedAt?: number;
   arrivalFromX?: number;
   arrivalFromY?: number;
@@ -125,10 +126,6 @@ interface FoodBowlWaypoint {
 interface FoodBowlVerticalTransition {
   fromY: number;
   toY: number;
-  startedAt: number;
-}
-
-interface FoodBowlReturnRoute extends FoodBowlPath {
   startedAt: number;
 }
 
@@ -280,7 +277,7 @@ export class CatRoomScene extends Phaser.Scene {
   private scriptedJump?: ScriptedJump;
   private foodBowlRoute?: FoodBowlRoute;
   private foodBowlCancellation?: FoodBowlVerticalTransition;
-  private foodBowlReturn?: FoodBowlReturnRoute;
+  private foodBowlReturn?: FoodBowlRoute;
   private foodBowlFacingLeft = false;
   private windowBenchTargetX = (WINDOW_BENCH_SURFACE.xMin + WINDOW_BENCH_SURFACE.xMax) / 2;
   private windowBenchDecisionAt = 0;
@@ -618,6 +615,7 @@ export class CatRoomScene extends Phaser.Scene {
           waypoints: this.foodBowlReturnWaypoints(),
           waypointIndex: 0,
           startedAt: time,
+          destination: this.foodBowlReturnDestination(),
         };
         this.completeActiveIntent();
         this.routine = "returnFromFoodBowl";
@@ -966,6 +964,7 @@ export class CatRoomScene extends Phaser.Scene {
       waypoints,
       waypointIndex: 0,
       startedAt: time,
+      destination: { x: FOOD_BOWL_X, y: FOOD_BOWL_STAND_Y },
     };
     this.foodBowlFacingLeft = direction < 0;
   }
@@ -975,8 +974,12 @@ export class CatRoomScene extends Phaser.Scene {
     return [
       { x: FOOD_BOWL_X + direction * FOOD_BOWL_ROUTE_INNER_OFFSET_X, y: FOOD_BOWL_ROUTE_INNER_Y },
       { x: FOOD_BOWL_X + direction * FOOD_BOWL_ROUTE_OUTER_OFFSET_X, y: FOOD_BOWL_ROUTE_OUTER_Y },
-      { x: FOOD_BOWL_X + direction * FOOD_BOWL_RETURN_OFFSET_X, y: FLOOR_STAND_Y },
     ];
+  }
+
+  private foodBowlReturnDestination(): FoodBowlWaypoint {
+    const direction = this.foodBowlFacingLeft ? 1 : -1;
+    return { x: FOOD_BOWL_X + direction * FOOD_BOWL_RETURN_OFFSET_X, y: FLOOR_STAND_Y };
   }
 
   private advanceFoodBowlRoute(time: number) {
@@ -994,55 +997,7 @@ export class CatRoomScene extends Phaser.Scene {
 
     this.cat.body.setAllowGravity(false);
 
-    if (route.arrivalStartedAt === undefined) {
-      const waypoint = route.waypoints[route.waypointIndex];
-      if (waypoint) {
-        const distanceX = waypoint.x - this.cat.x;
-        const distanceY = waypoint.y - this.cat.y;
-        const distance = Math.hypot(distanceX, distanceY);
-        if (distance > FOOD_BOWL_WAYPOINT_TOLERANCE) {
-          const speed = this.nextCompanionWalkRouteSpeed(
-            this.foodBowlPathRemainingDistance(route, { x: FOOD_BOWL_X, y: FOOD_BOWL_STAND_Y }),
-          );
-          this.cat.setVelocityX((distanceX / distance) * speed);
-          this.cat.setVelocityY((distanceY / distance) * speed);
-          this.cat.setFlipX(distanceX < 0);
-          this.playCatAction("walk");
-          return;
-        }
-
-        route.waypointIndex += 1;
-        this.advanceFoodBowlRoute(time);
-        return;
-      }
-
-      this.cat.setVelocityX(0);
-      this.cat.setVelocityY(0);
-      route.arrivalStartedAt = time;
-      route.arrivalFromX = this.cat.x;
-      route.arrivalFromY = this.cat.y;
-    }
-
-    const arrivalElapsed = Math.max(time - route.arrivalStartedAt, 0);
-    const arrivalEnd = FOOD_BOWL_ROUTE_DECELERATION_MS;
-    const settleEnd = arrivalEnd + FOOD_BOWL_ROUTE_CONTACT_MS;
-
-    if (arrivalElapsed <= arrivalEnd) {
-      const progress = arrivalElapsed / FOOD_BOWL_ROUTE_DECELERATION_MS;
-      const easedProgress = Phaser.Math.Easing.Sine.Out(progress);
-      this.cat.setPosition(
-        Phaser.Math.Linear(route.arrivalFromX ?? this.cat.x, FOOD_BOWL_X, easedProgress),
-        Phaser.Math.Linear(route.arrivalFromY ?? this.cat.y, FOOD_BOWL_STAND_Y, easedProgress),
-      );
-      this.cat.setFlipX(this.foodBowlFacingLeft);
-      this.playCatAction("walk");
-      return;
-    }
-
-    this.cat.setPosition(FOOD_BOWL_X, FOOD_BOWL_STAND_Y);
-    this.cat.setFlipX(this.foodBowlFacingLeft);
-    if (arrivalElapsed <= settleEnd) {
-      this.playCatAction("idle", true);
+    if (!this.advanceFoodBowlTraversal(route, time, this.foodBowlFacingLeft)) {
       return;
     }
 
@@ -1108,33 +1063,70 @@ export class CatRoomScene extends Phaser.Scene {
     const route = this.foodBowlReturn;
     this.currentZone = "floor";
     this.cat.body.setAllowGravity(false);
-    const waypoint = route.waypoints[route.waypointIndex];
-    if (waypoint) {
-      const distanceX = waypoint.x - this.cat.x;
-      const distanceY = waypoint.y - this.cat.y;
+    if (!this.advanceFoodBowlTraversal(route, time, !this.foodBowlFacingLeft)) {
+      return;
+    }
+
+    this.foodBowlReturn = undefined;
+    this.startFloorPause(time);
+    this.playCatAction("idle", true);
+  }
+
+  private advanceFoodBowlTraversal(route: FoodBowlRoute, time: number, facingLeft: boolean) {
+    if (!this.cat) {
+      return false;
+    }
+
+    if (route.arrivalStartedAt === undefined) {
+      const waypoint = route.waypoints[route.waypointIndex];
+      const target = waypoint ?? route.destination;
+      const distanceX = target.x - this.cat.x;
+      const distanceY = target.y - this.cat.y;
       const distance = Math.hypot(distanceX, distanceY);
       if (distance > FOOD_BOWL_WAYPOINT_TOLERANCE) {
-        const speed = this.nextCompanionWalkRouteSpeed(this.foodBowlPathRemainingDistance(route));
+        const speed = this.nextCompanionWalkRouteSpeed(
+          this.foodBowlPathRemainingDistance(route, route.destination),
+        );
         this.cat.setVelocityX((distanceX / distance) * speed);
         this.cat.setVelocityY((distanceY / distance) * speed);
         this.cat.setFlipX(distanceX < 0);
         this.playCatAction("walk");
-        return;
+        return false;
       }
 
-      route.waypointIndex += 1;
-      this.advanceFoodBowlReturn(time);
-      return;
+      if (waypoint) {
+        route.waypointIndex += 1;
+        return this.advanceFoodBowlTraversal(route, time, facingLeft);
+      }
+
+      this.cat.setVelocityX(0);
+      this.cat.setVelocityY(0);
+      route.arrivalStartedAt = time;
+      route.arrivalFromX = this.cat.x;
+      route.arrivalFromY = this.cat.y;
     }
 
-    this.cat.setVelocity(0, 0);
-    const exit = route.waypoints.at(-1);
-    if (exit) {
-      this.cat.setPosition(exit.x, exit.y);
+    const arrivalElapsed = Math.max(time - route.arrivalStartedAt, 0);
+    if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS) {
+      const progress = arrivalElapsed / FOOD_BOWL_ROUTE_DECELERATION_MS;
+      const easedProgress = Phaser.Math.Easing.Sine.Out(progress);
+      this.cat.setPosition(
+        Phaser.Math.Linear(route.arrivalFromX ?? this.cat.x, route.destination.x, easedProgress),
+        Phaser.Math.Linear(route.arrivalFromY ?? this.cat.y, route.destination.y, easedProgress),
+      );
+      this.cat.setFlipX(facingLeft);
+      this.playCatAction("walk");
+      return false;
     }
-    this.foodBowlReturn = undefined;
-    this.startFloorPause(time);
-    this.playCatAction("idle", true);
+
+    this.cat.setPosition(route.destination.x, route.destination.y);
+    this.cat.setFlipX(facingLeft);
+    if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS + FOOD_BOWL_ROUTE_CONTACT_MS) {
+      this.playCatAction("idle", true);
+      return false;
+    }
+
+    return true;
   }
 
   private nextCompanionWalkVelocity(distance: number) {

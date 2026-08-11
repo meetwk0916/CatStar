@@ -46,6 +46,12 @@ interface SceneInternals {
   acceptsInteractions: boolean;
   foregroundTransitionStartedAt: number;
   currentZone: string;
+  foodBowlReturn?: {
+    waypoints: Array<{ x: number; y: number }>;
+    waypointIndex: number;
+    destination: { x: number; y: number };
+    arrivalStartedAt?: number;
+  };
   activeIntent?: { kind: string; dwellMs: number };
   planner: {
     recordPlantTouch: ReturnType<typeof vi.fn>;
@@ -316,6 +322,10 @@ describe("CatRoomScene interactions", () => {
     scene.update(1000);
 
     expect(internals.routine).toBe("returnFromFoodBowl");
+    expect(internals.foodBowlReturn?.waypoints).toHaveLength(2);
+    expect(internals.foodBowlReturn?.destination).not.toEqual(
+      internals.foodBowlReturn?.waypoints.at(-1),
+    );
     expect(internals.cat.setVelocityX).toHaveBeenLastCalledWith(expect.any(Number));
 
     advanceMockPhysics(internals.cat, 100);
@@ -326,14 +336,24 @@ describe("CatRoomScene interactions", () => {
     expect(internals.routine).toBe("returnFromFoodBowl");
 
     let previousTime = 1100;
+    let arrivalStartedAt: number | undefined;
     for (let time = 1200; time <= 22_000; time += 100) {
       advanceMockPhysics(internals.cat, time - previousTime);
       scene.update(time);
       previousTime = time;
-      if (internals.routine === "floorPause") {
+      arrivalStartedAt = internals.foodBowlReturn?.arrivalStartedAt;
+      if (arrivalStartedAt !== undefined) {
         break;
       }
     }
+
+    expect(arrivalStartedAt).toBeDefined();
+    scene.update((arrivalStartedAt ?? 0) + 200);
+    expect(internals.routine).toBe("returnFromFoodBowl");
+    scene.update((arrivalStartedAt ?? 0) + 350);
+    expect(internals.routine).toBe("returnFromFoodBowl");
+    expect(internals.playCatAction).toHaveBeenCalledWith("idle", true);
+    scene.update((arrivalStartedAt ?? 0) + 351);
 
     expect(internals.cat.y).toBe(225);
     expect(internals.routine).toBe("floorPause");

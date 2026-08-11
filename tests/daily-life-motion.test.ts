@@ -120,4 +120,35 @@ describe('daily-life motion slice', () => {
     expect(manifest.entries).toHaveLength(6);
     expect(manifest.entries?.every((entry) => entry.motionState === 'complete')).toBe(true);
   });
+
+  it('records reviewed desktop and mobile food-route interruption evidence', async () => {
+    const manifest = JSON.parse(
+      await readFile(
+        join(
+          ROOT,
+          'artifacts/art/runtime-motion-review/2026-08-09-food-bowl-acceptance/manifest.json',
+        ),
+        'utf8',
+      ),
+    ) as {
+      entries?: Array<{
+        scenario?: string;
+        touchInterruption?: { finalRoutine?: string; motionState?: string };
+        humanReview?: { status?: string; reviewer?: string; notes?: string };
+      }>;
+    };
+
+    expect(manifest.entries).toHaveLength(2);
+    expect(
+      manifest.entries?.every(
+        (entry) =>
+          entry.scenario === 'route-and-touch-interruption' &&
+          entry.touchInterruption?.finalRoutine === 'floorPause' &&
+          entry.touchInterruption.motionState === 'complete' &&
+          entry.humanReview?.status === 'pass' &&
+          entry.humanReview.reviewer &&
+          entry.humanReview.notes,
+      ),
+    ).toBe(true);
+  });
 });

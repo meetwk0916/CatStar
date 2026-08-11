@@ -385,6 +385,20 @@ def validate_manifest_data(
             failures.append(
                 f"manifest: incomplete motion state for {coat_preset}/{entry.get('action')}"
             )
+        if "catstarTouchInterrupt=1" in str(entry.get("route", "")):
+            interruption = entry.get("touchInterruption")
+            if entry.get("scenario") != "route-and-touch-interruption" or not isinstance(
+                interruption, dict
+            ):
+                failures.append(
+                    f"manifest: missing touch interruption evidence for {coat_preset}/{entry.get('action')}"
+                )
+            elif interruption.get("finalRoutine") != "floorPause" or interruption.get(
+                "motionState"
+            ) != "complete":
+                failures.append(
+                    f"manifest: incomplete touch interruption for {coat_preset}/{entry.get('action')}"
+                )
         recorded_digests = entry.get("evidenceSha256")
         for field in EVIDENCE_FIELDS:
             relative = entry.get(field)

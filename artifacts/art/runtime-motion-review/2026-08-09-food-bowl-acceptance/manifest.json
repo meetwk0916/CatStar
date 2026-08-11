@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-09T23:27:04.983648+08:00",
+  "capturedAt": "2026-08-11T22:07:59.506437+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -19,23 +19,30 @@
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "eat",
       "viewport": "1280x720",
-      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 10527,
+      "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
+      "durationMs": 16427,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T15:26:40.800Z",
+      "scenario": "route-and-touch-interruption",
+      "touchInterruption": {
+        "triggeredAfterMs": 1800,
+        "finalRoutine": "floorPause",
+        "motionState": "complete"
+      },
+      "startedAt": "2026-08-11T14:07:23.255Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "Codex visual evidence review",
+        "notes": "Desktop and mobile sequences show restrained two-waypoint curvature, consistent calm walking pace, grounded frame progression, stable bowl-side arrival, dedicated eating contact, reverse-path return, and touch cancellation settling into a gentle floor response without route resumption.",
+        "reviewedAt": "2026-08-11T22:20:37.832129+08:00"
       },
       "evidenceSha256": {
-        "video": "938ff8e0b86d964971e3f74a93c8f951671c89771d6a8ad77cfb268f47458326",
-        "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
-        "exitPoster": "898ba13334d2f281ef9ef5f49c41b55fcc07f6d4877fb7c59aace965ee1b64f8"
+        "video": "cf881f792938047bcbc38eee72e7046a8bcf6b7be0e2a3188cd6cbe9e2be2302",
+        "entryPoster": "46e662bdfe2e282e8d39db946e740a02fabc00292a5e39c1658841cc2d5eec21",
+        "exitPoster": "1d4578e77a4c47948121474fdab30faf13f60bd85c72bf400f19b804a9a6dea1"
       }
     },
     {
@@ -43,23 +50,30 @@
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "eat",
       "viewport": "390x844",
-      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
-      "durationMs": 10318,
+      "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
+      "durationMs": 16136,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
-      "startedAt": "2026-08-09T15:26:53.142Z",
+      "scenario": "route-and-touch-interruption",
+      "touchInterruption": {
+        "triggeredAfterMs": 1800,
+        "finalRoutine": "floorPause",
+        "motionState": "complete"
+      },
+      "startedAt": "2026-08-11T14:07:41.813Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "Codex visual evidence review",
+        "notes": "Desktop and mobile sequences show restrained two-waypoint curvature, consistent calm walking pace, grounded frame progression, stable bowl-side arrival, dedicated eating contact, reverse-path return, and touch cancellation settling into a gentle floor response without route resumption.",
+        "reviewedAt": "2026-08-11T22:20:37.832141+08:00"
       },
       "evidenceSha256": {
-        "video": "a3f7da5928282f5b8340c6b1881ebec6c8139859dc69f30d8dc7a2174af0f488",
-        "entryPoster": "db92a7bc3d6a7f5e2341435538c6c28995d9c028c4a1a12894c5090b8937c7dd",
-        "exitPoster": "e64050ae554748796b5b12a340b1c65f4ca604b2f624eaf474e9c7f326216703"
+        "video": "29a54bea3e157b86995c5a85ee25cedf2b2229a728b435532589d73000dcc8f6",
+        "entryPoster": "8167624be4b269e864989bfb92714a35c774c567a406dc59ba7e5760c980abff",
+        "exitPoster": "83b130ecd22c0a712ce6e416b0ac756d4f8474608c520c3ebce541c47ec8051a"
       }
     }
   ],
@@ -69,7 +83,7 @@
     "boards/mobile/eat.png",
     "boards/mobile/eat.html"
   ],
-  "sourceFingerprint": "53ea9e7f6f77d596ef37d6bbcf871450ea1818bb0aa503124d45ef6d909e3312",
+  "sourceFingerprint": "9843330bb78277a2ac95d203f8f6ca224426a19c1f6581dfa75cba8816d36959",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
