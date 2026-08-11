@@ -1069,6 +1069,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     this.foodBowlReturn = undefined;
+    this.cat.setY(FLOOR_STAND_Y);
     this.startFloorPause(time);
     this.playCatAction("idle", true);
   }
@@ -1110,7 +1111,7 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const arrivalElapsed = Math.max(time - route.arrivalStartedAt, 0);
-    if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS) {
+    if (arrivalElapsed < FOOD_BOWL_ROUTE_DECELERATION_MS) {
       const progress = arrivalElapsed / FOOD_BOWL_ROUTE_DECELERATION_MS;
       const deceleration = 1 - Phaser.Math.Easing.Sine.Out(progress);
       this.cat.setVelocityX((route.arrivalVelocityX ?? 0) * deceleration);

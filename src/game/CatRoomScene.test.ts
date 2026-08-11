@@ -407,14 +407,12 @@ describe("CatRoomScene interactions", () => {
     expect(arrivalStartedAt).toBeDefined();
     scene.update((arrivalStartedAt ?? 0) + 200);
     expect(internals.routine).toBe("returnFromFoodBowl");
-    scene.update((arrivalStartedAt ?? 0) + 350);
-    expect(internals.routine).toBe("returnFromFoodBowl");
-    expect(internals.playCatAction).toHaveBeenCalledWith("idle", true);
     const arrivalContactStartedAt = internals.foodBowlReturn?.arrivalContactStartedAt;
     expect(arrivalContactStartedAt).toBeDefined();
     scene.update((arrivalContactStartedAt ?? 0) + 149);
     expect(internals.routine).toBe("returnFromFoodBowl");
-    scene.update((arrivalContactStartedAt ?? 0) + 151);
+    expect(internals.playCatAction).toHaveBeenCalledWith("idle", true);
+    scene.update((arrivalContactStartedAt ?? 0) + 150);
 
     expect(internals.cat.y).toBe(225);
     expect(internals.routine).toBe("floorPause");
