@@ -191,9 +191,8 @@ describe("CatRoomScene interactions", () => {
       }
     }
 
-    const routePositions = internals.cat.setPosition.mock.calls as Array<[number, number]>;
     expect(routeYs.some((y) => y > 225 && y < 259)).toBe(true);
-    expect(routePositions.at(-1)?.[1]).toBe(259);
+    expect(internals.cat.setPosition).not.toHaveBeenCalled();
     expect(internals.routine).toBe("eatFoodBowl");
     expect(internals.currentZone).toBe("food-bowl");
     expect(internals.playCatAction).toHaveBeenCalledWith("walk");
@@ -351,6 +350,18 @@ describe("CatRoomScene interactions", () => {
     expect(slowedSpeed).toBeLessThan(arrivalSpeed);
     expect(internals.cat.setPosition).toHaveBeenCalledTimes(positionCallsBeforeDeceleration);
     expect(internals.routine).toBe("approachFoodBowl");
+
+    advanceMockPhysics(internals.cat, 100);
+    scene.update((arrivalStartedAt ?? 0) + 200);
+    const arrivalContactStartedAt = internals.foodBowlRoute?.arrivalContactStartedAt;
+    expect(arrivalContactStartedAt).toBeDefined();
+    expect(internals.cat.setPosition).toHaveBeenCalledTimes(positionCallsBeforeDeceleration);
+
+    scene.update((arrivalContactStartedAt ?? 0) + 149);
+    expect(internals.routine).toBe("approachFoodBowl");
+    scene.update((arrivalContactStartedAt ?? 0) + 150);
+    expect(internals.routine).toBe("eatFoodBowl");
+    expect(internals.cat.setPosition).toHaveBeenCalledTimes(positionCallsBeforeDeceleration);
   });
 
   it("walks away from the bowl while returning to the floor baseline", () => {

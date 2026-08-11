@@ -1121,10 +1121,20 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     this.cat.setVelocity(0, 0);
-    this.cat.setPosition(route.destination.x, route.destination.y);
+    const destinationDistance = Math.hypot(
+      route.destination.x - this.cat.x,
+      route.destination.y - this.cat.y,
+    );
+    if (destinationDistance > FOOD_BOWL_WAYPOINT_TOLERANCE) {
+      route.arrivalStartedAt = undefined;
+      route.arrivalVelocityX = undefined;
+      route.arrivalVelocityY = undefined;
+      return false;
+    }
+
     this.cat.setFlipX(facingLeft);
     route.arrivalContactStartedAt ??= time;
-    if (time - route.arrivalContactStartedAt <= FOOD_BOWL_ROUTE_CONTACT_MS) {
+    if (time - route.arrivalContactStartedAt < FOOD_BOWL_ROUTE_CONTACT_MS) {
       this.playCatAction("idle", true);
       return false;
     }
