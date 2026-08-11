@@ -51,9 +51,11 @@ interface SceneInternals {
     waypointIndex: number;
     destination: { x: number; y: number };
     arrivalStartedAt?: number;
+    arrivalContactStartedAt?: number;
   };
   foodBowlRoute?: {
     arrivalStartedAt?: number;
+    arrivalContactStartedAt?: number;
   };
   activeIntent?: { kind: string; dwellMs: number };
   planner: {
@@ -397,7 +399,11 @@ describe("CatRoomScene interactions", () => {
     scene.update((arrivalStartedAt ?? 0) + 350);
     expect(internals.routine).toBe("returnFromFoodBowl");
     expect(internals.playCatAction).toHaveBeenCalledWith("idle", true);
-    scene.update((arrivalStartedAt ?? 0) + 351);
+    const arrivalContactStartedAt = internals.foodBowlReturn?.arrivalContactStartedAt;
+    expect(arrivalContactStartedAt).toBeDefined();
+    scene.update((arrivalContactStartedAt ?? 0) + 149);
+    expect(internals.routine).toBe("returnFromFoodBowl");
+    scene.update((arrivalContactStartedAt ?? 0) + 151);
 
     expect(internals.cat.y).toBe(225);
     expect(internals.routine).toBe("floorPause");

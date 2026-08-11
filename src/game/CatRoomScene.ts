@@ -116,6 +116,7 @@ interface FoodBowlRoute extends FoodBowlPath {
   arrivalStartedAt?: number;
   arrivalVelocityX?: number;
   arrivalVelocityY?: number;
+  arrivalContactStartedAt?: number;
 }
 
 interface FoodBowlWaypoint {
@@ -1122,7 +1123,8 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setVelocity(0, 0);
     this.cat.setPosition(route.destination.x, route.destination.y);
     this.cat.setFlipX(facingLeft);
-    if (arrivalElapsed <= FOOD_BOWL_ROUTE_DECELERATION_MS + FOOD_BOWL_ROUTE_CONTACT_MS) {
+    route.arrivalContactStartedAt ??= time;
+    if (time - route.arrivalContactStartedAt <= FOOD_BOWL_ROUTE_CONTACT_MS) {
       this.playCatAction("idle", true);
       return false;
     }
