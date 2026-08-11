@@ -34,10 +34,9 @@
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "Codex visual evidence review",
-        "notes": "Desktop and mobile sequences show restrained two-waypoint curvature, consistent calm walking pace, grounded frame progression, stable bowl-side arrival, dedicated eating contact, reverse-path return, and touch cancellation settling into a gentle floor response without route resumption.",
-        "reviewedAt": "2026-08-11T22:20:37.832129+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": "Automated Codex visual QA completed; human review remains pending."
       },
       "evidenceSha256": {
         "video": "cf881f792938047bcbc38eee72e7046a8bcf6b7be0e2a3188cd6cbe9e2be2302",
@@ -65,10 +64,9 @@
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "Codex visual evidence review",
-        "notes": "Desktop and mobile sequences show restrained two-waypoint curvature, consistent calm walking pace, grounded frame progression, stable bowl-side arrival, dedicated eating contact, reverse-path return, and touch cancellation settling into a gentle floor response without route resumption.",
-        "reviewedAt": "2026-08-11T22:20:37.832141+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": "Automated Codex visual QA completed; human review remains pending."
       },
       "evidenceSha256": {
         "video": "29a54bea3e157b86995c5a85ee25cedf2b2229a728b435532589d73000dcc8f6",
