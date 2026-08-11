@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The browser evidence root is
-`artifacts/art/runtime-review/2026-08-09/`, covering default movement,
+`artifacts/art/runtime-review/2026-08-11/`, covering default movement,
 window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
 active approach, pointer interactions on both sides of the cat, plant touch,
 and the enlarged cat at a `390x844` mobile viewport. Its manifest has been

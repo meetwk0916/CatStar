@@ -347,6 +347,7 @@ def main() -> None:
         ["npm", "run", "dev", "--", "--host", HOST, "--port", str(PORT)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
+        start_new_session=True,
     )
 
     try:

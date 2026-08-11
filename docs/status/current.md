@@ -66,7 +66,7 @@ The current implementation includes:
   `artifacts/art/runtime-motion-review/2026-08-09-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its two human-review decisions
   remain pending. The broader runtime screenshot evidence under
-  `artifacts/art/runtime-review/2026-08-09/` has been regenerated with the
+  `artifacts/art/runtime-review/2026-08-11/` has been regenerated with the
   latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
