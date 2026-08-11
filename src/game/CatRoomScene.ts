@@ -1072,7 +1072,11 @@ export class CatRoomScene extends Phaser.Scene {
     this.playCatAction("idle", true);
   }
 
-  private advanceFoodBowlTraversal(route: FoodBowlRoute, time: number, facingLeft: boolean) {
+  private advanceFoodBowlTraversal(
+    route: FoodBowlRoute,
+    time: number,
+    facingLeft: boolean,
+  ): boolean {
     if (!this.cat) {
       return false;
     }
