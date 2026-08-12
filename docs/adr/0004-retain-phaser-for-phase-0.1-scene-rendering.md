@@ -1,6 +1,6 @@
 # ADR-0004: Retain Phaser for Phase 0.1 scene rendering
 
-- **Status:** Accepted
+- **Status:** Accepted; renderer decomposition amended by ADR-0008
 - **Date:** 2026-07-29
 
 ## Context

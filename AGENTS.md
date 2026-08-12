@@ -36,7 +36,8 @@ specs and mutable status notes never override those sources.
   - `src/domain/letters.ts`: mailbox, delivery, read/final-letter rules.
   - `src/domain/passport.ts`: passport validation, migration, read/farewell invariants.
   - `src/domain/catFsm.ts`: cat routine policy and companion reactions.
-  - `src/game/CatRoomScene.ts`: Phaser coordinates, animation, and physics adapter.
+  - `src/game/companionRoute.ts`: named companion-route geometry, easing, arrival, and cancellation frames.
+  - `src/game/CatRoomScene.ts`: Phaser lifecycle, sprite, animation, and physics adapter.
   - `src/storage/passportStorage.ts`: local storage persistence.
 - Phase 0 data stays local. Do not add accounts, upload, sync, or remote storage.
 - Do not commit `node_modules/`, `dist/`, or TypeScript build info.

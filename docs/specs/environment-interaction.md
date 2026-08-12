@@ -19,15 +19,18 @@ Runtime scene:
 
 ```text
 src/domain/catFsm.ts
+src/game/companionRoute.ts
 src/game/CatRoomScene.ts
 src/components/PhaserCatScene.tsx
 public/assets/scenes/window-room/collision.json
 ```
 
 `catFsm.ts` owns companion intent, pacing, and reaction policy.
-`CatRoomScene.ts` translates that policy into Phaser coordinates, animation,
-physics, and scene timing. `PhaserCatScene.tsx` owns only the React lifecycle
-that creates, starts, and destroys the scene.
+`companionRoute.ts` owns engine-independent execution frames for migrated named
+routes, including authored geometry, easing, arrival/contact timing, and safe
+cancellation. `CatRoomScene.ts` applies those frames through Phaser sprites,
+animation, physics, and scene lifecycle. `PhaserCatScene.tsx` owns only the React
+lifecycle that creates, starts, and destroys the scene.
 
 Runtime review evidence is indexed in the
 [runtime asset map](../art/runtime-map.md#runtime-behavior-notes).
@@ -184,6 +187,14 @@ route.
 The first route slice to validate is floor-to-food-bowl. Continuous desktop and
 mobile evidence must show no vertical snap, no foot sliding, a stable arrival
 handoff, and safe touch interruption; a final screenshot alone is insufficient.
+
+The floor-to-food-bowl **陪伴路线** executes through the pure renderer-internal
+named-route module. Its interface accepts the route name and current rendered
+pose; CatRoomScene does not supply waypoints, easing, or authored phase timing.
+The module rejects overlapping starts, while CatRoomScene remains the Phaser
+adapter that applies each returned pose and animation phase. Other routes remain
+on their existing scripted implementation until a second migration proves which
+execution behavior is genuinely shared.
 
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat

@@ -61,17 +61,15 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 Current accepted browser evidence lives under
-`artifacts/art/runtime-review/2026-08-09/` and contains nineteen validated
+`artifacts/art/runtime-review/2026-08-12/` and contains nineteen validated
 screenshots covering default movement, window-bench, cat-bed, food-bowl, and
 blanket routines, grooming, stretching, deep sleep, active approach, the
 in-place interaction across four runtime moments after real pointer input on
 both sides of the cat, plant touch, and the enlarged cat at a `390x844` mobile
 viewport.
-The plant-touch desktop evidence lives under
-`artifacts/art/runtime-review/2026-08-04/`; the matching `375x812` evidence
-lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
-accompanying `manifest.json` binds its screenshots to the exact runtime input
-fingerprint; `npm run review:runtime:check` fails after those inputs change.
+The accompanying `manifest.json` binds these screenshots to the exact runtime
+input fingerprint; `npm run review:runtime:check` fails after those inputs
+change.
 The quiet-motion continuous evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`.

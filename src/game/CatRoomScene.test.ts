@@ -19,6 +19,7 @@ interface SceneInternals {
     anims: { currentAnim?: { key: string } };
     body: { setAllowGravity: ReturnType<typeof vi.fn>; velocity: { x: number; y: number } };
     play: ReturnType<typeof vi.fn>;
+    flipX: boolean;
     x: number;
     y: number;
     setDepth: ReturnType<typeof vi.fn>;
@@ -62,6 +63,7 @@ function createCat(x = 320): SceneInternals["cat"] {
     anims: {},
     body: { setAllowGravity: vi.fn(), velocity: { x: 0, y: 0 } },
     play: vi.fn(),
+    flipX: false,
     x,
     y: 225,
     setDepth: vi.fn(),
@@ -184,60 +186,7 @@ describe("CatRoomScene interactions", () => {
     expect(internals.playCatAction).not.toHaveBeenCalledWith("eat", true);
   });
 
-  it("cancels a bowl route before its first movement tick", () => {
-    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
-    const internals = scene as unknown as SceneInternals;
-    internals.cat = createCat(320);
-    internals.routine = "approachFoodBowl";
-    internals.routineHoldUntil = 0;
-    internals.currentZone = "floor";
-    internals.activeIntent = { kind: "eat", dwellMs: 5_000 };
-    internals.temperament = "AFFECTIONATE";
-    internals.time = { now: 1000 };
-    internals.manualInteractUntil = 0;
-    internals.tweens = { killTweensOf: vi.fn() };
-    internals.playCatAction = vi.fn();
-    internals.onInteract = vi.fn();
-
-    scene.interact();
-
-    expect(internals.routine).toBe("floorPause");
-    expect(internals.activeIntent).toBeUndefined();
-    scene.update(1100);
-    expect(internals.routine).toBe("floorPause");
-    expect(internals.playCatAction).not.toHaveBeenCalledWith("walk");
-  });
-
-  it("eases an interrupted bowl arrival back to the floor baseline", () => {
-    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
-    const internals = scene as unknown as SceneInternals;
-    internals.cat = createCat(320);
-    internals.routine = "approachFoodBowl";
-    internals.routineHoldUntil = 0;
-    internals.currentZone = "floor";
-    internals.activeIntent = { kind: "eat", dwellMs: 5_000 };
-    internals.temperament = "AFFECTIONATE";
-    internals.time = { now: 1000 };
-    internals.manualInteractUntil = 0;
-    internals.tweens = { killTweensOf: vi.fn() };
-    internals.playCatAction = vi.fn();
-    internals.onInteract = vi.fn();
-
-    scene.update(1000);
-    internals.cat.y = 250;
-    internals.time.now = 1100;
-    scene.interact();
-    internals.time.now = 1200;
-    scene.update(1200);
-
-    const yCalls = internals.cat.setY.mock.calls.map(([y]) => y as number);
-    expect(yCalls.some((y) => y > 225 && y < 250)).toBe(true);
-    scene.update(1300);
-    const settledYCalls = internals.cat.setY.mock.calls.map(([y]) => y as number);
-    expect(settledYCalls.at(-1)).toBe(225);
-  });
-
-  it("keeps its approach heading while slowing into the bowl from the right", () => {
+  it("restores the food-bowl arrival heading while eating", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;
     internals.cat = createCat(540);
@@ -245,36 +194,17 @@ describe("CatRoomScene interactions", () => {
     internals.routineHoldUntil = 0;
     internals.currentZone = "floor";
     internals.temperament = "AFFECTIONATE";
-    internals.time = { now: 1000 };
+    internals.time = { now: 1_000 };
     internals.manualInteractUntil = 0;
     internals.playCatAction = vi.fn();
 
-    scene.update(1000);
-    scene.update(2000);
+    scene.update(1_000);
+    scene.update(2_251);
+    internals.cat.flipX = false;
+    internals.cat.setFlipX.mockClear();
+    scene.update(2_300);
+
     expect(internals.cat.setFlipX).toHaveBeenLastCalledWith(true);
-
-    scene.update(2500);
-    expect(internals.routine).toBe("eatFoodBowl");
-    expect(internals.cat.setFlipX).toHaveBeenLastCalledWith(true);
-  });
-
-  it("skips the left bowl waypoint when already past it", () => {
-    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
-    const internals = scene as unknown as SceneInternals;
-    internals.cat = createCat(458);
-    internals.routine = "approachFoodBowl";
-    internals.routineHoldUntil = 0;
-    internals.currentZone = "floor";
-    internals.temperament = "AFFECTIONATE";
-    internals.time = { now: 1000 };
-    internals.manualInteractUntil = 0;
-    internals.playCatAction = vi.fn();
-
-    scene.update(1000);
-    scene.update(1100);
-
-    const positions = internals.cat.setPosition.mock.calls as Array<[number, number]>;
-    expect(positions.every(([x]) => x >= 458)).toBe(true);
   });
 
   it("cancels a scripted jump before responding in place", () => {
