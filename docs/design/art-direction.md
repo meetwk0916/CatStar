@@ -2,7 +2,7 @@
 
 **Status:** Current visual direction
 
-Last updated: 2026-08-08
+Last updated: 2026-08-11
 
 ## Priority
 
@@ -154,9 +154,8 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
   substitute sampling or automated structural checks for visual approval.
 - Do not use code-drawn cat sprites as production art.
   `scripts/generate_cat_animation_assets.py` is only an experiment for frame
-  counts, anchors, and metadata. The dedicated eat production candidate remains
-  owned by `scripts/compose_product_cat_eat_v3.py`; the current production-model
-  `lie` source is owned by `scripts/compose_product_cat_quiet_motion_v1.py`.
+  counts, anchors, and metadata. The current runtime action selection and its
+  source chain are recorded in the [runtime asset map](../art/runtime-map.md).
 - Treat current AI-generated cat candidates as design, motion-planning, and
   engineering references only. Final release sheets must come from one
   rights-cleared, identity-consistent production process across all ten

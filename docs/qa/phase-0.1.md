@@ -2,7 +2,7 @@
 
 **Status:** Current manual acceptance checklist
 
-Last updated: 2026-08-08
+Last updated: 2026-08-11
 
 ## Scope
 
@@ -56,7 +56,9 @@ accessibility checks.
 - Confirm the cat moves between grounded environment targets.
 - Confirm the scripted window-bench routine walks to the takeoff point, jumps
   onto the perch, rests, and returns to the floor without floating.
-- Confirm the food-bowl routine uses the eating animation.
+- Confirm the food-bowl routine follows two gentle turns into the bowl, keeps
+  the normal walking pace through the route, uses the eating animation, and
+  returns along the same path without a fast slide or baseline snap.
 - Confirm cat-bed and blanket routines use awake resting rather than deep sleep.
 - Use the development routes `?catstarRoutine=floorGroom`,
   `?catstarRoutine=floorStretch`, and `?catstarRoutine=floorSleep`; confirm

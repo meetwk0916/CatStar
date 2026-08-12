@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "capturedAt": "2026-08-12T23:16:40.046292+08:00",
+  "capturedAt": "2026-08-12T23:33:16.152531+08:00",
   "viewport": [
     1280,
     720
@@ -18,7 +18,7 @@
       1280,
       720
     ],
-    "food-bowl-eat-8s.png": [
+    "food-bowl-eat-14s.png": [
       1280,
       720
     ],
@@ -83,7 +83,7 @@
       720
     ]
   },
-  "sourceFingerprint": "dd967d599d46ab33eba166a3ff7968cf4d1a8546f5c6e777dbc57227dcf08b2a",
+  "sourceFingerprint": "6480a6bef2aaa9f01464979b2979995853e062882355073f0770a643fdd2e99f",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -189,7 +189,7 @@
     "default-walk-4s.png",
     "window-bench-6s.png",
     "catbed-rest-10s.png",
-    "food-bowl-eat-8s.png",
+    "food-bowl-eat-14s.png",
     "blanket-rest-10s.png",
     "floor-groom-2s.png",
     "floor-stretch-1s.png",

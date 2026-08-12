@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-09
+Last updated: 2026-08-11
 
 ## Purpose
 
@@ -70,12 +70,14 @@ bed. This keeps the cat from reading as if it walked through the bed rim. After
 the lying/rest loop, it hops back out through the opening before returning to the
 floor routine.
 
-`rightTray` currently stands for the food bowl area. The cat walks to the bowl
-side and plays the dedicated `eat` sniff/eat sheet at a stable bowl-side
-anchor. Because the food bowl sits on the foreground tray, its eating anchor is
-slightly below the normal walking baseline and horizontally aligned to the main
-food bowl so the cat reads as standing behind the tray and lowering its head to
-the bowl rim.
+`rightTray` currently stands for the food bowl area. The cat follows a named
+floor-to-bowl route with two gentle foreground waypoints, keeps its normal
+walking pace through both turns, and plays the dedicated `eat` sniff/eat sheet
+at a stable bowl-side anchor. After eating, the cat follows those waypoints in
+reverse at the same pace before settling on the floor. Because the food bowl
+sits on the foreground tray, its eating anchor is slightly below the normal
+walking baseline and horizontally aligned to the main food bowl so the cat
+reads as standing behind the tray and lowering its head to the bowl rim.
 
 Eating remains self-directed companionship behavior. The bowl never creates a
 hunger state, empties, asks the user to refill it, or implies that the cat
@@ -186,15 +188,17 @@ route.
 
 The first route slice to validate is floor-to-food-bowl. Continuous desktop and
 mobile evidence must show no vertical snap, no foot sliding, a stable arrival
-handoff, and safe touch interruption; a final screenshot alone is insufficient.
+handoff, consistent pace through the outbound and reverse return paths, and
+safe touch interruption; a final screenshot alone is insufficient.
 
-The floor-to-food-bowl **陪伴路线** executes through the pure renderer-internal
-named-route module. Its interface accepts the route name and current rendered
-pose; CatRoomScene does not supply waypoints, easing, or authored phase timing.
-The module rejects overlapping starts, while CatRoomScene remains the Phaser
-adapter that applies each returned pose and animation phase. Other routes remain
-on their existing scripted implementation until a second migration proves which
-execution behavior is genuinely shared.
+The food-bowl round trip executes through the pure renderer-internal named-route
+module. Its interface accepts the route name and current rendered pose and
+velocity; CatRoomScene does not supply waypoints, easing, or authored phase
+timing. The module rejects overlapping starts, while CatRoomScene remains the
+Phaser adapter that applies each returned velocity, facing, settling position,
+and animation phase. Other destinations remain on their existing scripted
+implementation until another migration proves which execution behavior is
+genuinely shared.
 
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat

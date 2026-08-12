@@ -43,6 +43,9 @@ if (!Number.isFinite(durationMs) || durationMs <= 0) {
   throw new Error(`Invalid duration: ${durationRaw}`);
 }
 
+const reviewUrl = new URL(route, baseUrl);
+const includesTouchInterruption = reviewUrl.searchParams.get("catstarTouchInterrupt") === "1";
+
 const videoDirectory = path.join(outputDirectory, "videos", coatPreset, viewportRaw);
 const posterDirectory = path.join(outputDirectory, "posters", coatPreset, viewportRaw);
 const rawVideoDirectory = path.join(outputDirectory, ".raw-videos");
@@ -61,7 +64,7 @@ const video = page.video();
 const startedAt = new Date().toISOString();
 
 try {
-  await page.goto(new URL(route, baseUrl).toString());
+  await page.goto(reviewUrl.toString());
   const canvas = page.locator("canvas");
   await canvas.waitFor({ state: "visible" });
   await page.waitForTimeout(400);
@@ -97,6 +100,45 @@ try {
     null,
     { timeout: durationMs },
   );
+
+  let touchInterruption;
+  if (includesTouchInterruption) {
+    await page.goto(reviewUrl.toString());
+    await canvas.waitFor({ state: "visible" });
+    await page.waitForFunction(
+      () => document.documentElement.dataset.catstarMotionState === "running",
+      null,
+      { timeout: 4_000 },
+    );
+    await page.waitForTimeout(1_800);
+    const canvasSize = await canvas.evaluate((element) => ({
+      width: element.clientWidth,
+      height: element.clientHeight,
+    }));
+    await canvas.click({
+      position: {
+        x: (350 / 640) * canvasSize.width,
+        y: (228 / 360) * canvasSize.height,
+      },
+    });
+    await page.waitForFunction(
+      () =>
+        document.documentElement.dataset.catstarMotionState === "complete" &&
+        document.documentElement.dataset.catstarMotionRoutine === "floorPause",
+      null,
+      { timeout: 4_000 },
+    );
+    await page.waitForTimeout(1_000);
+    touchInterruption = {
+      triggeredAfterMs: 1_800,
+      finalRoutine: await page.evaluate(
+        () => document.documentElement.dataset.catstarMotionRoutine,
+      ),
+      motionState: await page.evaluate(
+        () => document.documentElement.dataset.catstarMotionState,
+      ),
+    };
+  }
   await page.waitForTimeout(250);
   await page.screenshot({ path: endPosterPath });
   const actualDurationMs = Date.now() - motionStartedAt;
@@ -119,6 +161,8 @@ try {
       durationMs: actualDurationMs,
       captureTimeoutMs: durationMs,
       motionState: "complete",
+      scenario: includesTouchInterruption ? "route-and-touch-interruption" : "route",
+      ...(touchInterruption ? { touchInterruption } : {}),
       startedAt,
       video: path.relative(outputDirectory, videoPath),
       entryPoster: path.relative(outputDirectory, posterPath),

@@ -98,8 +98,8 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | --- | --- |
 | Candidate package | `artifacts/art/candidates/active/product-cat-daily-life-v1/` |
 | Identity authority | `artifacts/art/candidates/active/product-cat-model-sheet-v1/sources/model-sheet-chromakey.png` is the sole anatomy, face, marking, palette, and pixel-style authority. |
-| Generated source SHA-256 | `sources/eat-source-chromakey.png`: `694db3b17ac609be9b168af6959fbf62b05620cb3c1096bab98689d8bbb0f90d`; `sources/groom-source-chromakey.png`: `c12f199476a28ac0449b5c5b878c493538f66922ab465db7ea9d64503fe56eed`; `sources/stretch-source-chromakey.png`: `fddb03629bcd5f10f5fb8542ca8dd0e5faeee62363b2205571266e76936234ae`. |
-| Derived alpha SHA-256 | `alpha/eat-source.png`: `2816e99d746fc3ada223ba0d44ad03d569fe68bdf0ee653f9318d44e4f7c07f6`; `alpha/groom-source.png`: `b6043bea44a9b761de5df2655ea56659de854b05d56f113933c01f46a78bd045`; `alpha/stretch-source.png`: `a4d0d5711e6445afaf759e24406747ed27c3475d79168814bcb9c0615aab9fd7`. |
+| Generated source SHA-256 | `sources/eat-source-chromakey.png`: `b95a09da6c5026355826dda493b52aa708662d0d0cd3b08a439b1e1e245f8a45`; `sources/groom-source-chromakey.png`: `c12f199476a28ac0449b5c5b878c493538f66922ab465db7ea9d64503fe56eed`; `sources/stretch-source-chromakey.png`: `fddb03629bcd5f10f5fb8542ca8dd0e5faeee62363b2205571266e76936234ae`. |
+| Derived alpha SHA-256 | `alpha/eat-source.png`: `52ff176e31fbc63ca02c43535cb10b322390a10f43885fb565124d6b92058e4f`; `alpha/groom-source.png`: `b6043bea44a9b761de5df2655ea56659de854b05d56f113933c01f46a78bd045`; `alpha/stretch-source.png`: `a4d0d5711e6445afaf759e24406747ed27c3475d79168814bcb9c0615aab9fd7`. |
 | Creator and account context | Generated with built-in ImageGen in the project owner's Codex session. |
 | Tool and date | Built-in ImageGen; exact version not exposed; generated 2026-08-09. |
 | Source brief | Six bowl-oriented `eat` poses, eight seated paw-and-face `groom` poses, and six grounded foreleg `stretch` poses, all preserving the approved production identity and contact convention. Exact prompt set is retained in `generation-prompts.md`. |

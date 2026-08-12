@@ -39,6 +39,9 @@ must point there rather than restating which version is current.
 Technical lineage does not establish distribution rights. The current
 rights-chain gate and production intake requirements live in
 [`rights-and-provenance.md`](rights-and-provenance.md).
+The Issue #17 evidence draft lives in
+[`rights-chain-checklist.md`](rights-chain-checklist.md); it does not change
+the gate.
 
 ## Production model-sheet review
 
@@ -55,6 +58,21 @@ It combines the dedicated production model source, a `96x96` runtime strip,
 and room crops from the fingerprint-bound desktop and `390x844` mobile review
 screenshots. It is review evidence only and does not change the rights gate or
 grant public distribution clearance.
+
+## Daily-life motion source workflow
+
+The internal `eat`, `groom`, and `stretch` source package is recorded at
+`artifacts/art/candidates/active/product-cat-daily-life-v1/`. Rebuild its
+transparent normalized sheets with:
+
+```bash
+sh scripts/run_python_with_pillow.sh \
+  scripts/compose_product_cat_daily_life_v1.py
+sh scripts/run_python_with_pillow.sh scripts/build_cat_coat_presets.py
+```
+
+The package is derived from the dedicated production model sheet and remains
+internal prototype evidence. It does not change the rights gate.
 
 ## Runtime Review Workflow
 
