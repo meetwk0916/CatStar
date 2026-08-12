@@ -22,7 +22,7 @@
     "review:motion:record": "sh scripts/run_python_with_pillow.sh scripts/record_cat_motion_review.py"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.17",
+    "@tailwindcss/vite": "^4.3.3",
     "phaser": "3.90.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
