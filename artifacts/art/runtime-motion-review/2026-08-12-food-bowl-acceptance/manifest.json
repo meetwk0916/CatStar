@@ -34,9 +34,10 @@
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
+        "reviewedAt": "2026-08-13T00:21:05.032619+08:00"
       },
       "evidenceSha256": {
         "video": "5eed4c67f8da3957de53a8b1786ae81bd9762cc9dd56f88357367110eee35e7a",
@@ -64,9 +65,10 @@
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
+        "reviewedAt": "2026-08-13T00:21:05.032978+08:00"
       },
       "evidenceSha256": {
         "video": "7cf6cace9d6fa4c49ac9832861bce80a113ec030cf5d1fa9fea90176cbf66b39",

@@ -69,7 +69,8 @@ regenerated after the latest purposeful-route code change and passes
 `npm run review:runtime:check`.
 The dedicated food-bowl continuous motion evidence is separate at
 `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/`; it is
-structurally valid for desktop and mobile, with human review still pending.
+structurally valid for desktop and mobile; meetwk0916 approved both entries on
+2026-08-13, and the scoped release-grade human-review gate passes.
 The plant-touch desktop evidence lives under
 `artifacts/art/runtime-review/2026-08-04/`; the matching `375x812` evidence
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
