@@ -31,6 +31,8 @@ their subject. The historical Phase 0 spec never overrides current documents.
 - [`art/runtime-map.md`](art/runtime-map.md) — current runtime asset provenance.
 - [`art/rights-and-provenance.md`](art/rights-and-provenance.md) — rights-chain
   gate for internal versus public use.
+- [`art/rights-chain-checklist.md`](art/rights-chain-checklist.md) — draft
+  evidence checklist for Issue #17; it does not grant distribution rights.
 
 Generated sources, candidate sheets, and browser-review evidence live under
 `artifacts/art/`, not under `docs/`.

@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-09
+**Last aligned:** 2026-08-11
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -52,6 +52,22 @@ The current implementation includes:
   Structural asset validation and fingerprint-bound desktop/mobile continuous
   evidence pass; all eight floor, cat-bed, and blanket motion entries were
   approved by wakun on 2026-08-09.
+- The production-model-derived daily-life v1 candidate now supplies `eat`,
+  `groom`, and `stretch` across all six current coat presets. Structural asset
+  validation passes, and dedicated gray-white master continuous desktop/mobile
+  evidence is recorded; six human-review entries remain pending.
+- The first purposeful **陪伴路线** slice now carries the cat from the floor
+  to the food bowl through two authored foreground waypoints, continuous
+  walking velocity through the turns, a 200 ms arrival deceleration, and a
+  150 ms stable contact before eating. The return follows the same path in
+  reverse at the same walking pace. Touch cancels this route without resuming
+  it; other zone routes remain on their existing scripted routines.
+- Dedicated food-bowl motion evidence is present at
+  `artifacts/art/runtime-motion-review/2026-08-09-food-bowl-acceptance/` and
+  is structurally valid for desktop and mobile; its two human-review decisions
+  remain pending. The broader runtime screenshot evidence under
+  `artifacts/art/runtime-review/2026-08-11/` has been regenerated with the
+  latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -93,9 +109,10 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Complete rounded short-haired's remaining four actions (`jump`, `eat`,
-  `groom`, and `stretch`) through the same rights-recorded production process
-  as the v12 quality slice. Then produce independent
+- Complete rounded short-haired's remaining `jump` action through the same
+  rights-recorded production process as the v12 quality slice. The daily-life
+  `eat`, `groom`, and `stretch` candidate and dedicated continuous evidence now
+  exist, but human review remains pending. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
   exposing those prototypes in the passport; they do not block the first
   release.
@@ -112,6 +129,9 @@ hashes or branch information to this file.
   follow-up scope rather than release blockers.
 - Use the plant-touch lifecycle as evidence before extracting a general prop
   interaction framework or expanding other zones.
+- Extend the named-route treatment to plant inspection/touch and foreground
+  approach only after the floor-to-food-bowl slice has human-reviewed motion
+  evidence.
 - Add one-way/top-only platform support before enabling free-form landings.
 - Complete manual pixel cleanup and interaction timing polish before art lock.
 - Split foreground occlusion elements after the scene composition stabilizes.

@@ -21,6 +21,9 @@ QUALITY_SLICE_V12_DIR = Path(
 QUIET_MOTION_V1_DIR = Path(
     "artifacts/art/candidates/active/product-cat-quiet-motion-v1/sprite-sheets-96"
 )
+DAILY_LIFE_V1_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-daily-life-v1/sprite-sheets-96"
+)
 PREVIEW_DIR = Path("artifacts/art/candidates/active/cat-coat-presets-v1")
 FRAME = 96
 
@@ -40,10 +43,10 @@ MOTION_SOURCES = {
     "jump": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v5/sprite-sheets-96/jump.png",
     "sleep": QUIET_MOTION_V1_DIR / "sleep.png",
     "interact": QUALITY_SLICE_V12_DIR / "interact.png",
-    "eat": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v3/sprite-sheets-96/eat.png",
+    "eat": DAILY_LIFE_V1_DIR / "eat.png",
     "lie": QUIET_MOTION_V1_DIR / "lie.png",
-    "groom": QUALITY_SLICE_V10_DIR / "groom.png",
-    "stretch": QUALITY_SLICE_V10_DIR / "stretch.png",
+    "groom": DAILY_LIFE_V1_DIR / "groom.png",
+    "stretch": DAILY_LIFE_V1_DIR / "stretch.png",
 }
 
 

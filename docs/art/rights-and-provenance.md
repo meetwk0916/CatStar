@@ -20,6 +20,7 @@ production rights.
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; final human confirmation and immutable terms snapshot still missing | Internal quality-slice evidence; not public-release clearance |
 | Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; human confirmation complete; immutable terms snapshot still missing | Internal quiet-motion evidence; not public-release clearance |
+| Rounded short-haired daily-life v1 `eat`, `groom`, and `stretch` sources | `artifacts/art/candidates/active/product-cat-daily-life-v1/` plus `scripts/compose_product_cat_daily_life_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Source hashes and transformation lineage recorded below; immutable terms snapshot still missing | Internal daily-life evidence; not public-release clearance |
 | Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Historical internal support; not current runtime or release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
@@ -60,7 +61,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Identity anchors | Natural small triangular ears, amber eyes, a wider white muzzle, and a calm curious expression; four white-socked paws with clear floor contact; and a medium gray-and-white tabby ringed tail that rests naturally on the floor or around the body. |
 | Gray-and-white marking map | White muzzle, chest through belly, lower legs, and paws; gray tabby across crown, back, flank, and tail. Pose perspective may reshape the marks, but may not remove the white chest, relocate the white socks, or reverse the back-and-tail color relationship. |
 | Rendering baseline | Controlled pixel clusters and a restrained dark soft outline; no blurred paint, photographic texture, or excessive shine. Warm nighttime interior light must preserve readability of the gray-and-white coat and amber eyes. |
-| Scale review | The source sheet was approved enlarged. The dedicated model sheet has no standalone `96x96` runtime-cell or in-room evidence; the separately recorded v12 action evidence covers the derived action cells in the desktop and `390x844` mobile rooms. |
+| Scale review | The source sheet was approved enlarged. The mobile review derivative at `artifacts/art/review/rounded-short-haired-model-sheet-v1/mobile-review-375w.png` combines the dedicated model sheet, a `96x96` runtime strip, and room crops from the fingerprint-bound desktop and `390x844` mobile review screenshots; separately recorded v12 action evidence covers the derived action cells in continuous desktop and mobile motion. |
 | Creator and account owner | Project owner (self-attested) |
 | Design reviewer | wakun |
 | Formal approval | Approved by wakun on 2026-08-08 as CatStar's production model sheet and the sole identity and visual baseline for subsequent cat action work. |
@@ -88,6 +89,26 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet. The owner-use statement remains subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`, covering the production-model-derived `sit`, `walk`, and `interact` on desktop and mobile from entry through exit. Structural validation passed; the manifest's human-review entries require a fresh confirmation against the v5 boards before they are treated as final release approval. |
 | Distribution status | Internal rounded short-haired moving quality-slice evidence only. This record does not clear the room art, the other seven action sources, or public distribution. |
+
+## Rounded short-haired daily-life v1 intake record
+
+**Status:** Internal daily-life evidence; structural asset review passed
+
+| Field | Record |
+| --- | --- |
+| Candidate package | `artifacts/art/candidates/active/product-cat-daily-life-v1/` |
+| Identity authority | `artifacts/art/candidates/active/product-cat-model-sheet-v1/sources/model-sheet-chromakey.png` is the sole anatomy, face, marking, palette, and pixel-style authority. |
+| Generated source SHA-256 | `sources/eat-source-chromakey.png`: `b95a09da6c5026355826dda493b52aa708662d0d0cd3b08a439b1e1e245f8a45`; `sources/groom-source-chromakey.png`: `c12f199476a28ac0449b5c5b878c493538f66922ab465db7ea9d64503fe56eed`; `sources/stretch-source-chromakey.png`: `fddb03629bcd5f10f5fb8542ca8dd0e5faeee62363b2205571266e76936234ae`. |
+| Derived alpha SHA-256 | `alpha/eat-source.png`: `52ff176e31fbc63ca02c43535cb10b322390a10f43885fb565124d6b92058e4f`; `alpha/groom-source.png`: `b6043bea44a9b761de5df2655ea56659de854b05d56f113933c01f46a78bd045`; `alpha/stretch-source.png`: `a4d0d5711e6445afaf759e24406747ed27c3475d79168814bcb9c0615aab9fd7`. |
+| Creator and account context | Generated with built-in ImageGen in the project owner's Codex session. |
+| Tool and date | Built-in ImageGen; exact version not exposed; generated 2026-08-09. |
+| Source brief | Six bowl-oriented `eat` poses, eight seated paw-and-face `groom` poses, and six grounded foreleg `stretch` poses, all preserving the approved production identity and contact convention. Exact prompt set is retained in `generation-prompts.md`. |
+| Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
+| Transformation lineage | Chroma-key sources → local alpha removal → fixed-grid subject extraction → action-level scale normalization → transparent `96x96` sheets via `scripts/compose_product_cat_daily_life_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
+| Structural evidence | `npm run check:assets` and `npm run test:assets` pass for all six current coat presets and the ten-action contract. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-daily-life-v1/` covers `eat`, `groom`, and `stretch` for the gray-white motion master at `1280x720` and `390x844` from entry through exit. Structural validation passed; six human-review entries remain pending. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Distribution status | Internal daily-life evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
 ## Rounded short-haired quiet-motion v1 intake record
 

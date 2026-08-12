@@ -238,6 +238,47 @@ class MotionReviewTests(unittest.TestCase):
 
         self.assertTrue(any("runtime coat mismatch" in failure for failure in failures))
 
+    def test_manifest_validation_requires_recorded_touch_interruption(self) -> None:
+        output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-touch-test-"))
+        fingerprint, source_files = REVIEW.source_fingerprint()
+        evidence = output_dir / "eat.webm"
+        evidence.write_bytes(b"review evidence")
+        digest = REVIEW.file_sha256(evidence)
+        entry = {
+            "coatPreset": "gray-white-tabby",
+            "runtimeCoatPreset": "GRAY_WHITE_TABBY",
+            "action": "eat",
+            "viewport": "1280x720",
+            "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1",
+            "motionState": "complete",
+            "video": "eat.webm",
+            "entryPoster": "eat.webm",
+            "exitPoster": "eat.webm",
+            "evidenceSha256": {field: digest for field in REVIEW.EVIDENCE_FIELDS},
+            "humanReview": {"status": "pending", "reviewer": "", "notes": ""},
+        }
+        manifest = {
+            "schemaVersion": 1,
+            "presets": ["gray-white-tabby"],
+            "actions": ["eat"],
+            "viewports": ["1280x720"],
+            "entries": [entry],
+            "boards": [],
+            "sourceFingerprint": fingerprint,
+            "sourceFiles": source_files,
+        }
+
+        failures = REVIEW.validate_manifest_data(manifest, output_dir)
+
+        self.assertTrue(any("missing touch interruption evidence" in failure for failure in failures))
+        entry["scenario"] = "route-and-touch-interruption"
+        entry["touchInterruption"] = {
+            "triggeredAfterMs": 1_800,
+            "finalRoutine": "floorPause",
+            "motionState": "complete",
+        }
+        self.assertEqual(REVIEW.validate_manifest_data(manifest, output_dir), [])
+
     def test_pending_human_review_is_not_a_human_pass(self) -> None:
         manifest = {
             "entries": [
