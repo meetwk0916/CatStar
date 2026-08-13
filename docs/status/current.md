@@ -67,22 +67,20 @@ The current implementation includes:
   deceleration, 150 ms stable contact, and touch cancellation owned behind the
   route interface. Their destination behavior and plant-leaf lifecycle remain
   in the Phaser adapter. Dedicated gray-white desktop/mobile continuous
-  evidence exists for both approaches; meetwk0916 approved all four
-  regenerated entries in Codex on 2026-08-13.
+  evidence exists for both approaches; its review state is recorded in the
+  runtime asset map.
 - Foreground approach and return now use the named-route module for the floor
   approach, stable contact, 760 ms perspective transition, scale/depth handoff,
   reverse return, and touch cancellation. CatRoomScene applies the returned
   frames and owns only the acknowledgement action. Dedicated gray-white
   desktop/mobile continuous evidence covers the complete round trip and touch
-  interruption; meetwk0916 approved all four regenerated entries in Codex on
-  2026-08-13.
+  interruption; its review state is recorded in the runtime asset map.
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
-  is structurally valid for desktop and mobile; both regenerated human-review
-  entries await explicit review by meetwk0916. The broader runtime screenshot
-  evidence under `artifacts/art/runtime-review/2026-08-13/` has been
-  regenerated with the latest route input and passes
-  `npm run review:runtime:check`.
+  is structurally valid for desktop and mobile; its pending review state is
+  recorded in the runtime asset map. The broader runtime screenshot evidence
+  under `artifacts/art/runtime-review/2026-08-13/` has been regenerated with
+  the latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.

@@ -64,7 +64,7 @@ src/
   components/              UI components
   data/letters.json         Phase 0 prewritten test letters
   domain/                   Product rules kept out of UI components
-  game/                     Phaser coordinates, animation, and physics adapter
+  game/                     Named-route execution and Phaser scene adapter
   storage/passportStorage.ts local passport persistence
   types.ts                  Shared domain types
 docs/                       Specifications, status, QA, ADRs, and documentation indexes
