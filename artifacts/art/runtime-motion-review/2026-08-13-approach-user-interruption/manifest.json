@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T22:34:49.982132+08:00",
+  "capturedAt": "2026-08-13T23:01:53.211746+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,7 +20,7 @@
       "action": "approach-user-interruption",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachUser&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 11803,
+      "durationMs": 11584,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -29,20 +29,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T14:34:23.128Z",
+      "startedAt": "2026-08-13T15:01:26.406Z",
       "video": "videos/gray-white-tabby/1280x720/approach-user-interruption.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/approach-user-interruption-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/approach-user-interruption-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.441050+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "a682d3a6c97ef7f4f892430c25b316c6ea7feae8700fe29e41d3b7cc02133246",
-        "entryPoster": "5a1f875018167ba172039507928ac1d3173e6daae59f1de1f79ccca845df4926",
-        "exitPoster": "002a2857722fb5777d0d1b5bff1815409b090930d0c6858a7638c9649110be3a"
+        "video": "0d69d89dff4c919af3eff53c365001b8276f3d60ced49ba5c85d0b921b33bd95",
+        "entryPoster": "14f2f1e146cf5a22ac7088750361c22714e0862d700b30b14fdeedc5852c5b51",
+        "exitPoster": "82dd9ad009de8831417314a33b400e5379201d6deaeec569a3ba77ca610e725a"
       }
     },
     {
@@ -51,7 +50,7 @@
       "action": "approach-user-interruption",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachUser&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 11280,
+      "durationMs": 11487,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -60,20 +59,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T14:34:37.013Z",
+      "startedAt": "2026-08-13T15:01:40.159Z",
       "video": "videos/gray-white-tabby/390x844/approach-user-interruption.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/approach-user-interruption-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/approach-user-interruption-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.441422+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "e8c3bb25450c7c96fcb922b80e4d4de6137e0bf9191901a347696413fd34789d",
-        "entryPoster": "df749b084178f9dd361e5cd5af1265cfe0ab9ab310cbe7103f095b3f0fe1eab4",
-        "exitPoster": "6edfd65cfdac098fd2d25c97e2c486e91470b9543793be81f27762406f6f0260"
+        "video": "f98f2e84b48633b4f3befd5305a3bac4e6c1e4f9d97a993c8117a14f4495d905",
+        "entryPoster": "6c117c8ac30599cf1dae29299094d0cca38cc4d86bfb193ae4cc88cf76300bde",
+        "exitPoster": "5dce19908733eb414cedc8290415b5d7c0c165fc1fb29421a8849d10c3cb66a0"
       }
     }
   ],
@@ -83,7 +81,7 @@
     "boards/mobile/approach-user-interruption.png",
     "boards/mobile/approach-user-interruption.html"
   ],
-  "sourceFingerprint": "697d2bdada101ba249ef6f03c5393744a6088d3b49f22628c76fc2b21714361e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

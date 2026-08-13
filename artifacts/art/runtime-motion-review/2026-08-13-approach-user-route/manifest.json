@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T22:34:10.732721+08:00",
+  "capturedAt": "2026-08-13T23:01:18.815763+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,22 +20,21 @@
       "action": "approach-user-route",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachUser&catstarMotionReview=1",
-      "durationMs": 8592,
+      "durationMs": 8507,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:33:50.407Z",
+      "startedAt": "2026-08-13T15:00:58.691Z",
       "video": "videos/gray-white-tabby/1280x720/approach-user-route.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/approach-user-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.303450+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "0d9b66138c570b0b747d9d17ddecf070307fd1a048144b75b8490e00dbd48108",
+        "video": "3a8e951bf21b72622c108e841cbb99d723716d6db5d31c0ed7cbcb8fb7748785",
         "entryPoster": "46e662bdfe2e282e8d39db946e740a02fabc00292a5e39c1658841cc2d5eec21",
         "exitPoster": "91a0ac4c2873b573bed27db29f397e1b63266eef89f4b2ef66f8965239a412ed"
       }
@@ -46,23 +45,22 @@
       "action": "approach-user-route",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachUser&catstarMotionReview=1",
-      "durationMs": 8423,
+      "durationMs": 8206,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:34:01.044Z",
+      "startedAt": "2026-08-13T15:01:09.045Z",
       "video": "videos/gray-white-tabby/390x844/approach-user-route.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/approach-user-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.303806+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "777b29470f67108c7ed072dbe96ded23b366d319ea08789fc1f3a1b0452b4db2",
-        "entryPoster": "1e522e8439d022e46154eff3e9a69a121ce4ef25483b460d42d827d11a3347a5",
+        "video": "824dbe4b855858188e4dd99cd575770327a377ebc46f160175975add26582e0e",
+        "entryPoster": "95cac211b05a373d4bd13610719596e654b0ab9138d3d8ede5be7ac465567e3f",
         "exitPoster": "8fd1e399850af1e24072fbb747f82c406d4cbf082bccf7e7a0ba6448fd852ac2"
       }
     }
@@ -73,7 +71,7 @@
     "boards/mobile/approach-user-route.png",
     "boards/mobile/approach-user-route.html"
   ],
-  "sourceFingerprint": "697d2bdada101ba249ef6f03c5393744a6088d3b49f22628c76fc2b21714361e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

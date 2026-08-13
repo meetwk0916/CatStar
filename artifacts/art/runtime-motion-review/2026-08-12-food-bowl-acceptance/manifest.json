@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-12T23:34:57.436385+08:00",
+  "capturedAt": "2026-08-13T23:00:46.593024+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -19,30 +19,24 @@
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "eat",
       "viewport": "1280x720",
-      "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16486,
+      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
+      "durationMs": 13114,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
-      "scenario": "route-and-touch-interruption",
-      "touchInterruption": {
-        "triggeredAfterMs": 1800,
-        "finalRoutine": "floorPause",
-        "motionState": "complete"
-      },
-      "startedAt": "2026-08-12T15:34:21.179Z",
+      "scenario": "route",
+      "startedAt": "2026-08-13T15:00:17.379Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
-        "reviewedAt": "2026-08-13T00:21:05.032619+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "5eed4c67f8da3957de53a8b1786ae81bd9762cc9dd56f88357367110eee35e7a",
-        "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
-        "exitPoster": "7c5fea94c3ecbcd7fe54cda9fe4a89084b9840d8c9c15d090e205522c65b77cc"
+        "video": "6221aa14a1b3b77748074dc0ab187eaef9f947e4af15c11293b8c0e301ebcb6f",
+        "entryPoster": "46e662bdfe2e282e8d39db946e740a02fabc00292a5e39c1658841cc2d5eec21",
+        "exitPoster": "7b31ad75f60e8e40650a6085e5356838dc7d6b277ec49d94d8774ad805e1d50e"
       }
     },
     {
@@ -50,30 +44,24 @@
       "runtimeCoatPreset": "GRAY_WHITE_TABBY",
       "action": "eat",
       "viewport": "390x844",
-      "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16184,
+      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
+      "durationMs": 12708,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
-      "scenario": "route-and-touch-interruption",
-      "touchInterruption": {
-        "triggeredAfterMs": 1800,
-        "finalRoutine": "floorPause",
-        "motionState": "complete"
-      },
-      "startedAt": "2026-08-12T15:34:39.680Z",
+      "scenario": "route",
+      "startedAt": "2026-08-13T15:00:32.360Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
-        "reviewedAt": "2026-08-13T00:21:05.032978+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "7cf6cace9d6fa4c49ac9832861bce80a113ec030cf5d1fa9fea90176cbf66b39",
-        "entryPoster": "db92a7bc3d6a7f5e2341435538c6c28995d9c028c4a1a12894c5090b8937c7dd",
-        "exitPoster": "3f0e115ffc107d8e539fc8dfb7674fe4151878c0918d63482feb7e8cc69b324b"
+        "video": "8666e0ea2d731e66dd465b7526b7d637e89d337254b3bb4a116e623369e6c7de",
+        "entryPoster": "ff61bbbc32a768e43d5a2dc223de3e1daf925fc4567beb179992dcb0ce5ff4cc",
+        "exitPoster": "5867519b8f6edf6cef130ef5a9a2bd2860d6553c30c8fcea9b791a1342caabd2"
       }
     }
   ],
@@ -83,7 +71,7 @@
     "boards/mobile/eat.png",
     "boards/mobile/eat.html"
   ],
-  "sourceFingerprint": "2d34e055d240836bf0df415e246417189b962f1a7c11442c5a91f1c7cb1ea43e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

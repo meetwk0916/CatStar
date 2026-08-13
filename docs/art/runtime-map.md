@@ -87,18 +87,17 @@ human-review gate.
 The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
 `artifacts/art/runtime-motion-review/2026-08-13-plant-touch-route/`. Each set
-covers the gray-white motion master at `1280x720` and `390x844`, is bound to the
-current route-source fingerprint, and was approved by meetwk0916 for all four
-entries on 2026-08-13; both scoped release-grade gates pass.
+covers the gray-white motion master at `1280x720` and `390x844` and is bound to
+the current route-source fingerprint. All four regenerated entries await
+explicit review by meetwk0916.
 
 The foreground approach-and-return evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-route/`. It covers
 the complete gray-white round trip at `1280x720` and `390x844`, is bound to the
-current route-source fingerprint, and was approved by meetwk0916 for both
-entries on 2026-08-13. Dedicated touch-interruption evidence lives under
+current route-source fingerprint, and awaits explicit review by meetwk0916.
+Dedicated touch-interruption evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-interruption/`
-with the same viewport coverage and approval; both scoped release-grade gates
-pass.
+with the same viewport coverage and pending review state.
 
 ## Candidate Retention
 

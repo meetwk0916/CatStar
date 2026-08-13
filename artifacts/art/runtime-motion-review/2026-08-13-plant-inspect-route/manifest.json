@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T22:32:58.540798+08:00",
+  "capturedAt": "2026-08-13T22:59:28.898003+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,23 +20,22 @@
       "action": "plant-inspect-route",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachPlant&catstarMotionReview=1",
-      "durationMs": 8176,
+      "durationMs": 8143,
       "captureTimeoutMs": 8000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:32:38.959Z",
+      "startedAt": "2026-08-13T14:59:07.569Z",
       "video": "videos/gray-white-tabby/1280x720/plant-inspect-route.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/plant-inspect-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/plant-inspect-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.031857+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "0c514df45ea5e2aa6a85b0972829cec8711ea437a9da6454b465327193514ba7",
-        "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
+        "video": "fb1a99575fe3d8c4515443a363c1fc44cc16703f83209f365de39cfd3c19fb9c",
+        "entryPoster": "4e5491bc3e313f7321ce6c3217d1f23ffdc3ca8603f5756714e976458b1718a1",
         "exitPoster": "c37dc2ce0540fea42168eb33ea11904ed6cc575653208ed9f03a5dd86a036aec"
       }
     },
@@ -46,22 +45,21 @@
       "action": "plant-inspect-route",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachPlant&catstarMotionReview=1",
-      "durationMs": 8118,
+      "durationMs": 8095,
       "captureTimeoutMs": 8000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:32:49.153Z",
+      "startedAt": "2026-08-13T14:59:19.180Z",
       "video": "videos/gray-white-tabby/390x844/plant-inspect-route.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/plant-inspect-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/plant-inspect-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.032234+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "4493892678f3ee903ea9b1e579c4fc61a27c0ea68e212cbb46a77886a6189fc5",
+        "video": "2c75fe5c5115d917ed0800aa324443bd0ac4fbcc7ef277cbc83323a7952654bd",
         "entryPoster": "550e87cdde6ea55598d03244ede3155e251c9571c14e742e89ac89ef00f697cd",
         "exitPoster": "0dd021a1e0bc2dd12227fb18c322c6e95a7738be0ab005dc2927100a3ab5901b"
       }
@@ -73,7 +71,7 @@
     "boards/mobile/plant-inspect-route.png",
     "boards/mobile/plant-inspect-route.html"
   ],
-  "sourceFingerprint": "697d2bdada101ba249ef6f03c5393744a6088d3b49f22628c76fc2b21714361e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

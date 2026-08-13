@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T22:33:29.295376+08:00",
+  "capturedAt": "2026-08-13T22:59:28.972867+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,23 +20,22 @@
       "action": "plant-touch-route",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachPlantTouch&catstarMotionReview=1",
-      "durationMs": 8256,
+      "durationMs": 8224,
       "captureTimeoutMs": 8000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:33:09.458Z",
+      "startedAt": "2026-08-13T14:59:07.284Z",
       "video": "videos/gray-white-tabby/1280x720/plant-touch-route.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/plant-touch-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/plant-touch-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.163963+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "670e0c5f0e75637058b8ccfac9d645954f487cefdbd41789eab71248e121f452",
-        "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
+        "video": "0358d9c9ef1c5448436374634c901bc82bea4b3c0a3f32b13b2be728d678a04d",
+        "entryPoster": "4ca1902be041327f1013572f2ea788b1739ac206390d56e7dca713c085c98490",
         "exitPoster": "f2c661dbaacc053a98fbf9eb050dda827b21e2484c50e0197bb8ef1deaa9f0ff"
       }
     },
@@ -46,24 +45,23 @@
       "action": "plant-touch-route",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachPlantTouch&catstarMotionReview=1",
-      "durationMs": 7957,
+      "durationMs": 8209,
       "captureTimeoutMs": 8000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T14:33:19.777Z",
+      "startedAt": "2026-08-13T14:59:19.135Z",
       "video": "videos/gray-white-tabby/390x844/plant-touch-route.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/plant-touch-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/plant-touch-route-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved desktop and mobile named-route evidence in Codex on 2026-08-13.",
-        "reviewedAt": "2026-08-13T22:38:10.164336+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "ea01ab3c93115e954333fc26f7d7edf7816d97f725997c9e286b57f664b8b7fe",
-        "entryPoster": "fe4c368809e7988de00ecd1b202cd1e294aa225985e1c5fa352e932ab67773ef",
-        "exitPoster": "49e3d7d651a2a3fee8df43d455b07c19d08bfc672d70b982c3729ed5dc7d7066"
+        "video": "50bac962f76ae99232383a04cde439d1f4f4565ce706610f21621559be2a2631",
+        "entryPoster": "3cf2e26529547e78c54e2ce1953b758b5fab0fd45e1b20807100652ec22e6fa8",
+        "exitPoster": "86e32850ae7ae4d78727c70fec2e3dc2d2b1ac5add967861a7e861e5091c76bd"
       }
     }
   ],
@@ -73,7 +71,7 @@
     "boards/mobile/plant-touch-route.png",
     "boards/mobile/plant-touch-route.html"
   ],
-  "sourceFingerprint": "697d2bdada101ba249ef6f03c5393744a6088d3b49f22628c76fc2b21714361e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

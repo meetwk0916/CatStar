@@ -908,18 +908,10 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
-    let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
-    if (!frame) {
-      this.startCompanionRoute(this.routine === "returnFromFoodBowl" ? "food-bowl-to-floor" : "floor-to-food-bowl");
-      frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
-    }
-    if (frame) this.applyRouteFrame(frame, time);
-    this.cat.body.setAllowGravity(false);
-    this.cat.setVelocity(0, 0);
-    this.currentZone = "floor";
-    this.routine = "floorPause";
-    this.routineHoldUntil = time + 900;
-    this.activeIntent = undefined;
+    this.cancelCompanionRoute(
+      time,
+      this.routine === "returnFromFoodBowl" ? "food-bowl-to-floor" : "floor-to-food-bowl",
+    );
   }
 
   private cancelPlantRoute(
@@ -927,28 +919,23 @@ export class CatRoomScene extends Phaser.Scene {
     route: "floor-to-plant-inspect" | "floor-to-plant-touch",
   ) {
     if (!this.cat) return;
-    let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
-    if (!frame) {
-      this.startCompanionRoute(route);
-      frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
-    }
-    if (frame) this.applyRouteFrame(frame, time);
+    this.cancelCompanionRoute(time, route);
     if (route === "floor-to-plant-touch") this.resetPlantLeaf();
-    this.cat.body.setAllowGravity(false);
-    this.cat.setVelocity(0, 0);
-    this.currentZone = "floor";
-    this.routine = "floorPause";
-    this.routineHoldUntil = time + 900;
     this.plantTouchStartedAt = 0;
     this.plantTouchCooldownStarted = false;
-    this.activeIntent = undefined;
   }
 
   private cancelForegroundRoute(time: number) {
     if (!this.cat) return;
+    const route =
+      this.routine === "returnFromForeground" ? "foreground-to-floor" : "floor-to-foreground";
+    this.cancelCompanionRoute(time, route);
+  }
+
+  private cancelCompanionRoute(time: number, route: CompanionRouteName) {
+    if (!this.cat) return;
     let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
     if (!frame) {
-      const route = this.routine === "returnFromForeground" ? "foreground-to-floor" : "floor-to-foreground";
       this.startCompanionRoute(route);
       frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
     }
