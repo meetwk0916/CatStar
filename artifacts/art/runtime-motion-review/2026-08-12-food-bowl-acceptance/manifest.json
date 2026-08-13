@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-12T23:34:57.436385+08:00",
+  "capturedAt": "2026-08-13T23:09:18.846307+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,7 +20,7 @@
       "action": "eat",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16486,
+      "durationMs": 16431,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -29,20 +29,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-12T15:34:21.179Z",
+      "startedAt": "2026-08-13T15:08:42.892Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
-        "reviewedAt": "2026-08-13T00:21:05.032619+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "5eed4c67f8da3957de53a8b1786ae81bd9762cc9dd56f88357367110eee35e7a",
+        "video": "be2bb4565758afde168dfe477a7bc52b794bd2f563831af18f9a95f56ddffdbd",
         "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
-        "exitPoster": "7c5fea94c3ecbcd7fe54cda9fe4a89084b9840d8c9c15d090e205522c65b77cc"
+        "exitPoster": "688002672b65e8dd9e1ed984aefb344db0dd0f2e6dbba878a8b776bc2528eb25"
       }
     },
     {
@@ -51,7 +50,7 @@
       "action": "eat",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16184,
+      "durationMs": 16153,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -60,20 +59,19 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-12T15:34:39.680Z",
+      "startedAt": "2026-08-13T15:09:01.171Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pass",
-        "reviewer": "meetwk0916",
-        "notes": "Approved after desktop and mobile continuous-motion review: route continuity, arrival and return, and touch interruption passed.",
-        "reviewedAt": "2026-08-13T00:21:05.032978+08:00"
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
       },
       "evidenceSha256": {
-        "video": "7cf6cace9d6fa4c49ac9832861bce80a113ec030cf5d1fa9fea90176cbf66b39",
-        "entryPoster": "db92a7bc3d6a7f5e2341435538c6c28995d9c028c4a1a12894c5090b8937c7dd",
-        "exitPoster": "3f0e115ffc107d8e539fc8dfb7674fe4151878c0918d63482feb7e8cc69b324b"
+        "video": "4a59166b3be9b1a8b61fa596abe34edab530b3ad5ad0caf5eeaeeb9a75509cff",
+        "entryPoster": "fe4c368809e7988de00ecd1b202cd1e294aa225985e1c5fa352e932ab67773ef",
+        "exitPoster": "ce046a63219d2c07229b68559c69a34bff041681646c72c994f417424b68a4d1"
       }
     }
   ],
@@ -83,7 +81,7 @@
     "boards/mobile/eat.png",
     "boards/mobile/eat.html"
   ],
-  "sourceFingerprint": "2d34e055d240836bf0df415e246417189b962f1a7c11442c5a91f1c7cb1ea43e",
+  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

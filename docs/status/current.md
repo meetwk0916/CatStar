@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-11
+**Last aligned:** 2026-08-13
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -61,12 +61,25 @@ The current implementation includes:
   walking velocity through the turns, a 200 ms arrival deceleration, and a
   150 ms stable contact before eating. The return follows the same path in
   reverse at the same walking pace. Touch cancels this route without resuming
-  it; other zone routes remain on their existing scripted routines.
+  it.
+- Plant inspection and plant touch now use the same renderer-independent named
+  route module, with their authored approach waypoint, 200 ms arrival
+  deceleration, 150 ms stable contact, and touch cancellation owned behind the
+  route interface. Their destination behavior and plant-leaf lifecycle remain
+  in the Phaser adapter. Dedicated gray-white desktop/mobile continuous
+  evidence exists for both approaches; its review state is recorded in the
+  runtime asset map.
+- Foreground approach and return now use the named-route module for the floor
+  approach, stable contact, 760 ms perspective transition, scale/depth handoff,
+  reverse return, and touch cancellation. CatRoomScene applies the returned
+  frames and owns only the acknowledgement action. Dedicated gray-white
+  desktop/mobile continuous evidence covers the complete round trip and touch
+  interruption; its review state is recorded in the runtime asset map.
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
-  is structurally valid for desktop and mobile; meetwk0916 approved both
-  human-review entries on 2026-08-13. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-12/` has been regenerated with
+  is structurally valid for desktop and mobile; its pending review state is
+  recorded in the runtime asset map. The broader runtime screenshot evidence
+  under `artifacts/art/runtime-review/2026-08-13/` has been regenerated with
   the latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
@@ -129,9 +142,6 @@ hashes or branch information to this file.
   follow-up scope rather than release blockers.
 - Use the plant-touch lifecycle as evidence before extracting a general prop
   interaction framework or expanding other zones.
-- Extend the named-route treatment to plant inspection/touch and foreground
-  approach only after the floor-to-food-bowl slice has human-reviewed motion
-  evidence.
 - Add one-way/top-only platform support before enabling free-form landings.
 - Complete manual pixel cleanup and interaction timing polish before art lock.
 - Split foreground occlusion elements after the scene composition stabilizes.

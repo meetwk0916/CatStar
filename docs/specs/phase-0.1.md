@@ -45,11 +45,13 @@ When documents disagree, use this order:
 - **陪伴例程** planning belongs to CatStar domain logic; Phaser only renders
   the scene and executes engine-specific motion.
 - The planner emits engine-independent **陪伴意图**, such as visiting the
-  window bench and returning to the floor. Coordinates, tweens, and animation
-  keys remain renderer details.
+  window bench and returning to the floor. Named-route geometry and execution
+  frames belong to the renderer-independent route executor; animation keys and
+  engine-specific application remain Phaser details.
 - CatStar domain logic owns companionship pacing, including meaningful dwell
-  windows. The renderer owns travel and animation timing derived from scene
-  geometry.
+  windows. Named-route timing follows the specialized environment-interaction
+  contract; Phaser owns destination action playback and engine-specific scene
+  timing.
 - Maintain that boundary when adding another room zone or companion action.
 - Runtime scene and animation assets live under `public/assets/scenes/window-room/`.
 - Generated source art, candidates, and runtime-review evidence live under `artifacts/art/`.
@@ -64,6 +66,8 @@ When documents disagree, use this order:
   [`environment-interaction.md`](./environment-interaction.md).
 - The renderer decision and exit condition are recorded in
   [`ADR-0004`](../adr/0004-retain-phaser-for-phase-0.1-scene-rendering.md).
+- Named-route execution ownership is recorded in
+  [`ADR-0008`](../adr/0008-deepen-named-companion-route-execution.md).
 - The staged appearance release boundary is recorded in
   [`ADR-0006`](../adr/0006-release-with-one-complete-appearance-prototype.md).
 

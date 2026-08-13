@@ -8,6 +8,8 @@ import {
 const initialPose = (x = 320, y = 225): CompanionRoutePose => ({
   x,
   y,
+  scale: 1,
+  depth: 5,
   facingLeft: false,
   velocityX: 0,
   velocityY: 0,
@@ -20,6 +22,8 @@ function applyFrame(pose: CompanionRoutePose, frame: CompanionRouteFrame, elapse
   pose.velocityY = frame.velocityY;
   pose.facingLeft = frame.facingLeft;
   if (frame.y !== undefined) pose.y = frame.y;
+  if (frame.scale !== undefined) pose.scale = frame.scale;
+  if (frame.depth !== undefined) pose.depth = frame.depth;
 }
 
 function runUntil(
@@ -119,5 +123,67 @@ describe("companion route executor", () => {
     expect(first?.velocityX).toBeLessThan(0);
     expect(runUntil(executor, pose, "arrived").frame.route).toBe("food-bowl-to-floor");
     expect(Math.abs(pose.y - 225)).toBeLessThanOrEqual(4);
+  });
+
+  it.each([
+    ["floor-to-plant-inspect", 458],
+    ["floor-to-plant-touch", 462],
+  ] as const)("owns the %s approach geometry and stable arrival", (route, destinationX) => {
+    const executor = createCompanionRouteExecutor("CURIOUS");
+    const pose = initialPose(300);
+    executor.start(route, { pose });
+
+    const first = executor.advance(1_000, pose);
+    expect(first).toMatchObject({ route, phase: "cruise" });
+    expect(Math.abs(first?.velocityY ?? 0)).toBeGreaterThan(0);
+
+    const result = runUntil(executor, pose, "arrived");
+    expect(result.frame.route).toBe(route);
+    expect(Math.hypot(pose.x - destinationX, pose.y - 225)).toBeLessThanOrEqual(4);
+  });
+
+  it("cancels a plant route at the current rendered pose without resuming it", () => {
+    const executor = createCompanionRouteExecutor("CURIOUS");
+    const pose = initialPose(420, 229);
+    executor.start("floor-to-plant-touch", { pose });
+
+    expect(executor.cancel(1_000, pose)).toMatchObject({
+      route: "floor-to-plant-touch",
+      phase: "cancelling",
+    });
+    expect(executor.advance(1_200, pose)).toMatchObject({ phase: "cancelled", y: 225 });
+    expect(executor.advance(1_201, pose)).toBeNull();
+  });
+
+  it("owns the foreground approach, perspective transition, and stable contact", () => {
+    const executor = createCompanionRouteExecutor("AFFECTIONATE");
+    const pose = initialPose(320);
+    executor.start("floor-to-foreground", { pose });
+
+    const transition = runUntil(executor, pose, "transition");
+    expect(transition.frame).toMatchObject({
+      route: "floor-to-foreground",
+      velocityX: 0,
+      velocityY: 0,
+    });
+
+    const arrived = runUntil(executor, pose, "arrived");
+    expect(arrived.frame.route).toBe("floor-to-foreground");
+    expect(pose.y).toBe(270);
+    expect(pose.scale).toBe(1.18);
+    expect(pose.depth).toBe(7);
+  });
+
+  it("returns from the foreground and cancels back to the room pose", () => {
+    const executor = createCompanionRouteExecutor("AFFECTIONATE");
+    const pose = { ...initialPose(412, 270), scale: 1.18, depth: 7 };
+    executor.start("foreground-to-floor", { pose });
+    runUntil(executor, pose, "transition");
+
+    const cancelled = executor.cancel(1_200, pose);
+    expect(cancelled).toMatchObject({ route: "foreground-to-floor", phase: "cancelling" });
+    const settled = executor.advance(1_400, pose);
+    expect(settled).toMatchObject({ phase: "cancelled", y: 225, scale: 1, depth: 5 });
+    expect(executor.advance(1_401, pose)).toBeNull();
   });
 });
