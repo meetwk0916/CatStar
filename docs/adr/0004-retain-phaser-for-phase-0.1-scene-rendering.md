@@ -15,9 +15,11 @@ unfinished.
 ## Decision
 
 Retain Phaser as the Phase 0.1 scene renderer. CatStar domain logic owns
-engine-independent **陪伴意图** and companionship pacing; Phaser owns
-coordinates, tweens, animation keys, and motion execution. Maintain this
-boundary when adding another room zone or companion action.
+engine-independent **陪伴意图** and companionship pacing. Renderer decomposition
+and current named-route ownership are defined by
+[ADR-0008](0008-deepen-named-companion-route-execution.md); Phaser remains the
+scene lifecycle, sprite, animation, and physics adapter. Maintain this boundary
+when adding another room zone or companion action.
 
 Do not start an engine migration unless the scene repeatedly fails the mobile
 performance checks in `docs/qa/phase-0.1.md`. Choosing a replacement renderer is

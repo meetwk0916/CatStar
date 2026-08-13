@@ -141,8 +141,10 @@ after cooldown. Every temperament can select it; curious cats receive the
 highest weight without exclusive access.
 
 This replaces both a deterministic patrol order and unbounded random floor
-roaming. The selected intent owns a meaningful dwell window; Phaser owns its
-coordinates, tweens, and action playback.
+roaming. The selected intent owns a meaningful dwell window. For migrated named
+routes, `companionRoute.ts` owns geometry, easing, arrival/contact timing, and
+cancellation frames; Phaser applies those frames and owns destination action
+playback.
 
 ## Current Action Behavior
 
@@ -191,19 +193,17 @@ mobile evidence must show no vertical snap, no foot sliding, a stable arrival
 handoff, consistent pace through the outbound and reverse return paths, and
 safe touch interruption; a final screenshot alone is insufficient.
 
-The food-bowl round trip executes through the pure renderer-internal named-route
+The food-bowl round trip executes through the renderer-independent named-route
 module. Its interface accepts the route name and current rendered pose and
 velocity; CatRoomScene does not supply waypoints, easing, or authored phase
 timing. The module rejects overlapping starts, while CatRoomScene remains the
 Phaser adapter that applies each returned velocity, facing, settling position,
-and animation phase. Other destinations remain on their existing scripted
-implementation until another migration proves which execution behavior is
-genuinely shared.
+and animation phase.
 
-Plant inspection and plant touch are the next migrated routes. The named-route
-module owns their shared approach geometry, gentle turn, arrival/contact timing,
-and non-resuming cancellation. CatRoomScene remains the Phaser adapter that
-starts the inspect or touch destination phase and owns the split-leaf lifecycle.
+Plant inspection and plant touch also use the named-route module. The module
+owns their shared approach geometry, gentle turn, arrival/contact timing, and
+non-resuming cancellation. CatRoomScene remains the Phaser adapter that starts
+the inspect or touch destination phase and owns the split-leaf lifecycle.
 Dedicated desktop/mobile continuous evidence must cover both complete routes.
 
 Foreground approach and return also execute through the named-route module.
