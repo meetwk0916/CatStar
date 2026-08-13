@@ -576,7 +576,7 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      this.advanceFoodBowlRoute(time);
+      this.advanceCompanionRoute(time, "floor-to-food-bowl");
       return;
     }
 
@@ -591,14 +591,16 @@ export class CatRoomScene extends Phaser.Scene {
       if (time >= this.routineHoldUntil) {
         this.completeActiveIntent();
         this.routine = "returnFromFoodBowl";
-        this.startFoodBowlRoute("food-bowl-to-floor");
-        this.advanceFoodBowlReturn(time);
+        this.currentZone = "floor";
+        this.startCompanionRoute("food-bowl-to-floor");
+        this.advanceCompanionRoute(time, "food-bowl-to-floor");
       }
       return;
     }
 
     if (this.routine === "returnFromFoodBowl") {
-      this.advanceFoodBowlReturn(time);
+      this.currentZone = "floor";
+      this.advanceCompanionRoute(time, "food-bowl-to-floor");
       return;
     }
 
@@ -883,10 +885,6 @@ export class CatRoomScene extends Phaser.Scene {
     return true;
   }
 
-  private startFoodBowlRoute(name: CompanionRouteName) {
-    this.startCompanionRoute(name);
-  }
-
   private startCompanionRoute(name: CompanionRouteName) {
     if (!this.cat) return;
     this.companionRouteExecutor().start(name, { pose: this.currentRoutePose() });
@@ -902,19 +900,6 @@ export class CatRoomScene extends Phaser.Scene {
     if (frame) this.applyRouteFrame(frame, time);
   }
 
-  private advanceFoodBowlRoute(time: number) {
-    if (!this.cat) {
-      return;
-    }
-
-    let frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
-    if (!frame) {
-      this.startFoodBowlRoute("floor-to-food-bowl");
-      frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
-    }
-    if (frame) this.applyRouteFrame(frame, time);
-  }
-
   private cancelFoodBowlRoute(time: number) {
     if (
       !this.cat ||
@@ -925,7 +910,7 @@ export class CatRoomScene extends Phaser.Scene {
 
     let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
     if (!frame) {
-      this.startFoodBowlRoute(this.routine === "returnFromFoodBowl" ? "food-bowl-to-floor" : "floor-to-food-bowl");
+      this.startCompanionRoute(this.routine === "returnFromFoodBowl" ? "food-bowl-to-floor" : "floor-to-food-bowl");
       frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
     }
     if (frame) this.applyRouteFrame(frame, time);
@@ -974,17 +959,6 @@ export class CatRoomScene extends Phaser.Scene {
     this.routine = "floorPause";
     this.routineHoldUntil = time + 900;
     this.activeIntent = undefined;
-  }
-
-  private advanceFoodBowlReturn(time: number) {
-    if (!this.cat) return;
-    this.currentZone = "floor";
-    let frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
-    if (!frame) {
-      this.startFoodBowlRoute("food-bowl-to-floor");
-      frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
-    }
-    if (frame) this.applyRouteFrame(frame, time);
   }
 
   private advanceCancelledRoute(time: number) {
