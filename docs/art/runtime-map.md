@@ -88,16 +88,18 @@ The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
 `artifacts/art/runtime-motion-review/2026-08-13-plant-touch-route/`. Each set
 covers the gray-white motion master at `1280x720` and `390x844` and is bound to
-the current route-source fingerprint. All four regenerated entries await
-explicit review by meetwk0916.
+the current route-source fingerprint. meetwk0916 approved all four regenerated
+entries in Codex on 2026-08-13.
 
 The foreground approach-and-return evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-route/`. It covers
 the complete gray-white round trip at `1280x720` and `390x844`, is bound to the
-current route-source fingerprint, and awaits explicit review by meetwk0916.
+current route-source fingerprint, and both entries were approved by meetwk0916
+in Codex on 2026-08-13.
 Dedicated touch-interruption evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-interruption/`
-with the same viewport coverage and pending review state.
+with the same viewport coverage; meetwk0916 approved both entries in Codex on
+2026-08-13.
 
 ## Candidate Retention
 

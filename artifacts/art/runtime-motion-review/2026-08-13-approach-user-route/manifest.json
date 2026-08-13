@@ -29,9 +29,10 @@
       "entryPoster": "posters/gray-white-tabby/1280x720/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/approach-user-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.275377+08:00"
       },
       "evidenceSha256": {
         "video": "3a8e951bf21b72622c108e841cbb99d723716d6db5d31c0ed7cbcb8fb7748785",
@@ -54,9 +55,10 @@
       "entryPoster": "posters/gray-white-tabby/390x844/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/approach-user-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.275386+08:00"
       },
       "evidenceSha256": {
         "video": "824dbe4b855858188e4dd99cd575770327a377ebc46f160175975add26582e0e",

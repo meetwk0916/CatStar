@@ -29,9 +29,10 @@
       "entryPoster": "posters/gray-white-tabby/1280x720/plant-inspect-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/plant-inspect-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.014592+08:00"
       },
       "evidenceSha256": {
         "video": "fb1a99575fe3d8c4515443a363c1fc44cc16703f83209f365de39cfd3c19fb9c",
@@ -54,9 +55,10 @@
       "entryPoster": "posters/gray-white-tabby/390x844/plant-inspect-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/plant-inspect-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.014630+08:00"
       },
       "evidenceSha256": {
         "video": "2c75fe5c5115d917ed0800aa324443bd0ac4fbcc7ef277cbc83323a7952654bd",

@@ -29,9 +29,10 @@
       "entryPoster": "posters/gray-white-tabby/1280x720/plant-touch-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/plant-touch-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.146504+08:00"
       },
       "evidenceSha256": {
         "video": "0358d9c9ef1c5448436374634c901bc82bea4b3c0a3f32b13b2be728d678a04d",
@@ -54,9 +55,10 @@
       "entryPoster": "posters/gray-white-tabby/390x844/plant-touch-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/plant-touch-route-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
+        "reviewedAt": "2026-08-13T23:20:51.146515+08:00"
       },
       "evidenceSha256": {
         "video": "50bac962f76ae99232383a04cde439d1f4f4565ce706610f21621559be2a2631",
