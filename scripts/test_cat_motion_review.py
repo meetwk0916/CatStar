@@ -56,6 +56,22 @@ class MotionReviewTests(unittest.TestCase):
                 "/?catstarRoutine=approachBlanket",
             )
 
+    def test_named_route_scenarios_do_not_expand_the_default_action_matrix(self) -> None:
+        self.assertNotIn("approach-user-route", REVIEW.ACTION_SCENARIOS)
+        self.assertEqual(
+            REVIEW.selected_action_scenarios(["approach-user-route"]),
+            {"approach-user-route": ("/?catstarRoutine=approachUser", 12_000)},
+        )
+        self.assertEqual(
+            REVIEW.selected_action_scenarios(["approach-user-interruption"]),
+            {
+                "approach-user-interruption": (
+                    "/?catstarRoutine=approachUser&catstarTouchInterrupt=1",
+                    12_000,
+                )
+            },
+        )
+
     def test_manifest_validation_reports_missing_matrix_entries(self) -> None:
         output_dir = Path(tempfile.mkdtemp(prefix="catstar-motion-manifest-test-"))
         fingerprint, source_files = REVIEW.source_fingerprint()

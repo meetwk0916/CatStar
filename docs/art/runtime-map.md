@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The browser evidence root is
-`artifacts/art/runtime-review/2026-08-12/`, covering default movement,
+`artifacts/art/runtime-review/2026-08-13/`, covering default movement,
 window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
 active approach, pointer interactions on both sides of the cat, plant touch,
 and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
@@ -83,6 +83,22 @@ Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
 through exit at `1280x720` and `390x844`; wakun approved all eight
 human-review entries on 2026-08-09, and both manifests pass the release-grade
 human-review gate.
+
+The named plant-inspection and plant-touch approach evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
+`artifacts/art/runtime-motion-review/2026-08-13-plant-touch-route/`. Each set
+covers the gray-white motion master at `1280x720` and `390x844`, is bound to the
+current route-source fingerprint, and was approved by meetwk0916 for all four
+entries on 2026-08-13; both scoped release-grade gates pass.
+
+The foreground approach-and-return evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-13-approach-user-route/`. It covers
+the complete gray-white round trip at `1280x720` and `390x844`, is bound to the
+current route-source fingerprint, and was approved by meetwk0916 for both
+entries on 2026-08-13. Dedicated touch-interruption evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-13-approach-user-interruption/`
+with the same viewport coverage and approval; both scoped release-grade gates
+pass.
 
 ## Candidate Retention
 

@@ -2,7 +2,7 @@
 
 **Status:** Current specialized behavior contract
 
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 ## Purpose
 
@@ -186,8 +186,8 @@ should show the route. If the user touches the cat during a route, cancel it,
 settle at the current place, play the response, and do not resume the cancelled
 route.
 
-The first route slice to validate is floor-to-food-bowl. Continuous desktop and
-mobile evidence must show no vertical snap, no foot sliding, a stable arrival
+The first validated route slice is floor-to-food-bowl. Continuous desktop and
+mobile evidence shows no vertical snap, no foot sliding, a stable arrival
 handoff, consistent pace through the outbound and reverse return paths, and
 safe touch interruption; a final screenshot alone is insufficient.
 
@@ -199,6 +199,21 @@ Phaser adapter that applies each returned velocity, facing, settling position,
 and animation phase. Other destinations remain on their existing scripted
 implementation until another migration proves which execution behavior is
 genuinely shared.
+
+Plant inspection and plant touch are the next migrated routes. The named-route
+module owns their shared approach geometry, gentle turn, arrival/contact timing,
+and non-resuming cancellation. CatRoomScene remains the Phaser adapter that
+starts the inspect or touch destination phase and owns the split-leaf lifecycle.
+Their dedicated desktop/mobile continuous evidence was approved by meetwk0916
+on 2026-08-13, and both scoped release-grade gates pass.
+
+Foreground approach and return also execute through the named-route module.
+The module owns the floor stop, stable contact, 760 ms perspective transition,
+scale/depth handoff, reverse return, and cancellation back to the grounded room
+pose. CatRoomScene applies those frames and begins the acknowledgement action
+only after arrival. Dedicated desktop/mobile continuous evidence was approved
+by meetwk0916 on 2026-08-13 for both the complete round trip and touch
+interruption; both scoped release-grade gates pass.
 
 If touch interrupts a scripted jump, cancel the jump, settle the cat
 immediately at the consistent floor height, and then play the response. The cat

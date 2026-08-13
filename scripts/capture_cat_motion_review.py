@@ -46,6 +46,13 @@ ACTION_SCENARIOS = {
     "stretch": ("/?catstarRoutine=floorStretch", 4_000),
     "interact": ("/?catstarRoutine=floorSit&catstarFullTouch=1", 4_000),
 }
+ROUTE_SCENARIOS = {
+    "plant-inspect-route": ("/?catstarRoutine=approachPlant", 8_000),
+    "plant-touch-route": ("/?catstarRoutine=approachPlantTouch", 8_000),
+    "approach-user-route": ("/?catstarRoutine=approachUser", 12_000),
+    "approach-user-interruption": ("/?catstarRoutine=approachUser&catstarTouchInterrupt=1", 12_000),
+}
+REVIEW_SCENARIOS = {**ACTION_SCENARIOS, **ROUTE_SCENARIOS}
 EVIDENCE_FIELDS = ("video", "entryPoster", "exitPoster")
 
 
@@ -77,7 +84,7 @@ def parse_args() -> argparse.Namespace:
         help="asset profile to review (default: prototype)",
     )
     parser.add_argument("--preset", action="append", help="limit review to a preset directory")
-    parser.add_argument("--action", action="append", choices=tuple(ACTION_SCENARIOS), help="limit review to an action")
+    parser.add_argument("--action", action="append", choices=tuple(REVIEW_SCENARIOS), help="limit review to an action or named route")
     parser.add_argument(
         "--route-override",
         help="capture one selected action against a different real room route",
@@ -124,7 +131,7 @@ def selected_action_scenarios(
 ) -> dict[str, tuple[str, int]]:
     if route_override and len(actions) != 1:
         raise ValueError("A route override requires exactly one action")
-    scenarios = {action: ACTION_SCENARIOS[action] for action in actions}
+    scenarios = {action: REVIEW_SCENARIOS[action] for action in actions}
     if route_override:
         action = actions[0]
         _route, duration_ms = scenarios[action]

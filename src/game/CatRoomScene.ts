@@ -72,7 +72,6 @@ type CatRoutine =
   | "floorSleep"
   | "floorStretch"
   | "approachUser"
-  | "approachForeground"
   | "acknowledgeUser"
   | "returnFromForeground"
   | "floorPause";
@@ -159,7 +158,6 @@ const CAT_BASE_SCALE = CAT_DISPLAY_SIZE / 96;
 const FLOOR_STAND_Y = 225;
 const FOREGROUND_STAND_Y = 270;
 const FOREGROUND_SCALE = 1.18;
-const FOREGROUND_TRANSITION_MS = 760;
 const WINDOW_BENCH_STAND_Y = 140;
 const WINDOW_BENCH_ZONE = findZone("windowBench");
 const FLOOR_CENTER_ZONE = findZone("floor-center");
@@ -196,7 +194,6 @@ const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
-const USER_APPROACH_X = FLOOR_CENTER_ZONE.xMax - 18;
 const DEBUG_REVIEW_DWELL_MS = 2_400;
 const FLOOR_ROUTINE_ACTIONS: Record<FloorRoutine, CatAction> = {
   floorIdle: "idle",
@@ -257,7 +254,6 @@ export class CatRoomScene extends Phaser.Scene {
   private walkPaceSeed = 0;
   private manualInteractUntil = 0;
   private pendingInteractionCount = 0;
-  private foregroundTransitionStartedAt = 0;
   private manualInteractAction: CatReaction = "interact";
   private sessionStartedAt = 0;
   private plantTouchStartedAt = 0;
@@ -467,8 +463,19 @@ export class CatRoomScene extends Phaser.Scene {
       this.cancelFoodBowlRoute(this.time.now);
     }
 
+    if (this.routine === "approachPlant") {
+      this.cancelPlantRoute(this.time.now, "floor-to-plant-inspect");
+    }
+
+    if (this.routine === "approachPlantTouch") {
+      this.cancelPlantRoute(this.time.now, "floor-to-plant-touch");
+    }
+
+    if (this.routine === "approachUser" || this.routine === "returnFromForeground") {
+      this.cancelForegroundRoute(this.time.now);
+    }
+
     if (
-      this.routine === "approachPlantTouch" ||
       this.routine === "observePlantTouch" ||
       this.routine === "touchPlant" ||
       this.routine === "watchPlantSway" ||
@@ -600,14 +607,7 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      if (this.moveTowardTarget(PLANT_INSPECT_X)) {
-        this.cat.setVelocityX(0);
-        this.cat.setFlipX(false);
-        this.routine = "inspectPlant";
-        this.routineHoldUntil = time + this.activeDwellMs(2_800);
-        this.currentZone = "plant";
-        this.playCatAction("interact", true);
-      }
+      this.advanceCompanionRoute(time, "floor-to-plant-inspect");
       return;
     }
 
@@ -616,17 +616,7 @@ export class CatRoomScene extends Phaser.Scene {
         return;
       }
 
-      if (this.moveTowardTarget(PLANT_TOUCH_X)) {
-        this.cat.setVelocityX(0);
-        this.cat.setFlipX(false);
-        this.routine = "observePlantTouch";
-        this.plantTouchStartedAt = time;
-        this.routineHoldUntil = time + this.activeDwellMs(PLANT_TOUCH_DURATION_MS);
-        this.currentZone = "plant";
-        this.resetPlantLeaf();
-        this.plantTouchCooldownStarted = false;
-        this.playCatAction("idle", true);
-      }
+      this.advanceCompanionRoute(time, "floor-to-plant-touch");
       return;
     }
 
@@ -819,18 +809,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.routine === "approachUser") {
       this.currentZone = "floor";
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(FLOOR_STAND_Y);
-      if (this.moveTowardTarget(USER_APPROACH_X)) {
-        this.cat.setVelocityX(0);
-        this.cat.setFlipX(false);
-        this.routine = "approachForeground";
-        this.foregroundTransitionStartedAt = time;
-      }
-      return;
-    }
-
-    if (this.routine === "approachForeground") {
-      this.updateForegroundTransition(time, false);
+      this.advanceCompanionRoute(time, "floor-to-foreground");
       return;
     }
 
@@ -843,13 +822,14 @@ export class CatRoomScene extends Phaser.Scene {
       this.playCatAction("interact");
       if (time >= this.routineHoldUntil) {
         this.routine = "returnFromForeground";
-        this.foregroundTransitionStartedAt = time;
+        this.startCompanionRoute("foreground-to-floor");
+        this.advanceCompanionRoute(time, "foreground-to-floor");
       }
       return;
     }
 
     if (this.routine === "returnFromForeground") {
-      this.updateForegroundTransition(time, true);
+      this.advanceCompanionRoute(time, "foreground-to-floor");
       return;
     }
 
@@ -904,8 +884,22 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private startFoodBowlRoute(name: CompanionRouteName) {
+    this.startCompanionRoute(name);
+  }
+
+  private startCompanionRoute(name: CompanionRouteName) {
     if (!this.cat) return;
     this.companionRouteExecutor().start(name, { pose: this.currentRoutePose() });
+  }
+
+  private advanceCompanionRoute(time: number, name: CompanionRouteName) {
+    if (!this.cat) return;
+    let frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
+    if (!frame) {
+      this.startCompanionRoute(name);
+      frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
+    }
+    if (frame) this.applyRouteFrame(frame, time);
   }
 
   private advanceFoodBowlRoute(time: number) {
@@ -943,6 +937,45 @@ export class CatRoomScene extends Phaser.Scene {
     this.activeIntent = undefined;
   }
 
+  private cancelPlantRoute(
+    time: number,
+    route: "floor-to-plant-inspect" | "floor-to-plant-touch",
+  ) {
+    if (!this.cat) return;
+    let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
+    if (!frame) {
+      this.startCompanionRoute(route);
+      frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
+    }
+    if (frame) this.applyRouteFrame(frame, time);
+    if (route === "floor-to-plant-touch") this.resetPlantLeaf();
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.currentZone = "floor";
+    this.routine = "floorPause";
+    this.routineHoldUntil = time + 900;
+    this.plantTouchStartedAt = 0;
+    this.plantTouchCooldownStarted = false;
+    this.activeIntent = undefined;
+  }
+
+  private cancelForegroundRoute(time: number) {
+    if (!this.cat) return;
+    let frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
+    if (!frame) {
+      const route = this.routine === "returnFromForeground" ? "foreground-to-floor" : "floor-to-foreground";
+      this.startCompanionRoute(route);
+      frame = this.companionRouteExecutor().cancel(time, this.currentRoutePose());
+    }
+    if (frame) this.applyRouteFrame(frame, time);
+    this.cat.body.setAllowGravity(false);
+    this.cat.setVelocity(0, 0);
+    this.currentZone = "floor";
+    this.routine = "floorPause";
+    this.routineHoldUntil = time + 900;
+    this.activeIntent = undefined;
+  }
+
   private advanceFoodBowlReturn(time: number) {
     if (!this.cat) return;
     this.currentZone = "floor";
@@ -955,7 +988,15 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private advanceCancelledRoute(time: number) {
-    if (!this.cat || this.routine === "approachFoodBowl" || this.routine === "returnFromFoodBowl") return;
+    if (
+      !this.cat ||
+      this.routine === "approachFoodBowl" ||
+      this.routine === "returnFromFoodBowl" ||
+      this.routine === "approachPlant" ||
+      this.routine === "approachPlantTouch" ||
+      this.routine === "approachUser" ||
+      this.routine === "returnFromForeground"
+    ) return;
     const frame = this.companionRouteExecutor().advance(time, this.currentRoutePose());
     if (frame?.phase === "cancelling" || frame?.phase === "cancelled") {
       this.applyRouteFrame(frame, time);
@@ -968,10 +1009,16 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setVelocityX(frame.velocityX);
     this.cat.setVelocityY(frame.velocityY);
     if (frame.y !== undefined) this.cat.setY(frame.y);
+    if (frame.scale !== undefined) this.cat.setScale(frame.scale);
+    if (frame.depth !== undefined) this.cat.setDepth(frame.depth);
     this.cat.setFlipX(frame.facingLeft);
 
     if (frame.phase === "cruise" || frame.phase === "arrival") {
       this.playCatAction("walk");
+      return;
+    }
+    if (frame.phase === "transition") {
+      this.playCatAction(frame.route === "foreground-to-floor" ? "walk" : "interact");
       return;
     }
     if (frame.phase === "contact") {
@@ -989,6 +1036,40 @@ export class CatRoomScene extends Phaser.Scene {
       return;
     }
 
+    if (frame.route === "floor-to-plant-inspect") {
+      this.routine = "inspectPlant";
+      this.routineHoldUntil = time + this.activeDwellMs(2_800);
+      this.currentZone = "plant";
+      this.playCatAction("interact", true);
+      return;
+    }
+
+    if (frame.route === "floor-to-plant-touch") {
+      this.routine = "observePlantTouch";
+      this.plantTouchStartedAt = time;
+      this.routineHoldUntil = time + this.activeDwellMs(PLANT_TOUCH_DURATION_MS);
+      this.currentZone = "plant";
+      this.resetPlantLeaf();
+      this.plantTouchCooldownStarted = false;
+      this.playCatAction("idle", true);
+      return;
+    }
+
+    if (frame.route === "floor-to-foreground") {
+      this.routine = "acknowledgeUser";
+      this.routineHoldUntil = time + this.activeDwellMs(1_800);
+      this.currentZone = "floor";
+      this.playCatAction("interact", true);
+      return;
+    }
+
+    if (frame.route === "foreground-to-floor") {
+      this.completeActiveIntent();
+      this.startFloorPause(time);
+      this.playCatAction("idle", true);
+      return;
+    }
+
     this.cat.setY(FLOOR_STAND_Y);
     this.startFloorPause(time);
     this.playCatAction("idle", true);
@@ -999,6 +1080,8 @@ export class CatRoomScene extends Phaser.Scene {
     return {
       x: this.cat.x,
       y: this.cat.y,
+      scale: this.cat.scaleX,
+      depth: this.cat.depth,
       facingLeft: this.cat.flipX,
       velocityX: this.cat.body.velocity.x,
       velocityY: this.cat.body.velocity.y,
@@ -1185,47 +1268,6 @@ export class CatRoomScene extends Phaser.Scene {
     document.documentElement.dataset.catstarMotionRoutine = this.routine;
     document.documentElement.dataset.catstarMotionState =
       this.routine === "floorPause" ? "complete" : "running";
-  }
-
-  private updateForegroundTransition(time: number, returning: boolean) {
-    if (!this.cat) {
-      return;
-    }
-
-    const progress = Phaser.Math.Clamp(
-      (time - this.foregroundTransitionStartedAt) / FOREGROUND_TRANSITION_MS,
-      0,
-      1,
-    );
-    const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
-    const fromY = returning ? FOREGROUND_STAND_Y : FLOOR_STAND_Y;
-    const toY = returning ? FLOOR_STAND_Y : FOREGROUND_STAND_Y;
-    const fromScale = returning ? FOREGROUND_SCALE : CAT_BASE_SCALE;
-    const toScale = returning ? CAT_BASE_SCALE : FOREGROUND_SCALE;
-
-    this.cat.body.setAllowGravity(false);
-    this.cat.setVelocity(0, 0);
-    this.cat.setY(Phaser.Math.Linear(fromY, toY, easedProgress));
-    this.cat.setScale(Phaser.Math.Linear(fromScale, toScale, easedProgress));
-    this.cat.setDepth(returning ? (progress >= 0.5 ? 5 : 7) : progress >= 0.5 ? 7 : 5);
-    this.playCatAction(returning ? "walk" : "interact");
-
-    if (progress < 1) {
-      return;
-    }
-
-    if (returning) {
-      this.cat.setY(FLOOR_STAND_Y);
-      this.cat.setScale(CAT_BASE_SCALE);
-      this.cat.setDepth(5);
-      this.completeActiveIntent();
-      this.startFloorPause(time);
-      return;
-    }
-
-    this.routine = "acknowledgeUser";
-    this.routineHoldUntil = time + this.activeDwellMs(1_800);
-    this.playCatAction("interact", true);
   }
 
   private chooseWindowBenchTargetX() {

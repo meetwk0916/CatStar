@@ -1,11 +1,19 @@
 import { getCompanionMovementSpeed } from "../domain/catFsm";
 import type { CatTemperament } from "../types";
 
-export type CompanionRouteName = "floor-to-food-bowl" | "food-bowl-to-floor";
+export type CompanionRouteName =
+  | "floor-to-food-bowl"
+  | "food-bowl-to-floor"
+  | "floor-to-plant-inspect"
+  | "floor-to-plant-touch"
+  | "floor-to-foreground"
+  | "foreground-to-floor";
 
 export interface CompanionRoutePose {
   x: number;
   y: number;
+  scale: number;
+  depth: number;
   facingLeft: boolean;
   velocityX: number;
   velocityY: number;
@@ -13,11 +21,13 @@ export interface CompanionRoutePose {
 
 export interface CompanionRouteFrame {
   route: CompanionRouteName;
-  phase: "cruise" | "arrival" | "contact" | "arrived" | "cancelling" | "cancelled";
+  phase: "cruise" | "arrival" | "contact" | "transition" | "arrived" | "cancelling" | "cancelled";
   velocityX: number;
   velocityY: number;
   facingLeft: boolean;
   y?: number;
+  scale?: number;
+  depth?: number;
 }
 
 interface RoutePoint { x: number; y: number }
@@ -31,8 +41,15 @@ interface ActiveRoute {
   arrivalVelocityX?: number;
   arrivalVelocityY?: number;
   contactStartedAt?: number;
+  transitionStartedAt?: number;
 }
-interface Cancellation { route: CompanionRouteName; fromY: number; startedAt: number }
+interface Cancellation {
+  route: CompanionRouteName;
+  fromY: number;
+  fromScale: number;
+  fromDepth: number;
+  startedAt: number;
+}
 
 export interface CompanionRouteExecutor {
   start(name: CompanionRouteName, input: { pose: CompanionRoutePose }): "started" | "rejected-active";
@@ -48,6 +65,17 @@ const INNER_OFFSET_X = 24;
 const OUTER_Y = FLOOR_Y + 5;
 const INNER_Y = BOWL_Y - 12;
 const RETURN_OFFSET_X = 80;
+const PLANT_INSPECT_X = 458;
+const PLANT_TOUCH_X = 462;
+const PLANT_WAYPOINT_OFFSET_X = 48;
+const PLANT_WAYPOINT_Y = FLOOR_Y + 6;
+const FOREGROUND_X = 412;
+const FOREGROUND_Y = 270;
+const FOREGROUND_SCALE = 1.18;
+const ROOM_SCALE = 1;
+const FOREGROUND_DEPTH = 7;
+const ROOM_DEPTH = 5;
+const FOREGROUND_TRANSITION_MS = 760;
 const TOLERANCE = 4;
 const DECELERATION_MS = 200;
 const CONTACT_MS = 150;
@@ -58,7 +86,11 @@ const sineOut = (progress: number) => Math.sin((Math.PI * progress) / 2);
 
 export function getCompanionRouteDestination(name: CompanionRouteName): { x: number; y: number } {
   if (name === "floor-to-food-bowl") return { x: BOWL_X, y: BOWL_Y };
-  return { x: BOWL_X - RETURN_OFFSET_X, y: FLOOR_Y };
+  if (name === "food-bowl-to-floor") return { x: BOWL_X - RETURN_OFFSET_X, y: FLOOR_Y };
+  if (name === "floor-to-plant-inspect") return { x: PLANT_INSPECT_X, y: FLOOR_Y };
+  if (name === "floor-to-plant-touch") return { x: PLANT_TOUCH_X, y: FLOOR_Y };
+  if (name === "floor-to-foreground") return { x: FOREGROUND_X, y: FOREGROUND_Y };
+  return { x: FOREGROUND_X, y: FLOOR_Y };
 }
 
 export function createCompanionRouteExecutor(
@@ -89,26 +121,38 @@ export function createCompanionRouteExecutor(
     start(name, { pose }) {
       if (active || cancellation) return "rejected-active";
 
-      const approaching = name === "floor-to-food-bowl";
-      const direction = approaching ? (BOWL_X >= pose.x ? 1 : -1) : pose.facingLeft ? 1 : -1;
-      const facingLeft = approaching ? direction < 0 : !pose.facingLeft;
-      const authored = approaching
+      const destination = getCompanionRouteDestination(name);
+      const returningFromBowl = name === "food-bowl-to-floor";
+      const foregroundRoute = name === "floor-to-foreground" || name === "foreground-to-floor";
+      const direction = returningFromBowl
+        ? pose.facingLeft ? 1 : -1
+        : destination.x >= pose.x ? 1 : -1;
+      const facingLeft = returningFromBowl ? !pose.facingLeft : direction < 0;
+      const authored = name === "floor-to-food-bowl"
         ? [
             { x: BOWL_X - direction * OUTER_OFFSET_X, y: OUTER_Y },
             { x: BOWL_X - direction * INNER_OFFSET_X, y: INNER_Y },
           ]
-        : [
-            { x: BOWL_X + direction * INNER_OFFSET_X, y: INNER_Y },
-            { x: BOWL_X + direction * OUTER_OFFSET_X, y: OUTER_Y },
-          ];
-      const waypoints = approaching
-        ? authored.filter((point) => direction > 0 ? point.x > pose.x + TOLERANCE : point.x < pose.x - TOLERANCE)
-        : authored;
+        : returningFromBowl
+          ? [
+              { x: BOWL_X + direction * INNER_OFFSET_X, y: INNER_Y },
+              { x: BOWL_X + direction * OUTER_OFFSET_X, y: OUTER_Y },
+            ]
+          : foregroundRoute
+            ? []
+            : [{ x: destination.x - direction * PLANT_WAYPOINT_OFFSET_X, y: PLANT_WAYPOINT_Y }];
+      const waypoints = returningFromBowl
+        ? authored
+        : authored.filter((point) => direction > 0 ? point.x > pose.x + TOLERANCE : point.x < pose.x - TOLERANCE);
       active = {
         name,
         waypoints,
         waypointIndex: 0,
-        destination: approaching ? { x: BOWL_X, y: BOWL_Y } : { x: BOWL_X + direction * RETURN_OFFSET_X, y: FLOOR_Y },
+        destination: returningFromBowl
+          ? { x: BOWL_X + direction * RETURN_OFFSET_X, y: FLOOR_Y }
+          : foregroundRoute
+            ? { x: FOREGROUND_X, y: pose.y }
+            : destination,
         facingLeft,
       };
       return "started";
@@ -124,11 +168,39 @@ export function createCompanionRouteExecutor(
           velocityY: 0,
           facingLeft: pose.facingLeft,
           y: linear(cancellation.fromY, FLOOR_Y, sineOut(progress)),
+          scale: linear(cancellation.fromScale, ROOM_SCALE, sineOut(progress)),
+          depth: progress >= 0.5 ? ROOM_DEPTH : cancellation.fromDepth,
         };
         if (progress >= 1) cancellation = null;
         return frame;
       }
       if (!active) return null;
+
+      const foregroundRoute = active.name === "floor-to-foreground" || active.name === "foreground-to-floor";
+      const returningFromForeground = active.name === "foreground-to-floor";
+
+      if (active.transitionStartedAt !== undefined) {
+        const progress = clamp((time - active.transitionStartedAt) / FOREGROUND_TRANSITION_MS, 0, 1);
+        if (progress < 1) {
+          const easedProgress = 0.5 - 0.5 * Math.cos(Math.PI * progress);
+          return {
+            route: active.name,
+            phase: "transition",
+            velocityX: 0,
+            velocityY: 0,
+            facingLeft: active.facingLeft,
+            y: linear(returningFromForeground ? FOREGROUND_Y : FLOOR_Y, returningFromForeground ? FLOOR_Y : FOREGROUND_Y, easedProgress),
+            scale: linear(returningFromForeground ? FOREGROUND_SCALE : ROOM_SCALE, returningFromForeground ? ROOM_SCALE : FOREGROUND_SCALE, easedProgress),
+            depth: returningFromForeground ? (progress >= 0.5 ? ROOM_DEPTH : FOREGROUND_DEPTH) : progress >= 0.5 ? FOREGROUND_DEPTH : ROOM_DEPTH,
+          };
+        }
+        const route = active.name;
+        const facingLeft = active.facingLeft;
+        active = null;
+        return route === "floor-to-foreground"
+          ? { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FOREGROUND_Y, scale: FOREGROUND_SCALE, depth: FOREGROUND_DEPTH }
+          : { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FLOOR_Y, scale: ROOM_SCALE, depth: ROOM_DEPTH };
+      }
 
       if (active.arrivalStartedAt === undefined) {
         const waypoint = active.waypoints[active.waypointIndex];
@@ -166,9 +238,19 @@ export function createCompanionRouteExecutor(
       if (time - active.contactStartedAt < CONTACT_MS) {
         return { route: active.name, phase: "contact", velocityX: 0, velocityY: 0, facingLeft: active.facingLeft };
       }
+      if (foregroundRoute) {
+        active.transitionStartedAt = time;
+        return this.advance(time, pose);
+      }
       const route = active.name;
       const facingLeft = active.facingLeft;
       active = null;
+      if (route === "floor-to-foreground") {
+        return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FOREGROUND_Y, scale: FOREGROUND_SCALE, depth: FOREGROUND_DEPTH };
+      }
+      if (route === "foreground-to-floor") {
+        return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FLOOR_Y, scale: ROOM_SCALE, depth: ROOM_DEPTH };
+      }
       return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft };
     },
 
@@ -176,8 +258,8 @@ export function createCompanionRouteExecutor(
       if (!active) return null;
       const route = active.name;
       active = null;
-      cancellation = { route, fromY: pose.y, startedAt: time };
-      return { route, phase: "cancelling", velocityX: 0, velocityY: 0, facingLeft: pose.facingLeft, y: pose.y };
+      cancellation = { route, fromY: pose.y, fromScale: pose.scale, fromDepth: pose.depth, startedAt: time };
+      return { route, phase: "cancelling", velocityX: 0, velocityY: 0, facingLeft: pose.facingLeft, y: pose.y, scale: pose.scale, depth: pose.depth };
     },
   };
 }
