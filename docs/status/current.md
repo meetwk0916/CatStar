@@ -79,9 +79,10 @@ The current implementation includes:
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; both regenerated human-review
-  entries await explicit review by meetwk0916. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-13/` has been regenerated with
-  the latest route input and passes `npm run review:runtime:check`.
+  entries await explicit review by meetwk0916. The broader runtime screenshot
+  evidence under `artifacts/art/runtime-review/2026-08-13/` has been
+  regenerated with the latest route input and passes
+  `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
