@@ -89,8 +89,8 @@ The current daily-life continuous evidence lives under
 gray-white motion master's complete `eat`, `groom`, and `stretch` actions at
 `1280x720` and `390x844`, is bound to the current runtime-source fingerprint,
 and all six entries were approved by meetwk0916 in Codex on 2026-08-15. The
-preceding v1 and v2 evidence directories retain the rejected short stretch and
-short grooming iterations as review history.
+preceding v1 and v2 evidence directories retain the earlier short stretch and
+short grooming iterations for comparison.
 
 The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
