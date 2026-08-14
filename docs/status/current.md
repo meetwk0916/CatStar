@@ -77,9 +77,9 @@ The current implementation includes:
   interruption; its review state is recorded in the runtime asset map.
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
-  is structurally valid for desktop and mobile; its pending review state is
+  is structurally valid for desktop and mobile; its approved review state is
   recorded in the runtime asset map. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-13/` has been regenerated with
+  under `artifacts/art/runtime-review/2026-08-14/` has been regenerated with
   the latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older

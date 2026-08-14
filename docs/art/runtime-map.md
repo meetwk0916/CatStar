@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-13
+Last updated: 2026-08-14
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The browser evidence root is
-`artifacts/art/runtime-review/2026-08-13/`, covering default movement,
+`artifacts/art/runtime-review/2026-08-14/`, covering default movement,
 window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
 active approach, pointer interactions on both sides of the cat, plant touch,
 and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
@@ -69,8 +69,8 @@ regenerated after the latest purposeful-route code change and passes
 `npm run review:runtime:check`.
 The dedicated food-bowl continuous motion evidence is separate at
 `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/`; it is
-structurally valid for desktop and mobile, and both regenerated entries await
-explicit review by meetwk0916.
+structurally valid for desktop and mobile, and meetwk0916 approved both
+regenerated entries in Codex on 2026-08-14.
 The plant-touch desktop evidence lives under
 `artifacts/art/runtime-review/2026-08-04/`; the matching `375x812` evidence
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
@@ -89,17 +89,17 @@ The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-touch-route/`. Each set
 covers the gray-white motion master at `1280x720` and `390x844` and is bound to
 the current route-source fingerprint. meetwk0916 approved all four regenerated
-entries in Codex on 2026-08-13.
+entries in Codex on 2026-08-14.
 
 The foreground approach-and-return evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-route/`. It covers
 the complete gray-white round trip at `1280x720` and `390x844`, is bound to the
-current route-source fingerprint, and both entries were approved by meetwk0916
-in Codex on 2026-08-13.
+current route-source fingerprint, and meetwk0916 approved both regenerated
+entries in Codex on 2026-08-14.
 Dedicated touch-interruption evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-approach-user-interruption/`
-with the same viewport coverage; meetwk0916 approved both entries in Codex on
-2026-08-13.
+with the same viewport coverage; meetwk0916 approved both regenerated entries
+in Codex on 2026-08-14.
 
 ## Candidate Retention
 
