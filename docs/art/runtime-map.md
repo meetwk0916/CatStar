@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-14
+Last updated: 2026-08-15
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -32,8 +32,8 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |
-| `groom` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Eight-frame production-model-derived paw-and-face grooming loop with stable seated mass. |
-| `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch, hold, and recovery action. |
+| `groom` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Eight-frame production-model-derived paw-and-face grooming loop with stable seated mass and an 8–12 second routine dwell. |
+| `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch with phase-weighted preparation, extension, held peak, and recovery timing. |
 | `eat` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived bowl-oriented head-lowering loop; the room supplies the bowl prop. |
 | `lie` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model awake rest with elevated head, open-eye return, and stable cat-bed/blanket contact. |
 | `jump` | `artifacts/art/candidates/active/product-cat-actions-v5/` | Five generated key poses plus one held settle frame to satisfy the six-frame runtime contract. |
@@ -61,7 +61,7 @@ timing prevent coat choice from changing behavior.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The browser evidence root is
-`artifacts/art/runtime-review/2026-08-14/`, covering default movement,
+`artifacts/art/runtime-review/2026-08-15/`, covering default movement,
 window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
 active approach, pointer interactions on both sides of the cat, plant touch,
 and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
@@ -83,6 +83,14 @@ Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
 through exit at `1280x720` and `390x844`; wakun approved all eight
 human-review entries on 2026-08-09, and both manifests pass the release-grade
 human-review gate.
+
+The current daily-life continuous evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/`. It covers the
+gray-white motion master's complete `eat`, `groom`, and `stretch` actions at
+`1280x720` and `390x844`, is bound to the current runtime-source fingerprint,
+and all six entries were approved by meetwk0916 in Codex on 2026-08-15. The
+preceding v1 and v2 evidence directories retain the rejected short stretch and
+short grooming iterations as review history.
 
 The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and

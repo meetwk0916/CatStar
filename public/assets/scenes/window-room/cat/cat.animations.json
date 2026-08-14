@@ -61,6 +61,7 @@
       "file": "stretch.png",
       "frames": 6,
       "frameRate": 6,
+      "frameDurations": [300, 350, 450, 650, 350, 300],
       "repeat": 0
     }
   },

@@ -174,6 +174,68 @@ describe("CatRoomScene interactions", () => {
     }
   });
 
+  it("applies phase-weighted timing to the one-shot stretch animation", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as {
+      cache: { json: { get: ReturnType<typeof vi.fn> } };
+      anims: {
+        generateFrameNumbers: ReturnType<typeof vi.fn>;
+        create: ReturnType<typeof vi.fn>;
+      };
+    };
+    const frameDurations = [300, 350, 450, 650, 350, 300];
+    internals.cache = {
+      json: {
+        get: vi.fn(() => ({
+          actions: {
+            stretch: {
+              file: "stretch.png",
+              frames: 6,
+              frameRate: 6,
+              frameDurations,
+              repeat: 0,
+            },
+          },
+        })),
+      },
+    };
+    internals.anims = {
+      generateFrameNumbers: vi.fn(() =>
+        Array.from({ length: 6 }, (_, frame) => ({ key: "cat-stretch", frame })),
+      ),
+      create: vi.fn(),
+    };
+
+    (scene as unknown as { createCatAnimations: () => void }).createCatAnimations();
+
+    expect(internals.anims.create).toHaveBeenCalledWith({
+      key: "cat-stretch-anim",
+      frames: frameDurations.map((duration, frame) => ({
+        key: "cat-stretch",
+        frame,
+        duration,
+      })),
+      frameRate: 6,
+      repeat: 0,
+    });
+  });
+
+  it("keeps the debug grooming review active long enough to judge sustained care", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals & {
+      debugMotionReview: boolean;
+      routine: string;
+    };
+    internals.debugMotionReview = true;
+    internals.routine = "floorGroom";
+
+    const duration = (
+      scene as unknown as { debugHoldDuration: (fallback: number) => number }
+    ).debugHoldDuration(20_000);
+
+    expect(duration).toBe(8_000);
+  });
+
   it("takes a smooth floor-to-bowl route before starting the eating action", () => {
     const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
     const internals = scene as unknown as SceneInternals;

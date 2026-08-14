@@ -94,6 +94,7 @@ interface CatAnimationSpec {
       file: string;
       frames: number;
       frameRate: number;
+      frameDurations?: number[];
       repeat: number;
     }
   >;
@@ -194,7 +195,8 @@ const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
-const DEBUG_REVIEW_DWELL_MS = 2_400;
+const DEBUG_REVIEW_DWELL_MS = 2_800;
+const DEBUG_GROOM_REVIEW_DWELL_MS = 8_000;
 const FLOOR_ROUTINE_ACTIONS: Record<FloorRoutine, CatAction> = {
   floorIdle: "idle",
   floorSit: "sit",
@@ -1218,7 +1220,12 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private debugHoldDuration(fallback: number) {
-    return this.debugMotionReview ? Math.min(fallback, DEBUG_REVIEW_DWELL_MS) : fallback;
+    if (!this.debugMotionReview) {
+      return fallback;
+    }
+    const reviewDwell =
+      this.routine === "floorGroom" ? DEBUG_GROOM_REVIEW_DWELL_MS : DEBUG_REVIEW_DWELL_MS;
+    return Math.min(fallback, reviewDwell);
   }
 
   private publishDebugMotionState() {
@@ -1376,10 +1383,16 @@ export class CatRoomScene extends Phaser.Scene {
     const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
     (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
       const config = spec.actions[action];
-      const frames = this.anims.generateFrameNumbers(`cat-${action}`, {
+      const generatedFrames = this.anims.generateFrameNumbers(`cat-${action}`, {
         start: 0,
         end: config.frames - 1,
       });
+      const frames = config.frameDurations
+        ? generatedFrames.map((frame, index) => ({
+            ...frame,
+            duration: config.frameDurations?.[index],
+          }))
+        : generatedFrames;
 
       this.anims.create({
         key: `cat-${action}-anim`,

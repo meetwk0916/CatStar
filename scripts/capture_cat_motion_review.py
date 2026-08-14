@@ -42,7 +42,7 @@ ACTION_SCENARIOS = {
     "eat": ("/?catstarRoutine=approachFoodBowl", 14_000),
     "lie": ("/?catstarRoutine=approachCatBed", 11_000),
     "sleep": ("/?catstarRoutine=floorSleep", 4_000),
-    "groom": ("/?catstarRoutine=floorGroom", 4_000),
+    "groom": ("/?catstarRoutine=floorGroom", 10_000),
     "stretch": ("/?catstarRoutine=floorStretch", 4_000),
     "interact": ("/?catstarRoutine=floorSit&catstarFullTouch=1", 4_000),
 }

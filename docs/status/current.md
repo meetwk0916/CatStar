@@ -54,8 +54,10 @@ The current implementation includes:
   approved by wakun on 2026-08-09.
 - The production-model-derived daily-life v1 candidate now supplies `eat`,
   `groom`, and `stretch` across all six current coat presets. Structural asset
-  validation passes, and dedicated gray-white master continuous desktop/mobile
-  evidence is recorded; six human-review entries remain pending.
+  validation passes. Current fingerprint-bound gray-white master evidence at
+  desktop and mobile sizes records the complete food route, an 8–12 second
+  grooming dwell, and phase-weighted stretch timing; meetwk0916 approved all
+  six entries on 2026-08-15.
 - The first purposeful **陪伴路线** slice now carries the cat from the floor
   to the food bowl through two authored foreground waypoints, continuous
   walking velocity through the turns, a 200 ms arrival deceleration, and a
@@ -79,7 +81,7 @@ The current implementation includes:
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
   recorded in the runtime asset map. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-14/` has been regenerated with
+  under `artifacts/art/runtime-review/2026-08-15/` has been regenerated with
   the latest route input and passes `npm run review:runtime:check`.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
@@ -124,8 +126,9 @@ hashes or branch information to this file.
   engine migration as active work.
 - Complete rounded short-haired's remaining `jump` action through the same
   rights-recorded production process as the v12 quality slice. The daily-life
-  `eat`, `groom`, and `stretch` candidate and dedicated continuous evidence now
-  exist, but human review remains pending. Then produce independent
+  `eat`, `groom`, and `stretch` candidate and dedicated continuous evidence are
+  motion-approved, while their immutable terms snapshot and complete public
+  distribution rights chain remain unresolved. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
   exposing those prototypes in the passport; they do not block the first
   release.
