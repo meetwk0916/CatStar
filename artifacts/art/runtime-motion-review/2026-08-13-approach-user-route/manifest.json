@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T23:01:18.815763+08:00",
+  "capturedAt": "2026-08-14T00:16:36.769468+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,24 +20,24 @@
       "action": "approach-user-route",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachUser&catstarMotionReview=1",
-      "durationMs": 8507,
+      "durationMs": 8440,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T15:00:58.691Z",
+      "startedAt": "2026-08-13T16:16:16.498Z",
       "video": "videos/gray-white-tabby/1280x720/approach-user-route.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/approach-user-route-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "meetwk0916",
-        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
-        "reviewedAt": "2026-08-13T23:20:51.275377+08:00"
+        "notes": "Approved regenerated desktop/mobile approach-user route evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.477360+08:00"
       },
       "evidenceSha256": {
-        "video": "3a8e951bf21b72622c108e841cbb99d723716d6db5d31c0ed7cbcb8fb7748785",
-        "entryPoster": "46e662bdfe2e282e8d39db946e740a02fabc00292a5e39c1658841cc2d5eec21",
-        "exitPoster": "91a0ac4c2873b573bed27db29f397e1b63266eef89f4b2ef66f8965239a412ed"
+        "video": "f28162aa957ea73a5e664020c3f5e97d402196e240654554e94ce759f2269493",
+        "entryPoster": "4e5491bc3e313f7321ce6c3217d1f23ffdc3ca8603f5756714e976458b1718a1",
+        "exitPoster": "59a2a739b6919a89c9e2ba5ab2ccdabe7fb427b2a00c96b740d433bff63fc4d5"
       }
     },
     {
@@ -46,23 +46,23 @@
       "action": "approach-user-route",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachUser&catstarMotionReview=1",
-      "durationMs": 8206,
+      "durationMs": 8224,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route",
-      "startedAt": "2026-08-13T15:01:09.045Z",
+      "startedAt": "2026-08-13T16:16:26.986Z",
       "video": "videos/gray-white-tabby/390x844/approach-user-route.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/approach-user-route-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/approach-user-route-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "meetwk0916",
-        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
-        "reviewedAt": "2026-08-13T23:20:51.275386+08:00"
+        "notes": "Approved regenerated desktop/mobile approach-user route evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.478903+08:00"
       },
       "evidenceSha256": {
-        "video": "824dbe4b855858188e4dd99cd575770327a377ebc46f160175975add26582e0e",
-        "entryPoster": "95cac211b05a373d4bd13610719596e654b0ab9138d3d8ede5be7ac465567e3f",
+        "video": "d19c5bbd6cb6067f9ff0fbdcee7e08de7f26f7de8dad42135c1511399df5fc81",
+        "entryPoster": "70965171b5b123a19373353963f2a84f34bd80f9a6346dfe16e4db8d89ba457f",
         "exitPoster": "8fd1e399850af1e24072fbb747f82c406d4cbf082bccf7e7a0ba6448fd852ac2"
       }
     }
@@ -73,7 +73,7 @@
     "boards/mobile/approach-user-route.png",
     "boards/mobile/approach-user-route.html"
   ],
-  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
+  "sourceFingerprint": "60d5ff61ff98eda0f90f2ef0f463e7f7f7e23c7def9b94dc9feaba9a58faeb75",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

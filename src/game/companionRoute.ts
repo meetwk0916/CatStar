@@ -245,12 +245,6 @@ export function createCompanionRouteExecutor(
       const route = active.name;
       const facingLeft = active.facingLeft;
       active = null;
-      if (route === "floor-to-foreground") {
-        return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FOREGROUND_Y, scale: FOREGROUND_SCALE, depth: FOREGROUND_DEPTH };
-      }
-      if (route === "foreground-to-floor") {
-        return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft, y: FLOOR_Y, scale: ROOM_SCALE, depth: ROOM_DEPTH };
-      }
       return { route, phase: "arrived", velocityX: 0, velocityY: 0, facingLeft };
     },
 

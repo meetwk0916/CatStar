@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T23:01:53.211746+08:00",
+  "capturedAt": "2026-08-14T00:17:19.791909+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,7 +20,7 @@
       "action": "approach-user-interruption",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachUser&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 11584,
+      "durationMs": 11821,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -29,20 +29,20 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T15:01:26.406Z",
+      "startedAt": "2026-08-13T16:16:52.833Z",
       "video": "videos/gray-white-tabby/1280x720/approach-user-interruption.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/approach-user-interruption-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/approach-user-interruption-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "meetwk0916",
-        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
-        "reviewedAt": "2026-08-13T23:20:51.403711+08:00"
+        "notes": "Approved regenerated desktop/mobile approach-user interruption evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.478289+08:00"
       },
       "evidenceSha256": {
-        "video": "0d69d89dff4c919af3eff53c365001b8276f3d60ced49ba5c85d0b921b33bd95",
-        "entryPoster": "14f2f1e146cf5a22ac7088750361c22714e0862d700b30b14fdeedc5852c5b51",
-        "exitPoster": "82dd9ad009de8831417314a33b400e5379201d6deaeec569a3ba77ca610e725a"
+        "video": "40cd7623a7c7034ee24bfb35df391c591b3015384cc3906cc9ee91f221a2957b",
+        "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
+        "exitPoster": "21bcf1a6aa64a1a80e945fbc0860043165c1ce10f7bbd0be156badb805e7d5a7"
       }
     },
     {
@@ -51,7 +51,7 @@
       "action": "approach-user-interruption",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachUser&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 11487,
+      "durationMs": 11598,
       "captureTimeoutMs": 12000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -60,20 +60,20 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T15:01:40.159Z",
+      "startedAt": "2026-08-13T16:17:06.659Z",
       "video": "videos/gray-white-tabby/390x844/approach-user-interruption.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/approach-user-interruption-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/approach-user-interruption-exit.png",
       "humanReview": {
         "status": "pass",
         "reviewer": "meetwk0916",
-        "notes": "Final regenerated desktop/mobile evidence approved in Codex.",
-        "reviewedAt": "2026-08-13T23:20:51.403720+08:00"
+        "notes": "Approved regenerated desktop/mobile approach-user interruption evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.479393+08:00"
       },
       "evidenceSha256": {
-        "video": "f98f2e84b48633b4f3befd5305a3bac4e6c1e4f9d97a993c8117a14f4495d905",
-        "entryPoster": "6c117c8ac30599cf1dae29299094d0cca38cc4d86bfb193ae4cc88cf76300bde",
-        "exitPoster": "5dce19908733eb414cedc8290415b5d7c0c165fc1fb29421a8849d10c3cb66a0"
+        "video": "2e6d901e7aa8ec224d8bc2cc4a0c9fb223ac508284be41c2e8b7139bdc85e6c7",
+        "entryPoster": "ace406e7bddd229d1b3e16a24a3e4daaf130aa592c7381d12f6067662409aef0",
+        "exitPoster": "6e2a26b81e7cfd7573d2c79f12b3b91e13d7f7dc2326c8b92d0aaadf9d51a2e9"
       }
     }
   ],
@@ -83,7 +83,7 @@
     "boards/mobile/approach-user-interruption.png",
     "boards/mobile/approach-user-interruption.html"
   ],
-  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
+  "sourceFingerprint": "60d5ff61ff98eda0f90f2ef0f463e7f7f7e23c7def9b94dc9feaba9a58faeb75",
   "sourceFiles": [
     "index.html",
     "package-lock.json",

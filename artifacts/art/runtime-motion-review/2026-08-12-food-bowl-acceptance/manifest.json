@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewKind": "continuous-motion",
   "profile": "prototype",
-  "capturedAt": "2026-08-13T23:09:18.846307+08:00",
+  "capturedAt": "2026-08-14T00:18:17.369903+08:00",
   "presets": [
     "gray-white-tabby"
   ],
@@ -20,7 +20,7 @@
       "action": "eat",
       "viewport": "1280x720",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16431,
+      "durationMs": 16423,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -29,19 +29,20 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T15:08:42.892Z",
+      "startedAt": "2026-08-13T16:17:41.056Z",
       "video": "videos/gray-white-tabby/1280x720/eat.webm",
       "entryPoster": "posters/gray-white-tabby/1280x720/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/1280x720/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved regenerated desktop/mobile food-bowl interruption evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.477177+08:00"
       },
       "evidenceSha256": {
-        "video": "be2bb4565758afde168dfe477a7bc52b794bd2f563831af18f9a95f56ddffdbd",
+        "video": "eccedab6d83dc7ffcf02fe01677e9157d91bf2e89bb00395bf300c7c07df3cf8",
         "entryPoster": "975f90d9169c4de0fcf7487c28ff3062696b3242b400ae3e6a0da675008bf9e8",
-        "exitPoster": "688002672b65e8dd9e1ed984aefb344db0dd0f2e6dbba878a8b776bc2528eb25"
+        "exitPoster": "83941ae9c9a973b2f1842b1604d1a057375b5dcb5592891497143c37acb157e7"
       }
     },
     {
@@ -50,7 +51,7 @@
       "action": "eat",
       "viewport": "390x844",
       "route": "/?catstarRoutine=approachFoodBowl&catstarTouchInterrupt=1&catstarMotionReview=1",
-      "durationMs": 16153,
+      "durationMs": 16235,
       "captureTimeoutMs": 14000,
       "motionState": "complete",
       "scenario": "route-and-touch-interruption",
@@ -59,19 +60,20 @@
         "finalRoutine": "floorPause",
         "motionState": "complete"
       },
-      "startedAt": "2026-08-13T15:09:01.171Z",
+      "startedAt": "2026-08-13T16:17:59.593Z",
       "video": "videos/gray-white-tabby/390x844/eat.webm",
       "entryPoster": "posters/gray-white-tabby/390x844/eat-entry.png",
       "exitPoster": "posters/gray-white-tabby/390x844/eat-exit.png",
       "humanReview": {
-        "status": "pending",
-        "reviewer": "",
-        "notes": ""
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved regenerated desktop/mobile food-bowl interruption evidence in Codex on 2026-08-14.",
+        "reviewedAt": "2026-08-14T23:09:13.478281+08:00"
       },
       "evidenceSha256": {
-        "video": "4a59166b3be9b1a8b61fa596abe34edab530b3ad5ad0caf5eeaeeb9a75509cff",
-        "entryPoster": "fe4c368809e7988de00ecd1b202cd1e294aa225985e1c5fa352e932ab67773ef",
-        "exitPoster": "ce046a63219d2c07229b68559c69a34bff041681646c72c994f417424b68a4d1"
+        "video": "65920456721c758446b8eee02120e4a5c64e1057935b1deefb9eb567c4ad617d",
+        "entryPoster": "6a37572a3a4fd73b456a24c46adb80944634e01bbe2c2451c0666860ba4ba1f9",
+        "exitPoster": "99d06323c19cac20ccbfa2745eb45ae74f5b7d641d888875c098a8ec2392a6d4"
       }
     }
   ],
@@ -81,7 +83,7 @@
     "boards/mobile/eat.png",
     "boards/mobile/eat.html"
   ],
-  "sourceFingerprint": "cea95b46800761b1a0dee7bc3b14f2b4015e8f35e4aadce927ee48e554c3fac5",
+  "sourceFingerprint": "60d5ff61ff98eda0f90f2ef0f463e7f7f7e23c7def9b94dc9feaba9a58faeb75",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
