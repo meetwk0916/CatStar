@@ -17,7 +17,6 @@ import {
   type CompanionRouteFrame,
   type CompanionRouteName,
 } from "./companionRoute";
-import { sampleScriptedJump, type ScriptedJumpGeometry } from "./scriptedJump";
 
 export interface CatRoomSceneData {
   coatPreset?: CatCoatPreset;
@@ -101,8 +100,69 @@ interface CatAnimationSpec {
   >;
 }
 
+interface ScriptedJumpGeometry {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  startedAt: number;
+  duration: number;
+  peakHeight: number;
+}
+
+type ScriptedJumpPhase =
+  | "anticipation"
+  | "launch"
+  | "rising"
+  | "apex"
+  | "descent"
+  | "recovery";
+
+interface ScriptedJumpSample {
+  x: number;
+  y: number;
+  frame: number;
+  phase: ScriptedJumpPhase;
+  complete: boolean;
+}
+
 interface ScriptedJump extends ScriptedJumpGeometry {
   landingRoutine: CatRoutine;
+}
+
+const JUMP_ANTICIPATION_END = 0.12;
+const JUMP_LANDING_START = 0.78;
+const JUMP_PHASES: readonly { end: number; phase: ScriptedJumpPhase }[] = [
+  { end: JUMP_ANTICIPATION_END, phase: "anticipation" },
+  { end: 0.28, phase: "launch" },
+  { end: 0.44, phase: "rising" },
+  { end: 0.61, phase: "apex" },
+  { end: JUMP_LANDING_START, phase: "descent" },
+  { end: 1, phase: "recovery" },
+];
+
+export function sampleScriptedJump(
+  jump: ScriptedJumpGeometry,
+  time: number,
+): ScriptedJumpSample {
+  const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
+  const flightProgress = Phaser.Math.Clamp(
+    (progress - JUMP_ANTICIPATION_END) / (JUMP_LANDING_START - JUMP_ANTICIPATION_END),
+    0,
+    1,
+  );
+  const easedFlightProgress = Phaser.Math.Easing.Sine.InOut(flightProgress);
+  const arcY = Math.sin(flightProgress * Math.PI) * jump.peakHeight;
+  const frame = JUMP_PHASES.findIndex(({ end }) => progress < end);
+  const resolvedFrame = frame === -1 ? JUMP_PHASES.length - 1 : frame;
+
+  return {
+    x: Phaser.Math.Linear(jump.fromX, jump.toX, easedFlightProgress),
+    y: Phaser.Math.Linear(jump.fromY, jump.toY, easedFlightProgress) - arcY,
+    frame: resolvedFrame,
+    phase: JUMP_PHASES[resolvedFrame].phase,
+    complete: progress >= 1,
+  };
 }
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";

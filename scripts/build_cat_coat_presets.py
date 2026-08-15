@@ -148,7 +148,7 @@ def recolor_sheet(source: Image.Image, coat: str) -> Image.Image:
     return output
 
 
-def load_motion_source(action: str, expected_frames: int) -> Image.Image:
+def load_motion_source(action: str) -> Image.Image:
     source_path = MOTION_SOURCES[action]
     return Image.open(source_path).convert("RGBA")
 
@@ -189,7 +189,7 @@ def main() -> None:
     for action, config in spec["actions"].items():
         source_path = MOTION_SOURCES[action]
         expected_size = (FRAME * int(config["frames"]), FRAME)
-        source = load_motion_source(action, int(config["frames"]))
+        source = load_motion_source(action)
         if source.size != expected_size:
             raise ValueError(f"{action}: expected {expected_size}, got {source.size} from {source_path}")
 

@@ -88,7 +88,7 @@ describe('production jump motion', () => {
       await readFile(
         join(
           ROOT,
-          'artifacts/art/runtime-motion-review/2026-08-15-jump-v2/manifest.json',
+          'artifacts/art/runtime-motion-review/2026-08-15-jump-v3/manifest.json',
         ),
         'utf8',
       ),

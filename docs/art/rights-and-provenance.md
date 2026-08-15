@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-09
+**Last reviewed:** 2026-08-15
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. The repository records
@@ -124,9 +124,9 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Tool and date | Built-in ImageGen; exact version not exposed; generated 2026-08-15. |
 | Source brief | Six right-facing phases: grounded anticipation, rear-leg launch, rising, apex balance, prepared descent, and four-paw landing recovery. The initial request and targeted sixth-frame correction are retained in `generation-prompt.md`. |
 | Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
-| Transformation lineage | Chroma-key source → connected-pose extraction → shared alpha-area normalization → six transparent `96x96` phases via `scripts/compose_product_cat_jump_v6.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py` → phase-synchronized scripted arc via `src/game/scriptedJump.ts`. |
+| Transformation lineage | Chroma-key source → connected-pose extraction → shared alpha-area normalization → six transparent `96x96` phases via `scripts/compose_product_cat_jump_v6.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py` → phase-synchronized scripted arc in the Phaser adapter `src/game/CatRoomScene.ts`. |
 | Structural evidence | `npm run check:assets` passes for all six current coat presets; `tests/jump-motion.test.ts` records six distinct frames, stable body mass, runtime wiring, and the approved evidence matrix. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v2/` covers the complete floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v3/` covers the final post-review floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
 | Distribution status | Internal jump evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 

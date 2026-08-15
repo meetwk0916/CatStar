@@ -1,5 +1,19 @@
-import { describe, expect, it } from 'vitest';
-import { sampleScriptedJump } from './scriptedJump';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('phaser', () => ({
+  Scene: class Scene {},
+  Math: {
+    Clamp: (value: number, min: number, max: number) => Math.min(Math.max(value, min), max),
+    Linear: (from: number, to: number, progress: number) => from + (to - from) * progress,
+    Easing: {
+      Sine: {
+        InOut: (value: number) => 0.5 - 0.5 * Math.cos(Math.PI * value),
+      },
+    },
+  },
+}));
+
+import { sampleScriptedJump } from './CatRoomScene';
 
 const JUMP = {
   fromX: 100,

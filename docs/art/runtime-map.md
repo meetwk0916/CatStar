@@ -93,7 +93,7 @@ preceding v1 and v2 evidence directories retain the earlier short stretch and
 short grooming iterations for comparison.
 
 The current jump evidence lives under
-`artifacts/art/runtime-motion-review/2026-08-15-jump-v2/`. It covers the
+`artifacts/art/runtime-motion-review/2026-08-15-jump-v3/`. It covers the
 gray-white motion master's complete floor-to-window-bench and return route at
 `1280x720` and `390x844`. The six sprite phases are synchronized to grounded
 anticipation, one airborne arc, destination contact, compression, and recovery;

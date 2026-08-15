@@ -1,89 +1,79 @@
 {
-  "schemaVersion": 2,
-  "capturedAt": "2026-08-15T11:34:21.166522+08:00",
-  "viewport": [
-    1280,
-    720
+  "schemaVersion": 1,
+  "reviewKind": "continuous-motion",
+  "profile": "prototype",
+  "capturedAt": "2026-08-15T11:27:37.620125+08:00",
+  "presets": [
+    "gray-white-tabby"
   ],
-  "shotViewports": {
-    "default-walk-4s.png": [
-      1280,
-      720
-    ],
-    "window-bench-6s.png": [
-      1280,
-      720
-    ],
-    "catbed-rest-10s.png": [
-      1280,
-      720
-    ],
-    "food-bowl-eat-14s.png": [
-      1280,
-      720
-    ],
-    "blanket-rest-10s.png": [
-      1280,
-      720
-    ],
-    "floor-groom-2s.png": [
-      1280,
-      720
-    ],
-    "floor-stretch-1s.png": [
-      1280,
-      720
-    ],
-    "floor-sleep-2s.png": [
-      1280,
-      720
-    ],
-    "approach-user-4s.png": [
-      1280,
-      720
-    ],
-    "plant-touch-1s.png": [
-      1280,
-      720
-    ],
-    "mobile-sit-2s.png": [
-      390,
-      844
-    ],
-    "interaction-left-01.png": [
-      1280,
-      720
-    ],
-    "interaction-left-02.png": [
-      1280,
-      720
-    ],
-    "interaction-left-03.png": [
-      1280,
-      720
-    ],
-    "interaction-left-04.png": [
-      1280,
-      720
-    ],
-    "interaction-right-01.png": [
-      1280,
-      720
-    ],
-    "interaction-right-02.png": [
-      1280,
-      720
-    ],
-    "interaction-right-03.png": [
-      1280,
-      720
-    ],
-    "interaction-right-04.png": [
-      1280,
-      720
-    ]
-  },
-  "sourceFingerprint": "c6ddd4318fb8caab66cc826d21b7b62573d2ddd3668eac5631dec5fc5d69c5f1",
+  "actions": [
+    "jump"
+  ],
+  "viewports": [
+    "1280x720",
+    "390x844"
+  ],
+  "entries": [
+    {
+      "coatPreset": "gray-white-tabby",
+      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
+      "action": "jump",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=approachWindowBench&catstarMotionReview=1",
+      "durationMs": 4336,
+      "captureTimeoutMs": 6000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T03:27:25.621Z",
+      "video": "videos/gray-white-tabby/1280x720/jump.webm",
+      "entryPoster": "posters/gray-white-tabby/1280x720/jump-entry.png",
+      "exitPoster": "posters/gray-white-tabby/1280x720/jump-exit.png",
+      "humanReview": {
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved by meetwk0916 in Codex on 2026-08-15 after reviewing the final post-review floor-to-window-bench and return sequence at desktop and mobile sizes, including grounded anticipation, phase-synchronized arc, clean contacts, landing compression, and recovery.",
+        "reviewedAt": "2026-08-15T11:32:28.140724+08:00"
+      },
+      "evidenceSha256": {
+        "video": "4ffc478400b75b001f27316d16498070377a651cc9de264c13938f11866576ae",
+        "entryPoster": "7d63f6651ec8bde89185bc248c0553b51bd1f33733a2f2aea419dc2529475d78",
+        "exitPoster": "f9b1a412410a8b3d54f9356404589edbcbc76c7a3153b11ab41fda266725789b"
+      }
+    },
+    {
+      "coatPreset": "gray-white-tabby",
+      "runtimeCoatPreset": "GRAY_WHITE_TABBY",
+      "action": "jump",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=approachWindowBench&catstarMotionReview=1",
+      "durationMs": 4078,
+      "captureTimeoutMs": 6000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T03:27:31.957Z",
+      "video": "videos/gray-white-tabby/390x844/jump.webm",
+      "entryPoster": "posters/gray-white-tabby/390x844/jump-entry.png",
+      "exitPoster": "posters/gray-white-tabby/390x844/jump-exit.png",
+      "humanReview": {
+        "status": "pass",
+        "reviewer": "meetwk0916",
+        "notes": "Approved by meetwk0916 in Codex on 2026-08-15 after reviewing the final post-review floor-to-window-bench and return sequence at desktop and mobile sizes, including grounded anticipation, phase-synchronized arc, clean contacts, landing compression, and recovery.",
+        "reviewedAt": "2026-08-15T11:32:28.141074+08:00"
+      },
+      "evidenceSha256": {
+        "video": "536eb04b708de02b5cf398b9bbc3d5aa6f96bdf8d20f92e9c1827ed37c48b195",
+        "entryPoster": "22eade402db7a3577f2180f04dfefae2e4846652c2c155874ab1ae43e10ec855",
+        "exitPoster": "7e9175580cec1fda22a2a3f218089c01751267a0bbd7cd3bb42fda7e6f97ff29"
+      }
+    }
+  ],
+  "boards": [
+    "boards/desktop/jump.png",
+    "boards/desktop/jump.html",
+    "boards/mobile/jump.png",
+    "boards/mobile/jump.html"
+  ],
+  "sourceFingerprint": "821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -155,7 +145,10 @@
     "public/assets/scenes/window-room/foreground-blanket.png",
     "public/assets/scenes/window-room/foreground-cat-bed.png",
     "public/assets/scenes/window-room/plant-leaf.png",
+    "scripts/capture_cat_motion_review.mjs",
+    "scripts/capture_cat_motion_review.py",
     "scripts/capture_cat_runtime_review.py",
+    "scripts/record_cat_motion_review.py",
     "src/App.tsx",
     "src/components/CatScene.tsx",
     "src/components/Mailbox.tsx",
@@ -185,26 +178,5 @@
     "src/types.ts",
     "src/vite-env.d.ts",
     "vite.config.ts"
-  ],
-  "screenshots": [
-    "default-walk-4s.png",
-    "window-bench-6s.png",
-    "catbed-rest-10s.png",
-    "food-bowl-eat-14s.png",
-    "blanket-rest-10s.png",
-    "floor-groom-2s.png",
-    "floor-stretch-1s.png",
-    "floor-sleep-2s.png",
-    "approach-user-4s.png",
-    "plant-touch-1s.png",
-    "mobile-sit-2s.png",
-    "interaction-left-01.png",
-    "interaction-left-02.png",
-    "interaction-left-03.png",
-    "interaction-left-04.png",
-    "interaction-right-01.png",
-    "interaction-right-02.png",
-    "interaction-right-03.png",
-    "interaction-right-04.png"
   ]
 }
