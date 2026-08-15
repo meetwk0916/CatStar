@@ -40,7 +40,7 @@ MOTION_SOURCES = {
     "idle": QUIET_MOTION_V1_DIR / "idle.png",
     "sit": QUALITY_SLICE_V12_DIR / "sit.png",
     "walk": QUALITY_SLICE_V12_DIR / "walk.png",
-    "jump": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v5/sprite-sheets-96/jump.png",
+    "jump": ACTIVE_CANDIDATE_DIR / "product-cat-jump-v6/sprite-sheets-96/jump.png",
     "sleep": QUIET_MOTION_V1_DIR / "sleep.png",
     "interact": QUALITY_SLICE_V12_DIR / "interact.png",
     "eat": DAILY_LIFE_V1_DIR / "eat.png",
@@ -150,16 +150,7 @@ def recolor_sheet(source: Image.Image, coat: str) -> Image.Image:
 
 def load_motion_source(action: str, expected_frames: int) -> Image.Image:
     source_path = MOTION_SOURCES[action]
-    source = Image.open(source_path).convert("RGBA")
-
-    if action == "jump" and source.width == FRAME * 5 and expected_frames == 6:
-        expanded = Image.new("RGBA", (FRAME * 6, FRAME), (0, 0, 0, 0))
-        expanded.alpha_composite(source)
-        recovery = source.crop((FRAME * 4, 0, FRAME * 5, FRAME))
-        expanded.alpha_composite(recovery, (FRAME * 5, 0))
-        return expanded
-
-    return source
+    return Image.open(source_path).convert("RGBA")
 
 
 def make_preview(spec: dict[str, object]) -> None:

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "capturedAt": "2026-08-15T00:13:32.962741+08:00",
+  "capturedAt": "2026-08-15T11:20:10.902013+08:00",
   "viewport": [
     1280,
     720
@@ -83,7 +83,7 @@
       720
     ]
   },
-  "sourceFingerprint": "b040e9f16c7d3a35ada0a1d302b764c1011b732fed3947f384f3bff42eda8022",
+  "sourceFingerprint": "3cf94a7b5b5888a606b814476022db82241c228ffe26999681fc6cdfe2dc2572",
   "sourceFiles": [
     "index.html",
     "package-lock.json",
@@ -177,6 +177,8 @@
     "src/game/CatRoomScene.ts",
     "src/game/companionRoute.test.ts",
     "src/game/companionRoute.ts",
+    "src/game/scriptedJump.test.ts",
+    "src/game/scriptedJump.ts",
     "src/index.css",
     "src/main.tsx",
     "src/storage/passportStorage.test.ts",

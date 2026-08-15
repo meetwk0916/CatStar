@@ -22,7 +22,7 @@ import * as Phaser from "phaser";
 
 interface SceneInternals {
   cat: {
-    anims: { currentAnim?: { key: string } };
+    anims: { currentAnim?: { key: string }; stop: ReturnType<typeof vi.fn> };
     body: { setAllowGravity: ReturnType<typeof vi.fn>; velocity: { x: number; y: number } };
     play: ReturnType<typeof vi.fn>;
     depth: number;
@@ -32,6 +32,7 @@ interface SceneInternals {
     setDepth: ReturnType<typeof vi.fn>;
     setFlipX: ReturnType<typeof vi.fn>;
     setScale: ReturnType<typeof vi.fn>;
+    setTexture: ReturnType<typeof vi.fn>;
     setPosition: ReturnType<typeof vi.fn>;
     setX: ReturnType<typeof vi.fn>;
     setY: ReturnType<typeof vi.fn>;
@@ -78,7 +79,7 @@ interface SceneInternals {
 
 function createCat(x = 320): SceneInternals["cat"] {
   const cat: SceneInternals["cat"] = {
-    anims: {},
+    anims: { stop: vi.fn() },
     body: { setAllowGravity: vi.fn(), velocity: { x: 0, y: 0 } },
     play: vi.fn(),
     depth: 5,
@@ -92,6 +93,7 @@ function createCat(x = 320): SceneInternals["cat"] {
     setScale: vi.fn((nextScale: number) => {
       cat.scaleX = nextScale;
     }),
+    setTexture: vi.fn(),
     setPosition: vi.fn((nextX: number, nextY: number) => {
       cat.x = nextX;
       cat.y = nextY;
@@ -578,6 +580,47 @@ describe("CatRoomScene interactions", () => {
     expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
     expect(internals.onInteract).toHaveBeenCalledTimes(1);
     expect(durationMs).toBe(1_700);
+  });
+
+  it("binds jump poses to anticipation, apex, landing, and recovery progress", () => {
+    const scene = Object.create(CatRoomScene.prototype) as CatRoomScene;
+    const internals = scene as unknown as SceneInternals;
+    internals.cat = createCat(100);
+    internals.scriptedJump = {
+      fromX: 100,
+      fromY: 225,
+      toX: 340,
+      toY: 158,
+      startedAt: 1_000,
+      duration: 880,
+      peakHeight: 58,
+      landingRoutine: "perchWindowBench",
+    };
+    internals.routine = "approachWindowBench";
+    internals.routineHoldUntil = 0;
+    internals.currentZone = "floor";
+    internals.playCatAction = vi.fn();
+
+    const updateJump = (time: number) =>
+      (scene as unknown as { updateScriptedJump: (now: number) => void }).updateScriptedJump(
+        time,
+      );
+
+    updateJump(1_080);
+    expect(internals.cat.setPosition).toHaveBeenLastCalledWith(100, 225);
+    expect(internals.cat.setTexture).toHaveBeenLastCalledWith("cat-jump", 0);
+
+    updateJump(1_440);
+    expect(internals.cat.setTexture).toHaveBeenLastCalledWith("cat-jump", 3);
+
+    updateJump(1_720);
+    expect(internals.cat.setPosition).toHaveBeenLastCalledWith(340, 158);
+    expect(internals.cat.setTexture).toHaveBeenLastCalledWith("cat-jump", 5);
+    expect(internals.routine).toBe("approachWindowBench");
+
+    updateJump(1_880);
+    expect(internals.routine).toBe("perchWindowBench");
+    expect(internals.playCatAction).toHaveBeenLastCalledWith("sit", true);
   });
 
   it("moves a waking sleep response into the floor pause routine", () => {

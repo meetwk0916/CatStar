@@ -65,5 +65,5 @@
       "repeat": 0
     }
   },
-  "note": "Ten-action Phase 0.1 contract. The gray-white motion master uses product-cat-quality-slice v12 for sit, walk, and interact; product-cat-quiet-motion-v1 for idle, lie, and sleep; product-cat-daily-life-v1 for eat, groom, and stretch; and product-cat-actions-v5 for jump. Curated coat presets are deterministic derivatives of the same motion master."
+  "note": "Ten-action Phase 0.1 contract. The gray-white motion master uses product-cat-quality-slice v12 for sit, walk, and interact; product-cat-quiet-motion-v1 for idle, lie, and sleep; product-cat-daily-life-v1 for eat, groom, and stretch; and product-cat-jump-v6 for the six-phase jump. Curated coat presets are deterministic derivatives of the same motion master."
 }

@@ -47,6 +47,12 @@ The current implementation includes:
   all redrawn after approval of the dedicated production model sheet.
   It remains internal quality-slice evidence while final human confirmation and
   the complete rights-chain gate are pending.
+- The production-identity jump v6 candidate supplies six distinct phases for
+  anticipation, launch, rise, apex balance, prepared descent, and grounded
+  recovery. The scene binds those poses to the scripted arc instead of playing
+  an unsynchronized fixed-rate animation. Current fingerprint-bound desktop and
+  mobile evidence covers the full window-bench round trip; meetwk0916 approved
+  both entries on 2026-08-15.
 - The production-model-derived quiet-motion v1 candidate supplies `idle`,
   awake-rest `lie`, and deep `sleep` across all six current coat presets.
   Structural asset validation and fingerprint-bound desktop/mobile continuous
@@ -124,10 +130,9 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Complete rounded short-haired's remaining `jump` action through the same
-  rights-recorded production process as the v12 quality slice. The daily-life
-  `eat`, `groom`, and `stretch` candidate and dedicated continuous evidence are
-  motion-approved, while their immutable terms snapshot and complete public
+- Lock the gray-white ten-action motion master now that the moving quality
+  slice, quiet actions, daily-life actions, and physically credible jump have
+  current continuous evidence. The immutable terms snapshot and complete public
   distribution rights chain remain unresolved. Then produce independent
   ten-action masters for slender short-haired and fluffy long-haired before
   exposing those prototypes in the passport; they do not block the first

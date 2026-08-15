@@ -110,6 +110,26 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
 | Distribution status | Internal daily-life evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
+## Rounded short-haired jump v6 intake record
+
+**Status:** Internal jump evidence; structural and human runtime review passed
+
+| Field | Record |
+| --- | --- |
+| Candidate package | `artifacts/art/candidates/active/product-cat-jump-v6/` |
+| Identity authority | `artifacts/art/candidates/active/product-cat-model-sheet-v1/sources/model-sheet-chromakey.png` is the sole anatomy, face, marking, palette, and pixel-style authority. |
+| Motion reference | The prior `product-cat-actions-v5/sources/jump-natural-source.png` supplied motion-phase context only. |
+| Generated source SHA-256 | `sources/jump-six-phase-source.png`: `0fb878d4719fcfa22d8803dcfd5c10bbddbb5838537a77dd25edeea7899c97ac`. |
+| Creator and account context | Generated with built-in ImageGen in the project owner's Codex session. |
+| Tool and date | Built-in ImageGen; exact version not exposed; generated 2026-08-15. |
+| Source brief | Six right-facing phases: grounded anticipation, rear-leg launch, rising, apex balance, prepared descent, and four-paw landing recovery. The initial request and targeted sixth-frame correction are retained in `generation-prompt.md`. |
+| Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
+| Transformation lineage | Chroma-key source → connected-pose extraction → shared alpha-area normalization → six transparent `96x96` phases via `scripts/compose_product_cat_jump_v6.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py` → phase-synchronized scripted arc via `src/game/scriptedJump.ts`. |
+| Structural evidence | `npm run check:assets` passes for all six current coat presets; `tests/jump-motion.test.ts` records six distinct frames, stable body mass, runtime wiring, and the approved evidence matrix. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v2/` covers the complete floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Distribution status | Internal jump evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
+
 ## Rounded short-haired quiet-motion v1 intake record
 
 **Status:** Rights source recorded; structural and human runtime review passed

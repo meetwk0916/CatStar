@@ -36,7 +36,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch with phase-weighted preparation, extension, held peak, and recovery timing. |
 | `eat` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived bowl-oriented head-lowering loop; the room supplies the bowl prop. |
 | `lie` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model awake rest with elevated head, open-eye return, and stable cat-bed/blanket contact. |
-| `jump` | `artifacts/art/candidates/active/product-cat-actions-v5/` | Five generated key poses plus one held settle frame to satisfy the six-frame runtime contract. |
+| `jump` | `artifacts/art/candidates/active/product-cat-jump-v6/` | Six production-identity phases synchronized to grounded anticipation, launch, rise, apex balance, prepared descent, and landing recovery. |
 | `sleep` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model deep curled sleep with closed eyes and restrained breathing. |
 
 The reviewed gray-white tabby is the motion master. The other five coat
@@ -92,6 +92,13 @@ and all six entries were approved by meetwk0916 in Codex on 2026-08-15. The
 preceding v1 and v2 evidence directories retain the earlier short stretch and
 short grooming iterations for comparison.
 
+The current jump evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-15-jump-v2/`. It covers the
+gray-white motion master's complete floor-to-window-bench and return route at
+`1280x720` and `390x844`. The six sprite phases are synchronized to grounded
+anticipation, one airborne arc, destination contact, compression, and recovery;
+meetwk0916 approved both entries in Codex on 2026-08-15.
+
 The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
 `artifacts/art/runtime-motion-review/2026-08-13-plant-touch-route/`. Each set
@@ -111,11 +118,12 @@ in Codex on 2026-08-14.
 
 ## Candidate Retention
 
-- Active motion sources: v5, daily-life v1, quiet-motion v1, and quality-slice
-  v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; daily-life v1
+- Active motion sources: jump v6, daily-life v1, quiet-motion v1, and
+  quality-slice v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; daily-life v1
   supplies `eat`, `groom`, and `stretch`; v12 supplies `sit`, `walk`, and
-  `interact`. Product-cat-idle v1/v2/v3, action v3/v4/v8, and quality-slice
-  v10/v11 are retained as review and motion-planning history.
+  `interact`; jump v6 supplies `jump`. Product-cat-actions v5,
+  product-cat-idle v1/v2/v3, action v3/v4/v8, and quality-slice v10/v11 are
+  retained as review and motion-planning history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

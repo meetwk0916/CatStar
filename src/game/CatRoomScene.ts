@@ -17,6 +17,7 @@ import {
   type CompanionRouteFrame,
   type CompanionRouteName,
 } from "./companionRoute";
+import { sampleScriptedJump, type ScriptedJumpGeometry } from "./scriptedJump";
 
 export interface CatRoomSceneData {
   coatPreset?: CatCoatPreset;
@@ -100,14 +101,7 @@ interface CatAnimationSpec {
   >;
 }
 
-interface ScriptedJump {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-  startedAt: number;
-  duration: number;
-  peakHeight: number;
+interface ScriptedJump extends ScriptedJumpGeometry {
   landingRoutine: CatRoutine;
 }
 
@@ -1290,7 +1284,8 @@ export class CatRoomScene extends Phaser.Scene {
       peakHeight: options.peakHeight,
       landingRoutine: options.landingRoutine,
     };
-    this.playCatAction("jump", true);
+    this.cat.anims.stop();
+    this.cat.setTexture("cat-jump", 0);
   }
 
   private updateScriptedJump(time: number) {
@@ -1299,18 +1294,15 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const jump = this.scriptedJump;
-    const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
-    const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
-    const arcY = Math.sin(progress * Math.PI) * jump.peakHeight;
-    const x = Phaser.Math.Linear(jump.fromX, jump.toX, easedProgress);
-    const y = Phaser.Math.Linear(jump.fromY, jump.toY, easedProgress) - arcY;
+    const sample = sampleScriptedJump(jump, time);
 
     this.cat.body.setAllowGravity(false);
     this.cat.setVelocity(0, 0);
-    this.cat.setPosition(x, y);
-    this.playCatAction("jump");
+    this.cat.setPosition(sample.x, sample.y);
+    this.cat.anims.stop();
+    this.cat.setTexture("cat-jump", sample.frame);
 
-    if (progress >= 1) {
+    if (sample.complete) {
       this.cat.setPosition(jump.toX, jump.toY);
       this.scriptedJump = undefined;
       this.routine = jump.landingRoutine;
