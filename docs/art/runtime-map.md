@@ -67,6 +67,16 @@ active approach, pointer interactions on both sides of the cat, plant touch,
 and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
 regenerated after the latest purposeful-route code change and passes
 `npm run review:runtime:check`.
+
+The locked gray-white ten-action master evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/`. One
+manifest covers all ten action classes at `1280x720` and `390x844`, binds the
+20 continuous recordings to source fingerprint
+`821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`, and
+records meetwk0916's approval of every entry on 2026-08-15. This is the current
+motion-master acceptance set; the narrower directories below remain scoped
+iteration and route evidence.
+
 The dedicated food-bowl continuous motion evidence is separate at
 `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/`; it is
 structurally valid for desktop and mobile, and meetwk0916 approved both
@@ -76,23 +86,23 @@ The plant-touch desktop evidence lives under
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
 accompanying `manifest.json` binds its screenshots to the exact runtime input
 fingerprint; `npm run review:runtime:check` fails after those inputs change.
-The quiet-motion continuous evidence lives under
+The preceding quiet-motion continuous evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`.
 Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
 through exit at `1280x720` and `390x844`; wakun approved all eight
-human-review entries on 2026-08-09, and both manifests pass the release-grade
-human-review gate.
+human-review entries on 2026-08-09 against their capture-time fingerprint. The
+current master matrix supersedes them for whole-master acceptance.
 
-The current daily-life continuous evidence lives under
+The preceding daily-life continuous evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/`. It covers the
 gray-white motion master's complete `eat`, `groom`, and `stretch` actions at
-`1280x720` and `390x844`, is bound to the current runtime-source fingerprint,
+`1280x720` and `390x844`, is bound to its capture-time source fingerprint,
 and all six entries were approved by meetwk0916 in Codex on 2026-08-15. The
 preceding v1 and v2 evidence directories retain the earlier short stretch and
 short grooming iterations for comparison.
 
-The current jump evidence lives under
+The scoped jump evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-15-jump-v3/`. It covers the
 gray-white motion master's complete floor-to-window-bench and return route at
 `1280x720` and `390x844`. The six sprite phases are synchronized to grounded

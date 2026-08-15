@@ -32,6 +32,10 @@ The current implementation includes:
   master and stable action timing.
 - A ten-action runtime contract: idle, sit, walk, jump, eat, awake rest, deep
   sleep, groom, stretch, and interact.
+- The gray-white rounded short-haired ten-action motion master is locked for
+  internal production work. One current-fingerprint evidence matrix covers all
+  ten actions at `1280x720` and `390x844`; meetwk0916 approved all 20 entries
+  on 2026-08-15. This motion lock does not clear public distribution rights.
 - An engine-independent **陪伴例程** planner with temperament weighting,
   recent-intent suppression, awake session opening, dwell windows, and
   zone-aware rendering.
@@ -45,8 +49,8 @@ The current implementation includes:
 - The rounded short-haired v12 quality slice now supplies distinct
   `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets,
   all redrawn after approval of the dedicated production model sheet.
-  It remains internal quality-slice evidence while final human confirmation and
-  the complete rights-chain gate are pending.
+  Its current identity and motion are included in the approved ten-action
+  master while the complete public rights-chain gate remains pending.
 - The production-identity jump v6 candidate supplies six distinct phases for
   anticipation, launch, rise, apex balance, prepared descent, and grounded
   recovery. The scene binds those poses to the scripted arc instead of playing
@@ -130,13 +134,11 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Lock the gray-white ten-action motion master now that the moving quality
-  slice, quiet actions, daily-life actions, and physically credible jump have
-  current continuous evidence. The immutable terms snapshot and complete public
-  distribution rights chain remain unresolved. Then produce independent
-  ten-action masters for slender short-haired and fluffy long-haired before
-  exposing those prototypes in the passport; they do not block the first
-  release.
+- Produce independent ten-action masters for slender short-haired and fluffy
+  long-haired before exposing those prototypes in the passport; they do not
+  block the first release. The gray-white master is locked for internal
+  production work, while its immutable terms snapshot and complete public
+  distribution rights chain remain unresolved.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
 - Replace the six current deterministic coat derivatives with ten reviewed
