@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -66,6 +67,9 @@ describe("gray-white ten-action motion master", () => {
         viewport?: string;
         motionState?: string;
         humanReview?: { status?: string; reviewer?: string };
+        video?: string;
+        entryPoster?: string;
+        exitPoster?: string;
         evidenceSha256?: { video?: string; entryPoster?: string; exitPoster?: string };
       }>;
     };
@@ -95,11 +99,24 @@ describe("gray-white ten-action motion master", () => {
           entry.coatPreset === "gray-white-tabby" &&
           entry.motionState === "complete" &&
           entry.humanReview?.status === "pass" &&
-          entry.humanReview.reviewer === "meetwk0916" &&
-          Object.values(entry.evidenceSha256 ?? {}).every((hash) =>
-            /^[a-f0-9]{64}$/.test(hash),
-          ),
+          entry.humanReview.reviewer === "meetwk0916",
       ),
     ).toBe(true);
+
+    for (const entry of manifest.entries ?? []) {
+      expect(Object.keys(entry.evidenceSha256 ?? {}).sort()).toEqual([
+        "entryPoster",
+        "exitPoster",
+        "video",
+      ]);
+      for (const field of ["video", "entryPoster", "exitPoster"] as const) {
+        const relativePath = entry[field];
+        expect(relativePath, `${entry.action}/${entry.viewport}/${field}`).toBeTruthy();
+        const digest = createHash("sha256")
+          .update(await readFile(join(MASTER_EVIDENCE, relativePath!)))
+          .digest("hex");
+        expect(entry.evidenceSha256?.[field]).toBe(digest);
+      }
+    }
   });
 });
