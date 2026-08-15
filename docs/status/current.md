@@ -145,6 +145,11 @@ hashes or branch information to this file.
   complete appearances after the new motion master is approved, adding brown
   tabby, solid gray, tortoiseshell, and colorpoint and reviewing matching eye,
   nose, and paw-pad colors without enabling free mixing or local markings.
+- Produce and intake the approved orange-tabby appearance defined in
+  `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
+  desktop/mobile capture is comparison evidence only; Issue #23 remains blocked
+  until an independent production source, complete release rights, and twenty
+  human review decisions exist.
 - Defer bespoke **自发玩耍** sheets until after the ten core action classes;
   reuse walk and interact motion for Phase 0.1 **主动靠近**.
 - Keep the first-release repertoire frozen at the ten core action classes;

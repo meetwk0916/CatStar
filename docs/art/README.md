@@ -43,6 +43,12 @@ The Issue #17 evidence draft lives in
 [`rights-chain-checklist.md`](rights-chain-checklist.md); it does not change
 the gate.
 
+The approved Issue #23 orange-tabby production handoff lives at
+[`../../artifacts/art/production-briefs/orange-tabby-v1/README.md`](../../artifacts/art/production-briefs/orange-tabby-v1/README.md).
+It locks appearance and delivery requirements only. Until its intake checklist
+is completed and the resulting ten-action package passes review, the current
+orange derivative remains internal comparison art rather than a release asset.
+
 ## Production model-sheet review
 
 Regenerate the mobile review derivative for the approved rounded short-haired
