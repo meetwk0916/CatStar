@@ -2,7 +2,7 @@
 
 **Issue:** #23
 
-**Status:** Approved appearance direction; production art not yet received
+**Status:** Big-ginger appearance direction approved; production art not yet received
 
 **Runtime target:** Rounded short-haired, ten-action CatStar package
 **Identity authority:** `artifacts/art/candidates/active/product-cat-model-sheet-v1/`
@@ -18,13 +18,11 @@ identity-consistent production process and receive their own review.
 
 The approved direction is a warm orange tabby with:
 
-- white muzzle and chin;
-- a continuous white chest bib;
-- restrained white belly coverage;
-- four white lower legs and paws, reading as short white socks;
-- medium warm-orange body fur;
-- deep rust-brown tabby markings;
-- amber-green irises that remain distinct from the orange coat;
+- warm golden-orange fur covering at least 85% of the visible cat;
+- a light cream muzzle and chin only;
+- an orange chest, belly, legs, and paws with no white bib or socks;
+- low-contrast deeper-orange tabby markings rather than brown or black bands;
+- golden-amber irises that remain distinct from the orange coat;
 - a muted brick-pink nose and coordinated muted brick-pink paw pads.
 
 Neutral palette anchors below describe relationships, not a flat fill. The
@@ -33,21 +31,36 @@ light while preserving the ordering and identity.
 
 | Role | Neutral anchor | Requirement |
 | --- | --- | --- |
-| Orange midtone | `#C97832` | Warm, natural ginger; never neon or mascot-yellow. |
-| Orange light | `#E9A557` | Keeps facial planes and limbs readable near the lamp. |
-| Tabby stripe | `#713B28` | Clearly darker than the coat without reading as black bands. |
-| White marking | `#F3E4D5` | Warm off-white; retains form against pale and amber surfaces. |
-| Iris | `#A6A04D` | Amber-green, stable across all awake actions. |
+| Orange midtone | `#D98220` | Warm golden ginger; never muddy brown, neon, or mascot-yellow. |
+| Orange light | `#F0AA3C` | Keeps facial planes and limbs readable near the lamp. |
+| Tabby stripe | `#B96318` | Same-hue deeper orange with restrained contrast; never a dark brown mask. |
+| Cream muzzle | `#EFCB91` | Limited to muzzle and chin; must not expand into a white bib. |
+| Iris | `#D3A52C` | Golden amber, stable across all awake actions. |
 | Nose | `#B96862` | Muted brick pink, not candy pink. |
 | Paw pad | `#965451` | Deeper companion tone to the nose. |
 | Soft outline | `#4B302B` | Restrained dark warm outline consistent with the motion master. |
+
+## Approved Direction Prototype
+
+![Approved big-ginger direction](approved-direction-prototype.png)
+
+`approved-direction-prototype.png` was approved by meetwk0916 on 2026-08-16
+as the appearance direction for Issue #23. SHA-256:
+`aba920526ece578f2ca8f19b16ace035c03f0b6b2cf5ab6eb6f500dae2ca511e`.
+The built-in ImageGen prompt and reference roles are recorded in
+[`generation-prompt.md`](generation-prompt.md).
+
+This image approves orange coverage, stripe contrast, face color, and the
+overall “大橘” read only. It is an AI-generated direction prototype, not the
+editable production authority, not a `96x96` runtime sheet, and not evidence of
+public distribution rights.
 
 ## Marking Lock
 
 Markings must describe one cat rather than being redrawn opportunistically per
 pose.
 
-- The forehead carries one readable tabby `M`, with the center aligned to the
+- The forehead carries one subtle same-hue tabby `M`, with the center aligned to the
   nose bridge and two inner strokes remaining narrower than the outer crown
   strokes.
 - Each visible cheek carries two short tapered stripes. They may compress in
@@ -57,11 +70,11 @@ pose.
 - Shoulder and flank stripes taper toward the belly. Preserve their relative
   order across standing, sitting, resting, and stretched poses instead of
   copying screen-space bands from another frame.
-- The tail carries six readable rings plus a dark rust tip. Foreshortening may
+- The tail carries six readable deeper-orange rings plus a deeper-orange tip. Foreshortening may
   occlude rings, but may not create or reorder them.
-- White muzzle, chest, socks, and paws remain the same identity boundaries in
-  every action. Occlusion is the only acceptable reason for a boundary to
-  disappear.
+- Light cream is limited to the muzzle and chin. Chest, belly, legs, and paws
+  stay orange in every action; white bibs, white socks, and white paws fail the
+  appearance lock.
 - Do not add freckles, accessories, glow, halo, cast shadow, loose particles,
   or baked room props.
 
@@ -88,15 +101,15 @@ Every delivered sheet must:
 
 | Action | Orange-tabby-specific review |
 | --- | --- |
-| `idle` | M mark, cheek stripes, four socks, and tail-ring count remain stable through breathing and blinking. |
-| `sit` | Chest bib stays centered; flank stripes wrap the seated mass rather than becoming straight vertical bars. |
-| `walk` | Socks remain attached to the same legs through the gait; stripes do not slide across the torso. |
-| `jump` | Belly white and tail rings remain coherent through foreshortening; bright paws retain separation near the bench. |
+| `idle` | Subtle M mark, cheek stripes, fully orange paws, and tail-ring count remain stable through breathing and blinking. |
+| `sit` | Orange chest remains continuous; flank stripes wrap the seated mass rather than becoming straight vertical bars. |
+| `walk` | All four legs and paws remain orange through the gait; stripes do not slide across the torso. |
+| `jump` | Orange belly and tail rings remain coherent through foreshortening; paws retain separation near the bench without white tips. |
 | `eat` | Lowered head keeps the M mark and cheek-stripe order; muzzle remains readable beside the bowl. |
-| `lie` | Folded legs do not merge the socks into one white slab; awake iris color remains visible. |
+| `lie` | Folded orange legs remain individually readable; awake golden-amber iris color remains visible. |
 | `sleep` | Closed eyes remain distinct from face stripes; curled tail rings retain their order. |
-| `groom` | Raised paw preserves its sock and paw-pad colors; face markings do not migrate during contact. |
-| `stretch` | Lengthened torso keeps stripe spacing anatomical; foreleg socks retain separate silhouettes. |
+| `groom` | Raised paw remains orange and preserves its paw-pad color; face markings do not migrate during contact. |
+| `stretch` | Lengthened torso keeps stripe spacing anatomical; orange forelegs retain separate silhouettes. |
 | `interact` | Slow blink and head turn preserve the same M mark, cheek stripes, iris, and nose. |
 
 ## Room-Lighting Gate
@@ -107,7 +120,8 @@ sheet.
 - Under cool window light, orange midtones must not turn muddy brown and the
   face must remain separate from the dark window and bench.
 - Under warm lamp light, coat highlights must not merge with the floor, lamp,
-  bowl, or blanket; the white muzzle, chest, and paws must retain volume.
+  bowl, or blanket; the cream muzzle and fully orange chest and paws must retain
+  separate volume.
 - At `390x844`, the M mark, eye line, paw separation, and action silhouette must
   remain readable without enlarging the cat.
 - Desktop and mobile review must cover entry, full motion, and exit for all ten

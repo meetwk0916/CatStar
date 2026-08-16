@@ -34,6 +34,9 @@ or uncertain fields keep the package internal-only and block Issue #23.
       work was imitated.
 - [ ] The current deterministic orange derivative was used only for layout or
       defect comparison, not accepted as the production pixel source.
+- [ ] `approved-direction-prototype.png` was used only for approved color and
+      identity direction; its AI-generated pixels were not accepted as the
+      editable production or runtime source.
 
 ## Rights Grant
 
@@ -55,7 +58,8 @@ or uncertain fields keep the package internal-only and block Issue #23.
 
 - [ ] Approved appearance lock matches `README.md`.
 - [ ] Forehead M, cheek stripes, neck bands, flank stripes, six tail rings,
-      white markings, iris, nose, and pads remain one identity across actions.
+      cream muzzle/chin, fully orange chest/legs/paws, iris, nose, and pads
+      remain one identity across actions.
 - [ ] All ten sheets match `production-contract.json`.
 - [ ] Alpha geometry matches the gray-white master for every frame, or every
       approved exception is documented with its Phaser impact.

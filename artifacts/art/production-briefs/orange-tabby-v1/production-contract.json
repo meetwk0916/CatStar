@@ -23,9 +23,12 @@
     "interact": { "file": "interact.png", "frames": 6, "width": 576, "height": 96 }
   },
   "appearance": {
-    "whiteMarkings": ["muzzle", "chin", "chest-bib", "restrained-belly", "four-short-socks", "four-paws"],
-    "tabbyMarks": ["forehead-M", "two-cheek-stripes", "two-broken-neck-bands", "tapered-shoulder-and-flank-stripes", "six-tail-rings", "dark-rust-tail-tip"],
-    "iris": "amber-green",
+    "minimumOrangeBodyCoverage": 0.85,
+    "creamMarkings": ["muzzle", "chin"],
+    "forbiddenWhiteMarkings": ["chest-bib", "belly", "legs", "socks", "paws"],
+    "tabbyMarks": ["forehead-M", "two-cheek-stripes", "two-broken-neck-bands", "tapered-shoulder-and-flank-stripes", "six-tail-rings", "deeper-orange-tail-tip"],
+    "stripeContrast": "low-contrast-same-hue-deeper-orange",
+    "iris": "golden-amber",
     "nose": "muted-brick-pink",
     "pawPads": "deep-muted-brick-pink"
   },
