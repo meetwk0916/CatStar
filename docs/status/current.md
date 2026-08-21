@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-15
+**Last aligned:** 2026-08-22
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -28,14 +28,22 @@ The current implementation includes:
 - Final-letter ordering, farewell choice, **星河陪伴**, and **信箱封存**.
 - Re-registration with confirmation.
 - Runtime image assets under `public/assets/scenes/window-room/`.
-- Six passport-selectable **毛色预设** sharing one locked gray-white motion
-  master and stable action timing.
+- Six passport-selectable **毛色预设** with stable action timing. Four ordinary
+  derivatives share the gray-white alpha geometry; orange-tabby currently uses
+  an independent, visibly labelled internal appearance preview and is not
+  release-approved. Runtime art authority is separate from the persisted coat
+  choice, so existing local passports do not require migration.
 - A ten-action runtime contract: idle, sit, walk, jump, eat, awake rest, deep
   sleep, groom, stretch, and interact.
 - The gray-white rounded short-haired ten-action motion master is locked for
-  internal production work. One current-fingerprint evidence matrix covers all
-  ten actions at `1280x720` and `390x844`; meetwk0916 approved all 20 entries
-  on 2026-08-15. This motion lock does not clear public distribution rights.
+  internal production work. Its 2026-08-15 ten-action matrix remains historical
+  evidence because later scale normalization changed runtime inputs. Current
+  fingerprint-bound evidence now covers gray-white and the internal orange
+  preview across `idle`, `sit`, and `walk` at `1280x720` and `390x844`;
+  meetwk0916 approved all 12 entries on 2026-08-22 for the internal-preview
+  boundary and cross-action stability. This scoped approval neither renews the
+  full-master lock, accepts Issue #23 release art, nor clears public
+  distribution rights.
 - An engine-independent **陪伴例程** planner with temperament weighting,
   recent-intent suppression, awake session opening, dwell windows, and
   zone-aware rendering.
@@ -49,8 +57,10 @@ The current implementation includes:
 - The rounded short-haired v12 quality slice now supplies distinct
   `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets,
   all redrawn after approval of the dedicated production model sheet.
-  Its current identity and motion are included in the approved ten-action
-  master while the complete public rights-chain gate remains pending.
+  Shared source calibration and bottom-center registration now keep apparent
+  body scale stable across `idle`, `sit`, and `walk`; source art that cannot fit
+  the frozen calibration fails generation instead of being silently shrunk.
+  The complete public rights-chain gate remains pending.
 - The production-identity jump v6 candidate supplies six distinct phases for
   anticipation, launch, rise, apex balance, prepared descent, and grounded
   recovery. The scene binds those poses to the scripted arc instead of playing
@@ -90,9 +100,10 @@ The current implementation includes:
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
-  recorded in the runtime asset map. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-15/` has been regenerated with
-  the latest route input and passes `npm run review:runtime:check`.
+  recorded in the runtime asset map. The project-wide runtime screenshot set
+  under `artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`
+  contains 19 current-fingerprint desktop/mobile captures and passes its
+  manifest validation.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.

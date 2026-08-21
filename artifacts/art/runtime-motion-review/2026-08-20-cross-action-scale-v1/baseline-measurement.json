@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-08-20",
+  "status": "pre-fix failing baseline",
+  "measurement": "square root of the smaller-to-larger median visible-pixel mass ratio",
+  "alphaThreshold": 24,
+  "frameSize": "96x96",
+  "results": [
+    {
+      "appearance": "rounded-short-haired production master",
+      "preset": "gray-white-tabby",
+      "stationaryAction": "idle",
+      "walkingAction": "walk",
+      "stationaryFrameMasses": [3426, 3634, 3741, 3330],
+      "walkingFrameMasses": [2551, 2757, 2714, 2686, 2746, 2741, 2656, 2656],
+      "linearScaleRatio": 0.8745699064377066,
+      "minimumLinearScaleRatio": 0.88,
+      "result": "fail",
+      "representativeRoomEvidence": "../2026-08-15-motion-master-v1/boards/master.html"
+    },
+    {
+      "appearance": "orange-tabby internal prototype",
+      "preset": "orange-tabby",
+      "stationaryAction": "idle",
+      "walkingAction": "walk",
+      "stationaryFrameMasses": [4834, 4851, 4844, 4901],
+      "walkingFrameMasses": [3224, 3161, 3121, 3118, 3098, 3094, 3024, 3239],
+      "linearScaleRatio": 0.8022017149956936,
+      "minimumLinearScaleRatio": 0.88,
+      "result": "fail",
+      "representativeRoomEvidence": "../2026-08-16-orange-tabby-ten-action-preview-v3/boards/desktop/walk.html"
+    }
+  ]
+}

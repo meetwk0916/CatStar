@@ -25,6 +25,9 @@ DAILY_LIFE_V1_DIR = Path(
     "artifacts/art/candidates/active/product-cat-daily-life-v1/sprite-sheets-96"
 )
 PREVIEW_DIR = Path("artifacts/art/candidates/active/cat-coat-presets-v1")
+ORANGE_SHAPE_PREVIEW_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96"
+)
 FRAME = 96
 
 COAT_PRESETS = (
@@ -48,6 +51,7 @@ MOTION_SOURCES = {
     "groom": DAILY_LIFE_V1_DIR / "groom.png",
     "stretch": DAILY_LIFE_V1_DIR / "stretch.png",
 }
+ORANGE_SHAPE_PREVIEW_ACTIONS = frozenset(MOTION_SOURCES)
 
 
 def luminance(red: int, green: int, blue: int) -> float:
@@ -84,10 +88,88 @@ def warm_white(value: float) -> tuple[int, int, int]:
     return tone, max(0, tone - 3), max(0, tone - 2)
 
 
+def interpolate_palette(
+    value: float,
+    stops: tuple[tuple[int, tuple[int, int, int]], ...],
+) -> tuple[int, int, int]:
+    for index, (upper_value, upper_color) in enumerate(stops):
+        if value > upper_value:
+            continue
+        if index == 0:
+            return upper_color
+        lower_value, lower_color = stops[index - 1]
+        progress = (value - lower_value) / (upper_value - lower_value)
+        return tuple(
+            round(lower + (upper - lower) * progress)
+            for lower, upper in zip(lower_color, upper_color, strict=True)
+        )
+    return stops[-1][1]
+
+
 def orange_tabby(value: float) -> tuple[int, int, int]:
+    """Map the motion master's values to the approved big-ginger palette.
+
+    This remains an internal preview treatment: it preserves pose geometry while
+    replacing the gray-white source's cool/pink cast and high-contrast stripes.
+    """
+    return interpolate_palette(
+        value,
+        (
+            (0, (28, 19, 21)),
+            (42, (75, 48, 43)),
+            (92, (178, 91, 21)),
+            (142, (202, 111, 25)),
+            (192, (225, 140, 35)),
+            (232, (245, 178, 65)),
+            (255, (250, 202, 105)),
+        ),
+    )
+
+
+def calico_orange(value: float) -> tuple[int, int, int]:
     lightness = 0.14 + (value / 255) * 0.58
     saturation = 0.52 if value > 95 else 0.4
     return colorize(0.075, saturation, lightness)
+
+
+def cream_muzzle(value: float) -> tuple[int, int, int]:
+    return interpolate_palette(
+        value,
+        (
+            (214, (207, 157, 96)),
+            (238, (239, 203, 145)),
+            (255, (247, 220, 174)),
+        ),
+    )
+
+
+ORANGE_MUZZLE_REGIONS = {
+    "idle": (0.82, 0.18, 0.5),
+    "sit": (0.75, 0.1, 0.36),
+    "walk": (0.82, 0.18, 0.55),
+    "jump": (0.74, 0.12, 0.57),
+    "eat": (0.75, 0.28, 0.65),
+    "lie": (0.74, 0.2, 0.6),
+    "sleep": (0.75, 0.18, 0.58),
+    "groom": (0.7, 0.08, 0.4),
+    "stretch": (0.78, 0.18, 0.6),
+    "interact": (0.78, 0.16, 0.56),
+}
+
+
+def is_orange_muzzle(
+    action: str,
+    frame_x: int,
+    y: int,
+    frame_bounds: tuple[int, int, int, int],
+) -> bool:
+    left, top, right, bottom = frame_bounds
+    width = max(1, right - left)
+    height = max(1, bottom - top)
+    normalized_x = (frame_x - left) / width
+    normalized_y = (y - top) / height
+    min_x, min_y, max_y = ORANGE_MUZZLE_REGIONS[action]
+    return normalized_x >= min_x and min_y <= normalized_y <= max_y
 
 
 def is_orange_calico_patch(frame_x: int, y: int) -> bool:
@@ -103,12 +185,27 @@ def is_orange_calico_patch(frame_x: int, y: int) -> bool:
 
 def transform_pixel(
     coat: str,
+    action: str,
     frame_x: int,
     y: int,
+    frame_bounds: tuple[int, int, int, int],
     pixel: tuple[int, int, int, int],
 ) -> tuple[int, int, int, int]:
     red, green, blue, alpha = pixel
-    if alpha == 0 or is_gold(red, green, blue) or is_pink(red, green, blue):
+    if alpha == 0:
+        return pixel
+
+    if coat == "orange-tabby":
+        if is_gold(red, green, blue):
+            return pixel
+        value = luminance(red, green, blue)
+        if is_white_marking(red, green, blue) and is_orange_muzzle(
+            action, frame_x, y, frame_bounds
+        ):
+            return (*cream_muzzle(value), alpha)
+        return (*orange_tabby(value), alpha)
+
+    if is_gold(red, green, blue) or is_pink(red, green, blue):
         return pixel
 
     value = luminance(red, green, blue)
@@ -116,10 +213,6 @@ def transform_pixel(
 
     if coat == "gray-white-tabby":
         return pixel
-    if coat == "orange-tabby":
-        if white_marking:
-            return pixel
-        return (*orange_tabby(value), alpha)
     if coat == "tuxedo":
         if white_marking:
             return pixel
@@ -131,20 +224,36 @@ def transform_pixel(
     if coat == "calico":
         if white_marking:
             return pixel
-        target = orange_tabby(value) if is_orange_calico_patch(frame_x, y) else charcoal(value)
+        target = calico_orange(value) if is_orange_calico_patch(frame_x, y) else charcoal(value)
         return (*target, alpha)
     raise ValueError(f"Unknown coat preset: {coat}")
 
 
-def recolor_sheet(source: Image.Image, coat: str) -> Image.Image:
+def recolor_sheet(source: Image.Image, coat: str, action: str) -> Image.Image:
     image = source.convert("RGBA")
     output = Image.new("RGBA", image.size, (0, 0, 0, 0))
     source_pixels = image.load()
     output_pixels = output.load()
 
+    frame_bounds = []
+    for frame_index in range(image.width // FRAME):
+        alpha = image.crop((frame_index * FRAME, 0, (frame_index + 1) * FRAME, FRAME)).getchannel("A")
+        bounds = alpha.getbbox()
+        if bounds is None:
+            raise ValueError(f"{action}: frame {frame_index} is empty")
+        frame_bounds.append(bounds)
+
     for y in range(image.height):
         for x in range(image.width):
-            output_pixels[x, y] = transform_pixel(coat, x % FRAME, y, source_pixels[x, y])
+            frame_index = x // FRAME
+            output_pixels[x, y] = transform_pixel(
+                coat,
+                action,
+                x % FRAME,
+                y,
+                frame_bounds[frame_index],
+                source_pixels[x, y],
+            )
     return output
 
 
@@ -196,7 +305,11 @@ def main() -> None:
         for coat in COAT_PRESETS:
             destination_dir = CAT_DIR / coat
             destination_dir.mkdir(parents=True, exist_ok=True)
-            recolor_sheet(source, coat).save(destination_dir / str(config["file"]))
+            if coat == "orange-tabby" and action in ORANGE_SHAPE_PREVIEW_ACTIONS:
+                preview_sheet = Image.open(ORANGE_SHAPE_PREVIEW_DIR / str(config["file"]))
+                preview_sheet.convert("RGBA").save(destination_dir / str(config["file"]))
+            else:
+                recolor_sheet(source, coat, action).save(destination_dir / str(config["file"]))
 
     make_preview(spec)
     print(f"Built {len(COAT_PRESETS)} coat presets with {len(MOTION_SOURCES)} actions each")

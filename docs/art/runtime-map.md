@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-15
+Last updated: 2026-08-22
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -39,10 +39,17 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `jump` | `artifacts/art/candidates/active/product-cat-jump-v6/` | Six production-identity phases synchronized to grounded anticipation, launch, rise, apex balance, prepared descent, and landing recovery. |
 | `sleep` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model deep curled sleep with closed eyes and restrained breathing. |
 
-The reviewed gray-white tabby is the motion master. The other five coat
-presets are deterministic working derivatives built by
+The reviewed gray-white tabby is the motion master. Solid black, solid white,
+calico, and tuxedo are deterministic working derivatives built by
 `scripts/build_cat_coat_presets.py`; their shared alpha, anchors, anatomy, and
-timing prevent coat choice from changing behavior.
+timing prevent coat choice from changing behavior. The current orange-tabby
+runtime directory instead contains an independent internal appearance preview.
+It uses the same action timing and shared idle/sit/walk scale authority, but its
+different silhouette is not an approved release coat preset and remains blocked
+by Issue #23's production-source, rights, and full-motion-review gates.
+The runtime authority classification is owned by `src/domain/catAppearance.ts`;
+the prototype asset profile permits this declared preview while the
+first-release profile rejects it.
 
 ## Runtime Behavior Notes
 
@@ -60,22 +67,28 @@ timing prevent coat choice from changing behavior.
   `walk` and `interact`, moves only the split leaf, and resets on user touch.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
-The browser evidence root is
-`artifacts/art/runtime-review/2026-08-15/`, covering default movement,
-window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
-active approach, pointer interactions on both sides of the cat, plant touch,
-and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
-regenerated after the latest purposeful-route code change and passes
-`npm run review:runtime:check`.
+The current project-wide browser evidence lives under
+`artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`. Its 19
+screenshots cover default movement, window bench, cat bed, food bowl, blanket,
+grooming, stretching, deep sleep, foreground approach, plant touch, real
+pointer interactions, and a `390x844` mobile sit. The manifest is bound to
+source fingerprint
+`9a107ddc01726f26e3887d084b5b5d49c3f41d8bff8b2c00983fe28de2ed736a`
+and passes `npm run review:runtime:check` when that output is selected.
 
-The locked gray-white ten-action master evidence lives under
-`artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/`. One
-manifest covers all ten action classes at `1280x720` and `390x844`, binds the
-20 continuous recordings to source fingerprint
-`821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`, and
-records meetwk0916's approval of every entry on 2026-08-15. This is the current
-motion-master acceptance set; the narrower directories below remain scoped
-iteration and route evidence.
+The current appearance-authority and cross-action scale evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
+manifest covers gray-white and the internal orange preview across `idle`,
+`sit`, and `walk` at `1280x720` and `390x844`, binds all 12 continuous
+recordings to source fingerprint
+`2b8e104c6bf67387b4c67f31f81807ca9bb4015965c67965a0100f6c54778f1b`, and
+records meetwk0916's scoped approval of every entry on 2026-08-22. The approval
+covers the internal-preview boundary and cross-action stability; it is not
+Issue #23 release-art acceptance. The older locked
+gray-white ten-action evidence under
+`artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` remains
+historical review evidence; its source fingerprint predates the scale fix and
+is not a current full-master acceptance set.
 
 The dedicated food-bowl continuous motion evidence is separate at
 `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/`; it is

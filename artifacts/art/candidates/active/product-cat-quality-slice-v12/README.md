@@ -11,8 +11,12 @@ only as permitted motion-breakdown reference.
 The chroma-key sources are retained under `sources/`, with background-removed
 copies under `alpha/`. `scripts/compose_product_cat_quality_slice_v12.py`
 deterministically extracts and normalizes the poses into `96x96` runtime
-sheets. `scripts/build_cat_coat_presets.py` derives each current coat preset
-from the same alpha shapes.
+sheets. Its reviewed `sit` and `walk` source calibrations share the rounded
+short-haired body-scale and bottom-center registration authority with the
+quiet-motion `idle`; replacement art that does not fit at that scale fails
+instead of being action-locally shrunk. `scripts/build_cat_coat_presets.py`
+derives each current coat preset from the same alpha shapes, except for the
+explicit internal orange appearance preview documented in the runtime map.
 
 ## Generation and provenance
 

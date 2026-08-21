@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "continuous-motion",
+  "profile": "prototype",
+  "capturedAt": "2026-08-15T12:23:57.591114+08:00",
+  "presets": [
+    "orange-tabby"
+  ],
+  "actions": [
+    "idle",
+    "sit",
+    "walk",
+    "jump",
+    "eat",
+    "lie",
+    "sleep",
+    "groom",
+    "stretch",
+    "interact"
+  ],
+  "viewports": [
+    "1280x720",
+    "390x844"
+  ],
+  "entries": [
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "idle",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
+      "durationMs": 2673,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:35.135Z",
+      "video": "videos/orange-tabby/1280x720/idle.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/idle-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/idle-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "ddc042838343d090ca5859a88c064e642465b6463411d62d40204d7e62c3f92d",
+        "entryPoster": "b64678967c7385f44d6ed944e772d0641d4aba1f9bba04aefa72f971fc52219a",
+        "exitPoster": "16e132f4063b2aca23395dc2701b1f73fc52f36b4308c630c0f0e937d1924f53"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "idle",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorIdle&catstarMotionReview=1",
+      "durationMs": 2362,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:39.786Z",
+      "video": "videos/orange-tabby/390x844/idle.webm",
+      "entryPoster": "posters/orange-tabby/390x844/idle-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/idle-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "6980d6f4c5827b131ed0ce10ae288b512af59b67b7d643b8d89cf672bc789be6",
+        "entryPoster": "5a2fdceb637a23899239b933d70da08a8592555d70d85f77c849e5abe9586253",
+        "exitPoster": "f17d35d702a935f1d6a8f21b8cb77030a7c15f25922c0ffc1b6d2b7dda104442"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "sit",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorSit&catstarMotionReview=1",
+      "durationMs": 2356,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:44.402Z",
+      "video": "videos/orange-tabby/1280x720/sit.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/sit-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/sit-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "7aa1fdb6e12991bfd63a9a811535d6f26db1440bf4a8b097ce8e54371f46cee8",
+        "entryPoster": "bc528b9cbfbcfde8a5ae74b14b5c5a7bbe6807e344a80eb67cb36777807702d5",
+        "exitPoster": "16e132f4063b2aca23395dc2701b1f73fc52f36b4308c630c0f0e937d1924f53"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "sit",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorSit&catstarMotionReview=1",
+      "durationMs": 2395,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:49.054Z",
+      "video": "videos/orange-tabby/390x844/sit.webm",
+      "entryPoster": "posters/orange-tabby/390x844/sit-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/sit-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "05a791018e26a33781fda7049c5a2e593c8ce3ad464c16810ff34c12860ce409",
+        "entryPoster": "4b853990f4750cf3fee23532eff09ae821f86725877fee7c484742447df7bebf",
+        "exitPoster": "f17d35d702a935f1d6a8f21b8cb77030a7c15f25922c0ffc1b6d2b7dda104442"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "walk",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorWalk&catstarMotionReview=1",
+      "durationMs": 2384,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:53.719Z",
+      "video": "videos/orange-tabby/1280x720/walk.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/walk-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/walk-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "ae9d747b0d00f1448999e11c0f1c3d267ba7f969247be3076eb02451b85d7e48",
+        "entryPoster": "561eba9eead246f0b345407ae5003c4b7fa9fe44d232ef3ae249c8853804935e",
+        "exitPoster": "65237d47ac627e8164bfec345e3b13a6da350c2010d35bfddaa6b5ad5eae1e6c"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "walk",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorWalk&catstarMotionReview=1",
+      "durationMs": 2382,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:21:58.419Z",
+      "video": "videos/orange-tabby/390x844/walk.webm",
+      "entryPoster": "posters/orange-tabby/390x844/walk-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/walk-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "7d909b437eca9e7afb7c8cb93026cdb90934acc2be1cd81d48cf0d0ac75276da",
+        "entryPoster": "d80181ed61d551ddfaaadeadf6cb3b0aa19eef647bdf893c42dbae6bff3456a2",
+        "exitPoster": "a00bf6df28a97786a7ea3076df5842d94dd320cfec0bea619b27e58fcd778d80"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "jump",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=approachWindowBench&catstarMotionReview=1",
+      "durationMs": 4055,
+      "captureTimeoutMs": 6000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:03.051Z",
+      "video": "videos/orange-tabby/1280x720/jump.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/jump-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/jump-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "69305244ca0768321bb6dfcf1e9ddcab0b651403aaecbeb5477a376f7f67a643",
+        "entryPoster": "e038613cbc03b2ffd75fd92c6a7dd5dde715a725fc3a789fdb39852f802ccefc",
+        "exitPoster": "3a9e31bbed99fe703e6c7338fcd6b56dae528a5504f6812d01d87b64556ede6b"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "jump",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=approachWindowBench&catstarMotionReview=1",
+      "durationMs": 3904,
+      "captureTimeoutMs": 6000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:09.437Z",
+      "video": "videos/orange-tabby/390x844/jump.webm",
+      "entryPoster": "posters/orange-tabby/390x844/jump-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/jump-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "9a29f8dcd25bbcbef8470ac776b97b648b89959748605d03677c99c7cd2c0b2e",
+        "entryPoster": "50048c26907862d08f7a06a35196cb93603484bbae9df6203b3bc8f0f90bb4e8",
+        "exitPoster": "df7e74b52dc0b9feaf25a65123dddaf9ee3eb40b05064d67b6079539f79d4abf"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "eat",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
+      "durationMs": 13275,
+      "captureTimeoutMs": 14000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:15.770Z",
+      "video": "videos/orange-tabby/1280x720/eat.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/eat-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/eat-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "cfd040c38ce6c15522749ecda4419c3f6328f2be8f1ff92516210985784d0065",
+        "entryPoster": "6e26818c13e24ef24a939fd5091ea96e765b9d679870d5993a74b42fa493d689",
+        "exitPoster": "b906c67cbf3b28c1cb1f58730b826a174dfa5b1b92b0e9ab934ea8d12073da18"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "eat",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=approachFoodBowl&catstarMotionReview=1",
+      "durationMs": 13122,
+      "captureTimeoutMs": 14000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:31.354Z",
+      "video": "videos/orange-tabby/390x844/eat.webm",
+      "entryPoster": "posters/orange-tabby/390x844/eat-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/eat-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "e8b03c150d3afbb134becfc1e1a7c6dab91998af649d67d2036d2b3e1248c57f",
+        "entryPoster": "88da77b7257a8eb73f926bdb44f257dd2ef48420b51fc8373bdc8520f5a618eb",
+        "exitPoster": "71ebf14b0549e091ab94d979aae6fae2c1f4ef73737fd2be10e89a062eb20ac7"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "lie",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
+      "durationMs": 9519,
+      "captureTimeoutMs": 11000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:46.771Z",
+      "video": "videos/orange-tabby/1280x720/lie.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/lie-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/lie-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "1156f23594d4c12ebdb928659b27aedbbed264b58afddff116781610d8c301b2",
+        "entryPoster": "25b1089ba1513a46e6cc71f91010194c202aa66e71ed4f73306a4f1641d63f1f",
+        "exitPoster": "73188c6575f262c7a3b8dc17bf2d7d0ca7a9f5ddacc18d46ce540ba815d6425d"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "lie",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=approachCatBed&catstarMotionReview=1",
+      "durationMs": 9463,
+      "captureTimeoutMs": 11000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:22:58.569Z",
+      "video": "videos/orange-tabby/390x844/lie.webm",
+      "entryPoster": "posters/orange-tabby/390x844/lie-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/lie-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "300f14a4848ad15c373ed40efc9ff3f130ce13bcf270a6c62040b99675db48b5",
+        "entryPoster": "f7666712898fe9c291efa7440e7d8dff08c6cda9f555fdbb029b2ee105821ce3",
+        "exitPoster": "25994ab953d7e0e2fed07d34df1b99d579e9b083b8de54587f1a30913b831755"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "sleep",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
+      "durationMs": 2376,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:10.330Z",
+      "video": "videos/orange-tabby/1280x720/sleep.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/sleep-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/sleep-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "5cc38903398cccd941058bfec81e1fc8986f639c733b292c66e61d155680c6d2",
+        "entryPoster": "601621050f28e9ec8a2f388fb5b703e0dbef8e5272737fd4f0c700331e9e34a0",
+        "exitPoster": "16e132f4063b2aca23395dc2701b1f73fc52f36b4308c630c0f0e937d1924f53"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "sleep",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorSleep&catstarMotionReview=1",
+      "durationMs": 2688,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:15.004Z",
+      "video": "videos/orange-tabby/390x844/sleep.webm",
+      "entryPoster": "posters/orange-tabby/390x844/sleep-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/sleep-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "80a3f65373538914ff6e088137857c8787270f6606d1319ff1b2518160bd6304",
+        "entryPoster": "9d05c00a745cc2a26e80c11dc6a0223d859d1e4ffe0bd002d3715b58e350d8eb",
+        "exitPoster": "f17d35d702a935f1d6a8f21b8cb77030a7c15f25922c0ffc1b6d2b7dda104442"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "groom",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
+      "durationMs": 7591,
+      "captureTimeoutMs": 10000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:19.720Z",
+      "video": "videos/orange-tabby/1280x720/groom.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/groom-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/groom-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "5d2c7a3c173bbfd2d0ef653c2b6d29fb78fef5d4ab6eb2cc3a0c74d1c8ecb73f",
+        "entryPoster": "146987039a518312c886bc41fd04f869816a5b8edf13c2ca4f25e3cc541e2cc7",
+        "exitPoster": "16e132f4063b2aca23395dc2701b1f73fc52f36b4308c630c0f0e937d1924f53"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "groom",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorGroom&catstarMotionReview=1",
+      "durationMs": 7833,
+      "captureTimeoutMs": 10000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:29.598Z",
+      "video": "videos/orange-tabby/390x844/groom.webm",
+      "entryPoster": "posters/orange-tabby/390x844/groom-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/groom-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "fee08432e42099aa7c87168b8805d911073b2f20413479344042046053c3e1fb",
+        "entryPoster": "374a436d09251d4aebf630315b0b77a7d8b8b055fa817955476b0368d8275c5a",
+        "exitPoster": "f17d35d702a935f1d6a8f21b8cb77030a7c15f25922c0ffc1b6d2b7dda104442"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "stretch",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
+      "durationMs": 2246,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:39.450Z",
+      "video": "videos/orange-tabby/1280x720/stretch.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/stretch-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/stretch-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "595cf150a66a839a2c0640253b1f6947fa9f640ad26bbd5b8aa82ff71188c5b3",
+        "entryPoster": "2495833611334ac5a28ecb411fdf4b208de1ab4e26617185953b8395c10c5dab",
+        "exitPoster": "16e132f4063b2aca23395dc2701b1f73fc52f36b4308c630c0f0e937d1924f53"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "stretch",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorStretch&catstarMotionReview=1",
+      "durationMs": 2238,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:44.154Z",
+      "video": "videos/orange-tabby/390x844/stretch.webm",
+      "entryPoster": "posters/orange-tabby/390x844/stretch-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/stretch-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "5108ee23efc93c295f46d4fbee175c6affe098fb24d2064ec8f72caca9fe04d0",
+        "entryPoster": "524c792f7303e805dc9e5ce96f3faa8c40098fb61baa774f5493c9cd2e8110e1",
+        "exitPoster": "f17d35d702a935f1d6a8f21b8cb77030a7c15f25922c0ffc1b6d2b7dda104442"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "interact",
+      "viewport": "1280x720",
+      "route": "/?catstarRoutine=floorSit&catstarFullTouch=1&catstarMotionReview=1",
+      "durationMs": 2372,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:48.799Z",
+      "video": "videos/orange-tabby/1280x720/interact.webm",
+      "entryPoster": "posters/orange-tabby/1280x720/interact-entry.png",
+      "exitPoster": "posters/orange-tabby/1280x720/interact-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "52d5dba86a19e3ed9eedd3622d924ad8cf52fd99e3325b84ceacf70aead6abf8",
+        "entryPoster": "6e270d4ccc95454cde7ff9ddc520b5c6c44ced2b38f7113c22b526990bebef4b",
+        "exitPoster": "f524bc8daf73c0248702a2bd0e500d941f82d0ba37e4ad903ac9a775065b3207"
+      }
+    },
+    {
+      "coatPreset": "orange-tabby",
+      "runtimeCoatPreset": "ORANGE_TABBY",
+      "action": "interact",
+      "viewport": "390x844",
+      "route": "/?catstarRoutine=floorSit&catstarFullTouch=1&catstarMotionReview=1",
+      "durationMs": 2152,
+      "captureTimeoutMs": 4000,
+      "motionState": "complete",
+      "scenario": "route",
+      "startedAt": "2026-08-15T04:23:53.488Z",
+      "video": "videos/orange-tabby/390x844/interact.webm",
+      "entryPoster": "posters/orange-tabby/390x844/interact-entry.png",
+      "exitPoster": "posters/orange-tabby/390x844/interact-exit.png",
+      "humanReview": {
+        "status": "pending",
+        "reviewer": "",
+        "notes": ""
+      },
+      "evidenceSha256": {
+        "video": "11d9e79dc91ee1566943ea3fe14b12de14de67582a9426da55fb52e2f4ba4374",
+        "entryPoster": "0c54f2a8b003f7b8c09df7001ef7533b29fd98ad37abf8bc640998175c0fcbca",
+        "exitPoster": "6ffb2afeca643217319d31324e2790c70d7d247abea53d57beae1528ca01234d"
+      }
+    }
+  ],
+  "boards": [
+    "boards/desktop/idle.png",
+    "boards/desktop/idle.html",
+    "boards/desktop/sit.png",
+    "boards/desktop/sit.html",
+    "boards/desktop/walk.png",
+    "boards/desktop/walk.html",
+    "boards/desktop/jump.png",
+    "boards/desktop/jump.html",
+    "boards/desktop/eat.png",
+    "boards/desktop/eat.html",
+    "boards/desktop/lie.png",
+    "boards/desktop/lie.html",
+    "boards/desktop/sleep.png",
+    "boards/desktop/sleep.html",
+    "boards/desktop/groom.png",
+    "boards/desktop/groom.html",
+    "boards/desktop/stretch.png",
+    "boards/desktop/stretch.html",
+    "boards/desktop/interact.png",
+    "boards/desktop/interact.html",
+    "boards/mobile/idle.png",
+    "boards/mobile/idle.html",
+    "boards/mobile/sit.png",
+    "boards/mobile/sit.html",
+    "boards/mobile/walk.png",
+    "boards/mobile/walk.html",
+    "boards/mobile/jump.png",
+    "boards/mobile/jump.html",
+    "boards/mobile/eat.png",
+    "boards/mobile/eat.html",
+    "boards/mobile/lie.png",
+    "boards/mobile/lie.html",
+    "boards/mobile/sleep.png",
+    "boards/mobile/sleep.html",
+    "boards/mobile/groom.png",
+    "boards/mobile/groom.html",
+    "boards/mobile/stretch.png",
+    "boards/mobile/stretch.html",
+    "boards/mobile/interact.png",
+    "boards/mobile/interact.html"
+  ],
+  "sourceFingerprint": "821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f",
+  "sourceFiles": [
+    "index.html",
+    "package-lock.json",
+    "package.json",
+    "public/assets/scenes/window-room/README.md",
+    "public/assets/scenes/window-room/background.png",
+    "public/assets/scenes/window-room/cat/calico/eat.png",
+    "public/assets/scenes/window-room/cat/calico/groom.png",
+    "public/assets/scenes/window-room/cat/calico/idle.png",
+    "public/assets/scenes/window-room/cat/calico/interact.png",
+    "public/assets/scenes/window-room/cat/calico/jump.png",
+    "public/assets/scenes/window-room/cat/calico/lie.png",
+    "public/assets/scenes/window-room/cat/calico/sit.png",
+    "public/assets/scenes/window-room/cat/calico/sleep.png",
+    "public/assets/scenes/window-room/cat/calico/stretch.png",
+    "public/assets/scenes/window-room/cat/calico/walk.png",
+    "public/assets/scenes/window-room/cat/cat.animations.json",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/eat.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/groom.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/idle.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/interact.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/jump.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/lie.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/sit.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/sleep.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/stretch.png",
+    "public/assets/scenes/window-room/cat/gray-white-tabby/walk.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/eat.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/groom.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/idle.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/interact.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/jump.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/lie.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/sit.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/sleep.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/stretch.png",
+    "public/assets/scenes/window-room/cat/orange-tabby/walk.png",
+    "public/assets/scenes/window-room/cat/solid-black/eat.png",
+    "public/assets/scenes/window-room/cat/solid-black/groom.png",
+    "public/assets/scenes/window-room/cat/solid-black/idle.png",
+    "public/assets/scenes/window-room/cat/solid-black/interact.png",
+    "public/assets/scenes/window-room/cat/solid-black/jump.png",
+    "public/assets/scenes/window-room/cat/solid-black/lie.png",
+    "public/assets/scenes/window-room/cat/solid-black/sit.png",
+    "public/assets/scenes/window-room/cat/solid-black/sleep.png",
+    "public/assets/scenes/window-room/cat/solid-black/stretch.png",
+    "public/assets/scenes/window-room/cat/solid-black/walk.png",
+    "public/assets/scenes/window-room/cat/solid-white/eat.png",
+    "public/assets/scenes/window-room/cat/solid-white/groom.png",
+    "public/assets/scenes/window-room/cat/solid-white/idle.png",
+    "public/assets/scenes/window-room/cat/solid-white/interact.png",
+    "public/assets/scenes/window-room/cat/solid-white/jump.png",
+    "public/assets/scenes/window-room/cat/solid-white/lie.png",
+    "public/assets/scenes/window-room/cat/solid-white/sit.png",
+    "public/assets/scenes/window-room/cat/solid-white/sleep.png",
+    "public/assets/scenes/window-room/cat/solid-white/stretch.png",
+    "public/assets/scenes/window-room/cat/solid-white/walk.png",
+    "public/assets/scenes/window-room/cat/tuxedo/eat.png",
+    "public/assets/scenes/window-room/cat/tuxedo/groom.png",
+    "public/assets/scenes/window-room/cat/tuxedo/idle.png",
+    "public/assets/scenes/window-room/cat/tuxedo/interact.png",
+    "public/assets/scenes/window-room/cat/tuxedo/jump.png",
+    "public/assets/scenes/window-room/cat/tuxedo/lie.png",
+    "public/assets/scenes/window-room/cat/tuxedo/sit.png",
+    "public/assets/scenes/window-room/cat/tuxedo/sleep.png",
+    "public/assets/scenes/window-room/cat/tuxedo/stretch.png",
+    "public/assets/scenes/window-room/cat/tuxedo/walk.png",
+    "public/assets/scenes/window-room/collision.json",
+    "public/assets/scenes/window-room/foreground-blanket.png",
+    "public/assets/scenes/window-room/foreground-cat-bed.png",
+    "public/assets/scenes/window-room/plant-leaf.png",
+    "scripts/capture_cat_motion_review.mjs",
+    "scripts/capture_cat_motion_review.py",
+    "scripts/capture_cat_runtime_review.py",
+    "scripts/record_cat_motion_review.py",
+    "src/App.tsx",
+    "src/components/CatScene.tsx",
+    "src/components/Mailbox.tsx",
+    "src/components/ModalDialog.tsx",
+    "src/components/OnboardingForm.tsx",
+    "src/components/PhaserCatScene.tsx",
+    "src/components/interactionSignal.test.ts",
+    "src/components/interactionSignal.ts",
+    "src/data/letters.json",
+    "src/domain/catFsm.test.ts",
+    "src/domain/catFsm.ts",
+    "src/domain/letters.test.ts",
+    "src/domain/letters.ts",
+    "src/domain/passport.test.ts",
+    "src/domain/passport.ts",
+    "src/domain/time.test.ts",
+    "src/domain/time.ts",
+    "src/game/CatRoomScene.test.ts",
+    "src/game/CatRoomScene.ts",
+    "src/game/companionRoute.test.ts",
+    "src/game/companionRoute.ts",
+    "src/game/scriptedJump.test.ts",
+    "src/index.css",
+    "src/main.tsx",
+    "src/storage/passportStorage.test.ts",
+    "src/storage/passportStorage.ts",
+    "src/types.ts",
+    "src/vite-env.d.ts",
+    "vite.config.ts"
+  ]
+}

@@ -10,6 +10,7 @@ from pathlib import Path
 from PIL import Image, ImageChops
 
 from artifact_paths import ARTIFACTS_ART_ROOT
+from cat_cross_action_scale import CrossActionScaleAuthority
 
 
 FRAME = 96
@@ -32,6 +33,16 @@ ACTION_ROWS = (
     ActionRow("sit", "sit-source-alpha.png", 4, 82, 84),
     ActionRow("walk", "walk-source-alpha.png", 8, 88, 70),
     ActionRow("interact", "interact-source-alpha.png", 6, 86, 84),
+)
+
+V11_SCALE_AUTHORITY = CrossActionScaleAuthority(
+    name="rounded-short-haired v11 candidate",
+    source_scale_by_action={
+        "idle": 0.22277227722772278,
+        "sit": 0.20240963855421687,
+        "walk": 0.38461538461538464,
+        "interact": 0.26875,
+    },
 )
 
 
@@ -167,6 +178,7 @@ def extract_action(
     source_dir: Path,
     normalized_dir: Path,
     sheet_dir: Path,
+    scale_authority: CrossActionScaleAuthority,
 ) -> list[dict[str, object]]:
     source = Image.open(source_dir / row.source).convert("RGBA")
     subject_boxes = find_subject_boxes(source)
@@ -180,7 +192,9 @@ def extract_action(
     action_dir = normalized_dir / row.action
     action_dir.mkdir(parents=True, exist_ok=True)
 
-    for index, (x_min, local_y_min, x_max, local_y_max) in enumerate(subject_boxes):
+    subjects: list[Image.Image] = []
+    crop_boxes: list[list[int]] = []
+    for x_min, local_y_min, x_max, local_y_max in subject_boxes:
         padding = 4
         crop_box = (
             max(0, x_min - padding),
@@ -189,18 +203,31 @@ def extract_action(
             min(source.height, local_y_max + padding),
         )
         cell = source.crop(crop_box)
-        subject = crop_subject(cell)
-        frame, info = normalize(subject, row.max_width, row.max_height)
+        subjects.append(crop_subject(cell))
+        crop_boxes.append(list(crop_box))
+
+    authority_poses = (
+        scale_authority.normalize(row.action, subjects)
+        if scale_authority.has_action(row.action)
+        else None
+    )
+    for index, subject in enumerate(subjects):
+        if authority_poses is None:
+            frame, info = normalize(subject, row.max_width, row.max_height)
+        else:
+            pose = authority_poses[index]
+            frame = harden_pixel_edges(pose.image)
+            info = {
+                "sprite_size": list(pose.sprite_size),
+                "paste": list(pose.paste),
+                "source_scale": pose.source_scale,
+                "scale_authority": scale_authority.name,
+            }
         frames.append(frame)
         metadata.append(
             {
                 "frame": index + 1,
-                "source_box": [
-                    crop_box[0],
-                    crop_box[1],
-                    crop_box[2],
-                    crop_box[3],
-                ],
+                "source_box": crop_boxes[index],
                 **info,
             }
         )
@@ -215,7 +242,11 @@ def extract_action(
     return metadata
 
 
-def compose(output_dir: Path) -> None:
+def compose(
+    output_dir: Path,
+    scale_authority: CrossActionScaleAuthority,
+    action_rows: tuple[ActionRow, ...] = ACTION_ROWS,
+) -> None:
     source_dir = output_dir / "alpha"
     normalized_dir = output_dir / "normalized-96"
     sheet_dir = output_dir / "sprite-sheets-96"
@@ -223,15 +254,21 @@ def compose(output_dir: Path) -> None:
     sheet_dir.mkdir(parents=True, exist_ok=True)
 
     metadata = {
-        row.action: extract_action(row, source_dir, normalized_dir, sheet_dir)
-        for row in ACTION_ROWS
+        row.action: extract_action(
+            row,
+            source_dir,
+            normalized_dir,
+            sheet_dir,
+            scale_authority,
+        )
+        for row in action_rows
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    print(f"Wrote {len(ACTION_ROWS)} quality-slice sheets to {sheet_dir}")
+    print(f"Wrote {len(action_rows)} quality-slice sheets to {sheet_dir}")
 
 
 def main() -> None:
-    compose(OUT_DIR)
+    compose(OUT_DIR, V11_SCALE_AUTHORITY)
 
 
 if __name__ == "__main__":

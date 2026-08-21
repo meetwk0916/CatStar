@@ -18,6 +18,12 @@ from statistics import median
 
 from PIL import Image, UnidentifiedImageError
 
+from cat_cross_action_scale import (
+    MIN_STATIONARY_TO_WALK_LINEAR_SCALE_RATIO,
+    apparent_linear_scale_ratio,
+    sheet_frame_masses,
+)
+
 
 FRAME = 96
 ALPHA_THRESHOLD = 24
@@ -27,7 +33,6 @@ MAX_BOTTOM_RANGE = 6
 MAX_AREA_RANGE_RATIO = 0.28
 MAX_REFINED_PIXEL_COLORS = 128
 MIN_ROUNDED_IDLE_HEIGHT = 68
-MIN_IDLE_TO_WALK_MASS_RATIO = 0.85
 REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact", "lie", "sleep"}
 SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
 CURRENT_CAT_PRESETS = (
@@ -50,10 +55,15 @@ FIRST_RELEASE_CAT_PRESETS = CURRENT_CAT_PRESETS + (
 class AssetProfile:
     name: str
     presets: tuple[str, ...]
+    independent_alpha_previews: frozenset[str] = frozenset()
 
 
 ASSET_PROFILES = {
-    "prototype": AssetProfile("prototype", CURRENT_CAT_PRESETS),
+    "prototype": AssetProfile(
+        "prototype",
+        CURRENT_CAT_PRESETS,
+        independent_alpha_previews=frozenset({"orange-tabby"}),
+    ),
     "first-release": AssetProfile("first-release", FIRST_RELEASE_CAT_PRESETS),
 }
 REQUIRED_ACTIONS = {
@@ -286,7 +296,7 @@ def validate_distinct_stationary_actions(
 
 def validate_shared_action_alpha(
     asset_dir: Path,
-    presets: tuple[str, ...],
+    profile: AssetProfile,
     action: str,
     config: dict[str, object],
 ) -> list[str]:
@@ -301,8 +311,10 @@ def validate_shared_action_alpha(
         return []
 
     failures: list[str] = []
-    for preset in presets:
+    for preset in profile.presets:
         if preset == "gray-white-tabby":
+            continue
+        if preset in profile.independent_alpha_previews:
             continue
         candidate_path = asset_dir / preset / file_name
         try:
@@ -327,34 +339,32 @@ def action_frame_areas(
     if not isinstance(file_name, str) or not isinstance(frame_count, int):
         return []
     try:
-        with Image.open(asset_dir / preset / file_name) as source:
-            image = source.convert("RGBA")
-    except (OSError, UnidentifiedImageError):
+        return sheet_frame_masses(asset_dir / preset / file_name, frame_count)
+    except (OSError, UnidentifiedImageError, ValueError):
         return []
-    if image.size != (FRAME * frame_count, FRAME):
-        return []
-    return [
-        visible_area(
-            image.crop((index * FRAME, 0, (index + 1) * FRAME, FRAME)).getchannel("A")
-        )
-        for index in range(frame_count)
-    ]
 
 
-def validate_idle_walk_mass(
+def validate_stationary_walk_scale(
     asset_dir: Path,
-    idle_config: dict[str, object],
+    preset: str,
+    stationary_action: str,
+    stationary_config: dict[str, object],
     walk_config: dict[str, object],
 ) -> list[str]:
-    idle_areas = action_frame_areas(asset_dir, "gray-white-tabby", idle_config)
-    walk_areas = action_frame_areas(asset_dir, "gray-white-tabby", walk_config)
-    if not idle_areas or not walk_areas:
+    stationary_areas = action_frame_areas(asset_dir, preset, stationary_config)
+    walk_areas = action_frame_areas(asset_dir, preset, walk_config)
+    if not stationary_areas or not walk_areas:
         return []
-    ratio = min(idle_areas) / median(walk_areas)
-    if ratio < MIN_IDLE_TO_WALK_MASS_RATIO:
+    minimum = MIN_STATIONARY_TO_WALK_LINEAR_SCALE_RATIO[stationary_action]
+    linear_scale_ratio = apparent_linear_scale_ratio(stationary_areas, walk_areas)
+    if linear_scale_ratio < minimum:
+        stationary_mass = median(stationary_areas)
+        walk_mass = median(walk_areas)
+        smaller_action = "walk" if walk_mass < stationary_mass else stationary_action
         return [
-            "gray-white-tabby/idle: idle visible mass is too low relative to walk: "
-            f"{ratio:.2%}; minimum is {MIN_IDLE_TO_WALK_MASS_RATIO:.0%}"
+            f"{preset}/{smaller_action}: apparent linear scale is too low across "
+            f"{stationary_action}/walk: {linear_scale_ratio:.2%}; minimum is "
+            f"{minimum:.0%}"
         ]
     return []
 
@@ -439,26 +449,26 @@ def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
         if idle_file is not None and sit_file is not None and idle_file.exists() and sit_file.exists():
             failures.extend(validate_distinct_stationary_actions(asset_dir, preset, spec))
 
-    idle_config = actions.get("idle")
-    if isinstance(idle_config, dict):
-        failures.extend(
-            validate_shared_action_alpha(asset_dir, profile.presets, "idle", idle_config)
-        )
-        walk_config = actions.get("walk")
-        if isinstance(walk_config, dict):
-            failures.extend(validate_idle_walk_mass(asset_dir, idle_config, walk_config))
+    for action in sorted(REQUIRED_ACTIONS):
+        config = actions.get(action)
+        if isinstance(config, dict):
+            failures.extend(validate_shared_action_alpha(asset_dir, profile, action, config))
 
-    lie_config = actions.get("lie")
-    if isinstance(lie_config, dict):
-        failures.extend(
-            validate_shared_action_alpha(asset_dir, profile.presets, "lie", lie_config)
-        )
-
-    sleep_config = actions.get("sleep")
-    if isinstance(sleep_config, dict):
-        failures.extend(
-            validate_shared_action_alpha(asset_dir, profile.presets, "sleep", sleep_config)
-        )
+    walk_config = actions.get("walk")
+    if isinstance(walk_config, dict):
+        for stationary_action in MIN_STATIONARY_TO_WALK_LINEAR_SCALE_RATIO:
+            stationary_config = actions.get(stationary_action)
+            if isinstance(stationary_config, dict):
+                for preset in profile.presets:
+                    failures.extend(
+                        validate_stationary_walk_scale(
+                            asset_dir,
+                            preset,
+                            stationary_action,
+                            stationary_config,
+                            walk_config,
+                        )
+                    )
 
     return failures
 

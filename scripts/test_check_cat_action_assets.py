@@ -12,6 +12,8 @@ from pathlib import Path
 
 from PIL import Image
 
+import cat_cross_action_scale as SCALE
+
 
 SCRIPT_PATH = Path(__file__).with_name("check_cat_action_assets.py")
 SPEC = importlib.util.spec_from_file_location("check_cat_action_assets", SCRIPT_PATH)
@@ -151,38 +153,49 @@ class AssetProfileTests(unittest.TestCase):
             any("rounded short-haired idle standing height" in failure for failure in failures)
         )
 
-    def test_idle_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
+    def test_prototype_profile_allows_the_declared_orange_shape_preview(self) -> None:
         scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
-        orange_idle_path = scene_dir / "cat" / "orange-tabby" / "idle.png"
-        orange_idle = Image.open(orange_idle_path).convert("RGBA")
-        orange_idle.putpixel((12, 12), (0, 0, 0, 0))
-        orange_idle.save(orange_idle_path)
+        for action in ACTION_FRAMES:
+            orange_path = scene_dir / "cat" / "orange-tabby" / f"{action}.png"
+            orange = Image.open(orange_path).convert("RGBA")
+            orange.putpixel((12, 12), (0, 0, 0, 0))
+            orange.save(orange_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertFalse(any("alpha must match gray-white-tabby" in failure for failure in failures))
+
+    def test_release_contract_rejects_the_orange_preview_alpha(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        for action in ACTION_FRAMES:
+            orange_path = scene_dir / "cat" / "orange-tabby" / f"{action}.png"
+            orange = Image.open(orange_path).convert("RGBA")
+            orange.putpixel((12, 12), (0, 0, 0, 0))
+            orange.save(orange_path)
+        release_contract = CHECKER.AssetProfile("release-contract", CHECKER.CURRENT_CAT_PRESETS)
+
+        failures = CHECKER.validate_assets(scene_dir, release_contract)
+
+        for action in ACTION_FRAMES:
+            self.assertTrue(
+                any(
+                    f"orange-tabby/{action}: {action} alpha must match gray-white-tabby"
+                    in failure
+                    for failure in failures
+                ),
+                action,
+            )
+
+    def test_prototype_still_requires_shared_alpha_for_an_ordinary_derivative(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        black_idle_path = scene_dir / "cat" / "solid-black" / "idle.png"
+        black_idle = Image.open(black_idle_path).convert("RGBA")
+        black_idle.putpixel((12, 12), (0, 0, 0, 0))
+        black_idle.save(black_idle_path)
 
         failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
 
         self.assertTrue(any("idle alpha must match gray-white-tabby" in failure for failure in failures))
-
-    def test_awake_rest_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
-        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
-        orange_lie_path = scene_dir / "cat" / "orange-tabby" / "lie.png"
-        orange_lie = Image.open(orange_lie_path).convert("RGBA")
-        orange_lie.putpixel((12, 12), (0, 0, 0, 0))
-        orange_lie.save(orange_lie_path)
-
-        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
-
-        self.assertTrue(any("lie alpha must match gray-white-tabby" in failure for failure in failures))
-
-    def test_deep_sleep_requires_one_shared_alpha_shape_across_coat_presets(self) -> None:
-        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
-        orange_sleep_path = scene_dir / "cat" / "orange-tabby" / "sleep.png"
-        orange_sleep = Image.open(orange_sleep_path).convert("RGBA")
-        orange_sleep.putpixel((12, 12), (0, 0, 0, 0))
-        orange_sleep.save(orange_sleep_path)
-
-        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
-
-        self.assertTrue(any("sleep alpha must match gray-white-tabby" in failure for failure in failures))
 
     def test_awake_rest_requires_binary_alpha_for_pixel_finish(self) -> None:
         scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
@@ -206,7 +219,7 @@ class AssetProfileTests(unittest.TestCase):
 
         self.assertTrue(any("gray-white-tabby/sleep: refined pixel sheet" in failure for failure in failures))
 
-    def test_rounded_short_haired_idle_rejects_low_mass_relative_to_walk(self) -> None:
+    def test_cross_action_scale_rejects_low_idle_mass_relative_to_walk(self) -> None:
         scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
         idle_path = scene_dir / "cat" / "gray-white-tabby" / "idle.png"
         low_mass_idle = Image.new("RGBA", (96 * 4, 96), (0, 0, 0, 0))
@@ -220,8 +233,96 @@ class AssetProfileTests(unittest.TestCase):
         failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
 
         self.assertTrue(
-            any("idle visible mass is too low relative to walk" in failure for failure in failures)
+            any(
+                "gray-white-tabby/idle: apparent linear scale is too low across idle/walk"
+                in failure
+                for failure in failures
+            )
         )
+
+    def test_cross_action_scale_rejects_low_walk_mass_relative_to_idle(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        walk_path = scene_dir / "cat" / "gray-white-tabby" / "walk.png"
+        low_mass_walk = Image.new("RGBA", (96 * 8, 96), (0, 0, 0, 0))
+        for frame_index in range(8):
+            low_mass_walk.paste(
+                (100 + frame_index, 110, 120, 255),
+                (frame_index * 96 + 28, 32, frame_index * 96 + 68, 92),
+            )
+        low_mass_walk.save(walk_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(
+            any(
+                "gray-white-tabby/walk: apparent linear scale is too low across idle/walk"
+                in failure
+                for failure in failures
+            )
+        )
+
+    def test_cross_action_scale_rejects_low_sit_mass_relative_to_walk(self) -> None:
+        scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
+        sit_path = scene_dir / "cat" / "gray-white-tabby" / "sit.png"
+        low_mass_sit = Image.new("RGBA", (96 * 4, 96), (0, 0, 0, 0))
+        for frame_index in range(4):
+            low_mass_sit.paste(
+                (100 + frame_index, 110, 120, 255),
+                (frame_index * 96 + 30, 34, frame_index * 96 + 66, 92),
+            )
+        low_mass_sit.save(sit_path)
+
+        failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["prototype"])
+
+        self.assertTrue(
+            any(
+                "gray-white-tabby/sit: apparent linear scale is too low across sit/walk"
+                in failure
+                for failure in failures
+            )
+        )
+
+    def test_source_authority_uses_fixed_scale_and_bottom_center_registration(self) -> None:
+        authority = SCALE.CrossActionScaleAuthority(
+            name="test appearance",
+            source_scale_by_action={"idle": 0.5, "sit": 0.5, "walk": 0.5},
+        )
+        subject = Image.new("RGBA", (40, 80), (80, 90, 100, 255))
+
+        pose = authority.normalize("walk", [subject])[0]
+
+        self.assertEqual(pose.sprite_size, (20, 40))
+        self.assertEqual(pose.paste, (38, 52))
+        self.assertEqual(pose.source_scale, 0.5)
+
+    def test_source_authority_rejects_oversize_art_instead_of_refitting(self) -> None:
+        authority = SCALE.CrossActionScaleAuthority(
+            name="test appearance",
+            source_scale_by_action={"idle": 1, "sit": 1, "walk": 1},
+        )
+
+        with self.assertRaisesRegex(ValueError, "re-author the source composition"):
+            authority.normalize(
+                "walk",
+                [Image.new("RGBA", (93, 80), (0, 0, 0, 255))],
+            )
+
+    def test_pre_fix_cross_action_measurement_remains_a_failing_record(self) -> None:
+        baseline_path = (
+            Path(__file__).resolve().parents[1]
+            / "artifacts/art/runtime-motion-review/2026-08-20-cross-action-scale-v1"
+            / "baseline-measurement.json"
+        )
+        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+
+        for result in baseline["results"]:
+            ratio = SCALE.apparent_linear_scale_ratio(
+                result["stationaryFrameMasses"],
+                result["walkingFrameMasses"],
+            )
+            self.assertAlmostEqual(ratio, result["linearScaleRatio"])
+            self.assertLess(ratio, result["minimumLinearScaleRatio"])
+            self.assertEqual(result["result"], "fail")
 
 
 if __name__ == "__main__":

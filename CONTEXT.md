@@ -44,6 +44,10 @@ _Avoid_: 捏猫, 皮肤组合, 角色定制, 精确复刻
 An art-directed family of visible shape traits, such as rounded short-haired, slender short-haired, or fluffy long-haired. Each prototype may vary face, ear, body, and coat-length structure while sharing CatStar's calm visual language; it helps the **用户** choose a familiar silhouette without requiring breed knowledge or claiming pedigree accuracy.
 _Avoid_: 品种, 血统, 猫种鉴定, 精确建模
 
+**内部外形预览**:
+A non-release visual experiment used to judge a possible **纪念外形** in the real scene before its production source, prototype fit, rights, and complete acceptance matrix are ready. It may be selectable in an explicitly internal build, but it is not a completed **外形原型** or **毛色预设** and must remain visibly identified as preview art.
+_Avoid_: 发布美术, 正式毛色预设, 已完成外形原型, 可商用成品
+
 **生产来源**:
 The attributable person, account, tool, and source material from which a production art asset is made. A production source gives the project a truthful basis to record rights and distribution eligibility; it does not by itself establish that the asset is visually approved or ready to ship.
 _Avoid_: 来源不明, 默认商用, 自动获批

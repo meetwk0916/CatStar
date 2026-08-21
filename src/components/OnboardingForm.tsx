@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getLocalDateInputValue, isFuturePassedDate } from "../domain/passport";
+import { getCatRuntimeAppearance } from "../domain/catAppearance";
 import type { CatCoatPreset, CatTemperament } from "../types";
 import { createPassport, type PassportInput } from "../storage/passportStorage";
 
@@ -134,6 +135,11 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                       style={{ background: preset.swatch }}
                     />
                     {preset.label}
+                    {getCatRuntimeAppearance(preset.value).isInternalPreview ? (
+                      <span className="mt-1 block text-xs font-medium text-[#8D6E63]">
+                        内部形象预览
+                      </span>
+                    ) : null}
                   </button>
                 ))}
               </div>

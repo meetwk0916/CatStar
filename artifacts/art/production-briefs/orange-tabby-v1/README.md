@@ -55,6 +55,30 @@ overall “大橘” read only. It is an AI-generated direction prototype, not t
 editable production authority, not a `96x96` runtime sheet, and not evidence of
 public distribution rights.
 
+## Runnable Internal Preview
+
+The current `orange-tabby` runtime preset uses independent internal preview
+sheets derived from the approved big-ginger direction. It exists so the round
+head, broad body, short legs, substantial paws, markings, and room-scale read
+can be judged across all ten actions before production source art arrives. Its
+`idle`, `sit`, and `walk` sheets use the shared cross-action scale authority and
+bottom-center registration, but their silhouette intentionally differs from
+the gray-white motion geometry.
+
+This preview does not supersede the delivery layout or acceptance sequence
+below. It has no rights-cleared editable production source, and its independent
+silhouette conflicts with the current same-geometry coat-preset release
+contract. It must remain internal-only and cannot close Issue #23 or be
+recorded as release-approved runtime evidence.
+
+The follow-up appearance experiment lives in
+`artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/`. Its ten
+newly drawn action sheets test the approved prototype's round head, broad body,
+short legs, substantial paws, and marking continuity at runtime scale. These
+internal-only sheets demonstrate a complete visual repertoire but still lack a
+rights-cleared editable production source, so they do not alter the production
+acceptance boundary below.
+
 ## Marking Lock
 
 Markings must describe one cat rather than being redrawn opportunistically per
@@ -184,7 +208,9 @@ until the source package, rights record, and structural checks are reviewable.
 
 ## Current Comparison Evidence
 
-The current deterministic derivative may be captured with the command above to
-compare room scale and lighting. Keep every such entry pending or explicitly
-failed: it is defect/comparison evidence only and must not be relabeled as
-production approval or committed as the accepted Issue #23 evidence set.
+The current internal appearance preview may be captured with the command above
+to compare room scale and lighting. A narrowly scoped attribute such as
+cross-action scale may receive an explicit human pass, but that decision must
+name its limited scope. It is comparison evidence only and must not be
+relabeled as production approval or committed as the accepted Issue #23
+full-action evidence set.

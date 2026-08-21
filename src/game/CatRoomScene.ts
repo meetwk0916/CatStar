@@ -11,6 +11,7 @@ import {
   type TouchDisposition,
 } from "../domain/catFsm";
 import type { CatCoatPreset, CatTemperament } from "../types";
+import { getCatRuntimeAppearance } from "../domain/catAppearance";
 import {
   createCompanionRouteExecutor,
   type CompanionRouteExecutor,
@@ -178,15 +179,6 @@ const CAT_ACTIONS: CatAction[] = [
   "groom",
   "stretch",
 ];
-
-const COAT_ASSET_DIRECTORIES: Record<CatCoatPreset, string> = {
-  ORANGE_TABBY: "orange-tabby",
-  SOLID_BLACK: "solid-black",
-  SOLID_WHITE: "solid-white",
-  CALICO: "calico",
-  TUXEDO: "tuxedo",
-  GRAY_WHITE_TABBY: "gray-white-tabby",
-};
 
 const PHYSICAL_SURFACES = new Set(["floor"]);
 
@@ -368,7 +360,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.load.image("window-room-plant-leaf", `${SCENE_ASSET_ROOT}/plant-leaf.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
     this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
-    const coatDirectory = COAT_ASSET_DIRECTORIES[this.coatPreset];
+    const coatDirectory = getCatRuntimeAppearance(this.coatPreset).assetDirectory;
     CAT_ACTIONS.forEach((action) => {
       this.load.spritesheet(`cat-${action}`, `${SCENE_ASSET_ROOT}/cat/${coatDirectory}/${action}.png`, {
         frameWidth: 96,

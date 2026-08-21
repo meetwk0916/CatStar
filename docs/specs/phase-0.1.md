@@ -70,6 +70,9 @@ When documents disagree, use this order:
   [`ADR-0008`](../adr/0008-deepen-named-companion-route-execution.md).
 - The staged appearance release boundary is recorded in
   [`ADR-0006`](../adr/0006-release-with-one-complete-appearance-prototype.md).
+- The separation between a passport coat choice and its current preview-art
+  authority is recorded in
+  [`ADR-0009`](../adr/0009-separate-memorial-coat-choice-from-preview-art-authority.md).
 
 ## Runtime behavior
 
@@ -93,6 +96,9 @@ When documents disagree, use this order:
   deterministic derivatives are implementation evidence, not release art.
 - Appearance selection is manual and bounded. Phase 0.1 does not upload cat
   photos, generate a replica, or promise exact visual reproduction.
+- An explicitly labelled **内部外形预览** may appear in an internal build for
+  real-room evaluation, but it does not satisfy the selectable production
+  prototype or coat-preset contract and must fail release validation.
 - Each prototype preserves its own anchors, timing, and behavior availability
   across coat presets; do not stretch or reuse another prototype's body art.
 - The domain planner weights intent by temperament, suppresses recent

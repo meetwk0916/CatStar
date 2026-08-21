@@ -49,6 +49,7 @@ test("primary actions remain legible and implemented memorial traits expose sele
   await coatPresets.getByRole("button", { name: "橘色虎斑" }).click();
   await page.getByRole("button", { name: /安静慢热/ }).click();
   await expect(coatPresets.getByRole("button", { name: "橘色虎斑" })).toHaveAttribute("aria-pressed", "true");
+  await expect(coatPresets.getByText("内部形象预览", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /安静慢热/ })).toHaveAttribute("aria-pressed", "true");
 });
 
