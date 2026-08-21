@@ -24,7 +24,6 @@ async function rgba(path: string) {
 
 describe("internal big-ginger orange-tabby preview", () => {
   it("uses the dedicated big-ginger silhouette across all ten actions", async () => {
-    const shapeActions = new Set(ACTIONS);
     for (const action of ACTIONS) {
       const source = await rgba(join(CAT_DIR, "gray-white-tabby", `${action}.png`));
       const preview = await rgba(join(CAT_DIR, "orange-tabby", `${action}.png`));
@@ -37,20 +36,18 @@ describe("internal big-ginger orange-tabby preview", () => {
           break;
         }
       }
-      expect(alphaMatches, action).toBe(!shapeActions.has(action));
+      expect(alphaMatches, action).toBe(false);
 
-      if (shapeActions.has(action)) {
-        const candidate = await readFile(
-          join(
-            ROOT,
-            "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2",
-            "sprite-sheets-96",
-            `${action}.png`,
-          ),
-        );
-        const runtime = await readFile(join(CAT_DIR, "orange-tabby", `${action}.png`));
-        expect(runtime, action).toEqual(candidate);
-      }
+      const candidate = await readFile(
+        join(
+          ROOT,
+          "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2",
+          "sprite-sheets-96",
+          `${action}.png`,
+        ),
+      );
+      const runtime = await readFile(join(CAT_DIR, "orange-tabby", `${action}.png`));
+      expect(runtime, action).toEqual(candidate);
     }
   });
 

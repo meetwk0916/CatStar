@@ -21,7 +21,7 @@ const ACTION_SOURCES = {
   interact: "product-cat-quality-slice-v12",
 } as const;
 
-describe("gray-white ten-action motion master", () => {
+describe("gray-white ten-action sources and historical motion evidence", () => {
   it("wires every action to a production-identity candidate", async () => {
     const builder = await readFile(
       join(ROOT, "scripts/build_cat_coat_presets.py"),
@@ -53,7 +53,7 @@ describe("gray-white ten-action motion master", () => {
     }
   });
 
-  it("records one approved current-fingerprint desktop/mobile matrix", async () => {
+  it("retains the approved 2026-08-15 matrix as historical evidence", async () => {
     const manifest = JSON.parse(
       await readFile(join(MASTER_EVIDENCE, "manifest.json"), "utf8"),
     ) as {
@@ -78,6 +78,9 @@ describe("gray-white ten-action motion master", () => {
     expect(manifest.actions).toEqual(Object.keys(ACTION_SOURCES));
     expect(manifest.viewports).toEqual(["1280x720", "390x844"]);
     expect(manifest.sourceFingerprint).toMatch(/^[a-f0-9]{64}$/);
+    expect(
+      await readFile(join(ROOT, "docs/art/rights-and-provenance.md"), "utf8"),
+    ).toContain("It is not current release acceptance.");
     expect(manifest.entries).toHaveLength(20);
 
     const matrix = new Set(

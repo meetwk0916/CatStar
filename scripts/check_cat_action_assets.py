@@ -10,6 +10,7 @@ mass changes.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -35,6 +36,8 @@ MAX_REFINED_PIXEL_COLORS = 128
 MIN_ROUNDED_IDLE_HEIGHT = 68
 REFINED_PIXEL_ACTIONS = {"idle", "sit", "walk", "interact", "lie", "sleep"}
 SCENE_ASSET_DIR = Path("public/assets/scenes/window-room")
+RELEASE_RIGHTS_RECORD = Path("artifacts/art/release/cat-rights-and-provenance.json")
+RELEASE_MOTION_REVIEW = Path("artifacts/art/runtime-motion-review/first-release/manifest.json")
 CURRENT_CAT_PRESETS = (
     "gray-white-tabby",
     "orange-tabby",
@@ -90,6 +93,198 @@ EXPECTED_ACTION_FRAMES = {
     "groom": 8,
     "stretch": 6,
 }
+RELEASE_VIEWPORTS = {"1280x720", "390x844"}
+RELEASE_EVIDENCE_FIELDS = ("video", "entryPoster", "exitPoster")
+REQUIRED_RIGHTS_GRANTS = (
+    "modify",
+    "publicBeta",
+    "paidDistribution",
+    "marketing",
+    "appStore",
+    "worldwideDigitalDistribution",
+)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def current_motion_source_fingerprint() -> str:
+    import capture_cat_runtime_review as screenshot_review
+
+    base_fingerprint, _ = screenshot_review.source_fingerprint()
+    digest = hashlib.sha256(base_fingerprint.encode("utf-8"))
+    script_dir = Path(__file__).resolve().parent
+    for path in (
+        script_dir / "capture_cat_motion_review.py",
+        script_dir / "capture_cat_motion_review.mjs",
+        script_dir / "record_cat_motion_review.py",
+    ):
+        relative = path.relative_to(script_dir.parent).as_posix()
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def load_json_record(path: Path, label: str) -> tuple[dict[str, object] | None, list[str]]:
+    if not path.exists():
+        return None, [f"first-release profile: missing {label} {path}"]
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return None, [f"first-release profile: invalid {label} {path}: {error}"]
+    if not isinstance(record, dict):
+        return None, [f"first-release profile: invalid {label} {path}: expected an object"]
+    return record, []
+
+
+def validate_hashed_files(
+    records: object,
+    record_dir: Path,
+    label: str,
+) -> list[str]:
+    if not isinstance(records, list) or not records:
+        return [f"first-release rights record: {label} must contain hashed files"]
+    failures: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, dict):
+            failures.append(f"first-release rights record: {label}[{index}] must be an object")
+            continue
+        relative = record.get("path")
+        expected_hash = record.get("sha256")
+        if not isinstance(relative, str) or not relative or not isinstance(expected_hash, str):
+            failures.append(
+                f"first-release rights record: {label}[{index}] requires path and sha256"
+            )
+            continue
+        path = record_dir / relative
+        if not path.is_file():
+            failures.append(f"first-release rights record: missing {label} file {path}")
+            continue
+        if sha256_file(path) != expected_hash:
+            failures.append(f"first-release rights record: {label} hash mismatch for {path}")
+    return failures
+
+
+def validate_release_rights_record(
+    path: Path,
+    profile: AssetProfile,
+) -> tuple[str | None, list[str]]:
+    record, failures = load_json_record(path, "rights/provenance record")
+    if record is None:
+        return None, failures
+    if record.get("schemaVersion") != 1:
+        failures.append("first-release rights record: expected schemaVersion 1")
+    if record.get("status") != "approved-for-target":
+        failures.append("first-release rights record: status must be approved-for-target")
+    if set(record.get("presets", [])) != set(profile.presets):
+        failures.append("first-release rights record: presets must cover the release profile")
+    if set(record.get("actions", [])) != REQUIRED_ACTIONS:
+        failures.append("first-release rights record: actions must cover all ten actions")
+
+    release_preset = record.get("releasePreset")
+    if not isinstance(release_preset, str) or release_preset not in profile.presets:
+        failures.append("first-release rights record: releasePreset must name a release preset")
+        release_preset = None
+
+    for field in (
+        "creator",
+        "accountOwner",
+        "creationDate",
+        "sourceBrief",
+        "transformationLineage",
+        "reviewer",
+        "reviewDate",
+        "approvedTarget",
+    ):
+        if not isinstance(record.get(field), str) or not str(record[field]).strip():
+            failures.append(f"first-release rights record: {field} is required")
+    third_party_inputs = record.get("thirdPartyInputs")
+    if not isinstance(third_party_inputs, list):
+        failures.append("first-release rights record: thirdPartyInputs must be recorded")
+    rights_grant = record.get("rightsGrant")
+    if not isinstance(rights_grant, dict):
+        failures.append("first-release rights record: rightsGrant is required")
+    else:
+        for grant in REQUIRED_RIGHTS_GRANTS:
+            if rights_grant.get(grant) is not True:
+                failures.append(f"first-release rights record: rightsGrant.{grant} must be true")
+
+    failures.extend(validate_hashed_files(record.get("sourceFiles"), path.parent, "sourceFiles"))
+    failures.extend(validate_hashed_files(record.get("termsEvidence"), path.parent, "termsEvidence"))
+    return release_preset, failures
+
+
+def validate_release_motion_review(
+    path: Path,
+    release_preset: str | None,
+    expected_fingerprint: str,
+) -> list[str]:
+    manifest, failures = load_json_record(path, "motion-review manifest")
+    if manifest is None:
+        return failures
+    if release_preset is None:
+        return failures
+    if manifest.get("schemaVersion") != 1:
+        failures.append("first-release motion review: expected schemaVersion 1")
+    if manifest.get("profile") != "first-release":
+        failures.append("first-release motion review: profile must be first-release")
+    if manifest.get("presets") != [release_preset]:
+        failures.append("first-release motion review: must cover the declared release preset")
+    if set(manifest.get("actions", [])) != REQUIRED_ACTIONS:
+        failures.append("first-release motion review: must cover all ten actions")
+    if set(manifest.get("viewports", [])) != RELEASE_VIEWPORTS:
+        failures.append("first-release motion review: must cover desktop and mobile")
+    if manifest.get("sourceFingerprint") != expected_fingerprint:
+        failures.append("first-release motion review: source fingerprint is stale")
+
+    entries = manifest.get("entries")
+    if not isinstance(entries, list):
+        return failures + ["first-release motion review: entries must be an array"]
+    expected_matrix = {
+        (release_preset, action, viewport)
+        for action in REQUIRED_ACTIONS
+        for viewport in RELEASE_VIEWPORTS
+    }
+    actual_matrix: set[tuple[object, object, object]] = set()
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            failures.append(f"first-release motion review: entry {index} must be an object")
+            continue
+        actual_matrix.add((entry.get("coatPreset"), entry.get("action"), entry.get("viewport")))
+        human_review = entry.get("humanReview")
+        if entry.get("motionState") != "complete":
+            failures.append(f"first-release motion review: entry {index} is incomplete")
+        if (
+            not isinstance(human_review, dict)
+            or human_review.get("status") != "pass"
+            or not isinstance(human_review.get("reviewer"), str)
+            or not human_review["reviewer"].strip()
+        ):
+            failures.append(f"first-release motion review: entry {index} lacks a human pass")
+        hashes = entry.get("evidenceSha256")
+        for field in RELEASE_EVIDENCE_FIELDS:
+            relative = entry.get(field)
+            expected_hash = hashes.get(field) if isinstance(hashes, dict) else None
+            if not isinstance(relative, str) or not isinstance(expected_hash, str):
+                failures.append(
+                    f"first-release motion review: entry {index} lacks hashed {field} evidence"
+                )
+                continue
+            evidence_path = path.parent / relative
+            if not evidence_path.is_file() or sha256_file(evidence_path) != expected_hash:
+                failures.append(
+                    f"first-release motion review: entry {index} has invalid {field} evidence"
+                )
+    if actual_matrix != expected_matrix or len(entries) != len(expected_matrix):
+        failures.append("first-release motion review: expected a complete 20-entry matrix")
+    return failures
 
 
 def validate_environment_assets(scene_asset_dir: Path) -> list[str]:
@@ -369,7 +564,14 @@ def validate_stationary_walk_scale(
     return []
 
 
-def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
+def validate_assets(
+    scene_asset_dir: Path,
+    profile: AssetProfile,
+    *,
+    release_rights_record: Path = RELEASE_RIGHTS_RECORD,
+    release_motion_review: Path = RELEASE_MOTION_REVIEW,
+    expected_release_fingerprint: str | None = None,
+) -> list[str]:
     asset_dir = scene_asset_dir / "cat"
     spec_path = asset_dir / "cat.animations.json"
     if not spec_path.exists():
@@ -470,6 +672,20 @@ def validate_assets(scene_asset_dir: Path, profile: AssetProfile) -> list[str]:
                         )
                     )
 
+    if profile.name == "first-release":
+        release_preset, rights_failures = validate_release_rights_record(
+            release_rights_record,
+            profile,
+        )
+        failures.extend(rights_failures)
+        failures.extend(
+            validate_release_motion_review(
+                release_motion_review,
+                release_preset,
+                expected_release_fingerprint or current_motion_source_fingerprint(),
+            )
+        )
+
     return failures
 
 
@@ -487,13 +703,30 @@ def parse_args() -> argparse.Namespace:
         default=SCENE_ASSET_DIR,
         help="scene asset root, primarily for isolated contract tests",
     )
+    parser.add_argument(
+        "--release-rights-record",
+        type=Path,
+        default=RELEASE_RIGHTS_RECORD,
+        help="machine-readable first-release rights and provenance approval",
+    )
+    parser.add_argument(
+        "--release-motion-review",
+        type=Path,
+        default=RELEASE_MOTION_REVIEW,
+        help="fingerprint-bound first-release ten-action review manifest",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     profile = ASSET_PROFILES[args.profile]
-    failures = validate_assets(args.scene_asset_dir, profile)
+    failures = validate_assets(
+        args.scene_asset_dir,
+        profile,
+        release_rights_record=args.release_rights_record,
+        release_motion_review=args.release_motion_review,
+    )
 
     if failures:
         print(f"Cat action asset check failed ({profile.name} profile):")

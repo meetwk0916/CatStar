@@ -51,9 +51,6 @@ MOTION_SOURCES = {
     "groom": DAILY_LIFE_V1_DIR / "groom.png",
     "stretch": DAILY_LIFE_V1_DIR / "stretch.png",
 }
-ORANGE_SHAPE_PREVIEW_ACTIONS = frozenset(MOTION_SOURCES)
-
-
 def luminance(red: int, green: int, blue: int) -> float:
     return red * 0.299 + green * 0.587 + blue * 0.114
 
@@ -106,70 +103,10 @@ def interpolate_palette(
     return stops[-1][1]
 
 
-def orange_tabby(value: float) -> tuple[int, int, int]:
-    """Map the motion master's values to the approved big-ginger palette.
-
-    This remains an internal preview treatment: it preserves pose geometry while
-    replacing the gray-white source's cool/pink cast and high-contrast stripes.
-    """
-    return interpolate_palette(
-        value,
-        (
-            (0, (28, 19, 21)),
-            (42, (75, 48, 43)),
-            (92, (178, 91, 21)),
-            (142, (202, 111, 25)),
-            (192, (225, 140, 35)),
-            (232, (245, 178, 65)),
-            (255, (250, 202, 105)),
-        ),
-    )
-
-
 def calico_orange(value: float) -> tuple[int, int, int]:
     lightness = 0.14 + (value / 255) * 0.58
     saturation = 0.52 if value > 95 else 0.4
     return colorize(0.075, saturation, lightness)
-
-
-def cream_muzzle(value: float) -> tuple[int, int, int]:
-    return interpolate_palette(
-        value,
-        (
-            (214, (207, 157, 96)),
-            (238, (239, 203, 145)),
-            (255, (247, 220, 174)),
-        ),
-    )
-
-
-ORANGE_MUZZLE_REGIONS = {
-    "idle": (0.82, 0.18, 0.5),
-    "sit": (0.75, 0.1, 0.36),
-    "walk": (0.82, 0.18, 0.55),
-    "jump": (0.74, 0.12, 0.57),
-    "eat": (0.75, 0.28, 0.65),
-    "lie": (0.74, 0.2, 0.6),
-    "sleep": (0.75, 0.18, 0.58),
-    "groom": (0.7, 0.08, 0.4),
-    "stretch": (0.78, 0.18, 0.6),
-    "interact": (0.78, 0.16, 0.56),
-}
-
-
-def is_orange_muzzle(
-    action: str,
-    frame_x: int,
-    y: int,
-    frame_bounds: tuple[int, int, int, int],
-) -> bool:
-    left, top, right, bottom = frame_bounds
-    width = max(1, right - left)
-    height = max(1, bottom - top)
-    normalized_x = (frame_x - left) / width
-    normalized_y = (y - top) / height
-    min_x, min_y, max_y = ORANGE_MUZZLE_REGIONS[action]
-    return normalized_x >= min_x and min_y <= normalized_y <= max_y
 
 
 def is_orange_calico_patch(frame_x: int, y: int) -> bool:
@@ -194,16 +131,6 @@ def transform_pixel(
     red, green, blue, alpha = pixel
     if alpha == 0:
         return pixel
-
-    if coat == "orange-tabby":
-        if is_gold(red, green, blue):
-            return pixel
-        value = luminance(red, green, blue)
-        if is_white_marking(red, green, blue) and is_orange_muzzle(
-            action, frame_x, y, frame_bounds
-        ):
-            return (*cream_muzzle(value), alpha)
-        return (*orange_tabby(value), alpha)
 
     if is_gold(red, green, blue) or is_pink(red, green, blue):
         return pixel
@@ -305,7 +232,7 @@ def main() -> None:
         for coat in COAT_PRESETS:
             destination_dir = CAT_DIR / coat
             destination_dir.mkdir(parents=True, exist_ok=True)
-            if coat == "orange-tabby" and action in ORANGE_SHAPE_PREVIEW_ACTIONS:
+            if coat == "orange-tabby":
                 preview_sheet = Image.open(ORANGE_SHAPE_PREVIEW_DIR / str(config["file"]))
                 preview_sheet.convert("RGBA").save(destination_dir / str(config["file"]))
             else:

@@ -77,6 +77,11 @@ export default function CatScene({ passport, now }: CatSceneProps) {
             {reaction}
           </span>
         ) : null}
+        {runtimeAppearance.isInternalPreview ? (
+          <p className="pointer-events-none absolute bottom-3 left-3 border-2 border-[#4A3E3D] bg-[#FFFDF9E8] px-2 py-1 text-xs font-bold text-[#6C5A57] shadow-[2px_2px_0_#4A3E3D]">
+            当前为内部形象预览，并非 Issue #23 正式发布美术
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-[#786662]">

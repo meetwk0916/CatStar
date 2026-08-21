@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-15
+**Last reviewed:** 2026-08-22
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. The repository records
@@ -74,7 +74,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 
 ## Rounded short-haired moving quality-slice approval record
 
-**Status:** Rights source recorded; included in the approved internal motion master
+**Status:** Rights source recorded; historical full-master review retained
 
 | Field | Record |
 | --- | --- |
@@ -87,12 +87,12 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
 | Transformation lineage | The three chroma-key sources are background-removed into `alpha/`, then deterministically extracted, nearest-neighbor normalized, alpha-hardened, palette-limited, and assembled into transparent `96x96` sheets by `scripts/compose_product_cat_quality_slice_v12.py`. Runtime coat derivatives are built separately by `scripts/build_cat_coat_presets.py`. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet. The owner-use statement remains subject to applicable law and the Terms. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` covers the production-model-derived `sit`, `walk`, and `interact` inside the current-fingerprint ten-action desktop/mobile matrix. meetwk0916 approved all 20 master entries on 2026-08-15. The earlier `2026-08-08-quality-slice-v5/` directory remains scoped iteration history. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` is historical ten-action desktop/mobile evidence captured before the current `idle`, `sit`, and `walk` inputs and scale registration changed. meetwk0916 approved all 20 entries against that capture-time fingerprint on 2026-08-15. It is not current release acceptance. The earlier `2026-08-08-quality-slice-v5/` directory remains scoped iteration history. |
 | Distribution status | Internal rounded short-haired moving quality-slice evidence only. This record does not clear the room art, the other seven action sources, or public distribution. |
 
-## Rounded short-haired ten-action motion-master lock record
+## Rounded short-haired ten-action historical motion-master record
 
-**Status:** Ten-action internal motion master approved; public rights clearance pending
+**Status:** Historical internal approval; current release acceptance and public rights clearance pending
 
 | Field | Record |
 | --- | --- |
@@ -100,8 +100,8 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Current action sources | `product-cat-quality-slice-v12` supplies `sit`, `walk`, and `interact`; `product-cat-quiet-motion-v1` supplies `idle`, `lie`, and `sleep`; `product-cat-daily-life-v1` supplies `eat`, `groom`, and `stretch`; `product-cat-jump-v6` supplies `jump`. |
 | Runtime derivation | `scripts/build_cat_coat_presets.py` wires the four approved production-identity candidates into the gray-white master and deterministic working coat derivatives without changing alpha geometry or timing. |
 | Structural evidence | `npm run check:assets`, the complete test suite, and `tests/motion-master.test.ts` verify the ten-action contract, exact gray-white runtime-to-source wiring, evidence matrix, and evidence hashes. |
-| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 complete recordings: all ten actions at `1280x720` and `390x844`, bound to source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. |
-| Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. Independent visual QA reported no identity drift, scale pop, sliding, clipping, detached effects, or command-like demeanor. |
+| Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 historical recordings: all ten actions at `1280x720` and `390x844`, bound to its capture-time source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. Current `idle`, `sit`, and `walk` inputs and scale registration postdate this evidence, so it is not a current release matrix. |
+| Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 against that historical fingerprint after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. The approval does not transfer to changed source inputs. |
 | Terms evidence | The component records below retain their applicable OpenAI Terms review dates. No immutable repository snapshot is recorded yet. |
 | Distribution status | Locked for CatStar internal production work only. Public, paid, marketing, and app-store distribution remain blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 

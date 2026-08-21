@@ -87,6 +87,95 @@ def make_fixture(presets: tuple[str, ...]) -> Path:
     return scene_dir
 
 
+def make_release_records(
+    scene_dir: Path,
+    *,
+    fingerprint: str = "fixture-fingerprint",
+) -> tuple[Path, Path]:
+    release_dir = scene_dir.parent / "release"
+    evidence_dir = release_dir / "motion"
+    evidence_dir.mkdir(parents=True)
+    source_path = release_dir / "production-source.txt"
+    terms_path = release_dir / "distribution-terms.txt"
+    source_path.write_text("production source", encoding="utf-8")
+    terms_path.write_text("distribution terms", encoding="utf-8")
+    rights_path = release_dir / "cat-rights-and-provenance.json"
+    rights_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "status": "approved-for-target",
+                "presets": list(CHECKER.FIRST_RELEASE_CAT_PRESETS),
+                "actions": list(ACTION_FRAMES),
+                "releasePreset": "orange-tabby",
+                "creator": "CatStar artist",
+                "accountOwner": "CatStar",
+                "creationDate": "2026-08-22",
+                "sourceBrief": "rounded short-haired release cat",
+                "transformationLineage": "editable source to ten runtime sheets",
+                "thirdPartyInputs": [],
+                "reviewer": "release reviewer",
+                "reviewDate": "2026-08-22",
+                "approvedTarget": "public release",
+                "rightsGrant": {
+                    grant: True for grant in CHECKER.REQUIRED_RIGHTS_GRANTS
+                },
+                "sourceFiles": [
+                    {"path": source_path.name, "sha256": CHECKER.sha256_file(source_path)}
+                ],
+                "termsEvidence": [
+                    {"path": terms_path.name, "sha256": CHECKER.sha256_file(terms_path)}
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    entries = []
+    for action in ACTION_FRAMES:
+        for viewport in CHECKER.RELEASE_VIEWPORTS:
+            evidence = {}
+            hashes = {}
+            for field, suffix in (
+                ("video", ".webm"),
+                ("entryPoster", "-entry.png"),
+                ("exitPoster", "-exit.png"),
+            ):
+                relative = f"evidence/{viewport}/{action}{suffix}"
+                path = evidence_dir / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(f"{action}/{viewport}/{field}".encode())
+                evidence[field] = relative
+                hashes[field] = CHECKER.sha256_file(path)
+            entries.append(
+                {
+                    "coatPreset": "orange-tabby",
+                    "action": action,
+                    "viewport": viewport,
+                    "motionState": "complete",
+                    "humanReview": {"status": "pass", "reviewer": "release reviewer"},
+                    "evidenceSha256": hashes,
+                    **evidence,
+                }
+            )
+    manifest_path = evidence_dir / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "profile": "first-release",
+                "presets": ["orange-tabby"],
+                "actions": list(ACTION_FRAMES),
+                "viewports": sorted(CHECKER.RELEASE_VIEWPORTS),
+                "sourceFingerprint": fingerprint,
+                "entries": entries,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return rights_path, manifest_path
+
+
 class AssetProfileTests(unittest.TestCase):
     def test_current_profile_accepts_the_internal_prototype_preset_set(self) -> None:
         scene_dir = make_fixture(CHECKER.CURRENT_CAT_PRESETS)
@@ -101,10 +190,47 @@ class AssetProfileTests(unittest.TestCase):
         self.assertTrue(any("tortoiseshell" in failure for failure in failures))
         self.assertTrue(any("colorpoint" in failure for failure in failures))
 
-    def test_first_release_profile_accepts_all_ten_presets(self) -> None:
+    def test_first_release_profile_rejects_assets_without_release_records(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
         failures = CHECKER.validate_assets(scene_dir, CHECKER.ASSET_PROFILES["first-release"])
+        self.assertTrue(any("missing rights/provenance record" in failure for failure in failures))
+        self.assertTrue(any("missing motion-review manifest" in failure for failure in failures))
+
+    def test_first_release_profile_accepts_cleared_rights_and_current_human_matrix(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+
+        failures = CHECKER.validate_assets(
+            scene_dir,
+            CHECKER.ASSET_PROFILES["first-release"],
+            release_rights_record=rights_path,
+            release_motion_review=manifest_path,
+            expected_release_fingerprint="fixture-fingerprint",
+        )
+
         self.assertEqual(failures, [])
+
+    def test_first_release_profile_rejects_stale_or_incomplete_acceptance(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        rights["rightsGrant"]["paidDistribution"] = False
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["entries"][0]["humanReview"]["status"] = "pending"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        failures = CHECKER.validate_assets(
+            scene_dir,
+            CHECKER.ASSET_PROFILES["first-release"],
+            release_rights_record=rights_path,
+            release_motion_review=manifest_path,
+            expected_release_fingerprint="different-fingerprint",
+        )
+
+        self.assertTrue(any("rightsGrant.paidDistribution" in failure for failure in failures))
+        self.assertTrue(any("source fingerprint is stale" in failure for failure in failures))
+        self.assertTrue(any("lacks a human pass" in failure for failure in failures))
 
     def test_prototype_profile_allows_release_presets_already_in_the_asset_root(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
