@@ -203,11 +203,32 @@ def validate_hashed_files(
     return failures
 
 
-def validate_completed_intake(record: object, record_dir: Path) -> list[str]:
-    intake_path, failures = resolve_hashed_file(record, record_dir, "canonicalIntake")
-    if intake_path is None or failures:
-        return failures
-    intake = intake_path.read_text(encoding="utf-8")
+def load_hashed_text(
+    record: object,
+    record_dir: Path,
+    label: str,
+) -> tuple[Path | None, str | None, list[str]]:
+    if not isinstance(record, dict):
+        return None, None, [f"first-release rights record: {label} must be an object"]
+    relative = record.get("path")
+    expected_hash = record.get("sha256")
+    if not isinstance(relative, str) or not relative or not isinstance(expected_hash, str):
+        return None, None, [f"first-release rights record: {label} requires path and sha256"]
+    path = (record_dir / relative).resolve()
+    try:
+        payload = path.read_bytes()
+    except OSError as error:
+        return None, None, [f"first-release rights record: unable to read {label} {path}: {error}"]
+    if hashlib.sha256(payload).hexdigest() != expected_hash:
+        return path, None, [f"first-release rights record: {label} hash mismatch for {path}"]
+    try:
+        return path, payload.decode("utf-8"), []
+    except UnicodeDecodeError as error:
+        return path, None, [f"first-release rights record: invalid UTF-8 in {label} {path}: {error}"]
+
+
+def validate_completed_intake(intake_path: Path, intake: str) -> list[str]:
+    failures: list[str] = []
     if intake_path.name != "intake-checklist.md" or "# Orange Tabby v1 Production Intake" not in intake:
         failures.append("first-release rights record: canonicalIntake must be the Issue #23 intake")
     if "**Issue:** #23" not in intake:
@@ -230,20 +251,17 @@ def validate_completed_intake(record: object, record_dir: Path) -> list[str]:
 
 
 def validate_intake_bindings(
-    intake_record: object,
+    intake: str,
     editable_authority: object,
     runtime_exports: object,
     terms_evidence: object,
-    record_dir: Path,
 ) -> list[str]:
-    intake_path, failures = resolve_hashed_file(
-        intake_record,
-        record_dir,
-        "canonicalIntake",
-    )
-    if intake_path is None or failures:
-        return failures
-    intake = intake_path.read_text(encoding="utf-8")
+    failures: list[str] = []
+    heading = "## Bound Delivery Hashes"
+    _, separator, binding_section = intake.partition(heading)
+    if not separator:
+        return ["first-release rights record: canonicalIntake lacks structured bindings"]
+    binding_lines = set(binding_section.splitlines())
     bindings: list[tuple[str, object]] = [("editableAuthority", editable_authority)]
     if isinstance(runtime_exports, dict):
         bindings.extend(
@@ -263,7 +281,7 @@ def validate_intake_bindings(
         if (
             isinstance(relative, str)
             and isinstance(expected_hash, str)
-            and (relative not in intake or expected_hash not in intake)
+            and f"- `{relative}`: `{expected_hash}`" not in binding_lines
         ):
             failures.append(
                 f"first-release rights record: canonicalIntake does not bind {label}"
@@ -361,8 +379,10 @@ def validate_release_rights_record(
         failures.append("first-release rights record: actions must cover all ten actions")
 
     release_preset = record.get("releasePreset")
-    if not isinstance(release_preset, str) or release_preset not in profile.presets:
-        failures.append("first-release rights record: releasePreset must name a release preset")
+    if release_preset != "orange-tabby":
+        failures.append(
+            "first-release rights record: releasePreset must be orange-tabby for the Issue #23 intake"
+        )
         release_preset = None
 
     for field in (
@@ -388,16 +408,22 @@ def validate_release_rights_record(
             if rights_grant.get(grant) is not True:
                 failures.append(f"first-release rights record: rightsGrant.{grant} must be true")
 
-    failures.extend(validate_completed_intake(record.get("canonicalIntake"), path.parent))
-    failures.extend(
-        validate_intake_bindings(
-            record.get("canonicalIntake"),
-            record.get("editableAuthority"),
-            record.get("runtimeExports"),
-            record.get("termsEvidence"),
-            path.parent,
-        )
+    intake_path, intake, intake_failures = load_hashed_text(
+        record.get("canonicalIntake"),
+        path.parent,
+        "canonicalIntake",
     )
+    failures.extend(intake_failures)
+    if intake_path is not None and intake is not None:
+        failures.extend(validate_completed_intake(intake_path, intake))
+        failures.extend(
+            validate_intake_bindings(
+                intake,
+                record.get("editableAuthority"),
+                record.get("runtimeExports"),
+                record.get("termsEvidence"),
+            )
+        )
     failures.extend(validate_editable_authority(record.get("editableAuthority"), path.parent))
     failures.extend(
         validate_runtime_export_hashes(

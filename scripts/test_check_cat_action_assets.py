@@ -344,6 +344,70 @@ class AssetProfileTests(unittest.TestCase):
         self.assertTrue(any("canonicalIntake must complete all" in failure for failure in failures))
         self.assertTrue(any("canonicalIntake still has incomplete fields" in failure for failure in failures))
 
+    def test_canonical_intake_rejects_swapped_delivery_hashes(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        intake_path = rights_path.parent / rights["canonicalIntake"]["path"]
+        idle = rights["runtimeExports"]["idle"]
+        sit = rights["runtimeExports"]["sit"]
+        intake = intake_path.read_text(encoding="utf-8")
+        idle_line = f"- `{idle['path']}`: `{idle['sha256']}`"
+        sit_line = f"- `{sit['path']}`: `{sit['sha256']}`"
+        intake = intake.replace(idle_line, "SWAPPED_BINDING", 1)
+        intake = intake.replace(sit_line, f"- `{sit['path']}`: `{idle['sha256']}`", 1)
+        intake = intake.replace("SWAPPED_BINDING", f"- `{idle['path']}`: `{sit['sha256']}`", 1)
+        intake_path.write_text(intake, encoding="utf-8")
+        rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = CHECKER.validate_assets(
+            scene_dir,
+            CHECKER.ASSET_PROFILES["first-release"],
+            release_rights_record=rights_path,
+            release_motion_review=manifest_path,
+            expected_release_fingerprint="fixture-fingerprint",
+        )
+
+        self.assertTrue(any("does not bind runtimeExports.idle" in failure for failure in failures))
+        self.assertTrue(any("does not bind runtimeExports.sit" in failure for failure in failures))
+
+    def test_orange_intake_rejects_another_release_preset_identity(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        rights["releasePreset"] = "solid-black"
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = CHECKER.validate_assets(
+            scene_dir,
+            CHECKER.ASSET_PROFILES["first-release"],
+            release_rights_record=rights_path,
+            release_motion_review=manifest_path,
+            expected_release_fingerprint="fixture-fingerprint",
+        )
+
+        self.assertTrue(any("releasePreset must be orange-tabby" in failure for failure in failures))
+
+    def test_invalid_utf8_intake_returns_an_actionable_failure(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        intake_path = rights_path.parent / rights["canonicalIntake"]["path"]
+        intake_path.write_bytes(b"\xff\xfe\xfd")
+        rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = CHECKER.validate_assets(
+            scene_dir,
+            CHECKER.ASSET_PROFILES["first-release"],
+            release_rights_record=rights_path,
+            release_motion_review=manifest_path,
+            expected_release_fingerprint="fixture-fingerprint",
+        )
+
+        self.assertTrue(any("invalid UTF-8 in canonicalIntake" in failure for failure in failures))
+
     def test_release_records_report_malformed_collections_without_crashing(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
         rights_path, manifest_path = make_release_records(scene_dir)
