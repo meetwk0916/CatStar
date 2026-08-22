@@ -13,6 +13,8 @@ import argparse
 import hashlib
 import io
 import json
+import struct
+import warnings
 import zipfile
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
@@ -313,7 +315,31 @@ def validate_intake_bindings(
     return failures
 
 
-def validate_openraster(path: Path) -> list[str]:
+def read_authority_image(payload: bytes) -> None:
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", Image.DecompressionBombWarning)
+        with Image.open(io.BytesIO(payload)) as image:
+            image.load()
+
+
+def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
+    format_contracts = {
+        "openraster": {
+            "mimetype": b"image/openraster",
+            "document": "stack.xml",
+            "merged": "mergedimage.png",
+            "layerTag": "layer",
+            "layerAttribute": "src",
+        },
+        "krita": {
+            "mimetype": b"application/x-krita",
+            "document": "maindoc.xml",
+            "merged": "mergedimage.png",
+            "layerTag": "layer",
+            "layerAttribute": None,
+        },
+    }
+    contract = format_contracts[authority_format]
     try:
         with zipfile.ZipFile(path) as archive:
             first_entry = archive.infolist()[0] if archive.infolist() else None
@@ -322,24 +348,110 @@ def validate_openraster(path: Path) -> list[str]:
                 or first_entry.filename != "mimetype"
                 or first_entry.compress_type != zipfile.ZIP_STORED
             ):
-                return ["first-release rights record: editableAuthority has invalid OpenRaster layout"]
+                return [f"first-release rights record: editableAuthority has invalid {authority_format} layout"]
             if archive.testzip() is not None:
-                return ["first-release rights record: editableAuthority OpenRaster is corrupt"]
-            if archive.read("mimetype") != b"image/openraster":
-                return ["first-release rights record: editableAuthority has invalid OpenRaster mimetype"]
-            stack = ET.fromstring(archive.read("stack.xml"))
-            layer_paths = {
-                layer.attrib["src"]
-                for layer in stack.iter("layer")
-                if "src" in layer.attrib
-            }
-            if not layer_paths:
-                return ["first-release rights record: editableAuthority OpenRaster has no layers"]
-            for layer_path in layer_paths | {"mergedimage.png"}:
-                with Image.open(io.BytesIO(archive.read(layer_path))) as image:
-                    image.load()
-    except (OSError, KeyError, ET.ParseError, zipfile.BadZipFile) as error:
-        return [f"first-release rights record: editableAuthority is not parseable OpenRaster: {error}"]
+                return [f"first-release rights record: editableAuthority {authority_format} is corrupt"]
+            if archive.read("mimetype") != contract["mimetype"]:
+                return [f"first-release rights record: editableAuthority has invalid {authority_format} mimetype"]
+            stack = ET.fromstring(archive.read(str(contract["document"])))
+            layers = list(stack.iter(str(contract["layerTag"])))
+            if not layers:
+                return [f"first-release rights record: editableAuthority {authority_format} has no layers"]
+            layer_attribute = contract["layerAttribute"]
+            layer_paths = (
+                {
+                    layer.attrib[str(layer_attribute)]
+                    for layer in layers
+                    if str(layer_attribute) in layer.attrib
+                }
+                if layer_attribute is not None
+                else set()
+            )
+            if layer_attribute is not None and len(layer_paths) != len(layers):
+                return [f"first-release rights record: editableAuthority {authority_format} has invalid layers"]
+            for layer_path in layer_paths | {str(contract["merged"])}:
+                read_authority_image(archive.read(layer_path))
+    except (
+        OSError,
+        KeyError,
+        RuntimeError,
+        NotImplementedError,
+        ET.ParseError,
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+        zipfile.BadZipFile,
+    ) as error:
+        return [
+            f"first-release rights record: editableAuthority is not parseable "
+            f"{authority_format}: {error}"
+        ]
+    return []
+
+
+def validate_photoshop(path: Path) -> list[str]:
+    try:
+        payload = path.read_bytes()
+        if len(payload) < 40 or payload[:4] != b"8BPS":
+            raise ValueError("missing Photoshop signature")
+        version, channels, height, width, depth, color_mode = struct.unpack(">H6xHIIHH", payload[4:26])
+        if version not in {1, 2} or not 1 <= channels <= 56:
+            raise ValueError("invalid Photoshop header")
+        if width <= 0 or height <= 0 or depth not in {1, 8, 16, 32} or color_mode > 15:
+            raise ValueError("invalid Photoshop canvas")
+        offset = 26
+        for section_name in ("color mode", "image resources", "layer and mask"):
+            if offset + 4 > len(payload):
+                raise ValueError(f"missing {section_name} section")
+            section_length = struct.unpack(">I", payload[offset : offset + 4])[0]
+            offset += 4
+            if section_name == "layer and mask" and section_length == 0:
+                raise ValueError("Photoshop authority has no layer data")
+            offset += section_length
+            if offset > len(payload):
+                raise ValueError(f"truncated {section_name} section")
+        if offset + 2 > len(payload) or struct.unpack(">H", payload[offset : offset + 2])[0] > 3:
+            raise ValueError("invalid Photoshop image data")
+    except (OSError, struct.error, ValueError) as error:
+        return [f"first-release rights record: editableAuthority is not parseable photoshop: {error}"]
+    return []
+
+
+def validate_aseprite(path: Path) -> list[str]:
+    try:
+        payload = path.read_bytes()
+        if len(payload) < 144:
+            raise ValueError("truncated Aseprite file")
+        file_size, magic, frame_count, width, height, depth = struct.unpack("<IHHHHH", payload[:14])
+        if file_size != len(payload) or magic != 0xA5E0 or frame_count <= 0:
+            raise ValueError("invalid Aseprite header")
+        if width <= 0 or height <= 0 or depth not in {8, 16, 32}:
+            raise ValueError("invalid Aseprite canvas")
+        offset = 128
+        chunk_types: set[int] = set()
+        for _ in range(frame_count):
+            if offset + 16 > len(payload):
+                raise ValueError("truncated Aseprite frame")
+            frame_size, frame_magic, old_chunk_count = struct.unpack("<IHH", payload[offset : offset + 8])
+            new_chunk_count = struct.unpack("<I", payload[offset + 12 : offset + 16])[0]
+            if frame_magic != 0xF1FA or frame_size < 16 or offset + frame_size > len(payload):
+                raise ValueError("invalid Aseprite frame")
+            chunk_count = new_chunk_count or old_chunk_count
+            chunk_offset = offset + 16
+            for _ in range(chunk_count):
+                if chunk_offset + 6 > offset + frame_size:
+                    raise ValueError("truncated Aseprite chunk")
+                chunk_size, chunk_type = struct.unpack("<IH", payload[chunk_offset : chunk_offset + 6])
+                if chunk_size < 6 or chunk_offset + chunk_size > offset + frame_size:
+                    raise ValueError("invalid Aseprite chunk")
+                chunk_types.add(chunk_type)
+                chunk_offset += chunk_size
+            if chunk_offset != offset + frame_size:
+                raise ValueError("Aseprite frame size mismatch")
+            offset += frame_size
+        if offset != len(payload) or not {0x2004, 0x2005}.issubset(chunk_types):
+            raise ValueError("Aseprite authority requires layer and cel chunks")
+    except (OSError, struct.error, ValueError) as error:
+        return [f"first-release rights record: editableAuthority is not parseable aseprite: {error}"]
     return []
 
 
@@ -357,18 +469,34 @@ def validate_editable_authority(
         "first-release rights record: editableAuthority.governsActions",
     )
     failures.extend(collection_failures)
-    if authority_format != "openraster":
-        failures.append("first-release rights record: editableAuthority.format must be openraster")
+    format_validators = {
+        "openraster": (".ora", validate_zip_authority),
+        "krita": (".kra", validate_zip_authority),
+        "photoshop": (".psd", validate_photoshop),
+        "aseprite": (".aseprite", validate_aseprite),
+    }
+    if authority_format not in format_validators:
+        failures.append(
+            "first-release rights record: editableAuthority.format must be one of "
+            "openraster, krita, photoshop, or aseprite"
+        )
     if authority_path is not None:
-        if authority_path.parent != canonical_authority_dir.resolve():
+        if not authority_path.is_relative_to(canonical_authority_dir.resolve()):
             failures.append(
                 "first-release rights record: editableAuthority must come from the canonical "
                 "product-cat-orange-tabby-v1/sources package"
             )
-        if authority_path.suffix.lower() != ".ora":
-            failures.append("first-release rights record: editableAuthority must be an .ora file")
-        else:
-            failures.extend(validate_openraster(authority_path))
+        if authority_format in format_validators:
+            expected_suffix, validator = format_validators[authority_format]
+            if authority_path.suffix.lower() != expected_suffix:
+                failures.append(
+                    f"first-release rights record: editableAuthority {authority_format} "
+                    f"must use {expected_suffix}"
+                )
+            elif authority_format in {"openraster", "krita"}:
+                failures.extend(validator(authority_path, authority_format))
+            else:
+                failures.extend(validator(authority_path))
     if governed_actions is not None and governed_actions != REQUIRED_ACTIONS:
         failures.append("first-release rights record: editableAuthority must govern all ten actions")
     return failures

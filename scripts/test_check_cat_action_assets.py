@@ -7,9 +7,11 @@ import importlib.util
 import io
 import json
 import re
+import struct
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 from pathlib import Path
 
@@ -103,6 +105,44 @@ def make_openraster(path: Path) -> None:
         )
         archive.writestr("data/cat.png", layer)
         archive.writestr("mergedimage.png", layer)
+
+
+def make_krita(path: Path) -> None:
+    image_buffer = io.BytesIO()
+    Image.new("RGBA", (96, 96), (220, 130, 40, 255)).save(image_buffer, format="PNG")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("mimetype", "application/x-krita", compress_type=zipfile.ZIP_STORED)
+        archive.writestr(
+            "maindoc.xml",
+            '<DOC><IMAGE><layers><layer name="cat" filename="layer2" nodetype="paintlayer"/></layers></IMAGE></DOC>',
+        )
+        archive.writestr("mergedimage.png", image_buffer.getvalue())
+
+
+def make_photoshop(path: Path) -> None:
+    header = b"8BPS" + struct.pack(">H6xHIIHH", 1, 3, 1, 1, 8, 3)
+    layer_data = struct.pack(">Ih", 2, 1)
+    payload = (
+        header
+        + struct.pack(">I", 0)
+        + struct.pack(">I", 0)
+        + struct.pack(">I", len(layer_data))
+        + layer_data
+        + struct.pack(">H", 0)
+        + b"\x00\x00\x00"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(payload)
+
+
+def make_aseprite(path: Path) -> None:
+    chunks = struct.pack("<IH", 6, 0x2004) + struct.pack("<IH", 6, 0x2005)
+    frame = struct.pack("<IHHH2xI", 16 + len(chunks), 0xF1FA, 2, 100, 2) + chunks
+    header = bytearray(128)
+    struct.pack_into("<IHHHHH", header, 0, 128 + len(frame), 0xA5E0, 1, 96, 96, 32)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(bytes(header) + frame)
 
 
 def canonical_authority_dir(scene_dir: Path) -> Path:
@@ -348,7 +388,7 @@ class AssetProfileTests(unittest.TestCase):
 
         failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
-        self.assertTrue(any("editableAuthority.format must be openraster" in failure for failure in failures))
+        self.assertTrue(any("editableAuthority.format must be one of" in failure for failure in failures))
         self.assertTrue(any("must come from the canonical" in failure for failure in failures))
         self.assertTrue(any("runtimeExports.idle must bind" in failure for failure in failures))
 
@@ -409,7 +449,76 @@ class AssetProfileTests(unittest.TestCase):
 
         failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
-        self.assertTrue(any("not parseable OpenRaster" in failure for failure in failures))
+        self.assertTrue(any("not parseable openraster" in failure for failure in failures))
+
+    def test_editable_authority_dispatches_supported_layered_formats(self) -> None:
+        makers = {
+            "openraster": (".ora", make_openraster),
+            "krita": (".kra", make_krita),
+            "photoshop": (".psd", make_photoshop),
+            "aseprite": (".aseprite", make_aseprite),
+        }
+        for authority_format, (suffix, maker) in makers.items():
+            with self.subTest(authority_format=authority_format):
+                root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+                record_dir = root / "release"
+                canonical_dir = root / "product-cat-orange-tabby-v1/sources"
+                authority_path = canonical_dir / "nested" / f"orange-tabby{suffix}"
+                record_dir.mkdir(parents=True)
+                maker(authority_path)
+                record = {
+                    "path": f"../{authority_path.relative_to(root)}",
+                    "sha256": CHECKER.sha256_file(authority_path),
+                    "format": authority_format,
+                    "governsActions": list(ACTION_FRAMES),
+                }
+
+                failures = CHECKER.validate_editable_authority(
+                    record,
+                    record_dir,
+                    canonical_dir,
+                )
+
+                self.assertEqual(failures, [])
+
+    def test_openraster_expected_parse_failures_do_not_escape(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        record_dir = root / "release"
+        canonical_dir = root / "product-cat-orange-tabby-v1/sources"
+        authority_path = canonical_dir / "orange-tabby.ora"
+        record_dir.mkdir(parents=True)
+        make_openraster(authority_path)
+        record = {
+            "path": f"../{authority_path.relative_to(root)}",
+            "sha256": CHECKER.sha256_file(authority_path),
+            "format": "openraster",
+            "governsActions": list(ACTION_FRAMES),
+        }
+
+        for error in (
+            RuntimeError("encrypted member"),
+            NotImplementedError("unsupported compression"),
+        ):
+            with self.subTest(error=type(error).__name__):
+                with mock.patch.object(CHECKER.zipfile, "ZipFile", side_effect=error):
+                    failures = CHECKER.validate_editable_authority(
+                        record,
+                        record_dir,
+                        canonical_dir,
+                    )
+                self.assertTrue(any("not parseable openraster" in failure for failure in failures))
+
+        with mock.patch.object(
+            CHECKER.Image,
+            "open",
+            side_effect=CHECKER.Image.DecompressionBombError("oversized image"),
+        ):
+            failures = CHECKER.validate_editable_authority(
+                record,
+                record_dir,
+                canonical_dir,
+            )
+        self.assertTrue(any("not parseable openraster" in failure for failure in failures))
 
     def test_canonical_intake_rejects_swapped_delivery_hashes(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
