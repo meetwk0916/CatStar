@@ -25,6 +25,9 @@ DAILY_LIFE_V1_DIR = Path(
     "artifacts/art/candidates/active/product-cat-daily-life-v1/sprite-sheets-96"
 )
 PREVIEW_DIR = Path("artifacts/art/candidates/active/cat-coat-presets-v1")
+ORANGE_SHAPE_PREVIEW_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96"
+)
 FRAME = 96
 
 COAT_PRESETS = (
@@ -40,7 +43,7 @@ MOTION_SOURCES = {
     "idle": QUIET_MOTION_V1_DIR / "idle.png",
     "sit": QUALITY_SLICE_V12_DIR / "sit.png",
     "walk": QUALITY_SLICE_V12_DIR / "walk.png",
-    "jump": ACTIVE_CANDIDATE_DIR / "product-cat-actions-v5/sprite-sheets-96/jump.png",
+    "jump": ACTIVE_CANDIDATE_DIR / "product-cat-jump-v6/sprite-sheets-96/jump.png",
     "sleep": QUIET_MOTION_V1_DIR / "sleep.png",
     "interact": QUALITY_SLICE_V12_DIR / "interact.png",
     "eat": DAILY_LIFE_V1_DIR / "eat.png",
@@ -84,7 +87,7 @@ def warm_white(value: float) -> tuple[int, int, int]:
     return tone, max(0, tone - 3), max(0, tone - 2)
 
 
-def orange_tabby(value: float) -> tuple[int, int, int]:
+def calico_orange(value: float) -> tuple[int, int, int]:
     lightness = 0.14 + (value / 255) * 0.58
     saturation = 0.52 if value > 95 else 0.4
     return colorize(0.075, saturation, lightness)
@@ -108,7 +111,10 @@ def transform_pixel(
     pixel: tuple[int, int, int, int],
 ) -> tuple[int, int, int, int]:
     red, green, blue, alpha = pixel
-    if alpha == 0 or is_gold(red, green, blue) or is_pink(red, green, blue):
+    if alpha == 0:
+        return pixel
+
+    if is_gold(red, green, blue) or is_pink(red, green, blue):
         return pixel
 
     value = luminance(red, green, blue)
@@ -116,10 +122,6 @@ def transform_pixel(
 
     if coat == "gray-white-tabby":
         return pixel
-    if coat == "orange-tabby":
-        if white_marking:
-            return pixel
-        return (*orange_tabby(value), alpha)
     if coat == "tuxedo":
         if white_marking:
             return pixel
@@ -131,35 +133,36 @@ def transform_pixel(
     if coat == "calico":
         if white_marking:
             return pixel
-        target = orange_tabby(value) if is_orange_calico_patch(frame_x, y) else charcoal(value)
+        target = calico_orange(value) if is_orange_calico_patch(frame_x, y) else charcoal(value)
         return (*target, alpha)
     raise ValueError(f"Unknown coat preset: {coat}")
 
 
-def recolor_sheet(source: Image.Image, coat: str) -> Image.Image:
+def recolor_sheet(source: Image.Image, coat: str, action: str) -> Image.Image:
     image = source.convert("RGBA")
     output = Image.new("RGBA", image.size, (0, 0, 0, 0))
     source_pixels = image.load()
     output_pixels = output.load()
 
+    for frame_index in range(image.width // FRAME):
+        alpha = image.crop((frame_index * FRAME, 0, (frame_index + 1) * FRAME, FRAME)).getchannel("A")
+        if alpha.getbbox() is None:
+            raise ValueError(f"{action}: frame {frame_index} is empty")
+
     for y in range(image.height):
         for x in range(image.width):
-            output_pixels[x, y] = transform_pixel(coat, x % FRAME, y, source_pixels[x, y])
+            output_pixels[x, y] = transform_pixel(
+                coat,
+                x % FRAME,
+                y,
+                source_pixels[x, y],
+            )
     return output
 
 
-def load_motion_source(action: str, expected_frames: int) -> Image.Image:
+def load_motion_source(action: str) -> Image.Image:
     source_path = MOTION_SOURCES[action]
-    source = Image.open(source_path).convert("RGBA")
-
-    if action == "jump" and source.width == FRAME * 5 and expected_frames == 6:
-        expanded = Image.new("RGBA", (FRAME * 6, FRAME), (0, 0, 0, 0))
-        expanded.alpha_composite(source)
-        recovery = source.crop((FRAME * 4, 0, FRAME * 5, FRAME))
-        expanded.alpha_composite(recovery, (FRAME * 5, 0))
-        return expanded
-
-    return source
+    return Image.open(source_path).convert("RGBA")
 
 
 def make_preview(spec: dict[str, object]) -> None:
@@ -198,14 +201,18 @@ def main() -> None:
     for action, config in spec["actions"].items():
         source_path = MOTION_SOURCES[action]
         expected_size = (FRAME * int(config["frames"]), FRAME)
-        source = load_motion_source(action, int(config["frames"]))
+        source = load_motion_source(action)
         if source.size != expected_size:
             raise ValueError(f"{action}: expected {expected_size}, got {source.size} from {source_path}")
 
         for coat in COAT_PRESETS:
             destination_dir = CAT_DIR / coat
             destination_dir.mkdir(parents=True, exist_ok=True)
-            recolor_sheet(source, coat).save(destination_dir / str(config["file"]))
+            if coat == "orange-tabby":
+                preview_sheet = Image.open(ORANGE_SHAPE_PREVIEW_DIR / str(config["file"]))
+                preview_sheet.convert("RGBA").save(destination_dir / str(config["file"]))
+            else:
+                recolor_sheet(source, coat, action).save(destination_dir / str(config["file"]))
 
     make_preview(spec)
     print(f"Built {len(COAT_PRESETS)} coat presets with {len(MOTION_SOURCES)} actions each")

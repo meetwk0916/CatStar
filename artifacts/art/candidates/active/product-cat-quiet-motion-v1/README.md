@@ -11,8 +11,11 @@ presence, and `sleep` curls down with closed eyes and restrained breathing.
 The chroma-key sources are retained under `sources/`, with background-removed
 copies under `alpha/`. `scripts/compose_product_cat_quiet_motion_v1.py`
 deterministically extracts and normalizes the poses into `96x96` runtime
-sheets. `scripts/build_cat_coat_presets.py` derives each current coat preset
-from the same alpha shapes.
+sheets. The `idle` source uses the same rounded short-haired body-scale and
+bottom-center registration authority as the v12 `sit` and `walk` sources;
+replacement art that does not fit at that scale fails instead of being
+action-locally shrunk. `scripts/build_cat_coat_presets.py` derives the ordinary
+coat presets from the same alpha shapes.
 
 ## Generation and provenance
 

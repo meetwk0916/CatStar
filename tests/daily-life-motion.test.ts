@@ -98,12 +98,31 @@ describe('daily-life motion slice', () => {
     expect(new Set(baselines)).toEqual(new Set([92]));
   });
 
+  it('gives the stretch action enough phase-weighted time to read as a real cat', async () => {
+    const animationSpec = JSON.parse(
+      await readFile(
+        join(
+          ROOT,
+          'public/assets/scenes/window-room/cat/cat.animations.json',
+        ),
+        'utf8',
+      ),
+    ) as {
+      actions?: Record<string, { frameDurations?: number[] }>;
+    };
+    const frameDurations = animationSpec.actions?.stretch?.frameDurations ?? [];
+
+    expect(frameDurations).toHaveLength(ACTIONS.stretch);
+    expect(frameDurations.reduce((total, duration) => total + duration, 0)).toBe(2_400);
+    expect(Math.max(...frameDurations)).toBeGreaterThanOrEqual(600);
+  });
+
   it('records complete desktop and mobile motion evidence for the master coat', async () => {
     const manifest = JSON.parse(
       await readFile(
         join(
           ROOT,
-          'artifacts/art/runtime-motion-review/2026-08-09-daily-life-v1/manifest.json',
+          'artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/manifest.json',
         ),
         'utf8',
       ),
@@ -111,7 +130,10 @@ describe('daily-life motion slice', () => {
       presets?: string[];
       actions?: string[];
       viewports?: string[];
-      entries?: Array<{ motionState?: string }>;
+      entries?: Array<{
+        motionState?: string;
+        humanReview?: { status?: string; reviewer?: string };
+      }>;
     };
 
     expect(manifest.presets).toEqual(['gray-white-tabby']);
@@ -119,6 +141,13 @@ describe('daily-life motion slice', () => {
     expect(manifest.viewports).toEqual(['1280x720', '390x844']);
     expect(manifest.entries).toHaveLength(6);
     expect(manifest.entries?.every((entry) => entry.motionState === 'complete')).toBe(true);
+    expect(
+      manifest.entries?.every(
+        (entry) =>
+          entry.humanReview?.status === 'pass' &&
+          entry.humanReview.reviewer === 'meetwk0916',
+      ),
+    ).toBe(true);
   });
 
   it('records reviewed desktop and mobile food-route interruption evidence', async () => {

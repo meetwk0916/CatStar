@@ -221,7 +221,41 @@ describe("companion planner", () => {
       }),
     );
 
-    expect(intents.every((intent) => intent.dwellMs >= 1_400 && intent.dwellMs <= 11_000)).toBe(true);
+    expect(intents.every((intent) => intent.dwellMs >= 1_400 && intent.dwellMs <= 12_000)).toBe(true);
+  });
+
+  it("keeps a floor stretch active long enough to complete its weighted motion", () => {
+    const stretch = Array.from({ length: 2_000 }, (_, sample) => {
+      const planner = createCompanionPlanner({
+        temperament: "LIVELY",
+        random: sequenceRandom([sample / 2_000, 0]),
+      });
+      return planner.next({
+        currentZone: "plant",
+        sessionElapsedMs: 90_000,
+        localHour: 14,
+      });
+    }).find((intent) => intent.kind === "floor-stretch");
+
+    expect(stretch).toBeDefined();
+    expect(stretch?.dwellMs).toBeGreaterThanOrEqual(2_600);
+  });
+
+  it("lets a floor grooming session settle into sustained self-care", () => {
+    const groom = Array.from({ length: 2_000 }, (_, sample) => {
+      const planner = createCompanionPlanner({
+        temperament: "QUIET",
+        random: sequenceRandom([sample / 2_000, 0]),
+      });
+      return planner.next({
+        currentZone: "floor",
+        sessionElapsedMs: 90_000,
+        localHour: 14,
+      });
+    }).find((intent) => intent.kind === "floor-groom");
+
+    expect(groom).toBeDefined();
+    expect(groom?.dwellMs).toBeGreaterThanOrEqual(8_000);
   });
 
   it("makes lively jump destinations more likely while keeping selection probabilistic", () => {

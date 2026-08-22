@@ -171,6 +171,22 @@ Frame standard:
 - sleeping contact line: consistent with floor/cushion placement
 - no cast shadow baked into the sprite sheet; scene-level shadow can be handled separately
 
+### Cross-action body-scale authority
+
+Every appearance prototype must freeze one reviewed source-to-runtime scale
+calibration for `idle`, `sit`, and `walk`. Those actions share the same `96x96`
+frame, bottom-center origin, four-pixel contact margin, and overflow behavior.
+Composers must apply the frozen calibration directly; they must not recompute an
+action scale from that source strip's maximum width or height. If replacement
+art exceeds the frame at the reviewed scale, the composer fails and the source
+composition must be re-authored rather than silently shrinking the cat.
+
+The structural gate supplements that source authority with pose-aware apparent
+scale checks: `idle`/`walk` must retain at least 88% equivalent linear scale and
+`sit`/`walk` at least 86%. These automated measurements catch whole-body size
+drift but do not replace desktop/mobile continuous-motion review of entry,
+contact, loop, and exit registration.
+
 All frames in one sheet must have identical dimensions and be laid out horizontally:
 
 ```text
@@ -510,6 +526,9 @@ which supersedes ADR-0003's narrower Phase 0.1 limit.
 The first-release boundary for one complete rounded short-haired prototype is
 recorded in
 [`ADR-0006`](../adr/0006-release-with-one-complete-appearance-prototype.md).
+The current separation between persisted coat choice and internal preview-art
+authority is recorded in
+[`ADR-0009`](../adr/0009-separate-memorial-coat-choice-from-preview-art-authority.md).
 
 `scripts/generate_cat_animation_assets.py` is retained only as a technical
 experiment for validating frame counts, anchors, and Phaser metadata. It must

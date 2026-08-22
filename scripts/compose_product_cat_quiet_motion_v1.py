@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from artifact_paths import ARTIFACTS_ART_ROOT
+from cat_cross_action_scale import ROUNDED_SHORT_HAIR_SCALE_AUTHORITY
 from compose_product_cat_quality_slice_v11 import ActionRow, extract_action
 
 
@@ -26,7 +27,13 @@ def compose(output_dir: Path = OUT_DIR) -> None:
     sheet_dir.mkdir(parents=True, exist_ok=True)
 
     metadata = {
-        row.action: extract_action(row, source_dir, normalized_dir, sheet_dir)
+        row.action: extract_action(
+            row,
+            source_dir,
+            normalized_dir,
+            sheet_dir,
+            ROUNDED_SHORT_HAIR_SCALE_AUTHORITY,
+        )
         for row in ACTION_ROWS
     }
     (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")

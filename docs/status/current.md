@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-13
+**Last aligned:** 2026-08-22
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -28,10 +28,22 @@ The current implementation includes:
 - Final-letter ordering, farewell choice, **星河陪伴**, and **信箱封存**.
 - Re-registration with confirmation.
 - Runtime image assets under `public/assets/scenes/window-room/`.
-- Six passport-selectable **毛色预设** sharing one locked gray-white motion
-  master and stable action timing.
+- Six passport-selectable **毛色预设** with stable action timing. Four ordinary
+  derivatives share the gray-white alpha geometry; orange-tabby currently uses
+  an independent, visibly labelled internal appearance preview and is not
+  release-approved. Runtime art authority is separate from the persisted coat
+  choice, so existing local passports do not require migration.
 - A ten-action runtime contract: idle, sit, walk, jump, eat, awake rest, deep
   sleep, groom, stretch, and interact.
+- The gray-white rounded short-haired ten-action motion master is locked for
+  internal production work. Its 2026-08-15 ten-action matrix remains historical
+  evidence because later scale normalization changed runtime inputs. Current
+  fingerprint-bound evidence now covers gray-white and the internal orange
+  preview across `idle`, `sit`, and `walk` at `1280x720` and `390x844`;
+  meetwk0916 approved all 12 entries on 2026-08-22 for the internal-preview
+  boundary and cross-action stability. This scoped approval neither renews the
+  full-master lock, accepts Issue #23 release art, nor clears public
+  distribution rights.
 - An engine-independent **陪伴例程** planner with temperament weighting,
   recent-intent suppression, awake session opening, dwell windows, and
   zone-aware rendering.
@@ -45,17 +57,31 @@ The current implementation includes:
 - The rounded short-haired v12 quality slice now supplies distinct
   `sit`, grounded eight-frame `walk`, and six-frame `interact` runtime sheets,
   all redrawn after approval of the dedicated production model sheet.
-  It remains internal quality-slice evidence while final human confirmation and
-  the complete rights-chain gate are pending.
-- The production-model-derived quiet-motion v1 candidate supplies `idle`,
-  awake-rest `lie`, and deep `sleep` across all six current coat presets.
+  Shared source calibration and bottom-center registration now keep apparent
+  body scale stable across `idle`, `sit`, and `walk`; source art that cannot fit
+  the frozen calibration fails generation instead of being silently shrunk.
+  The complete public rights-chain gate remains pending.
+- The production-identity jump v6 candidate supplies six distinct phases for
+  anticipation, launch, rise, apex balance, prepared descent, and grounded
+  recovery. The scene binds those poses to the scripted arc instead of playing
+  an unsynchronized fixed-rate animation. Current fingerprint-bound desktop and
+  mobile evidence covers the full window-bench round trip; meetwk0916 approved
+  both entries on 2026-08-15.
+- The production-model-derived quiet-motion v1 candidate supplies the
+  gray-white `idle`, awake-rest `lie`, and deep `sleep` authority used by the
+  master and four ordinary coat derivatives. Orange uses its separately
+  declared internal preview package.
   Structural asset validation and fingerprint-bound desktop/mobile continuous
   evidence pass; all eight floor, cat-bed, and blanket motion entries were
   approved by wakun on 2026-08-09.
-- The production-model-derived daily-life v1 candidate now supplies `eat`,
-  `groom`, and `stretch` across all six current coat presets. Structural asset
-  validation passes, and dedicated gray-white master continuous desktop/mobile
-  evidence is recorded; six human-review entries remain pending.
+- The production-model-derived daily-life v1 candidate now supplies the
+  gray-white `eat`, `groom`, and `stretch` authority used by the master and four
+  ordinary coat derivatives. Orange uses its separately declared internal
+  preview package. Structural asset validation passes. Current
+  fingerprint-bound gray-white master evidence at
+  desktop and mobile sizes records the complete food route, an 8–12 second
+  grooming dwell, and phase-weighted stretch timing; meetwk0916 approved all
+  six entries on 2026-08-15.
 - The first purposeful **陪伴路线** slice now carries the cat from the floor
   to the food bowl through two authored foreground waypoints, continuous
   walking velocity through the turns, a 200 ms arrival deceleration, and a
@@ -78,9 +104,10 @@ The current implementation includes:
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
-  recorded in the runtime asset map. The broader runtime screenshot evidence
-  under `artifacts/art/runtime-review/2026-08-14/` has been regenerated with
-  the latest route input and passes `npm run review:runtime:check`.
+  recorded in the runtime asset map. The project-wide runtime screenshot set
+  under `artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`
+  contains 19 current-fingerprint desktop/mobile captures and passes its
+  manifest validation.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -122,19 +149,23 @@ hashes or branch information to this file.
 - Polish responsive layout after browser review on mobile and desktop.
 - Validate Phaser against the mobile scene-performance gate before treating
   engine migration as active work.
-- Complete rounded short-haired's remaining `jump` action through the same
-  rights-recorded production process as the v12 quality slice. The daily-life
-  `eat`, `groom`, and `stretch` candidate and dedicated continuous evidence now
-  exist, but human review remains pending. Then produce independent
-  ten-action masters for slender short-haired and fluffy long-haired before
-  exposing those prototypes in the passport; they do not block the first
-  release.
+- Produce independent ten-action masters for slender short-haired and fluffy
+  long-haired before exposing those prototypes in the passport; they do not
+  block the first release. The gray-white master is locked for internal
+  production work, while its immutable terms snapshot and complete public
+  distribution rights chain remain unresolved.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
-- Replace the six current deterministic coat derivatives with ten reviewed
-  complete appearances after the new motion master is approved, adding brown
-  tabby, solid gray, tortoiseshell, and colorpoint and reviewing matching eye,
-  nose, and paw-pad colors without enabling free mixing or local markings.
+- Complete ten reviewed rounded-short-haired coat appearances, replacing the
+  four ordinary deterministic derivatives and the internal orange preview,
+  adding brown tabby, solid gray, tortoiseshell, and colorpoint, and reviewing
+  matching eye, nose, and paw-pad colors without enabling free mixing or local
+  markings.
+- Produce and intake the approved orange-tabby appearance defined in
+  `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
+  desktop/mobile capture is comparison evidence only; Issue #23 remains blocked
+  until an independent production source, complete release rights, and twenty
+  human review decisions exist.
 - Defer bespoke **自发玩耍** sheets until after the ten core action classes;
   reuse walk and interact motion for Phase 0.1 **主动靠近**.
 - Keep the first-release repertoire frozen at the ten core action classes;

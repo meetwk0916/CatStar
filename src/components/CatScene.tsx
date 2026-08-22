@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { getDeliveredLetters, isFinalLetter } from "../domain/letters";
+import { getCatRuntimeAppearance } from "../domain/catAppearance";
 import type { ICatPassport } from "../types";
 
 const PhaserCatScene = lazy(() => import("./PhaserCatScene"));
@@ -12,6 +13,7 @@ interface CatSceneProps {
 export default function CatScene({ passport, now }: CatSceneProps) {
   const [reaction, setReaction] = useState("");
   const [interactionSignal, setInteractionSignal] = useState(0);
+  const runtimeAppearance = getCatRuntimeAppearance(passport.coatPreset);
 
   const sceneCaption = useMemo(() => {
     if (passport.isFarewellCompleted) {
@@ -54,6 +56,8 @@ export default function CatScene({ passport, now }: CatSceneProps) {
       <div
         className="relative aspect-[16/9] min-h-0 min-w-0 overflow-hidden border-4 border-[#4A3E3D] bg-[#202433] shadow-[4px_4px_0px_0px_#4A3E3D] md:min-h-72"
         data-catstar-coat-preset={passport.coatPreset}
+        data-catstar-appearance-authority={runtimeAppearance.authority}
+        data-catstar-internal-appearance-preview={runtimeAppearance.isInternalPreview || undefined}
       >
         <Suspense fallback={<div className="grid h-full place-items-center text-sm font-black text-[#FFFDF9]">星光正在铺好</div>}>
           <PhaserCatScene
@@ -72,6 +76,11 @@ export default function CatScene({ passport, now }: CatSceneProps) {
           >
             {reaction}
           </span>
+        ) : null}
+        {runtimeAppearance.isInternalPreview ? (
+          <p className="pointer-events-none absolute bottom-3 left-3 border-2 border-[#4A3E3D] bg-[#FFFDF9E8] px-2 py-1 text-xs font-bold text-[#6C5A57] shadow-[2px_2px_0_#4A3E3D]">
+            当前为内部形象预览，并非 Issue #23 正式发布美术
+          </p>
         ) : null}
       </div>
 

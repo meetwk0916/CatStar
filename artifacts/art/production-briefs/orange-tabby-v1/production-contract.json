@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "preset": "orange-tabby",
+  "runtimePreset": "ORANGE_TABBY",
+  "prototype": "rounded-short-haired",
+  "identityAuthority": "artifacts/art/candidates/active/product-cat-model-sheet-v1/",
+  "motionAuthority": "public/assets/scenes/window-room/cat/gray-white-tabby/",
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "anchor": "bottom-center",
+  "orientation": "right-facing",
+  "alphaGeometry": "exact-gray-white-master-match",
+  "actions": {
+    "idle": { "file": "idle.png", "frames": 4, "width": 384, "height": 96 },
+    "sit": { "file": "sit.png", "frames": 4, "width": 384, "height": 96 },
+    "walk": { "file": "walk.png", "frames": 8, "width": 768, "height": 96 },
+    "jump": { "file": "jump.png", "frames": 6, "width": 576, "height": 96 },
+    "eat": { "file": "eat.png", "frames": 6, "width": 576, "height": 96 },
+    "lie": { "file": "lie.png", "frames": 4, "width": 384, "height": 96 },
+    "sleep": { "file": "sleep.png", "frames": 4, "width": 384, "height": 96 },
+    "groom": { "file": "groom.png", "frames": 8, "width": 768, "height": 96 },
+    "stretch": { "file": "stretch.png", "frames": 6, "width": 576, "height": 96 },
+    "interact": { "file": "interact.png", "frames": 6, "width": 576, "height": 96 }
+  },
+  "appearance": {
+    "minimumOrangeBodyCoverage": 0.85,
+    "creamMarkings": ["muzzle", "chin"],
+    "forbiddenWhiteMarkings": ["chest-bib", "belly", "legs", "socks", "paws"],
+    "tabbyMarks": ["forehead-M", "two-cheek-stripes", "two-broken-neck-bands", "tapered-shoulder-and-flank-stripes", "six-tail-rings", "deeper-orange-tail-tip"],
+    "stripeContrast": "low-contrast-same-hue-deeper-orange",
+    "iris": "golden-amber",
+    "nose": "muted-brick-pink",
+    "pawPads": "deep-muted-brick-pink"
+  },
+  "releaseRequires": [
+    "rights-cleared-production-source",
+    "ten-structurally-valid-action-sheets",
+    "passport-selection-and-persistence",
+    "desktop-and-mobile-continuous-motion-evidence",
+    "twenty-explicit-human-review-decisions",
+    "complete-runtime-rights-chain"
+  ]
+}

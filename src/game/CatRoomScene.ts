@@ -11,6 +11,7 @@ import {
   type TouchDisposition,
 } from "../domain/catFsm";
 import type { CatCoatPreset, CatTemperament } from "../types";
+import { getCatRuntimeAppearance } from "../domain/catAppearance";
 import {
   createCompanionRouteExecutor,
   type CompanionRouteExecutor,
@@ -94,12 +95,13 @@ interface CatAnimationSpec {
       file: string;
       frames: number;
       frameRate: number;
+      frameDurations?: number[];
       repeat: number;
     }
   >;
 }
 
-interface ScriptedJump {
+interface ScriptedJumpGeometry {
   fromX: number;
   fromY: number;
   toX: number;
@@ -107,7 +109,61 @@ interface ScriptedJump {
   startedAt: number;
   duration: number;
   peakHeight: number;
+}
+
+type ScriptedJumpPhase =
+  | "anticipation"
+  | "launch"
+  | "rising"
+  | "apex"
+  | "descent"
+  | "recovery";
+
+interface ScriptedJumpSample {
+  x: number;
+  y: number;
+  frame: number;
+  phase: ScriptedJumpPhase;
+  complete: boolean;
+}
+
+interface ScriptedJump extends ScriptedJumpGeometry {
   landingRoutine: CatRoutine;
+}
+
+const JUMP_ANTICIPATION_END = 0.12;
+const JUMP_LANDING_START = 0.78;
+const JUMP_PHASES: readonly { end: number; phase: ScriptedJumpPhase }[] = [
+  { end: JUMP_ANTICIPATION_END, phase: "anticipation" },
+  { end: 0.28, phase: "launch" },
+  { end: 0.44, phase: "rising" },
+  { end: 0.61, phase: "apex" },
+  { end: JUMP_LANDING_START, phase: "descent" },
+  { end: 1, phase: "recovery" },
+];
+
+export function sampleScriptedJump(
+  jump: ScriptedJumpGeometry,
+  time: number,
+): ScriptedJumpSample {
+  const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
+  const flightProgress = Phaser.Math.Clamp(
+    (progress - JUMP_ANTICIPATION_END) / (JUMP_LANDING_START - JUMP_ANTICIPATION_END),
+    0,
+    1,
+  );
+  const easedFlightProgress = Phaser.Math.Easing.Sine.InOut(flightProgress);
+  const arcY = Math.sin(flightProgress * Math.PI) * jump.peakHeight;
+  const frame = JUMP_PHASES.findIndex(({ end }) => progress < end);
+  const resolvedFrame = frame === -1 ? JUMP_PHASES.length - 1 : frame;
+
+  return {
+    x: Phaser.Math.Linear(jump.fromX, jump.toX, easedFlightProgress),
+    y: Phaser.Math.Linear(jump.fromY, jump.toY, easedFlightProgress) - arcY,
+    frame: resolvedFrame,
+    phase: JUMP_PHASES[resolvedFrame].phase,
+    complete: progress >= 1,
+  };
 }
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
@@ -123,15 +179,6 @@ const CAT_ACTIONS: CatAction[] = [
   "groom",
   "stretch",
 ];
-
-const COAT_ASSET_DIRECTORIES: Record<CatCoatPreset, string> = {
-  ORANGE_TABBY: "orange-tabby",
-  SOLID_BLACK: "solid-black",
-  SOLID_WHITE: "solid-white",
-  CALICO: "calico",
-  TUXEDO: "tuxedo",
-  GRAY_WHITE_TABBY: "gray-white-tabby",
-};
 
 const PHYSICAL_SURFACES = new Set(["floor"]);
 
@@ -194,7 +241,8 @@ const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
 const FLOOR_PAUSE_X = FLOOR_LEFT_ZONE.xMax - 15;
-const DEBUG_REVIEW_DWELL_MS = 2_400;
+const DEBUG_REVIEW_DWELL_MS = 2_800;
+const DEBUG_GROOM_REVIEW_DWELL_MS = 8_000;
 const FLOOR_ROUTINE_ACTIONS: Record<FloorRoutine, CatAction> = {
   floorIdle: "idle",
   floorSit: "sit",
@@ -312,7 +360,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.load.image("window-room-plant-leaf", `${SCENE_ASSET_ROOT}/plant-leaf.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
     this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
-    const coatDirectory = COAT_ASSET_DIRECTORIES[this.coatPreset];
+    const coatDirectory = getCatRuntimeAppearance(this.coatPreset).assetDirectory;
     CAT_ACTIONS.forEach((action) => {
       this.load.spritesheet(`cat-${action}`, `${SCENE_ASSET_ROOT}/cat/${coatDirectory}/${action}.png`, {
         frameWidth: 96,
@@ -1218,7 +1266,12 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private debugHoldDuration(fallback: number) {
-    return this.debugMotionReview ? Math.min(fallback, DEBUG_REVIEW_DWELL_MS) : fallback;
+    if (!this.debugMotionReview) {
+      return fallback;
+    }
+    const reviewDwell =
+      this.routine === "floorGroom" ? DEBUG_GROOM_REVIEW_DWELL_MS : DEBUG_REVIEW_DWELL_MS;
+    return Math.min(fallback, reviewDwell);
   }
 
   private publishDebugMotionState() {
@@ -1283,7 +1336,8 @@ export class CatRoomScene extends Phaser.Scene {
       peakHeight: options.peakHeight,
       landingRoutine: options.landingRoutine,
     };
-    this.playCatAction("jump", true);
+    this.cat.anims.stop();
+    this.cat.setTexture("cat-jump", 0);
   }
 
   private updateScriptedJump(time: number) {
@@ -1292,18 +1346,15 @@ export class CatRoomScene extends Phaser.Scene {
     }
 
     const jump = this.scriptedJump;
-    const progress = Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1);
-    const easedProgress = Phaser.Math.Easing.Sine.InOut(progress);
-    const arcY = Math.sin(progress * Math.PI) * jump.peakHeight;
-    const x = Phaser.Math.Linear(jump.fromX, jump.toX, easedProgress);
-    const y = Phaser.Math.Linear(jump.fromY, jump.toY, easedProgress) - arcY;
+    const sample = sampleScriptedJump(jump, time);
 
     this.cat.body.setAllowGravity(false);
     this.cat.setVelocity(0, 0);
-    this.cat.setPosition(x, y);
-    this.playCatAction("jump");
+    this.cat.setPosition(sample.x, sample.y);
+    this.cat.anims.stop();
+    this.cat.setTexture("cat-jump", sample.frame);
 
-    if (progress >= 1) {
+    if (sample.complete) {
       this.cat.setPosition(jump.toX, jump.toY);
       this.scriptedJump = undefined;
       this.routine = jump.landingRoutine;
@@ -1376,10 +1427,16 @@ export class CatRoomScene extends Phaser.Scene {
     const spec = this.cache.json.get("cat-animation-spec") as CatAnimationSpec;
     (Object.keys(spec.actions) as CatAction[]).forEach((action) => {
       const config = spec.actions[action];
-      const frames = this.anims.generateFrameNumbers(`cat-${action}`, {
+      const generatedFrames = this.anims.generateFrameNumbers(`cat-${action}`, {
         start: 0,
         end: config.frames - 1,
       });
+      const frames = config.frameDurations
+        ? generatedFrames.map((frame, index) => ({
+            ...frame,
+            duration: config.frameDurations?.[index],
+          }))
+        : generatedFrames;
 
       this.anims.create({
         key: `cat-${action}-anim`,

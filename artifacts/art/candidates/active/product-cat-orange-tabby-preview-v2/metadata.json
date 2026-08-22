@@ -1,0 +1,1234 @@
+{
+  "status": "internal ten-action appearance prototype",
+  "identityAuthority": "artifacts/art/production-briefs/orange-tabby-v1/approved-direction-prototype.png",
+  "actions": {
+    "idle": {
+      "contract": {
+        "action": "idle",
+        "source": "idle-source-alpha.png",
+        "frames": 4,
+        "max_width": 90,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/idle-source-chromakey.png",
+      "sourceSha256": "eea8c895fca5479bd7e01437d3e7ff6928190ac1eb78ddd1e8c10a8f36528094",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/idle-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/idle.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            51,
+            279,
+            418,
+            629
+          ],
+          "sprite_size": [
+            88,
+            84
+          ],
+          "paste": [
+            4,
+            8
+          ],
+          "shared_scale": 0.24561403508771928,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            461,
+            279,
+            827,
+            629
+          ],
+          "sprite_size": [
+            88,
+            84
+          ],
+          "paste": [
+            4,
+            8
+          ],
+          "shared_scale": 0.24561403508771928,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            877,
+            279,
+            1243,
+            629
+          ],
+          "sprite_size": [
+            88,
+            84
+          ],
+          "paste": [
+            4,
+            8
+          ],
+          "shared_scale": 0.24561403508771928,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1293,
+            279,
+            1662,
+            629
+          ],
+          "sprite_size": [
+            89,
+            84
+          ],
+          "paste": [
+            3,
+            8
+          ],
+          "shared_scale": 0.24561403508771928,
+          "scale_authority": "orange-tabby appearance prototype"
+        }
+      ]
+    },
+    "sit": {
+      "contract": {
+        "action": "sit",
+        "source": "sit-source-alpha.png",
+        "frames": 4,
+        "max_width": 82,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/sit-source-chromakey.png",
+      "sourceSha256": "031bb2317a7e181330490de7e508c9eb6430ea9ff729add9f3f6f0df871cbee0",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/sit-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/sit.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            73,
+            202,
+            395,
+            697
+          ],
+          "sprite_size": [
+            54,
+            84
+          ],
+          "paste": [
+            21,
+            8
+          ],
+          "shared_scale": 0.17248459958932238,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            474,
+            202,
+            795,
+            697
+          ],
+          "sprite_size": [
+            54,
+            84
+          ],
+          "paste": [
+            21,
+            8
+          ],
+          "shared_scale": 0.17248459958932238,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            869,
+            202,
+            1191,
+            697
+          ],
+          "sprite_size": [
+            54,
+            84
+          ],
+          "paste": [
+            21,
+            8
+          ],
+          "shared_scale": 0.17248459958932238,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1257,
+            202,
+            1580,
+            697
+          ],
+          "sprite_size": [
+            54,
+            84
+          ],
+          "paste": [
+            21,
+            8
+          ],
+          "shared_scale": 0.17248459958932238,
+          "scale_authority": "orange-tabby appearance prototype"
+        }
+      ]
+    },
+    "walk": {
+      "contract": {
+        "action": "walk",
+        "source": "walk-source-alpha.png",
+        "frames": 8,
+        "max_width": 90,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/walk-source-chromakey.png",
+      "sourceSha256": "47ea421bd2a976e538958154abf6dc7e3c3b2ee593f94b2d4af4e323a77a38a0",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/walk-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/walk.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            38,
+            271,
+            273,
+            493
+          ],
+          "sprite_size": [
+            84,
+            79
+          ],
+          "paste": [
+            6,
+            13
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            302,
+            282,
+            536,
+            492
+          ],
+          "sprite_size": [
+            84,
+            75
+          ],
+          "paste": [
+            6,
+            17
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            549,
+            289,
+            799,
+            493
+          ],
+          "sprite_size": [
+            90,
+            73
+          ],
+          "paste": [
+            3,
+            19
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            806,
+            286,
+            1054,
+            493
+          ],
+          "sprite_size": [
+            89,
+            74
+          ],
+          "paste": [
+            3,
+            18
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1067,
+            286,
+            1318,
+            493
+          ],
+          "sprite_size": [
+            90,
+            74
+          ],
+          "paste": [
+            3,
+            18
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1330,
+            286,
+            1573,
+            493
+          ],
+          "sprite_size": [
+            87,
+            74
+          ],
+          "paste": [
+            4,
+            18
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 7,
+          "source_box": [
+            1590,
+            285,
+            1819,
+            492
+          ],
+          "sprite_size": [
+            82,
+            74
+          ],
+          "paste": [
+            7,
+            18
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        },
+        {
+          "frame": 8,
+          "source_box": [
+            1849,
+            270,
+            2077,
+            493
+          ],
+          "sprite_size": [
+            81,
+            80
+          ],
+          "paste": [
+            7,
+            12
+          ],
+          "shared_scale": 0.37037037037037035,
+          "scale_authority": "orange-tabby appearance prototype"
+        }
+      ]
+    },
+    "jump": {
+      "contract": {
+        "action": "jump",
+        "source": "jump-source-alpha.png",
+        "frames": 6,
+        "max_width": 90,
+        "max_height": 78
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/jump-source-chromakey.png",
+      "sourceSha256": "42815dbd7bafa412b1461c5325041628e9a7dfa47c12d07d132b03be16e8b8d6",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/jump-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/jump.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            30,
+            435,
+            291,
+            645
+          ],
+          "sprite_size": [
+            70,
+            56
+          ],
+          "paste": [
+            13,
+            36
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            302,
+            395,
+            583,
+            631
+          ],
+          "sprite_size": [
+            76,
+            63
+          ],
+          "paste": [
+            10,
+            29
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            575,
+            293,
+            888,
+            553
+          ],
+          "sprite_size": [
+            85,
+            70
+          ],
+          "paste": [
+            5,
+            22
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            888,
+            277,
+            1152,
+            471
+          ],
+          "sprite_size": [
+            71,
+            52
+          ],
+          "paste": [
+            12,
+            40
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1168,
+            339,
+            1404,
+            628
+          ],
+          "sprite_size": [
+            63,
+            78
+          ],
+          "paste": [
+            16,
+            14
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1445,
+            400,
+            1688,
+            645
+          ],
+          "sprite_size": [
+            65,
+            66
+          ],
+          "paste": [
+            15,
+            26
+          ],
+          "shared_scale": 0.2775800711743772,
+          "scale_authority": null
+        }
+      ]
+    },
+    "eat": {
+      "contract": {
+        "action": "eat",
+        "source": "eat-source-alpha.png",
+        "frames": 6,
+        "max_width": 90,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/eat-source-chromakey.png",
+      "sourceSha256": "8ef2a6d9a3ce77739b925adf73824f0a6d92fbd8fffdc6d25a211ce79fc23be2",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/eat-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/eat.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            49,
+            247,
+            335,
+            529
+          ],
+          "sprite_size": [
+            85,
+            84
+          ],
+          "paste": [
+            5,
+            8
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            381,
+            252,
+            655,
+            526
+          ],
+          "sprite_size": [
+            82,
+            82
+          ],
+          "paste": [
+            7,
+            10
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            702,
+            254,
+            966,
+            526
+          ],
+          "sprite_size": [
+            78,
+            81
+          ],
+          "paste": [
+            9,
+            11
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1026,
+            275,
+            1288,
+            527
+          ],
+          "sprite_size": [
+            78,
+            75
+          ],
+          "paste": [
+            9,
+            17
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1345,
+            255,
+            1626,
+            529
+          ],
+          "sprite_size": [
+            84,
+            82
+          ],
+          "paste": [
+            6,
+            10
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1677,
+            247,
+            1964,
+            524
+          ],
+          "sprite_size": [
+            86,
+            82
+          ],
+          "paste": [
+            5,
+            10
+          ],
+          "shared_scale": 0.30656934306569344,
+          "scale_authority": null
+        }
+      ]
+    },
+    "lie": {
+      "contract": {
+        "action": "lie",
+        "source": "lie-source-alpha.png",
+        "frames": 4,
+        "max_width": 90,
+        "max_height": 68
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/lie-source-chromakey.png",
+      "sourceSha256": "2dabb26ba5175b4608772fae18e2619e72c58cab61da22a713d6d8f1319efdeb",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/lie-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/lie.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            38,
+            334,
+            418,
+            604
+          ],
+          "sprite_size": [
+            90,
+            63
+          ],
+          "paste": [
+            3,
+            29
+          ],
+          "shared_scale": 0.24193548387096775,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            455,
+            334,
+            834,
+            604
+          ],
+          "sprite_size": [
+            90,
+            63
+          ],
+          "paste": [
+            3,
+            29
+          ],
+          "shared_scale": 0.24193548387096775,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            871,
+            334,
+            1245,
+            604
+          ],
+          "sprite_size": [
+            89,
+            63
+          ],
+          "paste": [
+            3,
+            29
+          ],
+          "shared_scale": 0.24193548387096775,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1289,
+            334,
+            1664,
+            604
+          ],
+          "sprite_size": [
+            89,
+            63
+          ],
+          "paste": [
+            3,
+            29
+          ],
+          "shared_scale": 0.24193548387096775,
+          "scale_authority": null
+        }
+      ]
+    },
+    "sleep": {
+      "contract": {
+        "action": "sleep",
+        "source": "sleep-source-alpha.png",
+        "frames": 4,
+        "max_width": 90,
+        "max_height": 62
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/sleep-source-chromakey.png",
+      "sourceSha256": "23f5e82ab07f0d9346f702a9e14754b7229826ef7199fd26bdca10ad15bc14f6",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/sleep-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/sleep.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            24,
+            343,
+            398,
+            578
+          ],
+          "sprite_size": [
+            90,
+            56
+          ],
+          "paste": [
+            3,
+            36
+          ],
+          "shared_scale": 0.24456521739130435,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            452,
+            343,
+            827,
+            579
+          ],
+          "sprite_size": [
+            90,
+            56
+          ],
+          "paste": [
+            3,
+            36
+          ],
+          "shared_scale": 0.24456521739130435,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            881,
+            343,
+            1257,
+            579
+          ],
+          "sprite_size": [
+            90,
+            56
+          ],
+          "paste": [
+            3,
+            36
+          ],
+          "shared_scale": 0.24456521739130435,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1311,
+            343,
+            1686,
+            579
+          ],
+          "sprite_size": [
+            90,
+            56
+          ],
+          "paste": [
+            3,
+            36
+          ],
+          "shared_scale": 0.24456521739130435,
+          "scale_authority": null
+        }
+      ]
+    },
+    "groom": {
+      "contract": {
+        "action": "groom",
+        "source": "groom-source-alpha.png",
+        "frames": 8,
+        "max_width": 82,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/groom-source-chromakey.png",
+      "sourceSha256": "66d31d072431b7b81a37b5f9c98841ca32399bd7a51400063ed0ccd376d15df7",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/groom-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/groom.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            9,
+            185,
+            258,
+            515
+          ],
+          "sprite_size": [
+            63,
+            84
+          ],
+          "paste": [
+            16,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            275,
+            185,
+            542,
+            515
+          ],
+          "sprite_size": [
+            67,
+            84
+          ],
+          "paste": [
+            14,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            548,
+            187,
+            808,
+            516
+          ],
+          "sprite_size": [
+            66,
+            83
+          ],
+          "paste": [
+            15,
+            9
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            834,
+            185,
+            1095,
+            515
+          ],
+          "sprite_size": [
+            66,
+            84
+          ],
+          "paste": [
+            15,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1100,
+            188,
+            1361,
+            515
+          ],
+          "sprite_size": [
+            66,
+            83
+          ],
+          "paste": [
+            15,
+            9
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1351,
+            185,
+            1607,
+            515
+          ],
+          "sprite_size": [
+            64,
+            84
+          ],
+          "paste": [
+            16,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 7,
+          "source_box": [
+            1609,
+            185,
+            1864,
+            516
+          ],
+          "sprite_size": [
+            64,
+            84
+          ],
+          "paste": [
+            16,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        },
+        {
+          "frame": 8,
+          "source_box": [
+            1877,
+            185,
+            2131,
+            516
+          ],
+          "sprite_size": [
+            64,
+            84
+          ],
+          "paste": [
+            16,
+            8
+          ],
+          "shared_scale": 0.26006191950464397,
+          "scale_authority": null
+        }
+      ]
+    },
+    "stretch": {
+      "contract": {
+        "action": "stretch",
+        "source": "stretch-source-alpha.png",
+        "frames": 6,
+        "max_width": 92,
+        "max_height": 74
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/stretch-source-chromakey.png",
+      "sourceSha256": "b3325e93468f141b44879657a64becfdec502754bc3223294b515b5f1acf0f8c",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/stretch-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/stretch.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            32,
+            269,
+            315,
+            525
+          ],
+          "sprite_size": [
+            71,
+            64
+          ],
+          "paste": [
+            12,
+            28
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            382,
+            270,
+            690,
+            525
+          ],
+          "sprite_size": [
+            78,
+            64
+          ],
+          "paste": [
+            9,
+            28
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            711,
+            285,
+            1041,
+            526
+          ],
+          "sprite_size": [
+            84,
+            61
+          ],
+          "paste": [
+            6,
+            31
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1043,
+            296,
+            1405,
+            529
+          ],
+          "sprite_size": [
+            92,
+            58
+          ],
+          "paste": [
+            2,
+            34
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1421,
+            283,
+            1706,
+            526
+          ],
+          "sprite_size": [
+            72,
+            61
+          ],
+          "paste": [
+            12,
+            31
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1762,
+            273,
+            2041,
+            528
+          ],
+          "sprite_size": [
+            70,
+            64
+          ],
+          "paste": [
+            13,
+            28
+          ],
+          "shared_scale": 0.2598870056497175,
+          "scale_authority": null
+        }
+      ]
+    },
+    "interact": {
+      "contract": {
+        "action": "interact",
+        "source": "interact-source-alpha.png",
+        "frames": 6,
+        "max_width": 90,
+        "max_height": 84
+      },
+      "source": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sources/interact-source-chromakey.png",
+      "sourceSha256": "2fa4ea6a2d69835d85af166075e96c42d40bd2ae0672d40fd77d790d1d15cce1",
+      "alpha": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/alpha/interact-source-alpha.png",
+      "sheet": "artifacts/art/candidates/active/product-cat-orange-tabby-preview-v2/sprite-sheets-96/interact.png",
+      "frames": [
+        {
+          "frame": 1,
+          "source_box": [
+            52,
+            247,
+            383,
+            560
+          ],
+          "sprite_size": [
+            89,
+            84
+          ],
+          "paste": [
+            3,
+            8
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        },
+        {
+          "frame": 2,
+          "source_box": [
+            400,
+            260,
+            727,
+            560
+          ],
+          "sprite_size": [
+            88,
+            80
+          ],
+          "paste": [
+            4,
+            12
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        },
+        {
+          "frame": 3,
+          "source_box": [
+            723,
+            262,
+            1002,
+            560
+          ],
+          "sprite_size": [
+            75,
+            80
+          ],
+          "paste": [
+            10,
+            12
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        },
+        {
+          "frame": 4,
+          "source_box": [
+            1009,
+            256,
+            1337,
+            560
+          ],
+          "sprite_size": [
+            88,
+            82
+          ],
+          "paste": [
+            4,
+            10
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        },
+        {
+          "frame": 5,
+          "source_box": [
+            1322,
+            256,
+            1629,
+            559
+          ],
+          "sprite_size": [
+            82,
+            81
+          ],
+          "paste": [
+            7,
+            11
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        },
+        {
+          "frame": 6,
+          "source_box": [
+            1639,
+            253,
+            1957,
+            560
+          ],
+          "sprite_size": [
+            85,
+            82
+          ],
+          "paste": [
+            5,
+            10
+          ],
+          "shared_scale": 0.2754098360655738,
+          "scale_authority": null
+        }
+      ]
+    }
+  },
+  "crossActionScaleAuthority": {
+    "stationaryAction": "idle",
+    "walkingAction": "walk",
+    "measurement": "square root of median visible-pixel mass ratio",
+    "minimumLinearScaleRatio": {
+      "idle": 0.88,
+      "sit": 0.86
+    },
+    "measuredLinearScaleRatio": {
+      "idle": 0.8891066147881428,
+      "sit": 0.8643664942174
+    },
+    "registration": "bottom-center with 4px contact margin"
+  }
+}

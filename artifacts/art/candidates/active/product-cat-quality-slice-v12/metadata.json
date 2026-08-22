@@ -15,7 +15,9 @@
       "paste": [
         13,
         8
-      ]
+      ],
+      "source_scale": 0.18340611353711792,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 2,
@@ -26,13 +28,15 @@
         669
       ],
       "sprite_size": [
-        70,
+        69,
         84
       ],
       "paste": [
         13,
         8
-      ]
+      ],
+      "source_scale": 0.18340611353711792,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 3,
@@ -49,7 +53,9 @@
       "paste": [
         13,
         8
-      ]
+      ],
+      "source_scale": 0.18340611353711792,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 4,
@@ -66,7 +72,9 @@
       "paste": [
         13,
         8
-      ]
+      ],
+      "source_scale": 0.18340611353711792,
+      "scale_authority": "rounded-short-haired production master"
     }
   ],
   "walk": [
@@ -79,13 +87,15 @@
         495
       ],
       "sprite_size": [
-        73,
-        70
+        88,
+        84
       ],
       "paste": [
-        11,
-        22
-      ]
+        4,
+        8
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 2,
@@ -96,13 +106,15 @@
         495
       ],
       "sprite_size": [
-        76,
-        70
+        91,
+        84
       ],
       "paste": [
-        10,
-        22
-      ]
+        2,
+        8
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 3,
@@ -113,13 +125,15 @@
         495
       ],
       "sprite_size": [
-        75,
-        70
+        90,
+        84
       ],
       "paste": [
-        10,
-        22
-      ]
+        3,
+        8
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 4,
@@ -130,13 +144,15 @@
         495
       ],
       "sprite_size": [
-        75,
-        70
+        88,
+        83
       ],
       "paste": [
-        10,
-        22
-      ]
+        4,
+        9
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 5,
@@ -147,13 +163,15 @@
         495
       ],
       "sprite_size": [
-        78,
-        70
+        92,
+        83
       ],
       "paste": [
-        9,
-        22
-      ]
+        2,
+        9
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 6,
@@ -164,13 +182,15 @@
         495
       ],
       "sprite_size": [
-        77,
-        70
+        92,
+        83
       ],
       "paste": [
-        9,
-        22
-      ]
+        2,
+        9
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 7,
@@ -181,13 +201,15 @@
         495
       ],
       "sprite_size": [
-        75,
-        70
+        88,
+        82
       ],
       "paste": [
-        10,
-        22
-      ]
+        4,
+        10
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     },
     {
       "frame": 8,
@@ -198,13 +220,15 @@
         495
       ],
       "sprite_size": [
-        74,
-        70
+        88,
+        84
       ],
       "paste": [
-        11,
-        22
-      ]
+        4,
+        8
+      ],
+      "source_scale": 0.4444444444444444,
+      "scale_authority": "rounded-short-haired production master"
     }
   ],
   "interact": [

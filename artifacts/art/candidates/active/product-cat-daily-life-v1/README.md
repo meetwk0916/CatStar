@@ -17,12 +17,14 @@ deterministic lineage:
 ```text
 chroma-key source -> local alpha removal -> fixed-grid subject extraction
 -> action-level scale normalization -> transparent 96x96 sprite sheet
--> six deterministic coat derivatives
+-> four deterministic ordinary coat derivatives
 ```
 
 `scripts/compose_product_cat_daily_life_v1.py` rebuilds the alpha, normalized,
-and sprite-sheet outputs. `scripts/build_cat_coat_presets.py` consumes the
-three sheets for all six current coat presets.
+and gray-white sprite-sheet outputs. `scripts/build_cat_coat_presets.py`
+consumes the three sheets for the four ordinary derivatives. The internal
+orange appearance preview has separate source lineage documented in
+`docs/art/runtime-map.md`.
 
 The distribution gate remains internal prototype only. This package is internal
 quality evidence only. It does not establish public,

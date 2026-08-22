@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-14
+Last updated: 2026-08-22
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -32,17 +32,24 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `sit` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Four-frame production-model redraw with a relaxed long-dwell loop distinct from `idle`. |
 | `walk` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Eight-frame production-model redraw with planted gait phases and restrained body movement. |
 | `interact` | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` | Six-frame production-model redraw with one in-place lean, held slow blink, and return response. |
-| `groom` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Eight-frame production-model-derived paw-and-face grooming loop with stable seated mass. |
-| `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch, hold, and recovery action. |
+| `groom` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Eight-frame production-model-derived paw-and-face grooming loop with stable seated mass and an 8–12 second routine dwell. |
+| `stretch` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived foreleg stretch with phase-weighted preparation, extension, held peak, and recovery timing. |
 | `eat` | `artifacts/art/candidates/active/product-cat-daily-life-v1/` | Six-frame production-model-derived bowl-oriented head-lowering loop; the room supplies the bowl prop. |
 | `lie` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model awake rest with elevated head, open-eye return, and stable cat-bed/blanket contact. |
-| `jump` | `artifacts/art/candidates/active/product-cat-actions-v5/` | Five generated key poses plus one held settle frame to satisfy the six-frame runtime contract. |
+| `jump` | `artifacts/art/candidates/active/product-cat-jump-v6/` | Six production-identity phases synchronized to grounded anticipation, launch, rise, apex balance, prepared descent, and landing recovery. |
 | `sleep` | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` | Four-frame production-model deep curled sleep with closed eyes and restrained breathing. |
 
-The reviewed gray-white tabby is the motion master. The other five coat
-presets are deterministic working derivatives built by
+The reviewed gray-white tabby is the motion master. Solid black, solid white,
+calico, and tuxedo are deterministic working derivatives built by
 `scripts/build_cat_coat_presets.py`; their shared alpha, anchors, anatomy, and
-timing prevent coat choice from changing behavior.
+timing prevent coat choice from changing behavior. The current orange-tabby
+runtime directory instead contains an independent internal appearance preview.
+It uses the same action timing and shared idle/sit/walk scale authority, but its
+different silhouette is not an approved release coat preset and remains blocked
+by Issue #23's production-source, rights, and full-motion-review gates.
+The runtime authority classification is owned by `src/domain/catAppearance.ts`;
+the prototype asset profile permits this declared preview while the
+first-release profile rejects it.
 
 ## Runtime Behavior Notes
 
@@ -60,13 +67,29 @@ timing prevent coat choice from changing behavior.
   `walk` and `interact`, moves only the split leaf, and resets on user touch.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
-The browser evidence root is
-`artifacts/art/runtime-review/2026-08-14/`, covering default movement,
-window-bench, cat-bed, food-bowl, blanket, grooming, stretching, deep sleep,
-active approach, pointer interactions on both sides of the cat, plant touch,
-and the enlarged cat at a `390x844` mobile viewport. Its manifest has been
-regenerated after the latest purposeful-route code change and passes
-`npm run review:runtime:check`.
+The current project-wide browser evidence lives under
+`artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`. Its 19
+screenshots cover default movement, window bench, cat bed, food bowl, blanket,
+grooming, stretching, deep sleep, foreground approach, plant touch, real
+pointer interactions, and a `390x844` mobile sit. The manifest is bound to
+source fingerprint
+`3d2cb6dc01faed854e094f34a37be6d6b904cdd251779e3d3291590f00cd8b49`
+and passes `npm run review:runtime:check` when that output is selected.
+
+The current appearance-authority and cross-action scale evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
+manifest covers gray-white and the internal orange preview across `idle`,
+`sit`, and `walk` at `1280x720` and `390x844`, binds all 12 continuous
+recordings to source fingerprint
+`5af4f2c9d43536f37ae24fa3c2fd5d2939c0bb1958c58fdbe985ac0c8c225b50`, and
+records meetwk0916's scoped approval of every entry on 2026-08-22. The approval
+covers the internal-preview boundary and cross-action stability; it is not
+Issue #23 release-art acceptance. The older locked
+gray-white ten-action evidence under
+`artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` remains
+historical review evidence; its source fingerprint predates the scale fix and
+is not a current full-master acceptance set.
+
 The dedicated food-bowl continuous motion evidence is separate at
 `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/`; it is
 structurally valid for desktop and mobile, and meetwk0916 approved both
@@ -76,13 +99,28 @@ The plant-touch desktop evidence lives under
 lives under `artifacts/art/runtime-review-mobile/2026-08-04/`. Each
 accompanying `manifest.json` binds its screenshots to the exact runtime input
 fingerprint; `npm run review:runtime:check` fails after those inputs change.
-The quiet-motion continuous evidence lives under
+The preceding quiet-motion continuous evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and
 `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`.
 Together they cover `idle`, cat-bed and blanket `lie`, and `sleep` from entry
 through exit at `1280x720` and `390x844`; wakun approved all eight
-human-review entries on 2026-08-09, and both manifests pass the release-grade
-human-review gate.
+human-review entries on 2026-08-09 against their capture-time fingerprint. The
+current master matrix supersedes them for whole-master acceptance.
+
+The preceding daily-life continuous evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/`. It covers the
+gray-white motion master's complete `eat`, `groom`, and `stretch` actions at
+`1280x720` and `390x844`, is bound to its capture-time source fingerprint,
+and all six entries were approved by meetwk0916 in Codex on 2026-08-15. The
+preceding v1 and v2 evidence directories retain the earlier short stretch and
+short grooming iterations for comparison.
+
+The scoped jump evidence lives under
+`artifacts/art/runtime-motion-review/2026-08-15-jump-v3/`. It covers the
+gray-white motion master's complete floor-to-window-bench and return route at
+`1280x720` and `390x844`. The six sprite phases are synchronized to grounded
+anticipation, one airborne arc, destination contact, compression, and recovery;
+meetwk0916 approved both entries in Codex on 2026-08-15.
 
 The named plant-inspection and plant-touch approach evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-13-plant-inspect-route/` and
@@ -103,11 +141,12 @@ in Codex on 2026-08-14.
 
 ## Candidate Retention
 
-- Active motion sources: v5, daily-life v1, quiet-motion v1, and quality-slice
-  v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; daily-life v1
+- Active motion sources: jump v6, daily-life v1, quiet-motion v1, and
+  quality-slice v12. Quiet-motion v1 supplies `idle`, `lie`, and `sleep`; daily-life v1
   supplies `eat`, `groom`, and `stretch`; v12 supplies `sit`, `walk`, and
-  `interact`. Product-cat-idle v1/v2/v3, action v3/v4/v8, and quality-slice
-  v10/v11 are retained as review and motion-planning history.
+  `interact`; jump v6 supplies `jump`. Product-cat-actions v5,
+  product-cat-idle v1/v2/v3, action v3/v4/v8, and quality-slice v10/v11 are
+  retained as review and motion-planning history.
 - Active coat derivation evidence: `cat-coat-presets-v1`.
 - Retired review-history candidates remain under `artifacts/art/candidates/`
   for trace history and must not be wired back into runtime without review.

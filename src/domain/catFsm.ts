@@ -117,9 +117,9 @@ const DWELL_RANGES: Record<CompanionIntentKind, readonly [number, number]> = {
   "plant-inspect": [2_200, 3_600],
   "plant-touch": [3_000, 3_000],
   "floor-sit": [3_800, 6_400],
-  "floor-groom": [4_800, 7_400],
+  "floor-groom": [8_000, 12_000],
   "floor-sleep": [7_000, 11_000],
-  "floor-stretch": [1_600, 2_400],
+  "floor-stretch": [2_600, 3_400],
   "approach-user": [1_400, 2_200],
 };
 

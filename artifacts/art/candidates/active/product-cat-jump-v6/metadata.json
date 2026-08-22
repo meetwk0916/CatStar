@@ -1,0 +1,99 @@
+{
+  "identityAuthority": "artifacts/art/candidates/active/product-cat-model-sheet-v1/sources/model-sheet-chromakey.png",
+  "motionReference": "artifacts/art/candidates/active/product-cat-actions-v5/sources/jump-natural-source.png",
+  "generationPrompt": "artifacts/art/candidates/active/product-cat-jump-v6/generation-prompt.md",
+  "source": "artifacts/art/candidates/active/product-cat-jump-v6/sources/jump-six-phase-source.png",
+  "sourceSha256": "0fb878d4719fcfa22d8803dcfd5c10bbddbb5838537a77dd25edeea7899c97ac",
+  "framesMetadata": [
+    {
+      "frame": 1,
+      "source_x": [
+        38,
+        291
+      ],
+      "sprite_size": [
+        84,
+        67
+      ],
+      "paste": [
+        6,
+        23
+      ]
+    },
+    {
+      "frame": 2,
+      "source_x": [
+        331,
+        609
+      ],
+      "sprite_size": [
+        88,
+        74
+      ],
+      "paste": [
+        4,
+        14
+      ]
+    },
+    {
+      "frame": 3,
+      "source_x": [
+        648,
+        924
+      ],
+      "sprite_size": [
+        87,
+        81
+      ],
+      "paste": [
+        4,
+        4
+      ]
+    },
+    {
+      "frame": 4,
+      "source_x": [
+        957,
+        1165
+      ],
+      "sprite_size": [
+        73,
+        69
+      ],
+      "paste": [
+        11,
+        17
+      ]
+    },
+    {
+      "frame": 5,
+      "source_x": [
+        1223,
+        1451
+      ],
+      "sprite_size": [
+        66,
+        82
+      ],
+      "paste": [
+        15,
+        6
+      ]
+    },
+    {
+      "frame": 6,
+      "source_x": [
+        1505,
+        1753
+      ],
+      "sprite_size": [
+        80,
+        64
+      ],
+      "paste": [
+        8,
+        26
+      ]
+    }
+  ]
+}

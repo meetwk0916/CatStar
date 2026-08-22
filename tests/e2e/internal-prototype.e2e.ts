@@ -49,7 +49,23 @@ test("primary actions remain legible and implemented memorial traits expose sele
   await coatPresets.getByRole("button", { name: "橘色虎斑" }).click();
   await page.getByRole("button", { name: /安静慢热/ }).click();
   await expect(coatPresets.getByRole("button", { name: "橘色虎斑" })).toHaveAttribute("aria-pressed", "true");
+  await expect(coatPresets.getByText("内部形象预览", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /安静慢热/ })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("persisted orange-tabby passports retain a visible non-release disclosure", async ({ page }) => {
+  await page.getByLabel("小猫叫什么名字？", { exact: true }).fill("小橘");
+  await page.getByLabel("你希望小猫怎么称呼你？", { exact: true }).fill("家人");
+  await page.getByLabel("它最喜欢的零食", { exact: true }).fill("小鱼干");
+  await page.getByRole("button", { name: "橘色虎斑" }).click();
+  await page.getByRole("button", { name: "登记喵星护照", exact: true }).click();
+
+  const disclosure = page.getByText("当前为内部形象预览，并非 Issue #23 正式发布美术", {
+    exact: true,
+  });
+  await expect(disclosure).toBeVisible();
+  await page.reload();
+  await expect(disclosure).toBeVisible();
 });
 
 for (const width of [320, 375, 414, 768]) {
