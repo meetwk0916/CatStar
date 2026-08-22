@@ -155,10 +155,14 @@ REQUIRED_INTAKE_ITEMS = (
 )
 
 
-def sha256_file(path: Path) -> str:
+def sha256_file(path: Path, max_bytes: int | None = None) -> str:
     digest = hashlib.sha256()
+    total_bytes = 0
     with path.open("rb") as source:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            total_bytes += len(chunk)
+            if max_bytes is not None and total_bytes > max_bytes:
+                raise ValueError("file exceeds size limit")
             digest.update(chunk)
     return digest.hexdigest()
 
@@ -207,6 +211,7 @@ def resolve_hashed_file(
     record: object,
     record_dir: Path,
     label: str,
+    max_bytes: int | None = None,
 ) -> tuple[Path | None, list[str]]:
     if not isinstance(record, dict):
         return None, [f"first-release rights record: {label} must be an object"]
@@ -217,7 +222,13 @@ def resolve_hashed_file(
     path = (record_dir / relative).resolve()
     if not path.is_file():
         return None, [f"first-release rights record: missing {label} file {path}"]
-    if sha256_file(path) != expected_hash:
+    try:
+        if max_bytes is not None and path.stat().st_size > max_bytes:
+            return None, [f"first-release rights record: {label} source exceeds size limit"]
+        actual_hash = sha256_file(path, max_bytes=max_bytes)
+    except (OSError, ValueError) as error:
+        return None, [f"first-release rights record: unable to hash {label} {path}: {error}"]
+    if actual_hash != expected_hash:
         return path, [f"first-release rights record: {label} hash mismatch for {path}"]
     return path, []
 
@@ -528,9 +539,13 @@ def validate_photoshop_plane_payload(
         raise ValueError(f"unsupported Photoshop {label} compression")
 
 
-def read_authority_bytes(path: Path) -> bytes:
+def validate_authority_source_size(path: Path) -> None:
     if path.stat().st_size > MAX_AUTHORITY_SOURCE_BYTES:
         raise ValueError("editable authority source exceeds size limit")
+
+
+def read_authority_bytes(path: Path) -> bytes:
+    validate_authority_source_size(path)
     with path.open("rb") as source:
         payload = source.read(MAX_AUTHORITY_SOURCE_BYTES + 1)
     if len(payload) > MAX_AUTHORITY_SOURCE_BYTES:
@@ -574,53 +589,65 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
     }
     contract = format_contracts[authority_format]
     try:
-        with zipfile.ZipFile(path) as archive:
-            entries = archive.infolist()
-            validate_archive_limits(entries)
-            first_entry = entries[0] if entries else None
-            if (
-                first_entry is None
-                or first_entry.filename != "mimetype"
-                or first_entry.compress_type != zipfile.ZIP_STORED
-            ):
-                return [f"first-release rights record: editableAuthority has invalid {authority_format} layout"]
-            if archive.testzip() is not None:
-                return [f"first-release rights record: editableAuthority {authority_format} is corrupt"]
-            if archive.read("mimetype") != contract["mimetype"]:
-                return [f"first-release rights record: editableAuthority has invalid {authority_format} mimetype"]
-            stack = ET.fromstring(archive.read(str(contract["document"])))
-            layers = list(stack.iter(str(contract["layerTag"])))
-            if not layers:
-                return [f"first-release rights record: editableAuthority {authority_format} has no layers"]
-            layer_attribute = contract["layerAttribute"]
-            layer_paths = (
-                {
-                    layer.attrib[str(layer_attribute)]
-                    for layer in layers
-                    if str(layer_attribute) in layer.attrib
-                }
-                if layer_attribute is not None
-                else set()
-            )
-            if layer_attribute is not None and len(layer_paths) != len(layers):
-                return [f"first-release rights record: editableAuthority {authority_format} has invalid layers"]
-            for layer_path in layer_paths:
-                read_authority_image(archive.read(layer_path))
-            if authority_format == "krita":
-                declared_paths = [layer.attrib["filename"] for layer in layers if layer.attrib.get("filename")]
-                if not declared_paths:
-                    return ["first-release rights record: editableAuthority krita has no layer payloads"]
-                has_content = False
-                for declared_path in declared_paths:
-                    if declared_path.startswith("/") or ".." in declared_path.split("/"):
-                        raise ValueError("invalid Krita layer path")
-                    member_path = (
-                        declared_path if declared_path.startswith("layers/") else f"layers/{declared_path}"
-                    )
-                    has_content |= validate_krita_layer_payload(archive.read(member_path))
-                if not has_content:
-                    return ["first-release rights record: editableAuthority krita has no editable layer data"]
-            read_authority_image(archive.read(str(contract["merged"])))
+        validate_authority_source_size(path)
+        with path.open("rb") as authority_source:
+            authority_source.seek(0, io.SEEK_END)
+            if authority_source.tell() > MAX_AUTHORITY_SOURCE_BYTES:
+                raise ValueError("editable authority source exceeds size limit")
+            authority_source.seek(0)
+            with zipfile.ZipFile(authority_source) as archive:
+                entries = archive.infolist()
+                validate_archive_limits(entries)
+                first_entry = entries[0] if entries else None
+                if (
+                    first_entry is None
+                    or first_entry.filename != "mimetype"
+                    or first_entry.compress_type != zipfile.ZIP_STORED
+                ):
+                    return [f"first-release rights record: editableAuthority has invalid {authority_format} layout"]
+                if archive.testzip() is not None:
+                    return [f"first-release rights record: editableAuthority {authority_format} is corrupt"]
+                if archive.read("mimetype") != contract["mimetype"]:
+                    return [f"first-release rights record: editableAuthority has invalid {authority_format} mimetype"]
+                stack = ET.fromstring(archive.read(str(contract["document"])))
+                layers = list(stack.iter(str(contract["layerTag"])))
+                if not layers:
+                    return [f"first-release rights record: editableAuthority {authority_format} has no layers"]
+                layer_attribute = contract["layerAttribute"]
+                layer_paths = (
+                    {
+                        layer.attrib[str(layer_attribute)]
+                        for layer in layers
+                        if str(layer_attribute) in layer.attrib
+                    }
+                    if layer_attribute is not None
+                    else set()
+                )
+                if layer_attribute is not None and len(layer_paths) != len(layers):
+                    return [f"first-release rights record: editableAuthority {authority_format} has invalid layers"]
+                for layer_path in layer_paths:
+                    read_authority_image(archive.read(layer_path))
+                if authority_format == "krita":
+                    declared_paths = [
+                        layer.attrib["filename"] for layer in layers if layer.attrib.get("filename")
+                    ]
+                    if not declared_paths:
+                        return ["first-release rights record: editableAuthority krita has no layer payloads"]
+                    has_content = False
+                    for declared_path in declared_paths:
+                        if declared_path.startswith("/") or ".." in declared_path.split("/"):
+                            raise ValueError("invalid Krita layer path")
+                        member_path = (
+                            declared_path
+                            if declared_path.startswith("layers/")
+                            else f"layers/{declared_path}"
+                        )
+                        has_content |= validate_krita_layer_payload(archive.read(member_path))
+                    if not has_content:
+                        return [
+                            "first-release rights record: editableAuthority krita has no editable layer data"
+                        ]
+                read_authority_image(archive.read(str(contract["merged"])))
     except (
         OSError,
         KeyError,
@@ -858,7 +885,12 @@ def validate_editable_authority(
     record_dir: Path,
     canonical_authority_dir: Path,
 ) -> list[str]:
-    authority_path, failures = resolve_hashed_file(record, record_dir, "editableAuthority")
+    authority_path, failures = resolve_hashed_file(
+        record,
+        record_dir,
+        "editableAuthority",
+        max_bytes=MAX_AUTHORITY_SOURCE_BYTES,
+    )
     if not isinstance(record, dict):
         return failures
     authority_format = record.get("format")

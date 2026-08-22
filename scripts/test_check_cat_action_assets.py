@@ -742,7 +742,64 @@ class AssetProfileTests(unittest.TestCase):
         self.assertTrue(any("source exceeds size limit" in failure for failure in aseprite_failures))
         open_mock.assert_not_called()
 
+    def test_authority_size_limit_precedes_hash_for_every_format(self) -> None:
+        formats = {
+            "openraster": ".ora",
+            "krita": ".kra",
+            "photoshop": ".psd",
+            "aseprite": ".aseprite",
+        }
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        record_dir = root / "release"
+        canonical_dir = root / "product-cat-orange-tabby-v1/sources"
+        record_dir.mkdir(parents=True)
+        canonical_dir.mkdir(parents=True)
+        for authority_format, suffix in formats.items():
+            with self.subTest(authority_format=authority_format):
+                authority_path = canonical_dir / f"orange-tabby{suffix}"
+                with authority_path.open("wb") as source:
+                    source.truncate(CHECKER.MAX_AUTHORITY_SOURCE_BYTES + 1)
+                record = {
+                    "path": f"../{authority_path.relative_to(root)}",
+                    "sha256": "unreachable",
+                    "format": authority_format,
+                    "governsActions": list(ACTION_FRAMES),
+                }
+
+                with mock.patch.object(
+                    CHECKER,
+                    "sha256_file",
+                    side_effect=AssertionError("oversized authority was hashed"),
+                ) as hash_mock:
+                    failures = CHECKER.validate_editable_authority(
+                        record,
+                        record_dir,
+                        canonical_dir,
+                    )
+
+                self.assertTrue(any("source exceeds size limit" in failure for failure in failures))
+                hash_mock.assert_not_called()
+
+    def test_archive_authority_rechecks_size_before_open(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        authority_path = root / "oversized.ora"
+        with authority_path.open("wb") as source:
+            source.truncate(CHECKER.MAX_AUTHORITY_SOURCE_BYTES + 1)
+
+        with mock.patch.object(
+            CHECKER.zipfile,
+            "ZipFile",
+            side_effect=AssertionError("oversized archive was opened"),
+        ) as zip_mock:
+            failures = CHECKER.validate_zip_authority(authority_path, "openraster")
+
+        self.assertTrue(any("source exceeds size limit" in failure for failure in failures))
+        zip_mock.assert_not_called()
+
     def test_layered_authority_archive_limits_precede_decompression(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        authority_path = root / "bounded.ora"
+        authority_path.write_bytes(b"zip fixture")
         oversized = zipfile.ZipInfo("oversized.bin")
         oversized.file_size = CHECKER.MAX_AUTHORITY_ARCHIVE_MEMBER_BYTES + 1
         oversized.compress_size = oversized.file_size
@@ -753,7 +810,7 @@ class AssetProfileTests(unittest.TestCase):
         archive_context.__enter__.return_value = archive
 
         with mock.patch.object(CHECKER.zipfile, "ZipFile", return_value=archive_context):
-            failures = CHECKER.validate_zip_authority(Path("unused.ora"), "openraster")
+            failures = CHECKER.validate_zip_authority(authority_path, "openraster")
 
         self.assertTrue(any("member exceeds size limit" in failure for failure in failures))
         archive.testzip.assert_not_called()
