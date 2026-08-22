@@ -11,7 +11,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
+import zipfile
+import xml.etree.ElementTree as ET
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -103,22 +106,43 @@ REQUIRED_RIGHTS_GRANTS = (
     "appStore",
     "worldwideDigitalDistribution",
 )
-EDITABLE_AUTHORITY_SUFFIXES = {
-    ".ase",
-    ".aseprite",
-    ".blend",
-    ".kra",
-    ".psd",
-    ".svg",
-    ".xcf",
-}
-CANONICAL_INTAKE_CHECK_COUNT = 33
-CANONICAL_INTAKE_SECTIONS = (
-    "## Source Identity",
-    "## Authorship And References",
-    "## Rights Grant",
-    "## Visual And Technical Review",
-    "## Final Decision",
+CANONICAL_ORANGE_AUTHORITY_DIR = Path(
+    "artifacts/art/candidates/active/product-cat-orange-tabby-v1/sources"
+)
+REQUIRED_INTAKE_ITEMS = (
+    "source.creator",
+    "source.account",
+    "source.creation",
+    "source.editable_authority",
+    "source.authority_sha256",
+    "source.runtime_exports",
+    "source.rounded_identity",
+    "source.single_authority",
+    "authorship.human_process",
+    "authorship.ai_disclosure",
+    "authorship.third_party_inputs",
+    "authorship.no_imitation",
+    "authorship.preview_comparison_only",
+    "authorship.direction_reference_only",
+    "rights.agreement",
+    "rights.modify",
+    "rights.public_beta",
+    "rights.paid_distribution",
+    "rights.marketing",
+    "rights.app_store",
+    "rights.scope_terms",
+    "rights.restrictions",
+    "rights.immutable_evidence",
+    "review.appearance_lock",
+    "review.marking_identity",
+    "review.production_contract",
+    "review.alpha_geometry",
+    "review.structural_assets",
+    "review.passport_runtime",
+    "review.motion_evidence",
+    "review.human_decisions",
+    "review.scene_contrast",
+    "review.repository_gates",
 )
 
 
@@ -154,7 +178,7 @@ def load_json_record(path: Path, label: str) -> tuple[dict[str, object] | None, 
         return None, [f"first-release profile: missing {label} {path}"]
     try:
         record = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
         return None, [f"first-release profile: invalid {label} {path}: {error}"]
     if not isinstance(record, dict):
         return None, [f"first-release profile: invalid {label} {path}: expected an object"]
@@ -227,22 +251,22 @@ def load_hashed_text(
         return path, None, [f"first-release rights record: invalid UTF-8 in {label} {path}: {error}"]
 
 
-def validate_completed_intake(intake_path: Path, intake: str) -> list[str]:
+def validate_completed_intake(
+    intake_path: Path,
+    intake: str,
+    intake_items: object,
+) -> list[str]:
     failures: list[str] = []
     if intake_path.name != "intake-checklist.md" or "# Orange Tabby v1 Production Intake" not in intake:
         failures.append("first-release rights record: canonicalIntake must be the Issue #23 intake")
     if "**Issue:** #23" not in intake:
         failures.append("first-release rights record: canonicalIntake must identify Issue #23")
-    if any(section not in intake for section in CANONICAL_INTAKE_SECTIONS):
-        failures.append("first-release rights record: canonicalIntake sections are incomplete")
-    checked_count = sum(
-        line.startswith(("- [x]", "- [X]")) for line in intake.splitlines()
-    )
-    if checked_count != CANONICAL_INTAKE_CHECK_COUNT:
-        failures.append(
-            "first-release rights record: canonicalIntake must complete all "
-            f"{CANONICAL_INTAKE_CHECK_COUNT} checks"
-        )
+    if not isinstance(intake_items, dict):
+        failures.append("first-release rights record: intakeItems must be an object")
+    elif set(intake_items) != set(REQUIRED_INTAKE_ITEMS):
+        failures.append("first-release rights record: intakeItems must match the canonical schema")
+    elif any(intake_items[item] is not True for item in REQUIRED_INTAKE_ITEMS):
+        failures.append("first-release rights record: every canonical intake item must be complete")
     if "**Status:** Complete" not in intake or "**Decision:** `approved-for-target`" not in intake:
         failures.append("first-release rights record: canonicalIntake is not approved and complete")
     if "- [ ]" in intake or "___" in intake or "**Status:** Not received" in intake:
@@ -289,7 +313,41 @@ def validate_intake_bindings(
     return failures
 
 
-def validate_editable_authority(record: object, record_dir: Path) -> list[str]:
+def validate_openraster(path: Path) -> list[str]:
+    try:
+        with zipfile.ZipFile(path) as archive:
+            first_entry = archive.infolist()[0] if archive.infolist() else None
+            if (
+                first_entry is None
+                or first_entry.filename != "mimetype"
+                or first_entry.compress_type != zipfile.ZIP_STORED
+            ):
+                return ["first-release rights record: editableAuthority has invalid OpenRaster layout"]
+            if archive.testzip() is not None:
+                return ["first-release rights record: editableAuthority OpenRaster is corrupt"]
+            if archive.read("mimetype") != b"image/openraster":
+                return ["first-release rights record: editableAuthority has invalid OpenRaster mimetype"]
+            stack = ET.fromstring(archive.read("stack.xml"))
+            layer_paths = {
+                layer.attrib["src"]
+                for layer in stack.iter("layer")
+                if "src" in layer.attrib
+            }
+            if not layer_paths:
+                return ["first-release rights record: editableAuthority OpenRaster has no layers"]
+            for layer_path in layer_paths | {"mergedimage.png"}:
+                with Image.open(io.BytesIO(archive.read(layer_path))) as image:
+                    image.load()
+    except (OSError, KeyError, ET.ParseError, zipfile.BadZipFile) as error:
+        return [f"first-release rights record: editableAuthority is not parseable OpenRaster: {error}"]
+    return []
+
+
+def validate_editable_authority(
+    record: object,
+    record_dir: Path,
+    canonical_authority_dir: Path,
+) -> list[str]:
     authority_path, failures = resolve_hashed_file(record, record_dir, "editableAuthority")
     if not isinstance(record, dict):
         return failures
@@ -299,10 +357,18 @@ def validate_editable_authority(record: object, record_dir: Path) -> list[str]:
         "first-release rights record: editableAuthority.governsActions",
     )
     failures.extend(collection_failures)
-    if not isinstance(authority_format, str) or not authority_format.strip():
-        failures.append("first-release rights record: editableAuthority.format is required")
-    if authority_path is not None and authority_path.suffix.lower() not in EDITABLE_AUTHORITY_SUFFIXES:
-        failures.append("first-release rights record: editableAuthority must use an editable format")
+    if authority_format != "openraster":
+        failures.append("first-release rights record: editableAuthority.format must be openraster")
+    if authority_path is not None:
+        if authority_path.parent != canonical_authority_dir.resolve():
+            failures.append(
+                "first-release rights record: editableAuthority must come from the canonical "
+                "product-cat-orange-tabby-v1/sources package"
+            )
+        if authority_path.suffix.lower() != ".ora":
+            failures.append("first-release rights record: editableAuthority must be an .ora file")
+        else:
+            failures.extend(validate_openraster(authority_path))
     if governed_actions is not None and governed_actions != REQUIRED_ACTIONS:
         failures.append("first-release rights record: editableAuthority must govern all ten actions")
     return failures
@@ -351,6 +417,7 @@ def validate_release_rights_record(
     profile: AssetProfile,
     asset_dir: Path,
     action_configs: dict[str, object],
+    canonical_authority_dir: Path,
 ) -> tuple[str | None, list[str]]:
     record, failures = load_json_record(path, "rights/provenance record")
     if record is None:
@@ -415,7 +482,13 @@ def validate_release_rights_record(
     )
     failures.extend(intake_failures)
     if intake_path is not None and intake is not None:
-        failures.extend(validate_completed_intake(intake_path, intake))
+        failures.extend(
+            validate_completed_intake(
+                intake_path,
+                intake,
+                record.get("intakeItems"),
+            )
+        )
         failures.extend(
             validate_intake_bindings(
                 intake,
@@ -424,7 +497,13 @@ def validate_release_rights_record(
                 record.get("termsEvidence"),
             )
         )
-    failures.extend(validate_editable_authority(record.get("editableAuthority"), path.parent))
+    failures.extend(
+        validate_editable_authority(
+            record.get("editableAuthority"),
+            path.parent,
+            canonical_authority_dir,
+        )
+    )
     failures.extend(
         validate_runtime_export_hashes(
             record.get("runtimeExports"),
@@ -807,6 +886,7 @@ def validate_assets(
     release_rights_record: Path = RELEASE_RIGHTS_RECORD,
     release_motion_review: Path = RELEASE_MOTION_REVIEW,
     expected_release_fingerprint: str | None = None,
+    canonical_authority_dir: Path = CANONICAL_ORANGE_AUTHORITY_DIR,
 ) -> list[str]:
     asset_dir = scene_asset_dir / "cat"
     spec_path = asset_dir / "cat.animations.json"
@@ -914,6 +994,7 @@ def validate_assets(
             profile,
             asset_dir,
             actions,
+            canonical_authority_dir,
         )
         failures.extend(rights_failures)
         failures.extend(

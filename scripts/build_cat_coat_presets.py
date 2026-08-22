@@ -51,6 +51,8 @@ MOTION_SOURCES = {
     "groom": DAILY_LIFE_V1_DIR / "groom.png",
     "stretch": DAILY_LIFE_V1_DIR / "stretch.png",
 }
+
+
 def luminance(red: int, green: int, blue: int) -> float:
     return red * 0.299 + green * 0.587 + blue * 0.114
 
@@ -85,24 +87,6 @@ def warm_white(value: float) -> tuple[int, int, int]:
     return tone, max(0, tone - 3), max(0, tone - 2)
 
 
-def interpolate_palette(
-    value: float,
-    stops: tuple[tuple[int, tuple[int, int, int]], ...],
-) -> tuple[int, int, int]:
-    for index, (upper_value, upper_color) in enumerate(stops):
-        if value > upper_value:
-            continue
-        if index == 0:
-            return upper_color
-        lower_value, lower_color = stops[index - 1]
-        progress = (value - lower_value) / (upper_value - lower_value)
-        return tuple(
-            round(lower + (upper - lower) * progress)
-            for lower, upper in zip(lower_color, upper_color, strict=True)
-        )
-    return stops[-1][1]
-
-
 def calico_orange(value: float) -> tuple[int, int, int]:
     lightness = 0.14 + (value / 255) * 0.58
     saturation = 0.52 if value > 95 else 0.4
@@ -122,10 +106,8 @@ def is_orange_calico_patch(frame_x: int, y: int) -> bool:
 
 def transform_pixel(
     coat: str,
-    action: str,
     frame_x: int,
     y: int,
-    frame_bounds: tuple[int, int, int, int],
     pixel: tuple[int, int, int, int],
 ) -> tuple[int, int, int, int]:
     red, green, blue, alpha = pixel
@@ -162,23 +144,17 @@ def recolor_sheet(source: Image.Image, coat: str, action: str) -> Image.Image:
     source_pixels = image.load()
     output_pixels = output.load()
 
-    frame_bounds = []
     for frame_index in range(image.width // FRAME):
         alpha = image.crop((frame_index * FRAME, 0, (frame_index + 1) * FRAME, FRAME)).getchannel("A")
-        bounds = alpha.getbbox()
-        if bounds is None:
+        if alpha.getbbox() is None:
             raise ValueError(f"{action}: frame {frame_index} is empty")
-        frame_bounds.append(bounds)
 
     for y in range(image.height):
         for x in range(image.width):
-            frame_index = x // FRAME
             output_pixels[x, y] = transform_pixel(
                 coat,
-                action,
                 x % FRAME,
                 y,
-                frame_bounds[frame_index],
                 source_pixels[x, y],
             )
     return output

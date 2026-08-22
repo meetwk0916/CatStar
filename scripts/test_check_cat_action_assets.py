@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import re
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from PIL import Image
@@ -88,6 +90,45 @@ def make_fixture(presets: tuple[str, ...]) -> Path:
     return scene_dir
 
 
+def make_openraster(path: Path) -> None:
+    layer_buffer = io.BytesIO()
+    Image.new("RGBA", (96, 96), (220, 130, 40, 255)).save(layer_buffer, format="PNG")
+    layer = layer_buffer.getvalue()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("mimetype", "image/openraster", compress_type=zipfile.ZIP_STORED)
+        archive.writestr(
+            "stack.xml",
+            '<image version="0.0.1" w="96" h="96"><stack><layer name="cat" src="data/cat.png"/></stack></image>',
+        )
+        archive.writestr("data/cat.png", layer)
+        archive.writestr("mergedimage.png", layer)
+
+
+def canonical_authority_dir(scene_dir: Path) -> Path:
+    return (
+        scene_dir.parent
+        / "artifacts/art/candidates/active/product-cat-orange-tabby-v1/sources"
+    )
+
+
+def validate_release_fixture(
+    scene_dir: Path,
+    rights_path: Path,
+    manifest_path: Path,
+    *,
+    fingerprint: str = "fixture-fingerprint",
+) -> list[str]:
+    return CHECKER.validate_assets(
+        scene_dir,
+        CHECKER.ASSET_PROFILES["first-release"],
+        release_rights_record=rights_path,
+        release_motion_review=manifest_path,
+        expected_release_fingerprint=fingerprint,
+        canonical_authority_dir=canonical_authority_dir(scene_dir),
+    )
+
+
 def make_release_records(
     scene_dir: Path,
     *,
@@ -96,10 +137,10 @@ def make_release_records(
     release_dir = scene_dir.parent / "release"
     evidence_dir = release_dir / "motion"
     evidence_dir.mkdir(parents=True)
-    source_path = release_dir / "orange-tabby-production.aseprite"
+    source_path = canonical_authority_dir(scene_dir) / "orange-tabby-production.ora"
     terms_path = release_dir / "distribution-terms.txt"
     intake_path = release_dir / "intake-checklist.md"
-    source_path.write_bytes(b"editable production authority")
+    make_openraster(source_path)
     terms_path.write_text("distribution terms", encoding="utf-8")
     runtime_exports = {}
     for action in ACTION_FRAMES:
@@ -123,7 +164,10 @@ def make_release_records(
         ),
     )
     binding_records = [
-        (source_path.name, CHECKER.sha256_file(source_path)),
+        (
+            f"../{source_path.relative_to(scene_dir.parent)}",
+            CHECKER.sha256_file(source_path),
+        ),
         *[
             (record["path"], record["sha256"])
             for record in runtime_exports.values()
@@ -155,14 +199,17 @@ def make_release_records(
                 "rightsGrant": {
                     grant: True for grant in CHECKER.REQUIRED_RIGHTS_GRANTS
                 },
+                "intakeItems": {
+                    item: True for item in CHECKER.REQUIRED_INTAKE_ITEMS
+                },
                 "canonicalIntake": {
                     "path": intake_path.name,
                     "sha256": CHECKER.sha256_file(intake_path),
                 },
                 "editableAuthority": {
-                    "path": source_path.name,
+                    "path": f"../{source_path.relative_to(scene_dir.parent)}",
                     "sha256": CHECKER.sha256_file(source_path),
-                    "format": "Aseprite",
+                    "format": "openraster",
                     "governsActions": list(ACTION_FRAMES),
                 },
                 "runtimeExports": runtime_exports,
@@ -247,13 +294,7 @@ class AssetProfileTests(unittest.TestCase):
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
         rights_path, manifest_path = make_release_records(scene_dir)
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertEqual(failures, [])
 
@@ -267,12 +308,11 @@ class AssetProfileTests(unittest.TestCase):
         manifest["entries"][0]["humanReview"]["status"] = "pending"
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
+        failures = validate_release_fixture(
             scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="different-fingerprint",
+            rights_path,
+            manifest_path,
+            fingerprint="different-fingerprint",
         )
 
         self.assertTrue(any("rightsGrant.paidDistribution" in failure for failure in failures))
@@ -286,13 +326,7 @@ class AssetProfileTests(unittest.TestCase):
         manifest["entries"][0]["humanReview"].pop("reviewedAt")
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertTrue(any("entry 0 lacks a human pass" in failure for failure in failures))
 
@@ -312,15 +346,10 @@ class AssetProfileTests(unittest.TestCase):
         rights["runtimeExports"]["idle"] = rights["termsEvidence"][0]
         rights_path.write_text(json.dumps(rights), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
-        self.assertTrue(any("editableAuthority must use an editable format" in failure for failure in failures))
+        self.assertTrue(any("editableAuthority.format must be openraster" in failure for failure in failures))
+        self.assertTrue(any("must come from the canonical" in failure for failure in failures))
         self.assertTrue(any("runtimeExports.idle must bind" in failure for failure in failures))
 
     def test_first_release_profile_rejects_an_incomplete_canonical_intake(self) -> None:
@@ -333,16 +362,54 @@ class AssetProfileTests(unittest.TestCase):
         rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
         rights_path.write_text(json.dumps(rights), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
-        self.assertTrue(any("canonicalIntake must complete all" in failure for failure in failures))
         self.assertTrue(any("canonicalIntake still has incomplete fields" in failure for failure in failures))
+
+    def test_release_record_requires_every_stable_intake_item(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        rights["intakeItems"].pop("source.creator")
+        rights["intakeItems"]["substitute.arbitrary"] = True
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
+
+        self.assertTrue(any("intakeItems must match the canonical schema" in failure for failure in failures))
+
+    def test_release_record_rejects_an_incomplete_structured_intake_item(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        rights["intakeItems"]["rights.paid_distribution"] = False
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
+
+        self.assertTrue(any("every canonical intake item must be complete" in failure for failure in failures))
+
+    def test_editable_authority_requires_parseable_openraster(self) -> None:
+        scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+        rights_path, manifest_path = make_release_records(scene_dir)
+        rights = json.loads(rights_path.read_text(encoding="utf-8"))
+        authority = rights["editableAuthority"]
+        authority_path = (rights_path.parent / authority["path"]).resolve()
+        previous_hash = authority["sha256"]
+        authority_path.write_bytes(b"not an openraster package")
+        authority["sha256"] = CHECKER.sha256_file(authority_path)
+        intake_path = rights_path.parent / rights["canonicalIntake"]["path"]
+        intake = intake_path.read_text(encoding="utf-8").replace(
+            f"- `{authority['path']}`: `{previous_hash}`",
+            f"- `{authority['path']}`: `{authority['sha256']}`",
+        )
+        intake_path.write_text(intake, encoding="utf-8")
+        rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
+        rights_path.write_text(json.dumps(rights), encoding="utf-8")
+
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
+
+        self.assertTrue(any("not parseable OpenRaster" in failure for failure in failures))
 
     def test_canonical_intake_rejects_swapped_delivery_hashes(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
@@ -361,13 +428,7 @@ class AssetProfileTests(unittest.TestCase):
         rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
         rights_path.write_text(json.dumps(rights), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertTrue(any("does not bind runtimeExports.idle" in failure for failure in failures))
         self.assertTrue(any("does not bind runtimeExports.sit" in failure for failure in failures))
@@ -379,13 +440,7 @@ class AssetProfileTests(unittest.TestCase):
         rights["releasePreset"] = "solid-black"
         rights_path.write_text(json.dumps(rights), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertTrue(any("releasePreset must be orange-tabby" in failure for failure in failures))
 
@@ -398,15 +453,26 @@ class AssetProfileTests(unittest.TestCase):
         rights["canonicalIntake"]["sha256"] = CHECKER.sha256_file(intake_path)
         rights_path.write_text(json.dumps(rights), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertTrue(any("invalid UTF-8 in canonicalIntake" in failure for failure in failures))
+
+    def test_invalid_utf8_release_json_returns_actionable_failures(self) -> None:
+        for record_name in ("rights", "motion review"):
+            with self.subTest(record=record_name):
+                scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
+                rights_path, manifest_path = make_release_records(scene_dir)
+                target = rights_path if record_name == "rights" else manifest_path
+                target.write_bytes(b"\xff\xfe\xfd")
+
+                failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
+
+                expected = (
+                    "invalid rights/provenance record"
+                    if record_name == "rights"
+                    else "invalid motion-review manifest"
+                )
+                self.assertTrue(any(expected in failure for failure in failures))
 
     def test_release_records_report_malformed_collections_without_crashing(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)
@@ -422,13 +488,7 @@ class AssetProfileTests(unittest.TestCase):
         manifest["viewports"] = None
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
-        failures = CHECKER.validate_assets(
-            scene_dir,
-            CHECKER.ASSET_PROFILES["first-release"],
-            release_rights_record=rights_path,
-            release_motion_review=manifest_path,
-            expected_release_fingerprint="fixture-fingerprint",
-        )
+        failures = validate_release_fixture(scene_dir, rights_path, manifest_path)
 
         self.assertTrue(any("rights record: presets must be an array" in failure for failure in failures))
         self.assertTrue(any("rights record: actions must be an array" in failure for failure in failures))
