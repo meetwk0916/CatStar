@@ -73,7 +73,7 @@ screenshots cover default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. The manifest is bound to
 source fingerprint
-`9a107ddc01726f26e3887d084b5b5d49c3f41d8bff8b2c00983fe28de2ed736a`
+`e770e264f16c3d0531c2be9edd6f7c760cb1be4805c4cd19024eba64f9cc760c`
 and passes `npm run review:runtime:check` when that output is selected.
 
 The current appearance-authority and cross-action scale evidence lives under
@@ -81,7 +81,7 @@ The current appearance-authority and cross-action scale evidence lives under
 manifest covers gray-white and the internal orange preview across `idle`,
 `sit`, and `walk` at `1280x720` and `390x844`, binds all 12 continuous
 recordings to source fingerprint
-`2b8e104c6bf67387b4c67f31f81807ca9bb4015965c67965a0100f6c54778f1b`, and
+`5af4f2c9d43536f37ae24fa3c2fd5d2939c0bb1958c58fdbe985ac0c8c225b50`, and
 records meetwk0916's scoped approval of every entry on 2026-08-22. The approval
 covers the internal-preview boundary and cross-action stability; it is not
 Issue #23 release-art acceptance. The older locked
