@@ -16,6 +16,7 @@ import json
 import struct
 import warnings
 import zipfile
+import zlib
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -322,6 +323,56 @@ def read_authority_image(payload: bytes) -> None:
             image.load()
 
 
+def validate_krita_layer_payload(payload: bytes) -> bool:
+    stream = io.BytesIO(payload)
+    fields: dict[str, int] = {}
+    for expected_key in ("VERSION", "TILEWIDTH", "TILEHEIGHT", "PIXELSIZE", "DATA"):
+        line = stream.readline()
+        try:
+            key, raw_value = line.decode("ascii").rstrip("\n").split(" ", 1)
+            value = int(raw_value)
+        except (UnicodeDecodeError, ValueError) as error:
+            raise ValueError("invalid Krita tile header") from error
+        if key != expected_key:
+            raise ValueError("invalid Krita tile header")
+        fields[key] = value
+    if (
+        fields["VERSION"] != 2
+        or fields["TILEWIDTH"] != 64
+        or fields["TILEHEIGHT"] != 64
+        or not 1 <= fields["PIXELSIZE"] <= 64
+        or not 0 <= fields["DATA"] <= len(payload)
+    ):
+        raise ValueError("invalid Krita tile geometry")
+    raw_tile_size = fields["TILEWIDTH"] * fields["TILEHEIGHT"] * fields["PIXELSIZE"]
+    for _ in range(fields["DATA"]):
+        try:
+            raw_x, raw_y, compression, raw_size = (
+                part.decode("ascii") for part in stream.readline().rstrip(b"\n").split(b",")
+            )
+            int(raw_x)
+            int(raw_y)
+            tile_size = int(raw_size)
+        except (UnicodeDecodeError, ValueError) as error:
+            raise ValueError("invalid Krita tile record") from error
+        if compression not in {"NONE", "LZF"} or tile_size <= 0:
+            raise ValueError("invalid Krita tile record")
+        if compression == "NONE" and tile_size != raw_tile_size:
+            raise ValueError("invalid Krita raw tile size")
+        if len(stream.read(tile_size)) != tile_size:
+            raise ValueError("truncated Krita tile payload")
+    if stream.read(1):
+        raise ValueError("unexpected Krita layer payload data")
+    return fields["DATA"] > 0
+
+
+def decompress_exact(payload: bytes, expected_size: int) -> None:
+    decompressor = zlib.decompressobj()
+    decoded = decompressor.decompress(payload, expected_size + 1)
+    if len(decoded) != expected_size or not decompressor.eof or decompressor.unused_data:
+        raise ValueError("invalid compressed payload")
+
+
 def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
     format_contracts = {
         "openraster": {
@@ -369,8 +420,23 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
             )
             if layer_attribute is not None and len(layer_paths) != len(layers):
                 return [f"first-release rights record: editableAuthority {authority_format} has invalid layers"]
-            for layer_path in layer_paths | {str(contract["merged"])}:
+            for layer_path in layer_paths:
                 read_authority_image(archive.read(layer_path))
+            if authority_format == "krita":
+                declared_paths = [layer.attrib["filename"] for layer in layers if layer.attrib.get("filename")]
+                if not declared_paths:
+                    return ["first-release rights record: editableAuthority krita has no layer payloads"]
+                has_content = False
+                for declared_path in declared_paths:
+                    if declared_path.startswith("/") or ".." in declared_path.split("/"):
+                        raise ValueError("invalid Krita layer path")
+                    member_path = (
+                        declared_path if declared_path.startswith("layers/") else f"layers/{declared_path}"
+                    )
+                    has_content |= validate_krita_layer_payload(archive.read(member_path))
+                if not has_content:
+                    return ["first-release rights record: editableAuthority krita has no editable layer data"]
+            read_authority_image(archive.read(str(contract["merged"])))
     except (
         OSError,
         KeyError,
@@ -380,6 +446,7 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
         Image.DecompressionBombError,
         Image.DecompressionBombWarning,
         zipfile.BadZipFile,
+        ValueError,
     ) as error:
         return [
             f"first-release rights record: editableAuthority is not parseable "
@@ -394,21 +461,80 @@ def validate_photoshop(path: Path) -> list[str]:
         if len(payload) < 40 or payload[:4] != b"8BPS":
             raise ValueError("missing Photoshop signature")
         version, channels, height, width, depth, color_mode = struct.unpack(">H6xHIIHH", payload[4:26])
-        if version not in {1, 2} or not 1 <= channels <= 56:
+        if version == 2:
+            raise ValueError("Photoshop PSB is not supported")
+        if version != 1 or not 1 <= channels <= 56:
             raise ValueError("invalid Photoshop header")
         if width <= 0 or height <= 0 or depth not in {1, 8, 16, 32} or color_mode > 15:
             raise ValueError("invalid Photoshop canvas")
         offset = 26
-        for section_name in ("color mode", "image resources", "layer and mask"):
+        for section_name in ("color mode", "image resources"):
             if offset + 4 > len(payload):
                 raise ValueError(f"missing {section_name} section")
             section_length = struct.unpack(">I", payload[offset : offset + 4])[0]
             offset += 4
-            if section_name == "layer and mask" and section_length == 0:
-                raise ValueError("Photoshop authority has no layer data")
             offset += section_length
             if offset > len(payload):
                 raise ValueError(f"truncated {section_name} section")
+        if offset + 4 > len(payload):
+            raise ValueError("missing layer and mask section")
+        section_length = struct.unpack(">I", payload[offset : offset + 4])[0]
+        offset += 4
+        section_end = offset + section_length
+        if section_length < 6 or section_end > len(payload):
+            raise ValueError("Photoshop authority has no complete layer data")
+        layer_info_length = struct.unpack(">I", payload[offset : offset + 4])[0]
+        layer_info_start = offset + 4
+        layer_info_end = layer_info_start + layer_info_length
+        if layer_info_length < 2 or layer_info_end > section_end:
+            raise ValueError("truncated Photoshop layer info")
+        layer_count = abs(struct.unpack(">h", payload[layer_info_start : layer_info_start + 2])[0])
+        if layer_count == 0:
+            raise ValueError("Photoshop authority has no layers")
+        record_offset = layer_info_start + 2
+        channel_data_lengths: list[int] = []
+        for _ in range(layer_count):
+            if record_offset + 18 > layer_info_end:
+                raise ValueError("truncated Photoshop layer record")
+            top, left, bottom, right = struct.unpack(">iiii", payload[record_offset : record_offset + 16])
+            if bottom <= top or right <= left:
+                raise ValueError("invalid Photoshop layer bounds")
+            channel_count = struct.unpack(">H", payload[record_offset + 16 : record_offset + 18])[0]
+            record_offset += 18
+            if channel_count == 0 or record_offset + channel_count * 6 + 16 > layer_info_end:
+                raise ValueError("invalid Photoshop layer channels")
+            for _ in range(channel_count):
+                channel_length = struct.unpack(">I", payload[record_offset + 2 : record_offset + 6])[0]
+                if channel_length < 2:
+                    raise ValueError("invalid Photoshop channel data")
+                channel_data_lengths.append(channel_length)
+                record_offset += 6
+            if payload[record_offset : record_offset + 4] != b"8BIM":
+                raise ValueError("invalid Photoshop layer signature")
+            record_offset += 12
+            extra_length = struct.unpack(">I", payload[record_offset : record_offset + 4])[0]
+            record_offset += 4
+            extra_end = record_offset + extra_length
+            if extra_end > layer_info_end:
+                raise ValueError("truncated Photoshop layer extra data")
+            for _ in range(2):
+                if record_offset + 4 > extra_end:
+                    raise ValueError("truncated Photoshop layer extra data")
+                block_length = struct.unpack(">I", payload[record_offset : record_offset + 4])[0]
+                record_offset += 4 + block_length
+                if record_offset > extra_end:
+                    raise ValueError("truncated Photoshop layer extra data")
+            if record_offset >= extra_end:
+                raise ValueError("missing Photoshop layer name")
+            name_length = payload[record_offset]
+            padded_name_length = (name_length + 4) & ~3
+            if record_offset + padded_name_length > extra_end:
+                raise ValueError("truncated Photoshop layer name")
+            record_offset = extra_end
+        channel_data_end = record_offset + sum(channel_data_lengths)
+        if channel_data_end > layer_info_end or layer_info_end - channel_data_end > 1:
+            raise ValueError("truncated Photoshop layer channel payload")
+        offset = section_end
         if offset + 2 > len(payload) or struct.unpack(">H", payload[offset : offset + 2])[0] > 3:
             raise ValueError("invalid Photoshop image data")
     except (OSError, struct.error, ValueError) as error:
@@ -427,8 +553,9 @@ def validate_aseprite(path: Path) -> list[str]:
         if width <= 0 or height <= 0 or depth not in {8, 16, 32}:
             raise ValueError("invalid Aseprite canvas")
         offset = 128
-        chunk_types: set[int] = set()
-        for _ in range(frame_count):
+        layer_types: list[int] = []
+        cel_links: set[tuple[int, int]] = set()
+        for frame_index in range(frame_count):
             if offset + 16 > len(payload):
                 raise ValueError("truncated Aseprite frame")
             frame_size, frame_magic, old_chunk_count = struct.unpack("<IHH", payload[offset : offset + 8])
@@ -443,14 +570,66 @@ def validate_aseprite(path: Path) -> list[str]:
                 chunk_size, chunk_type = struct.unpack("<IH", payload[chunk_offset : chunk_offset + 6])
                 if chunk_size < 6 or chunk_offset + chunk_size > offset + frame_size:
                     raise ValueError("invalid Aseprite chunk")
-                chunk_types.add(chunk_type)
+                body = payload[chunk_offset + 6 : chunk_offset + chunk_size]
+                if chunk_type == 0x2004:
+                    if len(body) < 18:
+                        raise ValueError("truncated Aseprite layer chunk")
+                    layer_type = struct.unpack("<H", body[2:4])[0]
+                    name_length = struct.unpack("<H", body[16:18])[0]
+                    required_length = 18 + name_length + (4 if layer_type == 2 else 0)
+                    if layer_type not in {0, 1, 2} or len(body) < required_length:
+                        raise ValueError("invalid Aseprite layer chunk")
+                    body[18 : 18 + name_length].decode("utf-8")
+                    layer_types.append(layer_type)
+                elif chunk_type == 0x2005:
+                    if len(body) < 16:
+                        raise ValueError("truncated Aseprite cel chunk")
+                    layer_index = struct.unpack("<H", body[:2])[0]
+                    cel_type = struct.unpack("<H", body[7:9])[0]
+                    if layer_index >= len(layer_types) or layer_types[layer_index] == 1:
+                        raise ValueError("Aseprite cel references an invalid layer")
+                    if cel_type in {0, 2}:
+                        if len(body) < 20 or layer_types[layer_index] != 0:
+                            raise ValueError("invalid Aseprite image cel")
+                        cel_width, cel_height = struct.unpack("<HH", body[16:20])
+                        if cel_width == 0 or cel_height == 0 or cel_width > width or cel_height > height:
+                            raise ValueError("invalid Aseprite cel bounds")
+                        expected_size = cel_width * cel_height * (depth // 8)
+                        image_data = body[20:]
+                        if cel_type == 0:
+                            if len(image_data) != expected_size:
+                                raise ValueError("invalid Aseprite raw cel payload")
+                        else:
+                            decompress_exact(image_data, expected_size)
+                    elif cel_type == 1:
+                        if len(body) != 18:
+                            raise ValueError("invalid Aseprite linked cel")
+                        linked_frame = struct.unpack("<H", body[16:18])[0]
+                        if linked_frame >= frame_index or (linked_frame, layer_index) not in cel_links:
+                            raise ValueError("Aseprite linked cel has no source")
+                    elif cel_type == 3:
+                        if len(body) < 48 or layer_types[layer_index] != 2:
+                            raise ValueError("invalid Aseprite tilemap cel")
+                        tile_width, tile_height, bits_per_tile = struct.unpack("<HHH", body[16:22])
+                        if (
+                            tile_width == 0
+                            or tile_height == 0
+                            or tile_width > width
+                            or tile_height > height
+                            or bits_per_tile != 32
+                        ):
+                            raise ValueError("invalid Aseprite tilemap cel")
+                        decompress_exact(body[48:], tile_width * tile_height * 4)
+                    else:
+                        raise ValueError("unsupported Aseprite cel type")
+                    cel_links.add((frame_index, layer_index))
                 chunk_offset += chunk_size
             if chunk_offset != offset + frame_size:
                 raise ValueError("Aseprite frame size mismatch")
             offset += frame_size
-        if offset != len(payload) or not {0x2004, 0x2005}.issubset(chunk_types):
+        if offset != len(payload) or not layer_types or not cel_links:
             raise ValueError("Aseprite authority requires layer and cel chunks")
-    except (OSError, struct.error, ValueError) as error:
+    except (OSError, struct.error, UnicodeDecodeError, ValueError, zlib.error) as error:
         return [f"first-release rights record: editableAuthority is not parseable aseprite: {error}"]
     return []
 

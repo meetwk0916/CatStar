@@ -117,12 +117,27 @@ def make_krita(path: Path) -> None:
             "maindoc.xml",
             '<DOC><IMAGE><layers><layer name="cat" filename="layer2" nodetype="paintlayer"/></layers></IMAGE></DOC>',
         )
+        archive.writestr(
+            "layers/layer2",
+            b"VERSION 2\nTILEWIDTH 64\nTILEHEIGHT 64\nPIXELSIZE 4\nDATA 1\n"
+            + b"0,0,NONE,16384\n"
+            + bytes(16384),
+        )
         archive.writestr("mergedimage.png", image_buffer.getvalue())
 
 
 def make_photoshop(path: Path) -> None:
     header = b"8BPS" + struct.pack(">H6xHIIHH", 1, 3, 1, 1, 8, 3)
-    layer_data = struct.pack(">Ih", 2, 1)
+    layer_extra = struct.pack(">II", 0, 0) + b"\x03cat"
+    layer_record = (
+        struct.pack(">iiiiHhI", 0, 0, 1, 1, 1, 0, 3)
+        + b"8BIMnorm"
+        + bytes((255, 0, 0, 0))
+        + struct.pack(">I", len(layer_extra))
+        + layer_extra
+    )
+    layer_info = struct.pack(">h", 1) + layer_record + b"\x00\x00\xff" + b"\x00"
+    layer_data = struct.pack(">I", len(layer_info)) + layer_info
     payload = (
         header
         + struct.pack(">I", 0)
@@ -137,7 +152,14 @@ def make_photoshop(path: Path) -> None:
 
 
 def make_aseprite(path: Path) -> None:
-    chunks = struct.pack("<IH", 6, 0x2004) + struct.pack("<IH", 6, 0x2005)
+    layer_body = struct.pack("<HHHHHHB3xH", 3, 0, 0, 0, 0, 0, 255, 3) + b"cat"
+    cel_body = struct.pack("<HhhBHh5xHH", 0, 0, 0, 255, 0, 0, 1, 1) + b"\xdc\x82\x28\xff"
+    chunks = (
+        struct.pack("<IH", 6 + len(layer_body), 0x2004)
+        + layer_body
+        + struct.pack("<IH", 6 + len(cel_body), 0x2005)
+        + cel_body
+    )
     frame = struct.pack("<IHHH2xI", 16 + len(chunks), 0xF1FA, 2, 100, 2) + chunks
     header = bytearray(128)
     struct.pack_into("<IHHHHH", header, 0, 128 + len(frame), 0xA5E0, 1, 96, 96, 32)
@@ -480,6 +502,55 @@ class AssetProfileTests(unittest.TestCase):
                 )
 
                 self.assertEqual(failures, [])
+
+    def test_krita_authority_requires_declared_layer_payload(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.kra"
+        image_buffer = io.BytesIO()
+        Image.new("RGBA", (1, 1), (0, 0, 0, 255)).save(image_buffer, format="PNG")
+        with zipfile.ZipFile(path, "w") as archive:
+            archive.writestr("mimetype", "application/x-krita", compress_type=zipfile.ZIP_STORED)
+            archive.writestr(
+                "maindoc.xml",
+                '<DOC><IMAGE><layers><layer filename="layer2" nodetype="paintlayer"/></layers></IMAGE></DOC>',
+            )
+            archive.writestr("mergedimage.png", image_buffer.getvalue())
+
+        failures = CHECKER.validate_zip_authority(path, "krita")
+
+        self.assertTrue(any("not parseable krita" in failure for failure in failures))
+
+    def test_photoshop_authority_requires_complete_layer_record(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.psd"
+        header = b"8BPS" + struct.pack(">H6xHIIHH", 1, 3, 1, 1, 8, 3)
+        layer_data = struct.pack(">Ih", 2, 1)
+        path.write_bytes(
+            header
+            + struct.pack(">I", 0)
+            + struct.pack(">I", 0)
+            + struct.pack(">I", len(layer_data))
+            + layer_data
+            + struct.pack(">H", 0)
+            + b"\x00\x00\x00"
+        )
+
+        failures = CHECKER.validate_photoshop(path)
+
+        self.assertTrue(any("not parseable photoshop" in failure for failure in failures))
+
+    def test_aseprite_authority_requires_layer_and_cel_bodies(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.aseprite"
+        chunks = struct.pack("<IH", 6, 0x2004) + struct.pack("<IH", 6, 0x2005)
+        frame = struct.pack("<IHHH2xI", 16 + len(chunks), 0xF1FA, 2, 100, 2) + chunks
+        header = bytearray(128)
+        struct.pack_into("<IHHHHH", header, 0, 128 + len(frame), 0xA5E0, 1, 1, 1, 32)
+        path.write_bytes(bytes(header) + frame)
+
+        failures = CHECKER.validate_aseprite(path)
+
+        self.assertTrue(any("not parseable aseprite" in failure for failure in failures))
 
     def test_openraster_expected_parse_failures_do_not_escape(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
