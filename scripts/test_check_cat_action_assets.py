@@ -137,7 +137,13 @@ def make_krita(path: Path) -> None:
         archive.writestr("mergedimage.png", image_buffer.getvalue())
 
 
-def make_photoshop(path: Path, compression: int = 0, encoded_channel: bytes = b"\xff") -> None:
+def make_photoshop(
+    path: Path,
+    compression: int = 0,
+    encoded_channel: bytes = b"\xff",
+    composite_compression: int = 0,
+    composite_payload: bytes = b"\x00\x00\x00",
+) -> None:
     header = b"8BPS" + struct.pack(">H6xHIIHH", 1, 3, 1, 1, 8, 3)
     layer_extra = struct.pack(">II", 0, 0) + b"\x03cat"
     layer_record = (
@@ -158,8 +164,8 @@ def make_photoshop(path: Path, compression: int = 0, encoded_channel: bytes = b"
         + struct.pack(">I", 0)
         + struct.pack(">I", len(layer_data))
         + layer_data
-        + struct.pack(">H", 0)
-        + b"\x00\x00\x00"
+        + struct.pack(">H", composite_compression)
+        + composite_payload
     )
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(payload)
@@ -582,6 +588,50 @@ class AssetProfileTests(unittest.TestCase):
 
         self.assertTrue(any("unsupported Photoshop channel compression" in failure for failure in failures))
 
+    def test_photoshop_authority_validates_composite_encodings(self) -> None:
+        fixtures = {
+            "raw": (0, b"\x10\x20\x30"),
+            "rle": (1, b"\x00\x02" * 3 + b"\x00\x10\x00\x20\x00\x30"),
+            "zip": (2, zlib.compress(b"\x10\x20\x30")),
+        }
+        for name, (compression, encoded) in fixtures.items():
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+                path = root / "orange-tabby.psd"
+                make_photoshop(
+                    path,
+                    composite_compression=compression,
+                    composite_payload=encoded,
+                )
+
+                self.assertEqual(CHECKER.validate_photoshop(path), [])
+
+    def test_photoshop_authority_rejects_truncated_composite(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.psd"
+        make_photoshop(path, composite_payload=b"")
+
+        failures = CHECKER.validate_photoshop(path)
+
+        self.assertTrue(any("invalid Photoshop raw composite payload" in failure for failure in failures))
+
+    def test_photoshop_zlib_errors_are_actionable_failures(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        channel_path = root / "bad-channel.psd"
+        composite_path = root / "bad-composite.psd"
+        make_photoshop(channel_path, 2, b"not-zlib")
+        make_photoshop(
+            composite_path,
+            composite_compression=2,
+            composite_payload=b"not-zlib",
+        )
+
+        channel_failures = CHECKER.validate_photoshop(channel_path)
+        composite_failures = CHECKER.validate_photoshop(composite_path)
+
+        self.assertTrue(any("not parseable photoshop" in failure for failure in channel_failures))
+        self.assertTrue(any("not parseable photoshop" in failure for failure in composite_failures))
+
     def test_aseprite_authority_requires_layer_and_cel_bodies(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
         path = root / "orange-tabby.aseprite"
@@ -656,6 +706,46 @@ class AssetProfileTests(unittest.TestCase):
                 canonical_dir,
             )
         self.assertTrue(any("not parseable openraster" in failure for failure in failures))
+
+    def test_layered_authority_archive_limits_precede_decompression(self) -> None:
+        oversized = zipfile.ZipInfo("oversized.bin")
+        oversized.file_size = CHECKER.MAX_AUTHORITY_ARCHIVE_MEMBER_BYTES + 1
+        oversized.compress_size = oversized.file_size
+        archive = mock.MagicMock()
+        archive.infolist.return_value = [oversized]
+        archive.testzip.side_effect = AssertionError("archive was decompressed")
+        archive_context = mock.MagicMock()
+        archive_context.__enter__.return_value = archive
+
+        with mock.patch.object(CHECKER.zipfile, "ZipFile", return_value=archive_context):
+            failures = CHECKER.validate_zip_authority(Path("unused.ora"), "openraster")
+
+        self.assertTrue(any("member exceeds size limit" in failure for failure in failures))
+        archive.testzip.assert_not_called()
+
+    def test_layered_authority_archive_limits_cover_all_resource_bounds(self) -> None:
+        too_many = [zipfile.ZipInfo(f"entry-{index}") for index in range(4_097)]
+        total_entries = [zipfile.ZipInfo("first"), zipfile.ZipInfo("second"), zipfile.ZipInfo("third")]
+        for entry, size in zip(
+            total_entries,
+            (256 * 1024 * 1024, 256 * 1024 * 1024, 1),
+            strict=True,
+        ):
+            entry.file_size = size
+            entry.compress_size = size
+        high_ratio = zipfile.ZipInfo("compressed.bin")
+        high_ratio.file_size = 201
+        high_ratio.compress_size = 1
+
+        fixtures = {
+            "entry count": too_many,
+            "aggregate size": total_entries,
+            "compression ratio": [high_ratio],
+        }
+        for name, entries in fixtures.items():
+            with self.subTest(name=name):
+                with self.assertRaises(ValueError):
+                    CHECKER.validate_archive_limits(entries)
 
     def test_canonical_intake_rejects_swapped_delivery_hashes(self) -> None:
         scene_dir = make_fixture(CHECKER.FIRST_RELEASE_CAT_PRESETS)

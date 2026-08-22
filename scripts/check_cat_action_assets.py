@@ -113,6 +113,10 @@ CANONICAL_ORANGE_AUTHORITY_DIR = Path(
     "artifacts/art/candidates/active/product-cat-orange-tabby-v1/sources"
 )
 MAX_AUTHORITY_DECODED_BYTES = 64 * 1024 * 1024
+MAX_AUTHORITY_ARCHIVE_ENTRIES = 4_096
+MAX_AUTHORITY_ARCHIVE_MEMBER_BYTES = 256 * 1024 * 1024
+MAX_AUTHORITY_ARCHIVE_TOTAL_BYTES = 512 * 1024 * 1024
+MAX_AUTHORITY_ARCHIVE_COMPRESSION_RATIO = 200
 REQUIRED_INTAKE_ITEMS = (
     "source.creator",
     "source.account",
@@ -445,6 +449,23 @@ def decode_packbits_exact(payload: bytes, expected_size: int) -> None:
         raise ValueError("invalid Photoshop PackBits row size")
 
 
+def validate_archive_limits(entries: list[zipfile.ZipInfo]) -> None:
+    if len(entries) > MAX_AUTHORITY_ARCHIVE_ENTRIES:
+        raise ValueError("layered authority archive has too many entries")
+    total_size = 0
+    for entry in entries:
+        if entry.file_size > MAX_AUTHORITY_ARCHIVE_MEMBER_BYTES:
+            raise ValueError("layered authority archive member exceeds size limit")
+        total_size += entry.file_size
+        if total_size > MAX_AUTHORITY_ARCHIVE_TOTAL_BYTES:
+            raise ValueError("layered authority archive exceeds total size limit")
+        if entry.file_size and (
+            entry.compress_size == 0
+            or entry.file_size / entry.compress_size > MAX_AUTHORITY_ARCHIVE_COMPRESSION_RATIO
+        ):
+            raise ValueError("layered authority archive member exceeds compression ratio limit")
+
+
 def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
     format_contracts = {
         "openraster": {
@@ -465,7 +486,9 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
     contract = format_contracts[authority_format]
     try:
         with zipfile.ZipFile(path) as archive:
-            first_entry = archive.infolist()[0] if archive.infolist() else None
+            entries = archive.infolist()
+            validate_archive_limits(entries)
+            first_entry = entries[0] if entries else None
             if (
                 first_entry is None
                 or first_entry.filename != "mimetype"
@@ -537,7 +560,12 @@ def validate_photoshop(path: Path) -> list[str]:
             raise ValueError("Photoshop PSB is not supported")
         if version != 1 or not 1 <= channels <= 56:
             raise ValueError("invalid Photoshop header")
-        if width <= 0 or height <= 0 or depth not in {1, 8, 16, 32} or color_mode > 15:
+        if (
+            not 1 <= width <= 30_000
+            or not 1 <= height <= 30_000
+            or depth not in {1, 8, 16, 32}
+            or color_mode > 15
+        ):
             raise ValueError("invalid Photoshop canvas")
         offset = 26
         for section_name in ("color mode", "image resources"):
@@ -624,9 +652,9 @@ def validate_photoshop(path: Path) -> list[str]:
                 table_size = row_count * 2
                 if len(encoded) < table_size:
                     raise ValueError("truncated Photoshop RLE row table")
-                row_lengths = struct.unpack(f">{row_count}H", encoded[:table_size])
                 row_offset = table_size
-                for row_length in row_lengths:
+                for row_index in range(row_count):
+                    row_length = struct.unpack_from(">H", encoded, row_index * 2)[0]
                     row_end = row_offset + row_length
                     if row_end > len(encoded):
                         raise ValueError("truncated Photoshop RLE row")
@@ -640,9 +668,37 @@ def validate_photoshop(path: Path) -> list[str]:
                 raise ValueError("unsupported Photoshop channel compression")
             channel_offset = channel_end
         offset = section_end
-        if offset + 2 > len(payload) or struct.unpack(">H", payload[offset : offset + 2])[0] > 3:
-            raise ValueError("invalid Photoshop image data")
-    except (OSError, struct.error, ValueError) as error:
+        if offset + 2 > len(payload):
+            raise ValueError("missing Photoshop composite image data")
+        composite_compression = struct.unpack(">H", payload[offset : offset + 2])[0]
+        composite = payload[offset + 2 :]
+        composite_row_bytes = (width * depth + 7) // 8
+        composite_rows = channels * height
+        composite_size = composite_row_bytes * composite_rows
+        if composite_size > MAX_AUTHORITY_DECODED_BYTES:
+            raise ValueError("Photoshop composite image exceeds authority limit")
+        if composite_compression == 0:
+            if len(composite) != composite_size:
+                raise ValueError("invalid Photoshop raw composite payload")
+        elif composite_compression == 1:
+            table_size = composite_rows * 2
+            if len(composite) < table_size:
+                raise ValueError("truncated Photoshop composite RLE row table")
+            row_offset = table_size
+            for row_index in range(composite_rows):
+                row_length = struct.unpack_from(">H", composite, row_index * 2)[0]
+                row_end = row_offset + row_length
+                if row_end > len(composite):
+                    raise ValueError("truncated Photoshop composite RLE row")
+                decode_packbits_exact(composite[row_offset:row_end], composite_row_bytes)
+                row_offset = row_end
+            if row_offset != len(composite):
+                raise ValueError("unexpected Photoshop composite RLE data")
+        elif composite_compression == 2:
+            decompress_exact(composite, composite_size)
+        else:
+            raise ValueError("unsupported Photoshop composite compression")
+    except (OSError, struct.error, ValueError, zlib.error) as error:
         return [f"first-release rights record: editableAuthority is not parseable photoshop: {error}"]
     return []
 
