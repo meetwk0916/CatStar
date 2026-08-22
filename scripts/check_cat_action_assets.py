@@ -103,6 +103,23 @@ REQUIRED_RIGHTS_GRANTS = (
     "appStore",
     "worldwideDigitalDistribution",
 )
+EDITABLE_AUTHORITY_SUFFIXES = {
+    ".ase",
+    ".aseprite",
+    ".blend",
+    ".kra",
+    ".psd",
+    ".svg",
+    ".xcf",
+}
+CANONICAL_INTAKE_CHECK_COUNT = 33
+CANONICAL_INTAKE_SECTIONS = (
+    "## Source Identity",
+    "## Authorship And References",
+    "## Rights Grant",
+    "## Visual And Technical Review",
+    "## Final Decision",
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -144,6 +161,34 @@ def load_json_record(path: Path, label: str) -> tuple[dict[str, object] | None, 
     return record, []
 
 
+def string_collection(
+    value: object,
+    label: str,
+) -> tuple[set[str] | None, list[str]]:
+    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        return None, [f"{label} must be an array of strings"]
+    return set(value), []
+
+
+def resolve_hashed_file(
+    record: object,
+    record_dir: Path,
+    label: str,
+) -> tuple[Path | None, list[str]]:
+    if not isinstance(record, dict):
+        return None, [f"first-release rights record: {label} must be an object"]
+    relative = record.get("path")
+    expected_hash = record.get("sha256")
+    if not isinstance(relative, str) or not relative or not isinstance(expected_hash, str):
+        return None, [f"first-release rights record: {label} requires path and sha256"]
+    path = (record_dir / relative).resolve()
+    if not path.is_file():
+        return None, [f"first-release rights record: missing {label} file {path}"]
+    if sha256_file(path) != expected_hash:
+        return path, [f"first-release rights record: {label} hash mismatch for {path}"]
+    return path, []
+
+
 def validate_hashed_files(
     records: object,
     record_dir: Path,
@@ -153,28 +198,141 @@ def validate_hashed_files(
         return [f"first-release rights record: {label} must contain hashed files"]
     failures: list[str] = []
     for index, record in enumerate(records):
-        if not isinstance(record, dict):
-            failures.append(f"first-release rights record: {label}[{index}] must be an object")
+        _, record_failures = resolve_hashed_file(record, record_dir, f"{label}[{index}]")
+        failures.extend(record_failures)
+    return failures
+
+
+def validate_completed_intake(record: object, record_dir: Path) -> list[str]:
+    intake_path, failures = resolve_hashed_file(record, record_dir, "canonicalIntake")
+    if intake_path is None or failures:
+        return failures
+    intake = intake_path.read_text(encoding="utf-8")
+    if intake_path.name != "intake-checklist.md" or "# Orange Tabby v1 Production Intake" not in intake:
+        failures.append("first-release rights record: canonicalIntake must be the Issue #23 intake")
+    if "**Issue:** #23" not in intake:
+        failures.append("first-release rights record: canonicalIntake must identify Issue #23")
+    if any(section not in intake for section in CANONICAL_INTAKE_SECTIONS):
+        failures.append("first-release rights record: canonicalIntake sections are incomplete")
+    checked_count = sum(
+        line.startswith(("- [x]", "- [X]")) for line in intake.splitlines()
+    )
+    if checked_count != CANONICAL_INTAKE_CHECK_COUNT:
+        failures.append(
+            "first-release rights record: canonicalIntake must complete all "
+            f"{CANONICAL_INTAKE_CHECK_COUNT} checks"
+        )
+    if "**Status:** Complete" not in intake or "**Decision:** `approved-for-target`" not in intake:
+        failures.append("first-release rights record: canonicalIntake is not approved and complete")
+    if "- [ ]" in intake or "___" in intake or "**Status:** Not received" in intake:
+        failures.append("first-release rights record: canonicalIntake still has incomplete fields")
+    return failures
+
+
+def validate_intake_bindings(
+    intake_record: object,
+    editable_authority: object,
+    runtime_exports: object,
+    terms_evidence: object,
+    record_dir: Path,
+) -> list[str]:
+    intake_path, failures = resolve_hashed_file(
+        intake_record,
+        record_dir,
+        "canonicalIntake",
+    )
+    if intake_path is None or failures:
+        return failures
+    intake = intake_path.read_text(encoding="utf-8")
+    bindings: list[tuple[str, object]] = [("editableAuthority", editable_authority)]
+    if isinstance(runtime_exports, dict):
+        bindings.extend(
+            (f"runtimeExports.{action}", runtime_exports[action])
+            for action in sorted(runtime_exports)
+        )
+    if isinstance(terms_evidence, list):
+        bindings.extend(
+            (f"termsEvidence[{index}]", record)
+            for index, record in enumerate(terms_evidence)
+        )
+    for label, binding in bindings:
+        if not isinstance(binding, dict):
             continue
-        relative = record.get("path")
-        expected_hash = record.get("sha256")
-        if not isinstance(relative, str) or not relative or not isinstance(expected_hash, str):
+        relative = binding.get("path")
+        expected_hash = binding.get("sha256")
+        if (
+            isinstance(relative, str)
+            and isinstance(expected_hash, str)
+            and (relative not in intake or expected_hash not in intake)
+        ):
             failures.append(
-                f"first-release rights record: {label}[{index}] requires path and sha256"
+                f"first-release rights record: canonicalIntake does not bind {label}"
             )
+    return failures
+
+
+def validate_editable_authority(record: object, record_dir: Path) -> list[str]:
+    authority_path, failures = resolve_hashed_file(record, record_dir, "editableAuthority")
+    if not isinstance(record, dict):
+        return failures
+    authority_format = record.get("format")
+    governed_actions, collection_failures = string_collection(
+        record.get("governsActions"),
+        "first-release rights record: editableAuthority.governsActions",
+    )
+    failures.extend(collection_failures)
+    if not isinstance(authority_format, str) or not authority_format.strip():
+        failures.append("first-release rights record: editableAuthority.format is required")
+    if authority_path is not None and authority_path.suffix.lower() not in EDITABLE_AUTHORITY_SUFFIXES:
+        failures.append("first-release rights record: editableAuthority must use an editable format")
+    if governed_actions is not None and governed_actions != REQUIRED_ACTIONS:
+        failures.append("first-release rights record: editableAuthority must govern all ten actions")
+    return failures
+
+
+def validate_runtime_export_hashes(
+    records: object,
+    record_dir: Path,
+    asset_dir: Path,
+    release_preset: str | None,
+    action_configs: dict[str, object],
+) -> list[str]:
+    if not isinstance(records, dict):
+        return ["first-release rights record: runtimeExports must be an object"]
+    action_names, collection_failures = string_collection(
+        list(records),
+        "first-release rights record: runtimeExports actions",
+    )
+    failures = list(collection_failures)
+    if action_names is None or action_names != REQUIRED_ACTIONS:
+        failures.append("first-release rights record: runtimeExports must cover all ten actions")
+        return failures
+    if release_preset is None:
+        return failures
+    for action in sorted(REQUIRED_ACTIONS):
+        export_path, export_failures = resolve_hashed_file(
+            records[action],
+            record_dir,
+            f"runtimeExports.{action}",
+        )
+        failures.extend(export_failures)
+        config = action_configs.get(action)
+        file_name = config.get("file") if isinstance(config, dict) else None
+        if not isinstance(file_name, str):
             continue
-        path = record_dir / relative
-        if not path.is_file():
-            failures.append(f"first-release rights record: missing {label} file {path}")
-            continue
-        if sha256_file(path) != expected_hash:
-            failures.append(f"first-release rights record: {label} hash mismatch for {path}")
+        expected_path = (asset_dir / release_preset / file_name).resolve()
+        if export_path is not None and export_path != expected_path:
+            failures.append(
+                f"first-release rights record: runtimeExports.{action} must bind {expected_path}"
+            )
     return failures
 
 
 def validate_release_rights_record(
     path: Path,
     profile: AssetProfile,
+    asset_dir: Path,
+    action_configs: dict[str, object],
 ) -> tuple[str | None, list[str]]:
     record, failures = load_json_record(path, "rights/provenance record")
     if record is None:
@@ -183,9 +341,23 @@ def validate_release_rights_record(
         failures.append("first-release rights record: expected schemaVersion 1")
     if record.get("status") != "approved-for-target":
         failures.append("first-release rights record: status must be approved-for-target")
-    if set(record.get("presets", [])) != set(profile.presets):
+    presets, collection_failures = string_collection(
+        record.get("presets"),
+        "first-release rights record: presets",
+    )
+    failures.extend(collection_failures)
+    if presets is not None and (
+        presets != set(profile.presets) or len(record["presets"]) != len(profile.presets)
+    ):
         failures.append("first-release rights record: presets must cover the release profile")
-    if set(record.get("actions", [])) != REQUIRED_ACTIONS:
+    actions, collection_failures = string_collection(
+        record.get("actions"),
+        "first-release rights record: actions",
+    )
+    failures.extend(collection_failures)
+    if actions is not None and (
+        actions != REQUIRED_ACTIONS or len(record["actions"]) != len(REQUIRED_ACTIONS)
+    ):
         failures.append("first-release rights record: actions must cover all ten actions")
 
     release_preset = record.get("releasePreset")
@@ -216,7 +388,26 @@ def validate_release_rights_record(
             if rights_grant.get(grant) is not True:
                 failures.append(f"first-release rights record: rightsGrant.{grant} must be true")
 
-    failures.extend(validate_hashed_files(record.get("sourceFiles"), path.parent, "sourceFiles"))
+    failures.extend(validate_completed_intake(record.get("canonicalIntake"), path.parent))
+    failures.extend(
+        validate_intake_bindings(
+            record.get("canonicalIntake"),
+            record.get("editableAuthority"),
+            record.get("runtimeExports"),
+            record.get("termsEvidence"),
+            path.parent,
+        )
+    )
+    failures.extend(validate_editable_authority(record.get("editableAuthority"), path.parent))
+    failures.extend(
+        validate_runtime_export_hashes(
+            record.get("runtimeExports"),
+            path.parent,
+            asset_dir,
+            release_preset,
+            action_configs,
+        )
+    )
     failures.extend(validate_hashed_files(record.get("termsEvidence"), path.parent, "termsEvidence"))
     return release_preset, failures
 
@@ -235,11 +426,28 @@ def validate_release_motion_review(
         failures.append("first-release motion review: expected schemaVersion 1")
     if manifest.get("profile") != "first-release":
         failures.append("first-release motion review: profile must be first-release")
-    if manifest.get("presets") != [release_preset]:
+    presets = manifest.get("presets")
+    if not isinstance(presets, list) or any(not isinstance(item, str) for item in presets):
+        failures.append("first-release motion review: presets must be an array of strings")
+    elif presets != [release_preset]:
         failures.append("first-release motion review: must cover the declared release preset")
-    if set(manifest.get("actions", [])) != REQUIRED_ACTIONS:
+    actions, collection_failures = string_collection(
+        manifest.get("actions"),
+        "first-release motion review: actions",
+    )
+    failures.extend(collection_failures)
+    if actions is not None and (
+        actions != REQUIRED_ACTIONS or len(manifest["actions"]) != len(REQUIRED_ACTIONS)
+    ):
         failures.append("first-release motion review: must cover all ten actions")
-    if set(manifest.get("viewports", [])) != RELEASE_VIEWPORTS:
+    viewports, collection_failures = string_collection(
+        manifest.get("viewports"),
+        "first-release motion review: viewports",
+    )
+    failures.extend(collection_failures)
+    if viewports is not None and (
+        viewports != RELEASE_VIEWPORTS or len(manifest["viewports"]) != len(RELEASE_VIEWPORTS)
+    ):
         failures.append("first-release motion review: must cover desktop and mobile")
     if manifest.get("sourceFingerprint") != expected_fingerprint:
         failures.append("first-release motion review: source fingerprint is stale")
@@ -266,6 +474,8 @@ def validate_release_motion_review(
             or human_review.get("status") != "pass"
             or not isinstance(human_review.get("reviewer"), str)
             or not human_review["reviewer"].strip()
+            or not isinstance(human_review.get("reviewedAt"), str)
+            or not human_review["reviewedAt"].strip()
         ):
             failures.append(f"first-release motion review: entry {index} lacks a human pass")
         hashes = entry.get("evidenceSha256")
@@ -676,6 +886,8 @@ def validate_assets(
         release_preset, rights_failures = validate_release_rights_record(
             release_rights_record,
             profile,
+            asset_dir,
+            actions,
         )
         failures.extend(rights_failures)
         failures.extend(
