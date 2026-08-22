@@ -112,6 +112,7 @@ REQUIRED_RIGHTS_GRANTS = (
 CANONICAL_ORANGE_AUTHORITY_DIR = Path(
     "artifacts/art/candidates/active/product-cat-orange-tabby-v1/sources"
 )
+MAX_AUTHORITY_DECODED_BYTES = 64 * 1024 * 1024
 REQUIRED_INTAKE_ITEMS = (
     "source.creator",
     "source.account",
@@ -357,20 +358,91 @@ def validate_krita_layer_payload(payload: bytes) -> bool:
             raise ValueError("invalid Krita tile record") from error
         if compression not in {"NONE", "LZF"} or tile_size <= 0:
             raise ValueError("invalid Krita tile record")
-        if compression == "NONE" and tile_size != raw_tile_size:
-            raise ValueError("invalid Krita raw tile size")
-        if len(stream.read(tile_size)) != tile_size:
+        encoded_tile = stream.read(tile_size)
+        if len(encoded_tile) != tile_size:
             raise ValueError("truncated Krita tile payload")
+        if compression == "NONE":
+            if tile_size != raw_tile_size:
+                raise ValueError("invalid Krita raw tile size")
+        else:
+            decompress_lzf_exact(encoded_tile, raw_tile_size)
     if stream.read(1):
         raise ValueError("unexpected Krita layer payload data")
     return fields["DATA"] > 0
 
 
 def decompress_exact(payload: bytes, expected_size: int) -> None:
+    if expected_size < 0 or expected_size > MAX_AUTHORITY_DECODED_BYTES:
+        raise ValueError("decoded payload exceeds authority limit")
     decompressor = zlib.decompressobj()
     decoded = decompressor.decompress(payload, expected_size + 1)
     if len(decoded) != expected_size or not decompressor.eof or decompressor.unused_data:
         raise ValueError("invalid compressed payload")
+
+
+def decompress_lzf_exact(payload: bytes, expected_size: int) -> None:
+    if expected_size < 0 or expected_size > MAX_AUTHORITY_DECODED_BYTES:
+        raise ValueError("decoded payload exceeds authority limit")
+    decoded = bytearray()
+    offset = 0
+    while offset < len(payload):
+        control = payload[offset]
+        offset += 1
+        if control < 32:
+            literal_length = control + 1
+            if offset + literal_length > len(payload):
+                raise ValueError("truncated LZF literal")
+            decoded.extend(payload[offset : offset + literal_length])
+            offset += literal_length
+        else:
+            match_length = control >> 5
+            reference = len(decoded) - ((control & 0x1F) << 8) - 1
+            if match_length == 7:
+                if offset >= len(payload):
+                    raise ValueError("truncated LZF match length")
+                match_length += payload[offset]
+                offset += 1
+            if offset >= len(payload):
+                raise ValueError("truncated LZF match offset")
+            reference -= payload[offset]
+            offset += 1
+            match_length += 2
+            if reference < 0:
+                raise ValueError("invalid LZF match offset")
+            for _ in range(match_length):
+                if reference >= len(decoded):
+                    raise ValueError("invalid LZF match")
+                decoded.append(decoded[reference])
+                reference += 1
+        if len(decoded) > expected_size:
+            raise ValueError("LZF payload exceeds expected size")
+    if len(decoded) != expected_size:
+        raise ValueError("invalid LZF decoded size")
+
+
+def decode_packbits_exact(payload: bytes, expected_size: int) -> None:
+    decoded_size = 0
+    offset = 0
+    while offset < len(payload):
+        control = payload[offset]
+        offset += 1
+        if control <= 127:
+            run_length = control + 1
+            if offset + run_length > len(payload):
+                raise ValueError("truncated Photoshop PackBits literal")
+            offset += run_length
+        elif control == 128:
+            continue
+        else:
+            run_length = 257 - control
+            if offset >= len(payload):
+                raise ValueError("truncated Photoshop PackBits run")
+            offset += 1
+        decoded_size += run_length
+        if decoded_size > expected_size:
+            raise ValueError("Photoshop PackBits row exceeds expected size")
+    if decoded_size != expected_size:
+        raise ValueError("invalid Photoshop PackBits row size")
 
 
 def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
@@ -492,7 +564,7 @@ def validate_photoshop(path: Path) -> list[str]:
         if layer_count == 0:
             raise ValueError("Photoshop authority has no layers")
         record_offset = layer_info_start + 2
-        channel_data_lengths: list[int] = []
+        channel_records: list[tuple[int, int, int]] = []
         for _ in range(layer_count):
             if record_offset + 18 > layer_info_end:
                 raise ValueError("truncated Photoshop layer record")
@@ -500,6 +572,9 @@ def validate_photoshop(path: Path) -> list[str]:
             if bottom <= top or right <= left:
                 raise ValueError("invalid Photoshop layer bounds")
             channel_count = struct.unpack(">H", payload[record_offset + 16 : record_offset + 18])[0]
+            layer_width = right - left
+            layer_height = bottom - top
+            row_bytes = (layer_width * depth + 7) // 8
             record_offset += 18
             if channel_count == 0 or record_offset + channel_count * 6 + 16 > layer_info_end:
                 raise ValueError("invalid Photoshop layer channels")
@@ -507,7 +582,7 @@ def validate_photoshop(path: Path) -> list[str]:
                 channel_length = struct.unpack(">I", payload[record_offset + 2 : record_offset + 6])[0]
                 if channel_length < 2:
                     raise ValueError("invalid Photoshop channel data")
-                channel_data_lengths.append(channel_length)
+                channel_records.append((channel_length, row_bytes, layer_height))
                 record_offset += 6
             if payload[record_offset : record_offset + 4] != b"8BIM":
                 raise ValueError("invalid Photoshop layer signature")
@@ -531,9 +606,39 @@ def validate_photoshop(path: Path) -> list[str]:
             if record_offset + padded_name_length > extra_end:
                 raise ValueError("truncated Photoshop layer name")
             record_offset = extra_end
-        channel_data_end = record_offset + sum(channel_data_lengths)
+        channel_data_end = record_offset + sum(channel_length for channel_length, _, _ in channel_records)
         if channel_data_end > layer_info_end or layer_info_end - channel_data_end > 1:
             raise ValueError("truncated Photoshop layer channel payload")
+        channel_offset = record_offset
+        for channel_length, row_bytes, row_count in channel_records:
+            channel_end = channel_offset + channel_length
+            compression = struct.unpack(">H", payload[channel_offset : channel_offset + 2])[0]
+            encoded = payload[channel_offset + 2 : channel_end]
+            expected_size = row_bytes * row_count
+            if expected_size > MAX_AUTHORITY_DECODED_BYTES:
+                raise ValueError("Photoshop channel exceeds authority limit")
+            if compression == 0:
+                if len(encoded) != expected_size:
+                    raise ValueError("invalid Photoshop raw channel payload")
+            elif compression == 1:
+                table_size = row_count * 2
+                if len(encoded) < table_size:
+                    raise ValueError("truncated Photoshop RLE row table")
+                row_lengths = struct.unpack(f">{row_count}H", encoded[:table_size])
+                row_offset = table_size
+                for row_length in row_lengths:
+                    row_end = row_offset + row_length
+                    if row_end > len(encoded):
+                        raise ValueError("truncated Photoshop RLE row")
+                    decode_packbits_exact(encoded[row_offset:row_end], row_bytes)
+                    row_offset = row_end
+                if row_offset != len(encoded):
+                    raise ValueError("unexpected Photoshop RLE channel data")
+            elif compression == 2:
+                decompress_exact(encoded, expected_size)
+            else:
+                raise ValueError("unsupported Photoshop channel compression")
+            channel_offset = channel_end
         offset = section_end
         if offset + 2 > len(payload) or struct.unpack(">H", payload[offset : offset + 2])[0] > 3:
             raise ValueError("invalid Photoshop image data")

@@ -13,6 +13,7 @@ import tempfile
 import unittest
 from unittest import mock
 import zipfile
+import zlib
 from pathlib import Path
 
 from PIL import Image
@@ -107,6 +108,15 @@ def make_openraster(path: Path) -> None:
         archive.writestr("mergedimage.png", layer)
 
 
+def lzf_literal_encode(payload: bytes) -> bytes:
+    encoded = bytearray()
+    for offset in range(0, len(payload), 32):
+        chunk = payload[offset : offset + 32]
+        encoded.append(len(chunk) - 1)
+        encoded.extend(chunk)
+    return bytes(encoded)
+
+
 def make_krita(path: Path) -> None:
     image_buffer = io.BytesIO()
     Image.new("RGBA", (96, 96), (220, 130, 40, 255)).save(image_buffer, format="PNG")
@@ -117,26 +127,30 @@ def make_krita(path: Path) -> None:
             "maindoc.xml",
             '<DOC><IMAGE><layers><layer name="cat" filename="layer2" nodetype="paintlayer"/></layers></IMAGE></DOC>',
         )
+        encoded_tile = lzf_literal_encode(bytes(16384))
         archive.writestr(
             "layers/layer2",
             b"VERSION 2\nTILEWIDTH 64\nTILEHEIGHT 64\nPIXELSIZE 4\nDATA 1\n"
-            + b"0,0,NONE,16384\n"
-            + bytes(16384),
+            + f"0,0,LZF,{len(encoded_tile)}\n".encode("ascii")
+            + encoded_tile,
         )
         archive.writestr("mergedimage.png", image_buffer.getvalue())
 
 
-def make_photoshop(path: Path) -> None:
+def make_photoshop(path: Path, compression: int = 0, encoded_channel: bytes = b"\xff") -> None:
     header = b"8BPS" + struct.pack(">H6xHIIHH", 1, 3, 1, 1, 8, 3)
     layer_extra = struct.pack(">II", 0, 0) + b"\x03cat"
     layer_record = (
-        struct.pack(">iiiiHhI", 0, 0, 1, 1, 1, 0, 3)
+        struct.pack(">iiiiHhI", 0, 0, 1, 1, 1, 0, len(encoded_channel) + 2)
         + b"8BIMnorm"
         + bytes((255, 0, 0, 0))
         + struct.pack(">I", len(layer_extra))
         + layer_extra
     )
-    layer_info = struct.pack(">h", 1) + layer_record + b"\x00\x00\xff" + b"\x00"
+    channel_payload = struct.pack(">H", compression) + encoded_channel
+    layer_info = struct.pack(">h", 1) + layer_record + channel_payload
+    if len(layer_info) % 2:
+        layer_info += b"\x00"
     layer_data = struct.pack(">I", len(layer_info)) + layer_info
     payload = (
         header
@@ -520,6 +534,12 @@ class AssetProfileTests(unittest.TestCase):
 
         self.assertTrue(any("not parseable krita" in failure for failure in failures))
 
+    def test_krita_lzf_requires_exact_decoded_tile(self) -> None:
+        CHECKER.decompress_lzf_exact(b"\x02abc\x80\x02", 9)
+
+        with self.assertRaisesRegex(ValueError, "exceeds expected size"):
+            CHECKER.decompress_lzf_exact(b"\x02abc\x80\x02\x00x", 9)
+
     def test_photoshop_authority_requires_complete_layer_record(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
         path = root / "orange-tabby.psd"
@@ -539,6 +559,29 @@ class AssetProfileTests(unittest.TestCase):
 
         self.assertTrue(any("not parseable photoshop" in failure for failure in failures))
 
+    def test_photoshop_authority_validates_channel_encodings(self) -> None:
+        fixtures = {
+            "raw": (0, b"\xff"),
+            "rle": (1, b"\x00\x02\x00\xff"),
+            "zip": (2, zlib.compress(b"\xff")),
+        }
+        for name, (compression, encoded) in fixtures.items():
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+                path = root / "orange-tabby.psd"
+                make_photoshop(path, compression, encoded)
+
+                self.assertEqual(CHECKER.validate_photoshop(path), [])
+
+    def test_photoshop_authority_rejects_invalid_channel_encoding(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.psd"
+        make_photoshop(path, 4, b"arbitrary")
+
+        failures = CHECKER.validate_photoshop(path)
+
+        self.assertTrue(any("unsupported Photoshop channel compression" in failure for failure in failures))
+
     def test_aseprite_authority_requires_layer_and_cel_bodies(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
         path = root / "orange-tabby.aseprite"
@@ -551,6 +594,29 @@ class AssetProfileTests(unittest.TestCase):
         failures = CHECKER.validate_aseprite(path)
 
         self.assertTrue(any("not parseable aseprite" in failure for failure in failures))
+
+    def test_aseprite_authority_bounds_compressed_cel_size(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
+        path = root / "orange-tabby.aseprite"
+        layer_body = struct.pack("<HHHHHHB3xH", 3, 0, 0, 0, 0, 0, 255, 3) + b"cat"
+        cel_body = (
+            struct.pack("<HhhBHh5xHH", 0, 0, 0, 255, 2, 0, 65535, 65535)
+            + zlib.compress(b"")
+        )
+        chunks = (
+            struct.pack("<IH", 6 + len(layer_body), 0x2004)
+            + layer_body
+            + struct.pack("<IH", 6 + len(cel_body), 0x2005)
+            + cel_body
+        )
+        frame = struct.pack("<IHHH2xI", 16 + len(chunks), 0xF1FA, 2, 100, 2) + chunks
+        header = bytearray(128)
+        struct.pack_into("<IHHHHH", header, 0, 128 + len(frame), 0xA5E0, 1, 65535, 65535, 32)
+        path.write_bytes(bytes(header) + frame)
+
+        failures = CHECKER.validate_aseprite(path)
+
+        self.assertTrue(any("decoded payload exceeds authority limit" in failure for failure in failures))
 
     def test_openraster_expected_parse_failures_do_not_escape(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
