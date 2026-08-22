@@ -73,7 +73,7 @@ screenshots cover default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. The manifest is bound to
 source fingerprint
-`e770e264f16c3d0531c2be9edd6f7c760cb1be4805c4cd19024eba64f9cc760c`
+`3d2cb6dc01faed854e094f34a37be6d6b904cdd251779e3d3291590f00cd8b49`
 and passes `npm run review:runtime:check` when that output is selected.
 
 The current appearance-authority and cross-action scale evidence lives under
