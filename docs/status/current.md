@@ -67,14 +67,18 @@ The current implementation includes:
   an unsynchronized fixed-rate animation. Current fingerprint-bound desktop and
   mobile evidence covers the full window-bench round trip; meetwk0916 approved
   both entries on 2026-08-15.
-- The production-model-derived quiet-motion v1 candidate supplies `idle`,
-  awake-rest `lie`, and deep `sleep` across all six current coat presets.
+- The production-model-derived quiet-motion v1 candidate supplies the
+  gray-white `idle`, awake-rest `lie`, and deep `sleep` authority used by the
+  master and four ordinary coat derivatives. Orange uses its separately
+  declared internal preview package.
   Structural asset validation and fingerprint-bound desktop/mobile continuous
   evidence pass; all eight floor, cat-bed, and blanket motion entries were
   approved by wakun on 2026-08-09.
-- The production-model-derived daily-life v1 candidate now supplies `eat`,
-  `groom`, and `stretch` across all six current coat presets. Structural asset
-  validation passes. Current fingerprint-bound gray-white master evidence at
+- The production-model-derived daily-life v1 candidate now supplies the
+  gray-white `eat`, `groom`, and `stretch` authority used by the master and four
+  ordinary coat derivatives. Orange uses its separately declared internal
+  preview package. Structural asset validation passes. Current
+  fingerprint-bound gray-white master evidence at
   desktop and mobile sizes records the complete food route, an 8–12 second
   grooming dwell, and phase-weighted stretch timing; meetwk0916 approved all
   six entries on 2026-08-15.
@@ -152,10 +156,11 @@ hashes or branch information to this file.
   distribution rights chain remain unresolved.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
-- Replace the six current deterministic coat derivatives with ten reviewed
-  complete appearances after the new motion master is approved, adding brown
-  tabby, solid gray, tortoiseshell, and colorpoint and reviewing matching eye,
-  nose, and paw-pad colors without enabling free mixing or local markings.
+- Complete ten reviewed rounded-short-haired coat appearances, replacing the
+  four ordinary deterministic derivatives and the internal orange preview,
+  adding brown tabby, solid gray, tortoiseshell, and colorpoint, and reviewing
+  matching eye, nose, and paw-pad colors without enabling free mixing or local
+  markings.
 - Produce and intake the approved orange-tabby appearance defined in
   `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
   desktop/mobile capture is comparison evidence only; Issue #23 remains blocked

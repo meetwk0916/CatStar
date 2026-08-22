@@ -92,8 +92,9 @@ When documents disagree, use this order:
   calico, black-and-white tuxedo, gray-and-white tabby, brown tabby, solid
   gray, tortoiseshell, and colorpoint. Each is a reviewed complete appearance,
   not an unrestricted color or marking mixer. All ten are required for the
-  first releasable rounded short-haired prototype; the six current
-  deterministic derivatives are implementation evidence, not release art.
+  first releasable rounded short-haired prototype; the current gray-white
+  master, four deterministic derivatives, and internal orange appearance
+  preview are implementation evidence, not release art.
 - Appearance selection is manual and bounded. Phase 0.1 does not upload cat
   photos, generate a replica, or promise exact visual reproduction.
 - An explicitly labelled **内部外形预览** may appear in an internal build for

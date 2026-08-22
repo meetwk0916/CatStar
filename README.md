@@ -9,7 +9,9 @@ who has died. It is not yet a public beta or production-art build.
 - One local **护照** for one deceased real cat.
 - Minimal onboarding fields: cat name, family address name, coat preset,
   companion temperament, favorite snack, and optional passed date.
-- Six curated coat presets on one stylized-natural, rounded short-haired appearance prototype.
+- Six passport-selectable coat presets. Orange tabby currently renders as a
+  visibly labelled internal appearance preview, not production or release art;
+  the other five use the rounded short-haired motion authority.
 - A Phaser-rendered window room with runtime assets under `public/assets/`.
 - Ten dedicated cat action classes and weighted, zone-aware room routines for ordinary companionship.
 - A **时光信箱** with prewritten letters, not AI-generated text.

@@ -8,8 +8,8 @@
 **Identity authority:** `artifacts/art/candidates/active/product-cat-model-sheet-v1/`
 
 This brief defines the first release-quality orange-tabby **毛色预设**. It is
-an art-production handoff, not permission to ship the current deterministic
-orange derivative. The gray-white motion master supplies anatomy, pose,
+an art-production handoff, not permission to ship the current internal orange
+appearance preview. The gray-white motion master supplies anatomy, pose,
 timing, frame composition, alpha geometry, anchors, and contact conventions
 only. Final orange-tabby pixels must come from one rights-cleared,
 identity-consistent production process and receive their own review.

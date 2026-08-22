@@ -32,8 +32,8 @@ or uncertain fields keep the package internal-only and block Issue #23.
       third-party input is listed with its license and source.
 - [ ] The creator confirms no protected character, brand, or another artist's
       work was imitated.
-- [ ] The current deterministic orange derivative was used only for layout or
-      defect comparison, not accepted as the production pixel source.
+- [ ] The current internal orange appearance preview was used only for layout
+      or defect comparison, not accepted as the production pixel source.
 - [ ] `approved-direction-prototype.png` was used only for approved color and
       identity direction; its AI-generated pixels were not accepted as the
       editable production or runtime source.
