@@ -117,6 +117,7 @@ MAX_AUTHORITY_ARCHIVE_ENTRIES = 4_096
 MAX_AUTHORITY_ARCHIVE_MEMBER_BYTES = 256 * 1024 * 1024
 MAX_AUTHORITY_ARCHIVE_TOTAL_BYTES = 512 * 1024 * 1024
 MAX_AUTHORITY_ARCHIVE_COMPRESSION_RATIO = 200
+MAX_AUTHORITY_SOURCE_BYTES = 256 * 1024 * 1024
 REQUIRED_INTAKE_ITEMS = (
     "source.creator",
     "source.account",
@@ -375,13 +376,14 @@ def validate_krita_layer_payload(payload: bytes) -> bool:
     return fields["DATA"] > 0
 
 
-def decompress_exact(payload: bytes, expected_size: int) -> None:
+def decompress_exact(payload: bytes, expected_size: int) -> bytes:
     if expected_size < 0 or expected_size > MAX_AUTHORITY_DECODED_BYTES:
         raise ValueError("decoded payload exceeds authority limit")
     decompressor = zlib.decompressobj()
     decoded = decompressor.decompress(payload, expected_size + 1)
     if len(decoded) != expected_size or not decompressor.eof or decompressor.unused_data:
         raise ValueError("invalid compressed payload")
+    return decoded
 
 
 def decompress_lzf_exact(payload: bytes, expected_size: int) -> None:
@@ -447,6 +449,93 @@ def decode_packbits_exact(payload: bytes, expected_size: int) -> None:
             raise ValueError("Photoshop PackBits row exceeds expected size")
     if decoded_size != expected_size:
         raise ValueError("invalid Photoshop PackBits row size")
+
+
+def reverse_photoshop_prediction(payload: bytes, width: int, rows: int, depth: int) -> bytes:
+    row_bytes = (width * depth + 7) // 8
+    if len(payload) != row_bytes * rows:
+        raise ValueError("invalid Photoshop prediction payload size")
+    decoded = bytearray(payload)
+    if depth in {1, 8}:
+        for row in range(rows):
+            row_start = row * row_bytes
+            for index in range(row_start + 1, row_start + row_bytes):
+                decoded[index] = (decoded[index] + decoded[index - 1]) & 0xFF
+    elif depth == 16:
+        for row in range(rows):
+            row_start = row * row_bytes
+            previous = int.from_bytes(decoded[row_start : row_start + 2], "big")
+            for pixel in range(1, width):
+                index = row_start + pixel * 2
+                previous = (previous + int.from_bytes(decoded[index : index + 2], "big")) & 0xFFFF
+                decoded[index : index + 2] = previous.to_bytes(2, "big")
+    elif depth == 32:
+        interleaved = bytearray(len(decoded))
+        for row in range(rows):
+            row_start = row * row_bytes
+            for index in range(row_start + 1, row_start + row_bytes):
+                decoded[index] = (decoded[index] + decoded[index - 1]) & 0xFF
+            for pixel in range(width):
+                for byte_index in range(4):
+                    interleaved[row_start + pixel * 4 + byte_index] = decoded[
+                        row_start + byte_index * width + pixel
+                    ]
+        decoded = interleaved
+    else:
+        raise ValueError("unsupported Photoshop prediction depth")
+    return bytes(decoded)
+
+
+def validate_photoshop_plane_payload(
+    compression: int,
+    encoded: bytes,
+    width: int,
+    rows: int,
+    depth: int,
+    label: str,
+) -> None:
+    row_bytes = (width * depth + 7) // 8
+    expected_size = row_bytes * rows
+    if expected_size > MAX_AUTHORITY_DECODED_BYTES:
+        raise ValueError(f"Photoshop {label} exceeds authority limit")
+    if compression == 0:
+        if len(encoded) != expected_size:
+            raise ValueError(f"invalid Photoshop raw {label} payload")
+    elif compression == 1:
+        table_size = rows * 2
+        if len(encoded) < table_size:
+            raise ValueError(f"truncated Photoshop {label} RLE row table")
+        row_offset = table_size
+        for row_index in range(rows):
+            row_length = struct.unpack_from(">H", encoded, row_index * 2)[0]
+            row_end = row_offset + row_length
+            if row_end > len(encoded):
+                raise ValueError(f"truncated Photoshop {label} RLE row")
+            decode_packbits_exact(encoded[row_offset:row_end], row_bytes)
+            row_offset = row_end
+        if row_offset != len(encoded):
+            raise ValueError(f"unexpected Photoshop {label} RLE data")
+    elif compression == 2:
+        decompress_exact(encoded, expected_size)
+    elif compression == 3:
+        reverse_photoshop_prediction(
+            decompress_exact(encoded, expected_size),
+            width,
+            rows,
+            depth,
+        )
+    else:
+        raise ValueError(f"unsupported Photoshop {label} compression")
+
+
+def read_authority_bytes(path: Path) -> bytes:
+    if path.stat().st_size > MAX_AUTHORITY_SOURCE_BYTES:
+        raise ValueError("editable authority source exceeds size limit")
+    with path.open("rb") as source:
+        payload = source.read(MAX_AUTHORITY_SOURCE_BYTES + 1)
+    if len(payload) > MAX_AUTHORITY_SOURCE_BYTES:
+        raise ValueError("editable authority source exceeds size limit")
+    return payload
 
 
 def validate_archive_limits(entries: list[zipfile.ZipInfo]) -> None:
@@ -542,6 +631,7 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
         Image.DecompressionBombWarning,
         zipfile.BadZipFile,
         ValueError,
+        zlib.error,
     ) as error:
         return [
             f"first-release rights record: editableAuthority is not parseable "
@@ -552,7 +642,7 @@ def validate_zip_authority(path: Path, authority_format: str) -> list[str]:
 
 def validate_photoshop(path: Path) -> list[str]:
     try:
-        payload = path.read_bytes()
+        payload = read_authority_bytes(path)
         if len(payload) < 40 or payload[:4] != b"8BPS":
             raise ValueError("missing Photoshop signature")
         version, channels, height, width, depth, color_mode = struct.unpack(">H6xHIIHH", payload[4:26])
@@ -592,7 +682,7 @@ def validate_photoshop(path: Path) -> list[str]:
         if layer_count == 0:
             raise ValueError("Photoshop authority has no layers")
         record_offset = layer_info_start + 2
-        channel_records: list[tuple[int, int, int]] = []
+        channel_records: list[tuple[int, int, int, int]] = []
         for _ in range(layer_count):
             if record_offset + 18 > layer_info_end:
                 raise ValueError("truncated Photoshop layer record")
@@ -602,7 +692,6 @@ def validate_photoshop(path: Path) -> list[str]:
             channel_count = struct.unpack(">H", payload[record_offset + 16 : record_offset + 18])[0]
             layer_width = right - left
             layer_height = bottom - top
-            row_bytes = (layer_width * depth + 7) // 8
             record_offset += 18
             if channel_count == 0 or record_offset + channel_count * 6 + 16 > layer_info_end:
                 raise ValueError("invalid Photoshop layer channels")
@@ -610,7 +699,7 @@ def validate_photoshop(path: Path) -> list[str]:
                 channel_length = struct.unpack(">I", payload[record_offset + 2 : record_offset + 6])[0]
                 if channel_length < 2:
                     raise ValueError("invalid Photoshop channel data")
-                channel_records.append((channel_length, row_bytes, layer_height))
+                channel_records.append((channel_length, layer_width, layer_height, depth))
                 record_offset += 6
             if payload[record_offset : record_offset + 4] != b"8BIM":
                 raise ValueError("invalid Photoshop layer signature")
@@ -634,70 +723,39 @@ def validate_photoshop(path: Path) -> list[str]:
             if record_offset + padded_name_length > extra_end:
                 raise ValueError("truncated Photoshop layer name")
             record_offset = extra_end
-        channel_data_end = record_offset + sum(channel_length for channel_length, _, _ in channel_records)
+        channel_data_end = record_offset + sum(
+            channel_length for channel_length, _, _, _ in channel_records
+        )
         if channel_data_end > layer_info_end or layer_info_end - channel_data_end > 1:
             raise ValueError("truncated Photoshop layer channel payload")
         channel_offset = record_offset
-        for channel_length, row_bytes, row_count in channel_records:
+        for channel_length, plane_width, row_count, plane_depth in channel_records:
             channel_end = channel_offset + channel_length
             compression = struct.unpack(">H", payload[channel_offset : channel_offset + 2])[0]
             encoded = payload[channel_offset + 2 : channel_end]
-            expected_size = row_bytes * row_count
-            if expected_size > MAX_AUTHORITY_DECODED_BYTES:
-                raise ValueError("Photoshop channel exceeds authority limit")
-            if compression == 0:
-                if len(encoded) != expected_size:
-                    raise ValueError("invalid Photoshop raw channel payload")
-            elif compression == 1:
-                table_size = row_count * 2
-                if len(encoded) < table_size:
-                    raise ValueError("truncated Photoshop RLE row table")
-                row_offset = table_size
-                for row_index in range(row_count):
-                    row_length = struct.unpack_from(">H", encoded, row_index * 2)[0]
-                    row_end = row_offset + row_length
-                    if row_end > len(encoded):
-                        raise ValueError("truncated Photoshop RLE row")
-                    decode_packbits_exact(encoded[row_offset:row_end], row_bytes)
-                    row_offset = row_end
-                if row_offset != len(encoded):
-                    raise ValueError("unexpected Photoshop RLE channel data")
-            elif compression == 2:
-                decompress_exact(encoded, expected_size)
-            else:
-                raise ValueError("unsupported Photoshop channel compression")
+            validate_photoshop_plane_payload(
+                compression,
+                encoded,
+                plane_width,
+                row_count,
+                plane_depth,
+                "channel",
+            )
             channel_offset = channel_end
         offset = section_end
         if offset + 2 > len(payload):
             raise ValueError("missing Photoshop composite image data")
         composite_compression = struct.unpack(">H", payload[offset : offset + 2])[0]
         composite = payload[offset + 2 :]
-        composite_row_bytes = (width * depth + 7) // 8
         composite_rows = channels * height
-        composite_size = composite_row_bytes * composite_rows
-        if composite_size > MAX_AUTHORITY_DECODED_BYTES:
-            raise ValueError("Photoshop composite image exceeds authority limit")
-        if composite_compression == 0:
-            if len(composite) != composite_size:
-                raise ValueError("invalid Photoshop raw composite payload")
-        elif composite_compression == 1:
-            table_size = composite_rows * 2
-            if len(composite) < table_size:
-                raise ValueError("truncated Photoshop composite RLE row table")
-            row_offset = table_size
-            for row_index in range(composite_rows):
-                row_length = struct.unpack_from(">H", composite, row_index * 2)[0]
-                row_end = row_offset + row_length
-                if row_end > len(composite):
-                    raise ValueError("truncated Photoshop composite RLE row")
-                decode_packbits_exact(composite[row_offset:row_end], composite_row_bytes)
-                row_offset = row_end
-            if row_offset != len(composite):
-                raise ValueError("unexpected Photoshop composite RLE data")
-        elif composite_compression == 2:
-            decompress_exact(composite, composite_size)
-        else:
-            raise ValueError("unsupported Photoshop composite compression")
+        validate_photoshop_plane_payload(
+            composite_compression,
+            composite,
+            width,
+            composite_rows,
+            depth,
+            "composite",
+        )
     except (OSError, struct.error, ValueError, zlib.error) as error:
         return [f"first-release rights record: editableAuthority is not parseable photoshop: {error}"]
     return []
@@ -705,7 +763,7 @@ def validate_photoshop(path: Path) -> list[str]:
 
 def validate_aseprite(path: Path) -> list[str]:
     try:
-        payload = path.read_bytes()
+        payload = read_authority_bytes(path)
         if len(payload) < 144:
             raise ValueError("truncated Aseprite file")
         file_size, magic, frame_count, width, height, depth = struct.unpack("<IHHHHH", payload[:14])

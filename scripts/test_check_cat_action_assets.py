@@ -570,6 +570,7 @@ class AssetProfileTests(unittest.TestCase):
             "raw": (0, b"\xff"),
             "rle": (1, b"\x00\x02\x00\xff"),
             "zip": (2, zlib.compress(b"\xff")),
+            "zip-prediction": (3, zlib.compress(b"\xff")),
         }
         for name, (compression, encoded) in fixtures.items():
             with self.subTest(name=name):
@@ -593,6 +594,7 @@ class AssetProfileTests(unittest.TestCase):
             "raw": (0, b"\x10\x20\x30"),
             "rle": (1, b"\x00\x02" * 3 + b"\x00\x10\x00\x20\x00\x30"),
             "zip": (2, zlib.compress(b"\x10\x20\x30")),
+            "zip-prediction": (3, zlib.compress(b"\x10\x20\x30")),
         }
         for name, (compression, encoded) in fixtures.items():
             with self.subTest(name=name):
@@ -605,6 +607,25 @@ class AssetProfileTests(unittest.TestCase):
                 )
 
                 self.assertEqual(CHECKER.validate_photoshop(path), [])
+
+    def test_photoshop_zip_prediction_reverses_supported_depths(self) -> None:
+        fixtures = {
+            "bitmap": (b"\x01\x02", b"\x01\x03", 16, 1),
+            "eight-bit": (b"\x0a\x05\x0a", b"\x0a\x0f\x19", 3, 8),
+            "sixteen-bit": (b"\x01\x02\x00\x03", b"\x01\x02\x01\x05", 2, 16),
+            "thirty-two-bit": (
+                b"\x01\x04\xfd\x05\xfc\x07\xfa\x0a",
+                b"\x01\x02\x03\x04\x05\x07\x0a\x0e",
+                2,
+                32,
+            ),
+        }
+        for name, (predicted, expected, width, depth) in fixtures.items():
+            with self.subTest(name=name):
+                self.assertEqual(
+                    CHECKER.reverse_photoshop_prediction(predicted, width, 1, depth),
+                    expected,
+                )
 
     def test_photoshop_authority_rejects_truncated_composite(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="catstar-editable-authority-test-"))
@@ -685,6 +706,7 @@ class AssetProfileTests(unittest.TestCase):
         for error in (
             RuntimeError("encrypted member"),
             NotImplementedError("unsupported compression"),
+            zlib.error("invalid deflate stream"),
         ):
             with self.subTest(error=type(error).__name__):
                 with mock.patch.object(CHECKER.zipfile, "ZipFile", side_effect=error):
@@ -706,6 +728,19 @@ class AssetProfileTests(unittest.TestCase):
                 canonical_dir,
             )
         self.assertTrue(any("not parseable openraster" in failure for failure in failures))
+
+    def test_raw_authority_size_limit_precedes_file_read(self) -> None:
+        oversized_stat = mock.Mock(st_size=CHECKER.MAX_AUTHORITY_SOURCE_BYTES + 1)
+        with (
+            mock.patch.object(Path, "stat", return_value=oversized_stat),
+            mock.patch.object(Path, "open", side_effect=AssertionError("source was read")) as open_mock,
+        ):
+            photoshop_failures = CHECKER.validate_photoshop(Path("oversized.psd"))
+            aseprite_failures = CHECKER.validate_aseprite(Path("oversized.aseprite"))
+
+        self.assertTrue(any("source exceeds size limit" in failure for failure in photoshop_failures))
+        self.assertTrue(any("source exceeds size limit" in failure for failure in aseprite_failures))
+        open_mock.assert_not_called()
 
     def test_layered_authority_archive_limits_precede_decompression(self) -> None:
         oversized = zipfile.ZipInfo("oversized.bin")
