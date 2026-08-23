@@ -73,9 +73,9 @@ screenshots cover default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. Its manifest is bound to
 source fingerprint
-`d0ab6ed6d37a5c123fc8c9729576a2091ba4f0e4e71b2a9ca47a73b3a3285631`
-and passes `npm run review:runtime:check`; meetwk0916 approved the complete
-19-screenshot set in Codex on 2026-08-23.
+`0e75df7af4b52cb64081cd2cb7c05563eda93b10c434f340b1d745d2fc6529c5`.
+The regenerated 19-screenshot set is awaiting fresh human review; approval from
+the preceding fingerprint does not apply.
 
 The current appearance-authority and cross-action scale evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its

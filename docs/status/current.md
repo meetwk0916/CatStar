@@ -109,8 +109,9 @@ The current implementation includes:
   is structurally valid for desktop and mobile; its approved review state is
   recorded in the runtime asset map. The current project-wide runtime
   screenshot set under `artifacts/art/runtime-review/2026-08-23/` contains 19
-  current-fingerprint desktop/mobile captures and passes manifest validation;
-  meetwk0916 approved the complete set in Codex on 2026-08-23.
+  current-fingerprint desktop/mobile captures. Fresh human review of this
+  regenerated set is pending; the preceding fingerprint's approval is not
+  reused.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
