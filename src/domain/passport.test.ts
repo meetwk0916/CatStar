@@ -15,7 +15,6 @@ const baseInput = {
   coatPreset: "GRAY_WHITE_TABBY" as const,
   temperament: "AFFECTIONATE" as const,
   favoriteSnack: " 小鱼干 ",
-  passedDate: "2026-07-01",
 };
 
 function storedPassport(overrides: Record<string, unknown> = {}) {
@@ -45,7 +44,7 @@ describe("passport domain", () => {
       catName: "小星",
       ownerName: "家人",
       favoriteSnack: "小鱼干",
-      passedDate: "2026-07-01",
+      passedDate: "",
       createdAt,
       readLetters: [],
       isFarewellCompleted: false,
@@ -64,14 +63,6 @@ describe("passport domain", () => {
     expect(isFuturePassedDate("2026-07-31", now)).toBe(true);
     expect(isFuturePassedDate("2026-07-30", now)).toBe(false);
     expect(isFuturePassedDate("", now)).toBe(false);
-  });
-
-  it("rejects future memorial departure dates at passport creation", () => {
-    const now = new Date(2026, 6, 30, 12, 0, 0).getTime();
-
-    expect(() =>
-      createPassport({ ...baseInput, passedDate: "2026-07-31" }, now),
-    ).toThrow("passedDate");
   });
 
   it("migrates a legacy record and applies safe defaults to unsupported traits", () => {

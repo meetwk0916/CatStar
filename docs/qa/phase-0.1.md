@@ -44,7 +44,8 @@ accessibility checks.
 - Open a fresh browser profile or clear `localStorage`.
 - Confirm the onboarding form appears.
 - Fill cat name, family address name, one of the six coat presets, companion
-  temperament, favorite snack, and optionally passed date.
+  temperament, and favorite snack.
+- Confirm the form does not ask for or display a departure date.
 - Submit the form.
 - Confirm the main page shows the created passport.
 - Refresh the page.

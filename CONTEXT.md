@@ -180,13 +180,9 @@ _Avoid_: 打开前警告, 确认弹窗, 通关按钮
 The state of the **时光信箱** after every existing **信件** has been read and the **告别选择** has been completed. It stops producing new letters, but still allows the **用户** to revisit letters that have already been read.
 _Avoid_: 禁用, 关闭, 删除
 
-**离世日期**:
-The memorial date when the **小猫** left the real world. During Phase 0, this date is remembered in the **护照** but does not determine letter delivery timing.
-_Avoid_: 投递起点, 计时起点
-
 **护照创建时间**:
 The moment when the **用户** begins the CatStar **告别** ritual for one **小猫**. During Phase 0, this time determines **信件** delivery timing.
-_Avoid_: 离世日期, 注册时间
+_Avoid_: 注册时间
 
 ## Example Dialogue
 
@@ -253,5 +249,5 @@ Domain expert: No. The **时光信箱** uses daily 8:00 AM **投递** in device-
 Dev: If the user does not open the app for several days, are those letters delayed?
 Domain expert: No. **投递** accumulates by date. When the **用户** returns, all letters that should have arrived are in the **时光信箱**.
 
-Dev: If the cat died years ago, should all letters arrive immediately?
-Domain expert: No. **离世日期** is memorial information. **护照创建时间** starts the CatStar letter ritual.
+Dev: Should registration ask when the cat died?
+Domain expert: No. CatStar does not ask the **用户** to enter that date. **护照创建时间** starts the CatStar letter ritual.

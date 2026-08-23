@@ -13,7 +13,6 @@ export interface PassportInput {
   coatPreset: CatCoatPreset;
   temperament: CatTemperament;
   favoriteSnack: string;
-  passedDate: string;
 }
 
 const COAT_PRESETS = new Set<CatCoatPreset>([
@@ -70,11 +69,6 @@ export function isFuturePassedDate(value: string, now = Date.now()): boolean {
 }
 
 export function createPassport(input: PassportInput, now = Date.now()): ICatPassport {
-  const passedDate = normalizePassedDate(input.passedDate);
-  if (isFuturePassedDate(passedDate, now)) {
-    throw new Error("passedDate must not be in the future");
-  }
-
   return {
     schemaVersion: 1,
     id: crypto.randomUUID(),
@@ -83,7 +77,7 @@ export function createPassport(input: PassportInput, now = Date.now()): ICatPass
     coatPreset: input.coatPreset,
     temperament: input.temperament,
     favoriteSnack: requireText(input.favoriteSnack, "favoriteSnack"),
-    passedDate,
+    passedDate: "",
     createdAt: now,
     readLetters: [],
     isFarewellCompleted: false,

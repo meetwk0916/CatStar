@@ -112,10 +112,6 @@ export default function App() {
                   <dt className="font-bold text-[#8D6E63]">喜欢的零食</dt>
                   <dd>{passport.favoriteSnack}</dd>
                 </div>
-                <div className="flex justify-between gap-4 border-t-2 border-[#E5D8D0] pt-3">
-                  <dt className="font-bold text-[#8D6E63]">离世日期</dt>
-                  <dd>{passport.passedDate || "没有填写"}</dd>
-                </div>
               </dl>
             </div>
 

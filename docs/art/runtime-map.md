@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-22
+Last updated: 2026-08-23
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -68,13 +68,14 @@ first-release profile rejects it.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`. Its 19
+`artifacts/art/runtime-review/2026-08-23/`. Its 19
 screenshots cover default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
-pointer interactions, and a `390x844` mobile sit. The manifest is bound to
+pointer interactions, and a `390x844` mobile sit. Its manifest is bound to
 source fingerprint
-`3d2cb6dc01faed854e094f34a37be6d6b904cdd251779e3d3291590f00cd8b49`
-and passes `npm run review:runtime:check` when that output is selected.
+`d0ab6ed6d37a5c123fc8c9729576a2091ba4f0e4e71b2a9ca47a73b3a3285631`
+and passes `npm run review:runtime:check`; meetwk0916 approved the complete
+19-screenshot set in Codex on 2026-08-23.
 
 The current appearance-authority and cross-action scale evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
