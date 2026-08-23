@@ -4,7 +4,7 @@
 **Scope:** Rounded short-haired production model sheet and the runtime art that
 would depend on it
 **Owner:** ____________________
-**Last reviewed:** 2026-08-09
+**Last reviewed:** 2026-08-23
 
 This checklist records evidence needed for a distribution decision. Completing
 it does not itself grant public, paid, marketing, beta, or app-store rights.
@@ -52,10 +52,10 @@ Use this table as a work queue. It is not a clearance decision.
 
 | Runtime group | Current evidence | Remaining blocker | Gate |
 | --- | --- | --- | --- |
-| Rounded short-haired model sheet v1 | `product-cat-model-sheet-v1/`; enlarged and runtime/room review derivative exists | Immutable terms snapshot; final target decision | Internal only |
-| v12 `sit`, `walk`, `interact` | Source prompts, lineage, and fingerprint-bound desktop/mobile review | Final human confirmation; immutable terms snapshot | Internal only |
-| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, and eight approved motion decisions | Immutable terms snapshot; remaining runtime rights chain | Internal only |
-| Daily-life v1 `eat`, `groom`, `stretch` | Production-model-derived source prompts, lineage, structural checks, and six-entry gray-white desktop/mobile motion evidence | Human review entries; immutable terms snapshot | Internal only |
+| Rounded short-haired model sheet v1 | `product-cat-model-sheet-v1/`; enlarged and runtime/room review derivative exists | Immutable terms snapshot archived 2026-08-23; final target decision | Internal only |
+| v12 `sit`, `walk`, `interact` | Source prompts, lineage, and fingerprint-bound desktop/mobile review | Final human confirmation; immutable terms snapshot archived 2026-08-23 | Internal only |
+| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, and eight approved motion decisions | Immutable terms snapshot archived 2026-08-23; remaining runtime rights chain | Internal only |
+| Daily-life v1 `eat`, `groom`, `stretch` | Production-model-derived source prompts, lineage, structural checks, and six-entry gray-white desktop/mobile motion evidence | Human review entries; immutable terms snapshot archived 2026-08-23 | Internal only |
 | Remaining cat actions | Mixed candidate packages in `runtime-map.md` | Unified production source and complete rights records | Internal only |
 | Room background/foreground | `artifacts/art/sources/` and composition scripts | Provider, terms, and commercial-use evidence | Internal only |
 | Plant interaction leaf | `plant-interaction-v1/` and derivation script | Provider/model and immutable terms snapshot | Internal only |
@@ -101,18 +101,23 @@ Closing or completing the internal review does not clear any public,
 commercial, marketing, beta, or app-store distribution. Keep the repository's
 **Internal-prototype gate** unchanged.
 
-## 6. Current terms-page observation (not an archive)
+## 6. Terms-page observation — now archived
 
-This is a source pointer for the next evidence pass, not a completed terms
-snapshot or legal conclusion.
+The previously open observation is closed by an immutable repository archive.
 
-- **Source:** <https://openai.com/es-US/policies/row-terms-of-use/>
+- **Source:** <https://openai.com/policies/row-terms-of-use/> (the
+  `es-US` URL earlier recorded here serves the same ROW terms)
 - **Published/effective:** January 1, 2026
-- **Observed:** 2026-08-09
-- **Relevant sections to archive and review:** content ownership and input
-  responsibility, output evaluation, publication/sharing policies, and terms
-  changes.
-- **Local immutable archive:** Not completed. Direct retrieval returned HTTP
-  403, so no content hash is recorded.
-- **Gate result:** Terms evidence remains unchecked; no public-beta target is
-  selected or cleared by this observation.
+- **First observed:** 2026-08-09 (direct retrieval returned HTTP 403)
+- **Archived:** 2026-08-23 via Wayback Machine capture `20260809225319` UTC
+  (`rights-snapshots/openai-row-terms-of-use.wayback-20260809225319.raw.gz`,
+  SHA-256 `bc54688fcb91a97976ad9821f050c59fa399e88cb05a381e83526429d9348594`;
+  readable copies alongside). Currency-checked against the 2026-08-20
+  snapshot: identical terms text.
+- **Relevant sections reviewed:** content ownership ("you own the Output";
+  assignment of right, title, and interest), input responsibility, output
+  evaluation obligations, publication/sharing policies, and terms changes —
+  all present in the archived text.
+- **Gate result:** The immutable-terms-snapshot evidence field is complete for
+  every group citing OpenAI's Terms of Use. Remaining gate fields (target
+  decision, second-person review, room-art provenance) are unchanged.

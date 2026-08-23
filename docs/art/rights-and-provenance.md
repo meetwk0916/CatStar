@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-22
+**Last reviewed:** 2026-08-23
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. The repository records
@@ -17,11 +17,11 @@ production rights.
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
 | Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
 | Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
-| Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Production identity authority recorded; public clearance pending |
-| Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; current human confirmation complete; immutable terms snapshot still missing | Included in the locked internal motion master; not public-release clearance |
-| Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; human confirmation complete; immutable terms snapshot still missing | Internal quiet-motion evidence; not public-release clearance |
-| Rounded short-haired daily-life v1 `eat`, `groom`, and `stretch` sources | `artifacts/art/candidates/active/product-cat-daily-life-v1/` plus `scripts/compose_product_cat_daily_life_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Source hashes and transformation lineage recorded below; immutable terms snapshot still missing | Internal daily-life evidence; not public-release clearance |
-| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot still missing | Historical internal support; not current runtime or release art |
+| Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Production identity authority recorded; public clearance pending |
+| Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; current human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Included in the locked internal motion master; not public-release clearance |
+| Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Internal quiet-motion evidence; not public-release clearance |
+| Rounded short-haired daily-life v1 `eat`, `groom`, and `stretch` sources | `artifacts/art/candidates/active/product-cat-daily-life-v1/` plus `scripts/compose_product_cat_daily_life_v1.py` | Built-in ImageGen; provider did not expose the underlying model version | Source hashes and transformation lineage recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Internal daily-life evidence; not public-release clearance |
+| Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; provider did not expose the underlying model version | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Historical internal support; not current runtime or release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
 ## Production intake requirements
@@ -47,6 +47,15 @@ The linked Terms page is a mutable web document. A dated review note is not an
 immutable terms snapshot; archive the applicable text or provider record in the
 repository before relying on it for public, paid, marketing, or app-store use.
 
+For the OpenAI Terms of Use cited throughout this document, the required
+immutable snapshot now exists:
+[`rights-snapshots/openai-row-terms-of-use.wayback-20260809225319.raw.gz`](rights-snapshots/openai-row-terms-of-use.wayback-20260809225319.raw.gz)
+(Wayback Machine capture `20260809225319` UTC of
+<https://openai.com/policies/row-terms-of-use/>, SHA-256
+`bc54688fcb91a97976ad9821f050c59fa399e88cb05a381e83526429d9348594`;
+currency-checked against the 2026-08-20 snapshot — identical terms text).
+Records below refer to it as the archived OpenAI terms snapshot.
+
 ## Rounded short-haired model-sheet approval record
 
 **Status:** Approved production model sheet
@@ -69,7 +78,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Final generation date | 2026-08-08, before the v12 action sources were generated. |
 | Source brief | Gray-and-white tabby, healthy adult, rounded short-haired domestic cat; natural proportions rather than chibi; broad chest, compact torso, short sturdy legs, wider cheeks; calm curious expression; controlled pixel clusters and soft indoor light. |
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. The page is mutable and no immutable repository snapshot is recorded yet; the owner-use statement remains subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); the owner-use statement remains subject to applicable law and the Terms. |
 | Distribution status | Production identity authority recorded for internal work. Public distribution clearance remains pending an immutable terms snapshot and complete runtime rights-chain review. |
 
 ## Rounded short-haired moving quality-slice approval record
@@ -86,7 +95,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Source brief | Redraw every visible pose from the approved production model sheet: a stable long-dwell `sit`, a grounded eight-pose `walk`, and one calm `interact` acknowledgement that leans, holds a slow blink, and returns to ordinary posture. v11 was permitted only as a motion-phase reference. |
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
 | Transformation lineage | The three chroma-key sources are background-removed into `alpha/`, then deterministically extracted, nearest-neighbor normalized, alpha-hardened, palette-limited, and assembled into transparent `96x96` sheets by `scripts/compose_product_cat_quality_slice_v12.py`. Runtime coat derivatives are built separately by `scripts/build_cat_coat_presets.py`. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet. The owner-use statement remains subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; immutable repository snapshot archived 2026-08-23 (see Rights snapshots). The owner-use statement remains subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` is historical ten-action desktop/mobile evidence captured before the current `idle`, `sit`, and `walk` inputs and scale registration changed. meetwk0916 approved all 20 entries against that capture-time fingerprint on 2026-08-15. It is not current release acceptance. The earlier `2026-08-08-quality-slice-v5/` directory remains scoped iteration history. |
 | Distribution status | Internal rounded short-haired moving quality-slice evidence only. This record does not clear the room art, the other seven action sources, or public distribution. |
 
@@ -102,7 +111,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Structural evidence | `npm run check:assets`, the complete test suite, and `tests/motion-master.test.ts` verify the ten-action contract, exact gray-white runtime-to-source wiring, evidence matrix, and evidence hashes. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 historical recordings: all ten actions at `1280x720` and `390x844`, bound to its capture-time source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. Current `idle`, `sit`, and `walk` inputs and scale registration postdate this evidence, so it is not a current release matrix. |
 | Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 against that historical fingerprint after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. The approval does not transfer to changed source inputs. |
-| Terms evidence | The component records below retain their applicable OpenAI Terms review dates. No immutable repository snapshot is recorded yet. |
+| Terms evidence | The component records below retain their applicable OpenAI Terms review dates. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots). |
 | Distribution status | Locked for CatStar internal production work only. Public, paid, marketing, and app-store distribution remain blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
 ## Rounded short-haired daily-life v1 intake record
@@ -122,7 +131,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Transformation lineage | Chroma-key sources → local alpha removal → fixed-grid subject extraction → action-level scale normalization → transparent `96x96` gray-white sheets via `scripts/compose_product_cat_daily_life_v1.py` → four deterministic ordinary coat derivatives via `scripts/build_cat_coat_presets.py`. The internal orange preview has separate source lineage in `runtime-map.md`. |
 | Structural evidence | `npm run check:assets` and `npm run test:assets` pass for all six current coat presets and the ten-action contract. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/` covers `eat`, sustained `groom`, and phase-weighted `stretch` for the gray-white motion master at `1280x720` and `390x844` from entry through exit. All six entries were approved by meetwk0916 on 2026-08-15 and pass the release-grade motion-review gate. The v1 and v2 directories retain the earlier short-stretch and short-grooming iterations for comparison. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Distribution status | Internal daily-life evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
 ## Rounded short-haired jump v6 intake record
@@ -142,7 +151,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Transformation lineage | Chroma-key source → connected-pose extraction → shared alpha-area normalization → six transparent `96x96` gray-white phases via `scripts/compose_product_cat_jump_v6.py` → four deterministic ordinary coat derivatives via `scripts/build_cat_coat_presets.py` → phase-synchronized scripted arc in the Phaser adapter `src/game/CatRoomScene.ts`. The internal orange preview has separate source lineage in `runtime-map.md`. |
 | Structural evidence | `npm run check:assets` passes for all six current coat presets; `tests/jump-motion.test.ts` records six distinct frames, stable body mass, runtime wiring, and the approved evidence matrix. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v3/` covers the final post-review floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Distribution status | Internal jump evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
 ## Rounded short-haired quiet-motion v1 intake record
@@ -160,7 +169,7 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Source brief | Four-frame `idle` with restrained breathing and blink; four-frame awake-rest `lie` with raised head and open-eye return; four-frame curled `sleep` with closed eyes and minimal breathing. Earlier action sources supplied motion layout only. The exact normalized requests are retained in `generation-prompts.md`. |
 | Third-party source assertion | No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
 | Transformation lineage | Built-in ImageGen chroma-key sources → recorded chroma-key removal → connected-pose extraction → nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheets via `scripts/compose_product_cat_quiet_motion_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`, covering `idle`, cat-bed and blanket awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Both release-grade structural gates pass; wakun approved all eight human-review decisions on 2026-08-09. |
 | Distribution status | Internal quiet-motion evidence only. Public distribution remains blocked by an immutable terms snapshot and the remaining runtime rights chain. |
 
@@ -178,6 +187,6 @@ repository before relying on it for public, paid, marketing, or app-store use.
 | Source brief | Four right-facing standing idle poses redrawn directly as the approved low, broad, deep-bodied rounded short-haired adult, with restrained breathing, one slow blink, a small close-tail shift, and one shared ground line. The exact normalized request is retained in `generation-prompt.md`. |
 | Reference inputs | The direction-only rounded concept plus the project-owned v11 `sit` and `walk` sources. This supporting idle predates the dedicated production model sheet and is not represented as model-sheet-derived release art. Rejected idle v1 and v2 were explicitly excluded as generation inputs. No third-party character, brand, illustration, or photograph was requested as an input or imitation target. |
 | Transformation lineage | Built-in ImageGen chroma-key source → recorded chroma-key removal → shared-scale nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheet via `scripts/compose_product_cat_idle.py` → deterministic coat derivatives via `scripts/build_cat_coat_presets.py`. |
-| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; no immutable repository snapshot is recorded yet, subject to applicable law and the Terms. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`; structural validation passed and the manifest records desktop and mobile `sit` entries, but a fresh human confirmation against the v5 boards is still required. |
 | Distribution status | Historical internal quality-slice support for the `sit` exit, not current runtime art or public distribution clearance. The production-model-derived quiet-motion v1 package now supplies runtime `idle`. |
