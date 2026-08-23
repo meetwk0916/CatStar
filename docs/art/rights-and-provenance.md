@@ -4,20 +4,21 @@
 **Last reviewed:** 2026-08-23
 
 Unless a specific record below clears it, the current room and cat art may be
-used only for CatStar internal prototype review. The repository records
-technical lineage, but several asset groups still lack their original
-generation provider, model/version, account owner, applicable terms, or
-commercial-use evidence. That is an incomplete rights chain, not proof of
-production rights.
+used only for CatStar internal prototype review. Every current asset group now
+holds a provenance record below covering creator, tool, dates, lineage,
+third-party assertions, and terms evidence. Records alone do not flip the
+distribution gate: the project-wide rights-gate closing review (Issue #61)
+owns that decision. An incomplete or missing record is an open rights chain,
+not proof of production rights.
 
 ## Current asset groups
 
 | Runtime group | Technical source | Provider/model | License or terms evidence | Allowed use |
 | --- | --- | --- | --- | --- |
-| Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
-| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
+| Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Codex built-in ImageGen; contemporaneous docs archived 2026-07-10 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; public use gated on the Issue #61 rights-gate closure |
+| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; contemporaneous docs archived 2026-08-12/14 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; public use gated on the Issue #61 rights-gate closure |
 | Deterministic coat derivatives (solid black, solid white, calico, tuxedo) | `public/assets/scenes/window-room/cat/solid-black/` etc., built by `scripts/build_cat_coat_presets.py` from the gray-white master | No new generation — deterministic per-pixel recolor of recorded upstream sources (record below) | Recorded below; inherits each upstream component's OpenAI terms coverage and the immutable archived snapshot | Rights lineage complete; public use gated on the Issue #60 review pass and Issue #61 rights-gate closure |
-| Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
+| Remaining cat action sheets outside the records below | Internal orange-tabby appearance-preview sheets listed in `runtime-map.md` | Independent internal preview; release-grade replacement owned by Issues #23/#56 | Not cleared for any release use | Internal prototype only |
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; current human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Included in the locked internal motion master; not public-release clearance |
 | Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Internal quiet-motion evidence; not public-release clearance |
@@ -112,7 +113,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Structural evidence | `npm run check:assets`, the complete test suite, and `tests/motion-master.test.ts` verify the ten-action contract, exact gray-white runtime-to-source wiring, evidence matrix, and evidence hashes. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 historical recordings: all ten actions at `1280x720` and `390x844`, bound to its capture-time source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. Current `idle`, `sit`, and `walk` inputs and scale registration postdate this evidence, so it is not a current release matrix. |
 | Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 against that historical fingerprint after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. The approval does not transfer to changed source inputs. |
-| Terms evidence | The component records below retain their applicable OpenAI Terms review dates. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); commercial-use review at [`../codex-imagegen-rights-review.md`](../codex-imagegen-rights-review.md). |
+| Terms evidence | The component records below retain their applicable OpenAI Terms review dates. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); commercial-use review at [`codex-imagegen-rights-review.md`](codex-imagegen-rights-review.md). |
 | Distribution status | Locked for CatStar internal production work only. Public, paid, marketing, and app-store distribution remain blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
 
 ## Rounded short-haired daily-life v1 intake record
@@ -213,3 +214,48 @@ chain is the upstream master's chain plus this recorded derivation.
 | Structural evidence | `npm run check:assets` validates all six current coat presets across the ten-action contract, and the motion-master tests assert exact runtime-to-source wiring and shared alpha geometry for the four derivatives. |
 | Human approval slot | Reserved for the sixty-combination release-matrix review (Issue #60). Per the pragmatic derivative policy and ADR-0010, each of the four presets ships only if its combinations pass; any failing preset switches to independent production art instead. |
 | Distribution status | Rights lineage recorded for internal production work. Public distribution additionally requires the Issue #60 review pass and closure of the project-wide art rights gate (Issue #61). |
+
+## Window-room background and foreground intake record
+
+**Status:** Owner self-attestation + contemporaneous model evidence; rights-gate closing review pending
+
+| Field | Record |
+| --- | --- |
+| Runtime groups | `public/assets/scenes/window-room/background.png`, `foreground-cat-bed.png`, `foreground-blanket.png` (the cat-bed and blanket occlusion layers were locally derived from the same room art; see lineage below) |
+| Source files | `artifacts/art/sources/window-room-background-source.png` (SHA-256 `c50e20590b33970cfe86df96e1a1039349b7602440c9d5e70fedc36a0bae5d2f`); concept sheet `artifacts/art/sources/catstar-window-room-concept-01.png` (SHA-256 `b5a3b77c3a83cf38c17a2d8c642353b5bfb3052d017fb7fd7a7286ba5fc35730`); early cat cutout references `cat-idle-chromakey-source.png`, `cat-idle-cutout-source.png`, `cat-sleep-chromakey-source.png` under the same directory. All four source files carry a 2026-06-16 creation timestamp. |
+| Creator and account context | Generated with built-in ImageGen in the project owner's own Codex sessions; owner self-attested on 2026-08-23. Same self-attestation pattern as the approved production model-sheet record above. |
+| Tool and date | Built-in ImageGen; per-generation version not exposed; generated ≈2026-06-16 (source-file timestamps). Contemporaneous official documentation — Wayback capture of learn.chatgpt.com/docs/image-generation at 2026-07-10 (`rights-snapshots/imagegen-rights-review-sources/learn-imagegen-wayback-20260710.html`, SHA-256 `cd62f05c6b24e642757a5586d34a7a60d5622000545ffca83cfd4c4f3d8403c1`) — states "Built-in image generation uses `gpt-image-2`"; gpt-image-2 became available in Codex in April 2026 with no intervening model change, so it is the best-supported identification for this window. A supporting help-center capture of 2026-06-23 is archived alongside. |
+| Prompt availability | The original room-generation prompts are **not recoverable**: local Codex session history begins 2026-07-23, so June session logs no longer exist on this machine. This gap is recorded honestly; generation-window dating therefore rests on source-file timestamps plus owner attestation. The concept sheet and background are visually consistent with one another and with all later runtime art derived from them. |
+| Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or photograph was used as an input or imitation target for the room background, concept sheet, or foreground derivations. |
+| Transformation lineage | Background source → local downscale/composition into the `640x360` runtime `background.png`; cat-bed and blanket occlusion layers cut from the same room art during the June room-interaction work (first committed 2026-06-10/11); the later plant-leaf split repaired a small region via `scripts/derive_plant_interaction_assets.py` without changing the rest of the composition. Early cat cutouts informed positioning only and feed no current runtime pixel. |
+| Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01; the immutable repository snapshot (Wayback capture 20260809225319, SHA-256 `bc54688fcb91a97976ad9821f050c59fa399e88cb05a381e83526429d9348594`) was currency-checked identical through ≥2026-08-20, covering both the June generation window and today. See also [`codex-imagegen-rights-review.md`](codex-imagegen-rights-review.md). The owner-use statement remains subject to applicable law and the Terms. |
+| Human review | Room visuals reviewed across every fingerprint-bound desktop/mobile evidence round culminating in the 19-entry set approved by meetwk0916 on 2026-08-23. |
+| Distribution status | Rights lineage recorded for internal production work. Public distribution additionally requires closure of the project-wide art rights gate (Issue #61). If that review rejects this self-attestation pattern, the remake fallback in wayfinder Issue #58 applies. |
+
+## Plant interaction leaf intake record
+
+**Status:** Owner self-attestation + full prompt record; rights-gate closing review pending
+
+| Field | Record |
+| --- | --- |
+| Runtime groups | `public/assets/scenes/window-room/plant-leaf.png` (and the leaf-split region of `background.png`) |
+| Source files | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` (SHA-256 `7f97dfc21c2a1375eadde2088c4038ab1fa27063829096d355545c58f55a3f09`); pre-split background `background-before-leaf-split.png` (SHA-256 `e67a9036dac63ae741db00abd1e1c17f00fb80e4b527a4bdb01cda89d600639c`), itself a reviewed derivative of the June window-room source above. Both files carry a 2026-08-07 timestamp. |
+| Creator and account context | Generated with built-in ImageGen in the project owner's own Codex session; owner self-attested on 2026-08-23. |
+| Tool and date | Built-in ImageGen; per-generation version not exposed; generated 2026-08-07. Contemporaneous official Wayback captures of learn.chatgpt.com/docs/image-generation at **2026-08-12 and 2026-08-14** (archived under `rights-snapshots/imagegen-rights-review-sources/`) identify the built-in tool as `gpt-image-2`. |
+| Source prompt | Fully retained: the isolated-leaf chroma-key extraction prompt is recorded verbatim in [`../../../artifacts/art/sources/plant-interaction-v1/README.md`](../../artifacts/art/sources/plant-interaction-v1/README.md), including the rejected whole-room-regeneration attempt (discarded, never committed). No prompt archaeology needed. |
+| Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or photograph was used as an input or imitation target; the only reference input was the project's own room art. |
+| Transformation lineage | Chroma-key candidate → bundled `remove_chroma_key.py` alpha conversion → `generated-leaf-alpha.png` → deterministic split/repair by the project-owned `scripts/derive_plant_interaction_assets.py` (committed 2026-08-04) → runtime `plant-leaf.png` plus the locally repaired background region. |
+| Structural evidence | `npm run check:assets` validates the split leaf and background dimensions/alpha together with the ten-action contract. Continuous plant-touch evidence exists under `artifacts/art/runtime-review/`. |
+| Terms evidence | Same OpenAI consumer Terms coverage as the component records: immutable snapshot archived 2026-08-23 covers the 2026-08-07 generation window; commercial-use analysis in [`codex-imagegen-rights-review.md`](codex-imagegen-rights-review.md). Subject to applicable law and the Terms. |
+| Distribution status | Rights lineage recorded for internal production work. Public distribution additionally requires closure of the project-wide art rights gate (Issue #61); the remake fallback in wayfinder Issue #58 applies if that review rejects the record. |
+
+## Early cat cutout archive record
+
+**Status:** Historical direction reference; feeds no current runtime asset
+
+| Field | Record |
+| --- | --- |
+| Files | `cat-idle-chromakey-source.png` (SHA-256 `2010b19bdc353c47b3d48019a308bd0f38ed6f588236278aad857e1d0e92e3a8`), `cat-idle-cutout-source.png` (SHA-256 `3d68964185f7083f22be789244833642414eef00e039ae38a526b0c2647e8ea7`), `cat-sleep-chromakey-source.png` (SHA-256 `a43052a1e44e34f3b55938d9b062ac80daaecb48869ec5f13a7c3ed38e27e7c3`), all under `artifacts/art/sources/` with 2026-06-16 timestamps |
+| Role | Earliest June cat experiments; visual-direction history only. No script or runtime path consumes them — they are superseded by the production-model-derived master chain recorded above. Kept as provenance archives, not as release candidates. |
+| Tool and date | Built-in ImageGen in the project owner's Codex sessions, ≈2026-06-16, under the same contemporaneous-evidence and terms coverage as the window-room record above. |
+| Distribution status | Not eligible for any release use regardless of gate state; retained for lineage completeness. |
