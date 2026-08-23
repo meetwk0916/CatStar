@@ -41,6 +41,7 @@ Generated sources, candidate sheets, and browser-review evidence live under
 
 - [`adr/`](adr/) — accepted architectural decisions.
 - [`adr/0006-release-with-one-complete-appearance-prototype.md`](adr/0006-release-with-one-complete-appearance-prototype.md) — accepted first-release boundary for one complete rounded short-haired appearance prototype.
+- [`adr/0010-first-release-ships-six-coat-presets.md`](adr/0010-first-release-ships-six-coat-presets.md) — first public release ships six reviewed coat presets; brown tabby, solid gray, tortoiseshell, and colorpoint move to post-release scope.
 - [`agents/domain.md`](agents/domain.md) — how engineering skills consume domain docs.
 - [`agents/issue-tracker.md`](agents/issue-tracker.md) — GitHub issue workflow.
 - [`agents/triage-labels.md`](agents/triage-labels.md) — canonical triage roles and their current tracker availability.

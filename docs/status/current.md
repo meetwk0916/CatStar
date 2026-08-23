@@ -159,11 +159,13 @@ hashes or branch information to this file.
   distribution rights chain remain unresolved.
 - Complete or replace every unresolved art rights-chain record before public,
   paid, marketing, or app-store distribution.
-- Complete ten reviewed rounded-short-haired coat appearances, replacing the
-  four ordinary deterministic derivatives and the internal orange preview,
-  adding brown tabby, solid gray, tortoiseshell, and colorpoint, and reviewing
+- Complete six reviewed rounded-short-haired coat appearances for the first
+  release — gray-and-white tabby, orange tabby, solid black, solid white,
+  calico, and black-and-white tuxedo — replacing the four ordinary
+  deterministic derivatives and the internal orange preview, and reviewing
   matching eye, nose, and paw-pad colors without enabling free mixing or local
-  markings.
+  markings. Brown tabby, solid gray, tortoiseshell, and colorpoint are
+  post-release scope per ADR-0010.
 - Produce and intake the approved orange-tabby appearance defined in
   `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
   desktop/mobile capture is comparison evidence only; Issue #23 remains blocked

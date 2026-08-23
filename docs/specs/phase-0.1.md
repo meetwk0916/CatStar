@@ -2,7 +2,7 @@
 
 **Status:** Current
 
-**Last aligned:** 2026-08-08
+**Last aligned:** 2026-08-23
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in
@@ -73,6 +73,8 @@ When documents disagree, use this order:
 - The separation between a passport coat choice and its current preview-art
   authority is recorded in
   [`ADR-0009`](../adr/0009-separate-memorial-coat-choice-from-preview-art-authority.md).
+- The first-release boundary of six reviewed **毛色预设** is recorded in
+  [`ADR-0010`](../adr/0010-first-release-ships-six-coat-presets.md).
 
 ## Runtime behavior
 
@@ -88,13 +90,14 @@ When documents disagree, use this order:
   two prototypes do not block that release. The user chooses an observable
   silhouette rather than a breed, and every available prototype must have the
   complete ten-action repertoire before it can be selected in the product.
-- Ten curated **毛色预设** cover orange tabby, solid black, solid white,
-  calico, black-and-white tuxedo, gray-and-white tabby, brown tabby, solid
-  gray, tortoiseshell, and colorpoint. Each is a reviewed complete appearance,
-  not an unrestricted color or marking mixer. All ten are required for the
-  first releasable rounded short-haired prototype; the current gray-white
-  master, four deterministic derivatives, and internal orange appearance
-  preview are implementation evidence, not release art.
+- Six curated **毛色预设** ship with the first public release: gray-and-white
+  tabby, orange tabby, solid black, solid white, calico, and black-and-white
+  tuxedo. Each is a reviewed complete appearance, not an unrestricted color or
+  marking mixer; the current gray-white master, four deterministic derivatives,
+  and internal orange appearance preview are implementation evidence, not
+  release art. Brown tabby, solid gray, tortoiseshell, and colorpoint remain
+  product-scope presets under ADR-0005 but move to post-release work per
+  ADR-0010 and may not enter the first-release asset profile.
 - Appearance selection is manual and bounded. Phase 0.1 does not upload cat
   photos, generate a replica, or promise exact visual reproduction.
 - An explicitly labelled **内部外形预览** may appear in an internal build for
