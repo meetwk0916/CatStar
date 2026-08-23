@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getLocalDateInputValue, isFuturePassedDate } from "../domain/passport";
 import { getCatRuntimeAppearance } from "../domain/catAppearance";
 import type { CatCoatPreset, CatTemperament } from "../types";
 import { createPassport, type PassportInput } from "../storage/passportStorage";
@@ -31,7 +30,6 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
     coatPreset: "GRAY_WHITE_TABBY",
     temperament: "AFFECTIONATE",
     favoriteSnack: "",
-    passedDate: "",
   });
   const [error, setError] = useState("");
 
@@ -45,11 +43,6 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
       setError("请先把小猫名字、家人称呼和喜欢的零食写好。");
       return;
     }
-    if (isFuturePassedDate(form.passedDate)) {
-      setError("离世日期不能晚于今天；如果不确定，也可以暂时不填。");
-      return;
-    }
-
     setError("");
     onCreate(createPassport(form));
   };
@@ -101,17 +94,6 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                 onChange={(event) => update("favoriteSnack", event.target.value)}
                 className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
                 maxLength={24}
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="text-sm font-bold">离世日期</span>
-              <input
-                type="date"
-                max={getLocalDateInputValue()}
-                value={form.passedDate}
-                onChange={(event) => update("passedDate", event.target.value)}
-                className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
               />
             </label>
 

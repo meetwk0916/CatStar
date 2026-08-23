@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-22
+**Last aligned:** 2026-08-23
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -24,6 +24,9 @@ The current implementation includes:
   Sites-compatible Vinext/Cloudflare Worker production build.
 - Lazy-loaded Phaser room scene embedded in React.
 - One local memorial passport and local letter-reading progress.
+- Registration collects no departure date and displays none. New passports use
+  their system-created timestamp to start the letter ritual; older local date
+  data remains hidden compatibility data and does not affect delivery.
 - Prewritten Phase 0 letter script with delayed device-local delivery.
 - Final-letter ordering, farewell choice, **星河陪伴**, and **信箱封存**.
 - Re-registration with confirmation.
@@ -104,10 +107,10 @@ The current implementation includes:
 - Dedicated food-bowl motion evidence is present at
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
-  recorded in the runtime asset map. The project-wide runtime screenshot set
-  under `artifacts/art/runtime-review/2026-08-22-appearance-authority-v1/`
-  contains 19 current-fingerprint desktop/mobile captures and passes its
-  manifest validation.
+  recorded in the runtime asset map. The current project-wide runtime
+  screenshot set under `artifacts/art/runtime-review/2026-08-23/` contains 19
+  current-fingerprint desktop/mobile captures; its review state and scope are
+  recorded in the runtime asset map.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.

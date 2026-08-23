@@ -112,6 +112,10 @@ When documents disagree, use this order:
 
 ## Data and delivery
 
+- Registration does not ask the user for the date when the cat left. Passport
+  creation time starts the CatStar letter ritual.
+- Existing local records may retain the former date field for compatibility;
+  it is not displayed and does not affect delivery.
 - The first letter is delivered immediately after passport creation.
 - Later letters arrive from the next device-local 8:00 AM and accumulate by date.
 - Opening a delivered letter marks it read.

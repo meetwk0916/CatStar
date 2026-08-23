@@ -24,7 +24,9 @@ export function loadPassport(): ICatPassport | null {
 }
 
 export function savePassport(passport: ICatPassport): void {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(passport));
+  const persistedPassport = { ...passport };
+  delete persistedPassport.passedDate;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(persistedPassport));
 }
 
 export function clearPassport(): void {

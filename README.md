@@ -8,7 +8,8 @@ who has died. It is not yet a public beta or production-art build.
 
 - One local **护照** for one deceased real cat.
 - Minimal onboarding fields: cat name, family address name, coat preset,
-  companion temperament, favorite snack, and optional passed date.
+  companion temperament, and favorite snack. Registration does not ask for or
+  display a departure date; passport creation time starts the letter ritual.
 - Six passport-selectable coat presets. Orange tabby currently renders as a
   visibly labelled internal appearance preview, not production or release art;
   the other five use the rounded short-haired motion authority.

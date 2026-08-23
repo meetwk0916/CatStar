@@ -25,6 +25,7 @@ specs and mutable status notes never override those sources.
 - Phase 0 supports only a real deceased cat. Do not generalize to pets, dogs, or `petType`.
 - Letters are prewritten scripts from `src/data/letters.json`; do not add AI-generated letters or chat behavior.
 - Do not collect concrete memories or long personal stories in Phase 0.
+- Do not ask for or display the date when the cat left. Passport creation time starts the letter ritual.
 - User-facing copy should say `家人称呼`, not `主人姓名`.
 - Use gentle grief language. Avoid commands like `别难过了`, `快点走出来`, or `你一定要快乐`.
 - The final visual marker is `星尘标记`; avoid `光环`, `天使`, `升天`, or similar religious/ascension language.

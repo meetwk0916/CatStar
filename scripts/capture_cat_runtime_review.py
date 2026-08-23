@@ -62,7 +62,6 @@ REVIEW_PASSPORT = {
     "coatPreset": "GRAY_WHITE_TABBY",
     "temperament": "AFFECTIONATE",
     "favoriteSnack": "小鱼干",
-    "passedDate": "2026-06-01",
     "createdAt": 1781456400000,
     "readLetters": [],
     "isFarewellCompleted": False,

@@ -32,6 +32,14 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
+test("registration starts the ritual without asking for a date", async ({ page }) => {
+  await expect(page.locator('input[type="date"]')).toHaveCount(0);
+  await expect(page.getByText(/离世|纪念日期/)).toHaveCount(0);
+
+  await registerPassport(page);
+  await expect(page.getByText(/离世日期|纪念日期/)).toHaveCount(0);
+});
+
 test("primary actions remain legible and implemented memorial traits expose selection state", async ({ page }) => {
   const submit = page.getByRole("button", { name: "登记喵星护照", exact: true });
   const colors = await submit.evaluate((element) => {

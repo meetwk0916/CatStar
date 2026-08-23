@@ -137,14 +137,25 @@ describe("passport storage migration", () => {
       coatPreset: "GRAY_WHITE_TABBY" as const,
       temperament: "AFFECTIONATE" as const,
       favoriteSnack: "小鱼干",
-      passedDate: "",
+      passedDate: "2025-12-01",
       createdAt: 1,
       readLetters: [],
       isFarewellCompleted: false,
     };
 
     savePassport(passport);
-    expect(JSON.parse(values.get("catstar.passport.v1") ?? "")).toEqual(passport);
+    expect(JSON.parse(values.get("catstar.passport.v1") ?? "")).toEqual({
+      schemaVersion: 1,
+      id: "current",
+      catName: "小灰",
+      ownerName: "家人",
+      coatPreset: "GRAY_WHITE_TABBY",
+      temperament: "AFFECTIONATE",
+      favoriteSnack: "小鱼干",
+      createdAt: 1,
+      readLetters: [],
+      isFarewellCompleted: false,
+    });
     clearPassport();
     expect(values.has("catstar.passport.v1")).toBe(false);
   });
