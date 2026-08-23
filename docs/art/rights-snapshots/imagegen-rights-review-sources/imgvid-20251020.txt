@@ -1,0 +1,192 @@
+Creating images and videos in line with our policies | OpenAI Skip to main content 
+
+ Log in 
+
+ Switch to
+ ChatGPT (opens in a new window) 
+ Sora (opens in a new window) 
+ API Platform (opens in a new window) 
+
+ Research 
+
+ Safety 
+
+ For Business 
+
+ For Developers 
+
+ ChatGPT 
+
+ Sora 
+
+ Stories 
+
+ Company 
+
+ News 
+
+ Research Back to main menu 
+
+ Research Index 
+ Research Overview 
+ Research Residency 
+ Latest Advancements 
+ Sora 2 
+ GPT-5 
+ OpenAI o3 and o4-mini 
+ GPT-4.5 
+ OpenAI o1 
+ GPT-4o 
+
+ Safety Back to main menu 
+
+ Safety Approach 
+ Security & Privacy 
+
+ For Business Back to main menu 
+
+ Business Overview 
+ Startups 
+ Solutions 
+ ChatGPT Pricing 
+ API Pricing 
+ Contact Sales 
+
+ For Developers Back to main menu 
+
+ API Platform 
+ API Pricing 
+ Agents 
+ Codex 
+ Open Models 
+ Community (opens in a new window) 
+
+ ChatGPT Back to main menu 
+
+ Explore ChatGPT 
+ Business 
+ Enterprise 
+ Education 
+ Pricing 
+ Download 
+
+ Sora Back to main menu 
+
+ Sora Overview 
+ Help Center (opens in a new window) 
+ Sora Log in (opens in a new window) 
+
+ Stories 
+ Company Back to main menu 
+
+ About Us 
+ Our Charter 
+ Careers 
+ Brand Guidelines 
+
+ News 
+
+ Log in 
+
+ OpenAI Last updated: July 22, 2025
+
+ Creating images and videos in line with our policies
+ Below are some tips on how to respect our image and video generation guardrails and help ensure that all usage complies with OpenAI’s Usage Policies.
+
+ 1. Compliance with OpenAI’s Usage Policies 
+
+ All ChatGPT and Sora users have agreed to OpenAI’s Usage Policies, Service Terms, and Terms of Use. These policies apply universally to OpenAI services and are designed to ensure safe and responsible usage of AI technology. You can review OpenAI’s Usage Policies here ⁠ . 
+
+ 1.1 Depictions of Real People 
+
+ You may not edit images or videos that depict any real individual without their explicit consent. You may not create images or videos as means to impersonate, harass, intimidate, or otherwise harm the depicted individual or perpetrate fraud against others. 
+
+ 4o image generation is capable in many instances of generating depictions of a public figure based on a text prompt. Public figures who wish for their depiction not to be generated can let us know through this form ⁠ . 
+
+ 1.2 Inappropriate and Harmful Content 
+
+ ChatGPT and Sora users are prohibited from creating or distributing content that promotes or causes harm. This includes content that is generated to harass, defame, promote violence, or sexualize children. Examples include, but are not limited to: 
+
+ Non-consensual intimate imagery (NCII) 
+ Content promoting suicide, self-harm or disordered eating 
+ Content glorifying terrorism or terrorist organizations 
+ Targeted harassment and bullying content 
+ Age-inappropriate content distributed to minors 
+
+ 1.3 Misleading Content 
+
+ Our policies prohibit any use of our image or video tools to create or distribute content that is used to defraud, scam, or mislead others. This includes taking steps to obscure or hide the use of AI technology in the image and video generation process. 
+
+ 1.4 Avoid illegal content or content that may violate intellectual property rights 
+
+ OpenAI’s Terms of Use prohibit any content that may violate the law—including using the intellectual property of others in ways that violate their rights. 
+
+ 2. The Sora Feed 
+
+ In addition to the usage and content generation policies above, we also take steps to ensure the Sora feed is appropriate and enjoyable to broad audiences, including removing content from the feed that features: 
+
+ Realistic graphic violence or sexual acts 
+ Extremely offensive language or content glorifying hatred or depression 
+ Encouraging dangerous stunts or challenges likely to result in serious injury 
+ Stigmatization of body types 
+ Actively encouraging the use of a harmful drug or substance 
+
+ 3 . Reporting Violations 
+
+ If you encounter content that you believe violates any of our policies, please report it immediately ⁠ . We take all violations seriously and will review reported content for compliance with our terms and the broader OpenAI Usage Policies. 
+
+ Our Research Research Index 
+ Research Overview 
+ Research Residency 
+
+ Latest Advancements GPT-5 
+ OpenAI o3 
+ OpenAI o4-mini 
+ GPT-4o 
+ GPT-4o mini 
+ Sora 
+
+ Safety Safety Approach 
+ Security & Privacy 
+ Trust & Transparency 
+
+ ChatGPT Explore ChatGPT (opens in a new window) 
+ Business 
+ Enterprise 
+ Education 
+ Pricing (opens in a new window) 
+ Download (opens in a new window) 
+
+ Sora Sora Overview 
+ Features 
+ Pricing 
+ Sora log in (opens in a new window) 
+
+ API Platform Platform Overview 
+ Pricing 
+ API log in (opens in a new window) 
+ Documentation (opens in a new window) 
+ Developer Forum (opens in a new window) 
+
+ For Business Business Overview 
+ Solutions 
+ Contact Sales 
+
+ Company About Us 
+ Our Charter 
+ Careers 
+ Brand 
+
+ Support 
+ More News 
+ Stories 
+ Livestreams 
+ Podcast 
+
+ Terms & Policies Terms of Use 
+ Privacy Policy 
+ Other Policies 
+
+ (opens in a new window) (opens in a new window) (opens in a new window) (opens in a new window) (opens in a new window) (opens in a new window) (opens in a new window) 
+ OpenAI © 2015–2025 Manage Cookies 
+ English United States

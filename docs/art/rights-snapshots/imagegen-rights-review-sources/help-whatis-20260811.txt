@@ -1,0 +1,62 @@
+What is ChatGPT? | OpenAI Help Center 
+
+ All Collections 
+ ChatGPT 
+ What is ChatGPT? 
+ What is ChatGPT?
+ Commonly asked questions about ChatGPT
+ Updated: 13 days ago
+ How much does it cost to use ChatGPT?
+ ChatGPT is free to use, though we do have subscription plans available, available on our pricing page .
+
+ How does ChatGPT work?
+ ChatGPT is fine-tuned from GPT-3.5, a language model trained to produce text. ChatGPT was optimized for dialogue by using Reinforcement Learning with Human Feedback (RLHF) – a method that uses human demonstrations and preference comparisons to guide the model toward desired behavior.
+
+ Why does the AI seem so real and lifelike?
+ These models were trained on vast amounts of data from the internet written by humans, including conversations, so the responses it provides may sound human-like. Outputs may be inaccurate, untruthful, and otherwise misleading at times.
+
+ Can I trust that the AI is telling me the truth?
+ ChatGPT is not connected to the internet, and it can occasionally produce incorrect answers. It has limited knowledge of world and events after 2021 and may also occasionally produce harmful instructions or biased content.
+
+We'd recommend checking whether responses from the model are accurate or not. If you find an answer is incorrect, please provide that feedback by using the "Thumbs Down" button.
+
+ Who can view my conversations?
+ As part of our commitment to safe and responsible AI, we review conversations to improve our systems and to ensure the content complies with our policies and safety requirements.
+
+ Will you use my conversations for training?
+ When you use our services for individuals such as ChatGPT, we may use your content to train our models. You can opt out of training through our privacy portal by clicking on “do not train on my content,” or to turn off training for your ChatGPT conversations, follow the instructions in our Data Controls FAQ . Once you opt out, new conversations will not be used to train our models.
+
+We don’t use content from our business offerings such as ChatGPT Business or ChatGPT Enterprise to train our models. Please see our Enterprise Privacy page for information on how we handle business data.
+
+ Can you delete my data?
+ Yes, please follow the data deletion process .
+
+ Can you delete specific prompts?
+ No, we are not able to delete specific prompts from your history. Please don't share any sensitive information in your conversations.
+
+ Can I see my history of threads? How can I save a conversation I’ve had?
+ Yes, you can now view and continue your past conversations.
+
+ Where do you save my personal and conversation data?
+ For more information on how we handle data, please see our Privacy Policy and Terms of Use .
+
+ How can I implement this? Is there any implementation guide for this?
+ Developers can now integrate ChatGPT into their applications and products through our API. Users can expect continuous model improvements and the option to choose dedicated capacity for deeper control over the models. To learn more, please check out the documentation here .
+
+ Do I need a new account if I already have a Labs or Playground account?
+ If you have an existing account at labs.openai.com or platform.openai.com , then you can login directly at chatgpt.com using the same login information. If you don't have an account, you'll need to sign-up for a new account at chatgpt.com .
+
+ Why did ChatGPT give me an answer that’s not related to my question?
+ ChatGPT will occasionally make up facts or “hallucinate” outputs. If you find an answer is unrelated, please provide that feedback by using the "Thumbs Down" button
+
+ Can I use output from ChatGPT for commercial uses?
+ Subject to the Content Policy and Terms , you own the output you create with ChatGPT, including the right to reprint, sell, and merchandise – regardless of whether output was generated through a free or paid plan.
+
+ I accidentally provided incorrect information during sign-up and now I'm unable to complete the process. How can I fix this issue?
+ Please reach out to our support team by initiating a new conversation using the on-site chat tool at help.openai.com. We'll be happy to help!
+
+ Was this article helpful?
+
+ Submit 
+
+ ChatGPT API Service Status Cookie Preferences
