@@ -74,8 +74,9 @@ grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. Its manifest is bound to
 source fingerprint
 `0e75df7af4b52cb64081cd2cb7c05563eda93b10c434f340b1d745d2fc6529c5`.
-The regenerated 19-screenshot set is awaiting fresh human review; approval from
-the preceding fingerprint does not apply.
+meetwk0916 approved all 19 screenshots on 2026-08-23 against this fingerprint.
+That approval preserves the existing internal-preview boundary and does not
+accept the orange-tabby preview as Issue #23 release art.
 
 The current appearance-authority and cross-action scale evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
