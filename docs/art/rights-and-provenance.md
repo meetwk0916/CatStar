@@ -16,6 +16,7 @@ production rights.
 | --- | --- | --- | --- | --- |
 | Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Unknown | Missing | Internal prototype only |
 | Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; exact model/version and terms snapshot not recorded | Incomplete | Internal prototype only |
+| Deterministic coat derivatives (solid black, solid white, calico, tuxedo) | `public/assets/scenes/window-room/cat/solid-black/` etc., built by `scripts/build_cat_coat_presets.py` from the gray-white master | No new generation — deterministic per-pixel recolor of recorded upstream sources (record below) | Recorded below; inherits each upstream component's OpenAI terms coverage and the immutable archived snapshot | Rights lineage complete; public use gated on the Issue #60 review pass and Issue #61 rights-gate closure |
 | Remaining cat action sheets outside the records below | Active candidate packages listed in `runtime-map.md` | Unknown | Missing | Internal prototype only |
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; current human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Included in the locked internal motion master; not public-release clearance |
@@ -190,3 +191,25 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-08-quality-slice-v5/`; structural validation passed and the manifest records desktop and mobile `sit` entries, but a fresh human confirmation against the v5 boards is still required. |
 | Distribution status | Historical internal quality-slice support for the `sit` exit, not current runtime art or public distribution clearance. The production-model-derived quiet-motion v1 package now supplies runtime `idle`. |
+
+## Deterministic coat-preset derivative records (solid black, solid white, calico, black-and-white tuxedo)
+
+**Status:** Rights lineage complete; release use gated on the sixty-combination human review
+
+Per ADR-0010 these four 毛色预设 are the shipping deterministic derivatives.
+They contain no independently generated art: every runtime sheet is a pure
+local transform of the reviewed gray-white motion master, so their rights
+chain is the upstream master's chain plus this recorded derivation.
+
+| Field | Record |
+| --- | --- |
+| Runtime groups | `public/assets/scenes/window-room/cat/solid-black/`, `solid-white/`, `calico/`, and `tuxedo/` — ten action sheets each |
+| Upstream authority | The locked gray-white rounded short-haired motion master: quiet-motion v1 (`idle`, `lie`, `sleep`), quality-slice v12 (`sit`, `walk`, `interact`), daily-life v1 (`eat`, `groom`, `stretch`), and jump v6 (`jump`), each with its own intake record above |
+| Derivation tool | `scripts/build_cat_coat_presets.py` — project-owned, deterministic, version-controlled; authored and maintained by the project owner (first committed 2026-07-29, continuously in-repo since) |
+| Transformation lineage | Per-pixel recolor of the gray-white master sheets only, preserving alpha geometry, anchors, frame counts, and timing exactly: luminance-preserving charcoal mapping (tuxedo keeps the master's white markings; solid-black remaps all coat pixels), warm-white mapping (solid-white), and a fixed three-patch orange-over-charcoal map (calico). Gold and pink accent pixels — eyes, nose, paw pads — pass through unchanged from the master. Orange tabby is excluded: its runtime directory holds the separately lined internal appearance preview, and its release intake is Issue #56. |
+| Creator and account owner | The deriving script was written by the project owner; all upstream generated art is the project owner's own Codex built-in ImageGen output per the component intake records above |
+| Third-party source assertion | The transform introduces no third-party artwork. The creator confirms that no third-party character, brand, illustration, or photograph was used as an input or imitation target, in either the upstream generation or the recolor rules. |
+| Terms evidence | Inherits each upstream record's OpenAI Terms of Use coverage; immutable repository snapshot archived 2026-08-23 (see Rights snapshots). The owner-use statement remains subject to applicable law and the Terms. |
+| Structural evidence | `npm run check:assets` validates all six current coat presets across the ten-action contract, and the motion-master tests assert exact runtime-to-source wiring and shared alpha geometry for the four derivatives. |
+| Human approval slot | Reserved for the sixty-combination release-matrix review (Issue #60). Per the pragmatic derivative policy and ADR-0010, each of the four presets ships only if its combinations pass; any failing preset switches to independent production art instead. |
+| Distribution status | Rights lineage recorded for internal production work. Public distribution additionally requires the Issue #60 review pass and closure of the project-wide art rights gate (Issue #61). |
