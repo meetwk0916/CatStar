@@ -18,8 +18,8 @@ export interface ICatPassport {
   coatPreset: CatCoatPreset;
   temperament: CatTemperament;
   favoriteSnack: string;
-  /** Hidden compatibility data for older local passports; new passports leave it empty. */
-  passedDate: string;
+  /** Hidden compatibility data loaded from older local passports. */
+  passedDate?: string;
   createdAt: number;
   readLetters: number[];
   isFarewellCompleted: boolean;

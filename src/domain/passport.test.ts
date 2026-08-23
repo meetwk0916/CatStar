@@ -44,11 +44,11 @@ describe("passport domain", () => {
       catName: "小星",
       ownerName: "家人",
       favoriteSnack: "小鱼干",
-      passedDate: "",
       createdAt,
       readLetters: [],
       isFarewellCompleted: false,
     });
+    expect(passport).not.toHaveProperty("passedDate");
     expect(passport.id).not.toBe("");
   });
 

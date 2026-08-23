@@ -77,7 +77,6 @@ export function createPassport(input: PassportInput, now = Date.now()): ICatPass
     coatPreset: input.coatPreset,
     temperament: input.temperament,
     favoriteSnack: requireText(input.favoriteSnack, "favoriteSnack"),
-    passedDate: "",
     createdAt: now,
     readLetters: [],
     isFarewellCompleted: false,
