@@ -1,10 +1,9 @@
-# Issue #17 rights-chain checklist (draft)
+# Art rights-chain checklist
 
-**Status:** Draft; internal-prototype gate remains in force
-**Scope:** Rounded short-haired production model sheet and the runtime art that
-would depend on it
-**Owner:** ____________________
-**Last reviewed:** 2026-08-23
+**Status:** Current checklist; internal-prototype gate remains in force
+**Scope:** Every runtime art group entering the first public web release
+**Owner:** Walter
+**Last reviewed:** 2026-08-24
 
 This checklist records evidence needed for a distribution decision. Completing
 it does not itself grant public, paid, marketing, beta, or app-store rights.
@@ -15,16 +14,17 @@ The canonical gate remains [`rights-and-provenance.md`](rights-and-provenance.md
 Record the narrowest target being evaluated. Do not treat one target as
 approval for another.
 
-- [x] Internal prototype review only
+- [ ] Internal prototype review only
 - [ ] Private user testing / closed beta
-- [ ] Public beta
+- [x] Public web release (free)
 - [ ] Paid distribution
 - [ ] Marketing or promotional use
 - [ ] App-store submission
 
-**Selected target:** Internal prototype review only (user direction: “ok” after target clarification)
-**Decision owner:** ____________________
-**Decision date:** ____________________
+**Selected target:** First public web release, completely free. Current allowed
+use remains internal-only until the project-wide gate closes.
+**Decision owner:** Walter
+**Decision date:** 2026-08-24
 
 ## 2. Evidence required for every runtime asset group
 
@@ -52,19 +52,25 @@ Use this table as a work queue. It is not a clearance decision.
 
 | Runtime group | Current evidence | Remaining blocker | Gate |
 | --- | --- | --- | --- |
-| Rounded short-haired model sheet v1 | `product-cat-model-sheet-v1/`; enlarged and runtime/room review derivative exists | Immutable terms snapshot archived 2026-08-23; final target decision | Internal only |
-| v12 `sit`, `walk`, `interact` | Source prompts, lineage, and fingerprint-bound desktop/mobile review | Final human confirmation; immutable terms snapshot archived 2026-08-23 | Internal only |
-| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, and eight approved motion decisions | Immutable terms snapshot archived 2026-08-23; remaining runtime rights chain | Internal only |
-| Daily-life v1 `eat`, `groom`, `stretch` | Production-model-derived source prompts, lineage, structural checks, and six-entry gray-white desktop/mobile motion evidence | Human review entries; immutable terms snapshot archived 2026-08-23 | Internal only |
-| Remaining cat actions | Mixed candidate packages in `runtime-map.md` | Unified production source and complete rights records | Internal only |
-| Room background/foreground | `artifacts/art/sources/` and composition scripts | Provider, terms, and commercial-use evidence | Internal only |
-| Plant interaction leaf | `plant-interaction-v1/` and derivation script | Provider/model and immutable terms snapshot | Internal only |
+| Rounded short-haired model sheet v1 | Production identity record, terms snapshot, enlarged review, and runtime/room derivative | Project-wide public-target decision (Issue #61) | Internal only |
+| v12 `sit`, `walk`, `interact` | Source prompts, lineage, terms snapshot, and current fingerprint-bound scoped review | Sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
+| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, terms snapshot, and eight approved historical motion decisions | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
+| Daily-life v1 `eat`, `groom`, `stretch` | Source prompts, lineage, terms snapshot, structural checks, and six-entry historical gray-white review | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
+| Jump v6 | Production-identity source, lineage, terms snapshot, and approved historical desktop/mobile evidence | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
+| Orange-tabby preset | Internal preview plus approved production brief | Independent production source, intake record, release review, and project-wide gate (Issues #56/#60/#61) | Internal only |
+| Four deterministic coat derivatives | Complete deterministic lineage and inherited terms evidence | Per-combination release review and project-wide gate (Issues #60/#61) | Internal only |
+| Room background/foreground | Completed owner record, lineage, terms snapshot, and current desktop/mobile review | Project-wide public-target decision (Issue #61) | Internal only |
+| Plant interaction leaf | Completed owner record, prompt, lineage, terms snapshot, and runtime review | Project-wide public-target decision (Issue #61) | Internal only |
 | Runtime review evidence | Fingerprint-bound screenshots and manifests | Inherits every source group's gate | Internal only |
 
-## 4. #17 closure checklist
+## 4. Project-wide public-web closure checklist
 
-Close #17 only when every applicable box is checked and the linked records are
-reviewable by someone other than the person who generated the art.
+Close the project-wide gate only when every applicable box is checked and the
+linked records are reviewable by someone other than the person who generated
+the art. These boxes record the second reviewer's closure confirmations, not
+the underlying evidence inventory. An unchecked box can therefore coexist with
+a verified fact recorded above, and remains unchecked until that reviewer
+confirms the complete package and signs the decision below.
 
 - [ ] Distribution target is explicitly selected.
 - [ ] The dedicated production model sheet is the sole identity authority.
@@ -78,6 +84,7 @@ reviewable by someone other than the person who generated the art.
       evidence record from section 2.
 - [ ] Applicable terms/provider records are archived immutably and hashed.
 - [ ] Human approval and attribution requirements are recorded.
+- [ ] Public product copy identifies the art as AI-generated.
 - [ ] The runtime map contains no unresolved asset that can enter the intended
       distribution build.
 - [ ] A second reviewer confirms the package and signs the decision below.
@@ -89,13 +96,13 @@ reviewable by someone other than the person who generated the art.
 
 ______________________________________________________________________________
 
-## 5. Next action for #17
+## 5. Next action for Issue #61
 
-1. Keep the selected target limited to internal prototype review.
-2. Treat public/commercial clearance as a separate future release gate.
-3. If the target changes later, archive the applicable provider/terms record and
-   record its hash.
-4. Request a second-person review before changing the rights status.
+1. Review every group above against the public-web target.
+2. Record the sixty-combination result and orange-tabby production intake.
+3. Complete the second-person review and sign the decision below.
+4. Change the canonical gate only when every applicable box passes; otherwise
+   record the exact blocker list and keep the internal-only classification.
 
 Closing or completing the internal review does not clear any public,
 commercial, marketing, beta, or app-store distribution. Keep the repository's
@@ -119,5 +126,6 @@ The previously open observation is closed by an immutable repository archive.
   evaluation obligations, publication/sharing policies, and terms changes —
   all present in the archived text.
 - **Gate result:** The immutable-terms-snapshot evidence field is complete for
-  every group citing OpenAI's Terms of Use. Remaining gate fields (target
-  decision, second-person review, room-art provenance) are unchanged.
+  every group citing OpenAI's Terms of Use. Remaining gate fields include the
+  sixty-combination review, orange-tabby production intake, confirmation of the
+  selected public target, and second-person closure.

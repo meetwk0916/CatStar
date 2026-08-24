@@ -22,9 +22,10 @@ npm run check:assets
 
 The checker validates sheet dimensions, non-empty alpha frames, stable baselines,
 reasonable visible-area changes, and the absence of small detached pixel islands.
-`npm run check:assets:release` applies the future first-release profile with all
-ten coat presets; it is not evidence that the incomplete release set already
-passes.
+`npm run check:assets:release` still validates the legacy ten-preset profile,
+including brown tabby, solid gray, tortoiseshell, and colorpoint, which ADR-0010
+defers to post-release. It is a stale gate and cannot be cited as evidence that
+the six-preset first-release boundary passed.
 
 ## Candidate Layout
 
@@ -39,9 +40,9 @@ must point there rather than restating which version is current.
 Technical lineage does not establish distribution rights. The current
 rights-chain gate and production intake requirements live in
 [`rights-and-provenance.md`](rights-and-provenance.md).
-The Issue #17 evidence draft lives in
-[`rights-chain-checklist.md`](rights-chain-checklist.md); it does not change
-the gate.
+The current project-wide Issue #61 gate checklist lives in
+[`rights-chain-checklist.md`](rights-chain-checklist.md); completing it does not
+grant distribution rights or change the canonical gate.
 
 The approved Issue #23 orange-tabby production handoff lives at
 [`../../artifacts/art/production-briefs/orange-tabby-v1/README.md`](../../artifacts/art/production-briefs/orange-tabby-v1/README.md).

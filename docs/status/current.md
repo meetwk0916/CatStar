@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-23
+**Last aligned:** 2026-08-24
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -17,6 +17,25 @@ production-quality release.
 This ledger describes the locally verified implementation. Git integration,
 pull-request, deployment, and production status are separate release facts and
 must not be inferred from this document.
+
+## Current release and hosting state
+
+The first-public-release route uses the repository's existing OpenAI Sites
+project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
+is fallback only if Sites public delivery cannot be cleared. The canonical
+execution map is
+[Wayfinder map: first public release of 喵星来信](https://github.com/meetwk0916/CatStar/issues/48).
+
+As verified on 2026-08-24, the Sites project is active, has no custom domain,
+and its deployed version predates the current `main`. Its default public URL
+returns Cloudflare-edge `HTTP 403`; no matching recent Worker error was
+reported, so the user-facing site is not live-verified. The release path must
+not treat that deployment as a public launch. The open verification owner is
+[Prove Sites public delivery and clear the current edge 403](https://github.com/meetwk0916/CatStar/issues/69).
+
+The hosted configuration has no D1 or R2 binding. Passport and letter state
+remain device-local browser data; selecting Sites as the host does not change
+the Phase 0 local-data boundary.
 
 The current implementation includes:
 
@@ -150,22 +169,26 @@ hashes or branch information to this file.
 ## Remaining work
 
 - Polish responsive layout after browser review on mobile and desktop.
-- Validate Phaser against the mobile scene-performance gate before treating
-  engine migration as active work.
+- The representative mid-range-phone performance evidence was explicitly
+  waived for the first public release on 2026-08-24 and must not be reported as
+  passed. ADR-0004 still governs future engine decisions: do not begin a Phaser
+  migration without repeated measured failures.
 - Produce independent ten-action masters for slender short-haired and fluffy
   long-haired before exposing those prototypes in the passport; they do not
   block the first release. The gray-white master is locked for internal
-  production work, while its immutable terms snapshot and complete public
-  distribution rights chain remain unresolved.
-- Complete or replace every unresolved art rights-chain record before public,
-  paid, marketing, or app-store distribution.
-- Complete six reviewed rounded-short-haired coat appearances for the first
-  release — gray-and-white tabby, orange tabby, solid black, solid white,
-  calico, and black-and-white tuxedo — replacing the four ordinary
-  deterministic derivatives and the internal orange preview, and reviewing
-  matching eye, nose, and paw-pad colors without enabling free mixing or local
-  markings. Brown tabby, solid gray, tortoiseshell, and colorpoint are
-  post-release scope per ADR-0010.
+  production work. Its immutable terms snapshot is archived; the current
+  release matrix and project-wide public-distribution gate remain unresolved.
+- Close the project-wide art rights gate before public, paid, marketing, or
+  app-store distribution. Every current runtime group has a provenance record
+  and immutable terms evidence; records alone do not grant release clearance.
+- Complete the sixty-combination review for the six first-release
+  rounded-short-haired coat appearances — gray-and-white tabby, orange tabby,
+  solid black, solid white, calico, and black-and-white tuxedo. The four
+  deterministic derivatives may ship only if every applicable combination
+  passes; a failing preset requires independent production art. The internal
+  orange preview must be replaced by the approved production source. Brown
+  tabby, solid gray, tortoiseshell, and colorpoint are post-release scope per
+  ADR-0010.
 - Produce and intake the approved orange-tabby appearance defined in
   `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
   desktop/mobile capture is comparison evidence only; Issue #23 remains blocked

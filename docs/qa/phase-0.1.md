@@ -96,14 +96,22 @@ accessibility checks.
 - Do not waive failures because an action is infrequent. The three early
   quality-slice actions determine production order, while all ten actions share
   the same final release threshold.
-- Review all hundred combinations of ten release coat presets and ten actions
-  for marking continuity, harmonized eye/nose/paw-pad colors, scene contrast,
-  and identity consistency. Side-by-side loops or review boards may batch the
-  work; sampling does not satisfy the release gate.
+- Review all sixty combinations of six first-release coat presets and ten
+  actions for marking continuity, harmonized eye/nose/paw-pad colors, scene
+  contrast, and identity consistency. Side-by-side loops or review boards may
+  batch the work; sampling does not satisfy the release gate.
+- Ship a deterministic derivative only when every applicable combination
+  passes. Any failing preset requires independent production art. Brown tabby,
+  solid gray, tortoiseshell, and colorpoint remain post-release scope.
 
 ### Cat Scene Performance
 
-- Run the scene on a representative mid-range phone for 60 seconds.
+- For the first public release only, representative mid-range physical-phone
+  evidence is explicitly waived. Record this as `waived`, not `passed`; the
+  waiver does not alter ADR-0004's future engine trigger of repeated measured
+  mobile-performance failures.
+- After the first public release, run the scene on a representative mid-range
+  phone for 60 seconds.
 - Confirm the scene becomes interactive within 3 seconds after entering the
   main page.
 - Confirm companion motion remains at or above 30 FPS for most of the run.
