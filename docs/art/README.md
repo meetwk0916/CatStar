@@ -22,9 +22,9 @@ npm run check:assets
 
 The checker validates sheet dimensions, non-empty alpha frames, stable baselines,
 reasonable visible-area changes, and the absence of small detached pixel islands.
-`npm run check:assets:release` applies the future first-release profile with all
-ten coat presets; it is not evidence that the incomplete release set already
-passes.
+`npm run check:assets:release` applies the six-preset first-release profile; its
+structural result does not replace the required sixty-combination human review.
+The remaining four coat presets stay in the post-release product direction.
 
 ## Candidate Layout
 

@@ -550,8 +550,9 @@ Production order:
    the real room;
 4. after the slice passes, complete and validate rounded short-haired's
    remaining seven action classes;
-5. lock its face, anatomy, anchors, lighting, and motion timing, then build all
-   ten complete **毛色预设** without changing the motion master;
+5. lock its face, anatomy, anchors, lighting, and motion timing, then build the
+   six first-release **毛色预设** without changing the motion master; retain
+   brown tabby, solid gray, tortoiseshell, and colorpoint as post-release work;
 6. repeat the complete master and preset workflow for slender short-haired and
    fluffy long-haired before enabling either prototype in registration.
 
@@ -565,14 +566,18 @@ routines such as approaching the user and touching the plant reuse approved
 core motion; no additional bespoke action class blocks release.
 
 Release gate: the rounded short-haired prototype may ship after its own full
-motion master and all ten complete **毛色预设** pass art review. The current six
-deterministic coat derivatives do not satisfy this gate. Slender short-haired
-and fluffy long-haired remain follow-up scope and do not block that first
-release.
+motion master and exactly six first-release **毛色预设** pass art review. The four
+deterministic derivatives may ship only when every applicable preset-action
+combination passes and the preset's rights row is complete; any failing preset
+requires independent production art. Slender short-haired, fluffy long-haired,
+and the remaining four coat presets are post-release scope and do not block
+that first release.
 
-Review coverage must include every combination of the ten coat presets and ten
-actions. Batch the hundred combinations into side-by-side loops or review
-boards so reviewers can compare marking continuity, eye/nose/paw-pad harmony,
-scene contrast, and identity without relying on sampling. Automated checks for
-frame count, dimensions, alpha, palette, and anchors support but do not replace
-human art review.
+Review coverage must include every combination of the six first-release coat
+presets and ten actions. Batch the sixty combinations into side-by-side loops
+or review boards so reviewers can compare marking continuity,
+eye/nose/paw-pad harmony, scene contrast, and identity without relying on
+sampling. Automated checks for frame count, dimensions, alpha, palette, and
+anchors support but do not replace human art review. The ten-preset product
+direction remains post-release work subject to equivalent per-combination
+review before any additional preset becomes selectable.

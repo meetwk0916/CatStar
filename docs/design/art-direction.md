@@ -142,16 +142,18 @@ The Phaser scene should load runtime PNG assets from `public/assets/scenes/windo
   product direction but do not block that release. Each prototype must receive
   its own complete ten-action motion master before becoming selectable; never
   stretch, squash, or reuse another prototype's body art.
-- After a motion master passes review, apply ten complete **毛色预设**: orange
-  tabby, solid black, solid white, calico, black-and-white tuxedo,
-  gray-and-white tabby, brown tabby, solid gray, tortoiseshell, and colorpoint.
-  Each preset owns reviewed coat, eye, nose, and paw-pad colors; Phase 0.1 does
-  not offer free color mixing or independent local-marking edits. All ten are
-  required for the first release; deterministic recoloring alone does not pass
-  the art-review gate.
-- Human art review covers all hundred coat-preset/action combinations. Use
-  side-by-side loops or review boards to make full coverage practical; do not
-  substitute sampling or automated structural checks for visual approval.
+- After a motion master passes review, apply exactly six first-release
+  **毛色预设**: gray-and-white tabby, orange tabby, solid black, solid white,
+  calico, and black-and-white tuxedo. Each preset owns reviewed coat, eye, nose,
+  and paw-pad colors; Phase 0.1 does not offer free color mixing or independent
+  local-marking edits. The four deterministic derivatives may ship only when
+  every applicable preset-action combination passes; any failing preset
+  requires independent production art.
+- Human art review covers all sixty first-release coat-preset/action
+  combinations. Use side-by-side loops or review boards to make full coverage
+  practical; do not substitute sampling or automated structural checks for
+  visual approval. Brown tabby, solid gray, tortoiseshell, and colorpoint remain
+  the post-release direction and require equivalent review before selection.
 - Do not use code-drawn cat sprites as production art.
   `scripts/generate_cat_animation_assets.py` is only an experiment for frame
   counts, anchors, and metadata. The current runtime action selection and its
