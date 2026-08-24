@@ -22,9 +22,10 @@ npm run check:assets
 
 The checker validates sheet dimensions, non-empty alpha frames, stable baselines,
 reasonable visible-area changes, and the absence of small detached pixel islands.
-`npm run check:assets:release` applies the six-preset first-release profile; its
-structural result does not replace the required sixty-combination human review.
-The remaining four coat presets stay in the post-release product direction.
+`npm run check:assets:release` still validates the legacy ten-preset profile,
+including brown tabby, solid gray, tortoiseshell, and colorpoint, which ADR-0010
+defers to post-release. It is a stale gate and cannot be cited as evidence that
+the six-preset first-release boundary passed.
 
 ## Candidate Layout
 
