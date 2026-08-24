@@ -24,7 +24,7 @@ approval for another.
 **Selected target:** First public web release, completely free. Current allowed
 use remains internal-only until the project-wide gate closes.
 **Decision owner:** Walter
-**Decision date:** ____________________
+**Decision date:** 2026-08-24
 
 ## 2. Evidence required for every runtime asset group
 
@@ -84,6 +84,7 @@ confirms the complete package and signs the decision below.
       evidence record from section 2.
 - [ ] Applicable terms/provider records are archived immutably and hashed.
 - [ ] Human approval and attribution requirements are recorded.
+- [ ] Public product copy identifies the art as AI-generated.
 - [ ] The runtime map contains no unresolved asset that can enter the intended
       distribution build.
 - [ ] A second reviewer confirms the package and signs the decision below.
@@ -126,5 +127,5 @@ The previously open observation is closed by an immutable repository archive.
   all present in the archived text.
 - **Gate result:** The immutable-terms-snapshot evidence field is complete for
   every group citing OpenAI's Terms of Use. Remaining gate fields include the
-  sixty-combination review, orange-tabby production intake, public-target
-  decision, and second-person confirmation.
+  sixty-combination review, orange-tabby production intake, confirmation of the
+  selected public target, and second-person closure.

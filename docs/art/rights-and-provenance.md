@@ -1,7 +1,7 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-23
+**Last reviewed:** 2026-08-24
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. Every current asset group now
@@ -28,8 +28,8 @@ not proof of production rights.
 
 ## Production intake requirements
 
-Before any public beta, paid distribution, marketing use, or app-store
-submission, every runtime asset must have:
+Before any free public web release, public beta, paid distribution, marketing
+use, or app-store submission, every runtime asset must have:
 
 - creator or generation provider and account owner;
 - model/tool version and creation date when the provider exposes them; when a
@@ -40,6 +40,9 @@ submission, every runtime asset must have:
 - license or terms snapshot that covers the intended distribution;
 - human approval and any attribution requirements;
 - confirmation that the asset does not imitate a protected character or brand.
+
+Before public release, public-facing copy must also disclose that the art is
+AI-generated; the project-wide checklist owns that closure confirmation.
 
 Replace unresolved assets or complete their records before changing the
 “internal prototype only” classification. `runtime-map.md` remains the

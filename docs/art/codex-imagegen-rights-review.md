@@ -24,20 +24,22 @@ fetch cleanly (T1).
 
 **Recommendation: option (a). Completing CatStar's existing records is sufficient
 for a free, publicly distributed web product; a clean-source fallback for cat
-assets is not required on rights grounds.** Two honesty conditions ride along,
-both already consistent with the project's practices:
+assets is not required on rights grounds.** Two honesty conditions ride along:
 
 1. **Do not present the art as human-made.** The consumer Terms of Use prohibit
    "[r]epresenting that Output was human-generated when it was not"
    ([Terms of Use](https://openai.com/policies/terms-of-use/), T2, archived
    2026-08-21). Keep an accurate "art generated with AI" statement in the public
    product (e.g., about/credits page).
-2. **Review before shipping** — already satisfied by CatStar's recorded human
-   review rounds (Sharing & Publication Policy expects manual review of each
-   generation before sharing; see §5).
+2. **Review before shipping.** CatStar has recorded scoped and historical human
+   review rounds, but its separate sixty-combination first-release matrix is
+   still open (Sharing & Publication Policy expects manual review before
+   sharing; see §5).
 
-The remaining gate is procedural, not legal: land #49's immutable terms snapshot
-in-repo and reference it from the ledger rows (checklist §2 "Terms snapshot").
+The immutable terms snapshot is now archived in-repo and referenced by the
+ledger rows. The remaining gates are procedural: finish the sixty-combination
+review, receive and intake the orange-tabby production source, and close the
+project-wide public rights gate (Issues #56/#60/#61).
 
 ## 2. Which regime governs images generated inside a Codex agent session
 
@@ -177,20 +179,22 @@ official documentation identifies the model during CatStar's generation window
   not exposed" is: *"built-in Codex ImageGen; version not exposed per-generation;
   contemporaneous official docs (archived 2026-08-12/14) identify gpt-image-2."*
 
-## 7. Evidence satisfying a careful rights review, and residual risk
+## 7. Evidence state and residual risk
 
-Satisfied by completing the existing records:
+Completed evidence:
 
-1. Immutable, hashed terms snapshot in-repo covering: consumer Terms of Use,
-   Service Terms, Sharing & Publication Policy, Usage Policies (ticket **#49**,
-   in progress — fresh Wayback captures exist for every page; see source table).
+1. The immutable, hashed OpenAI Terms snapshot is archived under
+   `docs/art/rights-snapshots/`; supporting Terms, Service Terms, Sharing &
+   Publication Policy, and Usage Policies captures are indexed alongside it.
 2. Per-asset records already in `docs/art/rights-and-provenance.md`: provider/tool
    name, generation dates, prompts/briefs, transformation lineage, third-party
    non-imitation assertions, human approvals.
-3. Add to each Terms-evidence row: pointer to the #49 snapshot + this review +
-   the contemporaneous model-version evidence (§6).
-4. Public copy states art is AI-generated (honesty condition, §5) — cheap and
-   removes the only conduct-level term risk identified.
+3. Applicable Terms-evidence rows reference the archived snapshot, this review,
+   and the contemporaneous model-version evidence (§6).
+
+Still required before public release: public copy must state that the art is
+AI-generated (honesty condition, §5). The project-wide checklist owns that
+closure confirmation.
 
 Residual risks if the model version stays unrecorded (and generally):
 
@@ -231,6 +235,6 @@ Residual risks if the model version stays unrecorded (and generally):
 | 14 | https://developers.openai.com/api/docs/guides/image-generation (.md) | **T1 live** | API-regime models: gpt-image-2/1.5/1/1-mini | `cf4df21f01ee0413de266ab01be0eedb89d14645a198687923e15cf23ec40b5b` |
 | 15 | community.openai.com "Introducing gpt-image-2 … in the API and Codex" | T3, search snippet | Dates gpt-image-2 availability (~2026-04-21) | n/a |
 
-\* SHA-256 over the HTML exactly as retrieved into
-`/Users/meetwk0916/issue50-evidence/` (filenames match table order; text extractions
-alongside). Ready to lift into `docs/art/rights-snapshots/` by ticket #49.
+\* SHA-256 over the archived copies now retained under
+`docs/art/rights-snapshots/imagegen-rights-review-sources/`; filenames and
+supporting text extractions are indexed there.

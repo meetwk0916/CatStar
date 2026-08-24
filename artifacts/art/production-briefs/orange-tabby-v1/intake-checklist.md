@@ -4,13 +4,13 @@
 
 **Issue:** #23
 
-**Decision owner:** ____________________
+**Decision owner:** Walter
 
-**Intended release target:** Public beta, paid distribution, marketing, and
-app-store submission unless a narrower target is explicitly recorded below.
+**Intended release target:** First public web release (free)
 
 This checklist must describe the actual delivered orange-tabby source. Blank
-or uncertain fields keep the package internal-only and block Issue #23.
+or uncertain required fields keep the package internal-only and block Issue
+#23.
 
 ## Source Identity
 
@@ -44,15 +44,20 @@ or uncertain fields keep the package internal-only and block Issue #23.
       ____________________
 - [ ] CatStar may modify, crop, animate, recolor for accessibility, bundle,
       reproduce, and distribute the delivered work.
-- [ ] Rights cover public beta and free public distribution.
-- [ ] Rights cover paid distribution and in-app inclusion.
-- [ ] Rights cover marketing, screenshots, trailers, and store listings.
-- [ ] Rights cover app-store submission and worldwide digital distribution.
+- [ ] Rights cover free public web distribution.
+- [ ] Optional future right: paid distribution and in-app inclusion.
+- [ ] Optional future right: marketing, screenshots, trailers, and store
+      listings.
+- [ ] Optional future right: app-store submission and worldwide digital
+      distribution.
 - [ ] Rights duration, territory, attribution, exclusivity, and sublicensing
       terms are recorded: ____________________
 - [ ] Any restrictions or required notices are recorded: ____________________
 - [ ] Applicable provider/license/contract documents are archived immutably
       and their SHA-256 values are recorded.
+
+The optional future-right fields do not block the first public web release.
+Any unchecked field keeps that broader use outside the approved target.
 
 ## Visual And Technical Review
 
