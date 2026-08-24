@@ -67,7 +67,10 @@ Use this table as a work queue. It is not a clearance decision.
 
 Close the project-wide gate only when every applicable box is checked and the
 linked records are reviewable by someone other than the person who generated
-the art.
+the art. These boxes record the second reviewer's closure confirmations, not
+the underlying evidence inventory. An unchecked box can therefore coexist with
+a verified fact recorded above, and remains unchecked until that reviewer
+confirms the complete package and signs the decision below.
 
 - [ ] Distribution target is explicitly selected.
 - [ ] The dedicated production model sheet is the sole identity authority.

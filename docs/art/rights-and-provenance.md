@@ -173,7 +173,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Transformation lineage | Built-in ImageGen chroma-key sources → recorded chroma-key removal → connected-pose extraction → nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheets via `scripts/compose_product_cat_quiet_motion_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`, covering `idle`, cat-bed and blanket awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Both release-grade structural gates pass; wakun approved all eight human-review decisions on 2026-08-09. |
-| Distribution status | Internal quiet-motion evidence only. Public distribution remains blocked by an immutable terms snapshot and the remaining runtime rights chain. |
+| Distribution status | Internal quiet-motion evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
 
 ## Rounded short-haired idle v3 intake record
 
