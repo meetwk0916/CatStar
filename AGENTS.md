@@ -43,6 +43,13 @@ specs and mutable status notes never override those sources.
 - Phase 0 data stays local. Do not add accounts, upload, sync, or remote storage.
 - Do not commit `node_modules/`, `dist/`, or TypeScript build info.
 
+## Hosting and Release Facts
+
+- Reuse the existing OpenAI Sites project in `.openai/hosting.json`; do not create a second Site for this repository.
+- Keep local verification, commit, remote publication, Sites deployment, and live HTTP verification as separate facts.
+- A successful Sites deployment is not proof of public serving. Verify the canonical root URL and a real generated asset; an edge `403` with no matching Worker error is not a live release.
+- Keep runtime values and secrets in Sites, not in `.openai/hosting.json` or committed environment files.
+
 ## Commands
 
 ```bash

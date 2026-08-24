@@ -55,9 +55,17 @@ npm run check:bundle
 ```
 
 This checks runtime cat sprite-sheet structure, validates saved browser review
-screenshots, runs domain and browser regression tests, builds the
-Sites-compatible Vinext/Cloudflare Worker app, and enforces the accepted
-internal-prototype bundle budget.
+screenshots, runs domain and browser regression tests, builds the OpenAI
+Sites-compatible Vinext app and its Cloudflare Worker output, and enforces the
+accepted internal-prototype bundle budget.
+
+## Hosting
+
+The production build targets the existing OpenAI Sites project identified by
+`.openai/hosting.json`. A successful build or Sites deployment does not by
+itself mean the public site is reachable. The current hosting route, public
+HTTP status, and release blockers are maintained in
+[`docs/status/current.md`](./docs/status/current.md).
 
 ## Project Structure
 
@@ -73,7 +81,7 @@ src/
 docs/                       Specifications, status, QA, ADRs, and documentation indexes
 artifacts/art/              Generated art sources, candidates, and review evidence
 public/assets/              Runtime assets consumed by the app
-build/ and worker/          Sites build adapter and Cloudflare Worker entry
+build/ and worker/          OpenAI Sites build adapter and Worker entry
 ```
 
 ## Documentation

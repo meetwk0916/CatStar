@@ -81,7 +81,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Source brief | Gray-and-white tabby, healthy adult, rounded short-haired domestic cat; natural proportions rather than chibi; broad chest, compact torso, short sturdy legs, wider cheeks; calm curious expression; controlled pixel clusters and soft indoor light. |
 | Third-party source assertion | The creator confirms that no third-party character, brand, illustration, or another person's photo was used as a reference input or imitation target. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-08. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); the owner-use statement remains subject to applicable law and the Terms. |
-| Distribution status | Production identity authority recorded for internal work. Public distribution clearance remains pending an immutable terms snapshot and complete runtime rights-chain review. |
+| Distribution status | Production identity authority recorded for internal work. The immutable terms snapshot is archived; public distribution clearance remains pending the complete runtime rights-chain review and project-wide gate (Issue #61). |
 
 ## Rounded short-haired moving quality-slice approval record
 
@@ -114,7 +114,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 historical recordings: all ten actions at `1280x720` and `390x844`, bound to its capture-time source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. Current `idle`, `sit`, and `walk` inputs and scale registration postdate this evidence, so it is not a current release matrix. |
 | Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 against that historical fingerprint after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. The approval does not transfer to changed source inputs. |
 | Terms evidence | The component records below retain their applicable OpenAI Terms review dates. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); commercial-use review at [`codex-imagegen-rights-review.md`](codex-imagegen-rights-review.md). |
-| Distribution status | Locked for CatStar internal production work only. Public, paid, marketing, and app-store distribution remain blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
+| Distribution status | Locked for CatStar internal production work only. The immutable terms snapshot is archived; public, paid, marketing, and app-store distribution remain blocked by the current release review and project-wide rights gate (Issues #60/#61). |
 
 ## Rounded short-haired daily-life v1 intake record
 
@@ -134,7 +134,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Structural evidence | `npm run check:assets` and `npm run test:assets` pass for all six current coat presets and the ten-action contract. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/` covers `eat`, sustained `groom`, and phase-weighted `stretch` for the gray-white motion master at `1280x720` and `390x844` from entry through exit. All six entries were approved by meetwk0916 on 2026-08-15 and pass the release-grade motion-review gate. The v1 and v2 directories retain the earlier short-stretch and short-grooming iterations for comparison. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
-| Distribution status | Internal daily-life evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
+| Distribution status | Internal daily-life evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
 
 ## Rounded short-haired jump v6 intake record
 
@@ -154,7 +154,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Structural evidence | `npm run check:assets` passes for all six current coat presets; `tests/jump-motion.test.ts` records six distinct frames, stable body mass, runtime wiring, and the approved evidence matrix. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v3/` covers the final post-review floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
-| Distribution status | Internal jump evidence only. Public distribution remains blocked by the immutable terms snapshot and complete runtime rights-chain requirements. |
+| Distribution status | Internal jump evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
 
 ## Rounded short-haired quiet-motion v1 intake record
 
