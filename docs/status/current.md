@@ -18,14 +18,28 @@ This ledger describes the locally verified implementation. Git integration,
 pull-request, deployment, and production status are separate release facts and
 must not be inferred from this document.
 
-The local experience candidate now places the mailbox before passport details
-on mobile, uses a shared warm paper-and-brown visual treatment, and labels the
-final letter as **最后一封** without changing its stored ID. Existing browser
-checks cover first-screen access at 390×844 and final-letter reading, explicit
-farewell, and archive review on mobile and desktop. Visual acceptance by Walter
-is pending; this candidate does not change the production-art or rights gates.
+The retained local review baseline uses the landscape room, places the mailbox
+before passport details on mobile, and labels the final letter as **最后一封**
+without changing its stored ID. Existing browser checks cover first-screen
+access at 390×844 and final-letter reading, explicit farewell, and archive
+review on mobile and desktop.
+
+On 2026-11-06, Walter asked to stop and reconsider the direction, then return
+to this earlier implementation. Further product/UI work is paused. Retaining
+this baseline is not mobile-first design acceptance or release approval. The
+later portrait-background extension was rejected and remains an unmerged local
+draft; its display geometry and draft specs are not the current contract.
+Resume only after Walter supplies a new direction. The open
+[experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77)
+records this hold.
 
 ## Current release and hosting state
+
+The current local preview serves the retained production build at
+`http://127.0.0.1:5173/`. The implementation has not been pushed, merged into
+remote `main`, or deployed. The hosted observations below are historical;
+remote access policy and live delivery were not reverified in this local
+closeout.
 
 The first-public-release route uses the repository's existing OpenAI Sites
 project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
@@ -179,7 +193,8 @@ hashes or branch information to this file.
 
 ## Remaining work
 
-- Polish responsive layout after browser review on mobile and desktop.
+- Reconsider the product/UI direction with Walter before further layout work.
+  The retained landscape baseline has not passed mobile-first acceptance.
 - The representative mid-range-phone performance evidence was explicitly
   waived for the first public release on 2026-08-24 and must not be reported as
   passed. ADR-0004 still governs future engine decisions: do not begin a Phaser

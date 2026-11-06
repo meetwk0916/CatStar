@@ -71,8 +71,11 @@ The current project-wide browser evidence lives under
 `artifacts/art/runtime-review/2026-11-06/`. Its 19 screenshots passed automatic
 structural validation against source fingerprint
 `f5e8a12841eece7d7c30c60100b1b38a0ecfc5969c649601e8b27bf6376397d2`.
-Walter's visual acceptance is pending; this set does not renew earlier human
-approvals or establish production-art acceptance.
+This is evidence for the retained landscape review baseline. Further design
+work is paused; no mobile-first visual acceptance was granted. This set does
+not renew earlier human approvals or establish production-art acceptance. The
+rejected portrait extension is an unmerged draft and is not a runtime authority
+in this checkout.
 
 The historical set under `artifacts/art/runtime-review/2026-08-23/` retains 19
 screenshots covering default movement, window bench, cat bed, food bowl, blanket,
