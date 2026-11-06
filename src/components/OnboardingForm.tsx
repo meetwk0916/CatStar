@@ -54,7 +54,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8D6E63]">
             Letters from Cat Star
           </p>
-          <h1 className="max-w-[9ch] text-5xl font-black leading-[0.96] md:text-7xl">
+          <h1 className="max-w-[9ch] text-4xl font-semibold leading-tight md:text-6xl">
             喵星来信
           </h1>
           <p className="max-w-[34rem] text-lg leading-8 text-[#6C5A57]">
@@ -64,7 +64,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
 
         <form
           onSubmit={submit}
-          className="border-4 border-[#4A3E3D] bg-[#FFFDF9] p-5 shadow-[4px_4px_0px_0px_#4A3E3D] md:p-7"
+          className="rounded-2xl border border-[#CDBCA9] bg-[#FFFDF9] p-5 shadow-[0_8px_24px_#6C514510] md:p-7"
         >
           <div className="grid gap-5">
             <label className="grid gap-2">
@@ -72,7 +72,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               <input
                 value={form.catName}
                 onChange={(event) => update("catName", event.target.value)}
-                className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
+                className="rounded-2xl border border-[#9E8875] bg-[#FBF8F3] px-3 py-3 text-base focus:bg-white"
                 maxLength={24}
               />
             </label>
@@ -82,7 +82,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               <input
                 value={form.ownerName}
                 onChange={(event) => update("ownerName", event.target.value)}
-                className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
+                className="rounded-2xl border border-[#9E8875] bg-[#FBF8F3] px-3 py-3 text-base focus:bg-white"
                 maxLength={24}
               />
             </label>
@@ -92,7 +92,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
               <input
                 value={form.favoriteSnack}
                 onChange={(event) => update("favoriteSnack", event.target.value)}
-                className="border-4 border-[#4A3E3D] bg-[#FBF8F3] px-3 py-3 text-base outline-none focus:bg-white"
+                className="rounded-2xl border border-[#9E8875] bg-[#FBF8F3] px-3 py-3 text-base focus:bg-white"
                 maxLength={24}
               />
             </label>
@@ -106,14 +106,14 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                     type="button"
                     onClick={() => update("coatPreset", preset.value)}
                     aria-pressed={form.coatPreset === preset.value}
-                    className={`border-4 px-3 py-3 text-left text-sm font-bold shadow-[3px_3px_0px_0px_#4A3E3D] ${
+                    className={`rounded-xl border px-3 py-3 text-left text-sm font-bold shadow-[0_8px_24px_#6C514510] ${
                       form.coatPreset === preset.value
-                        ? "border-[#4A3E3D] bg-[#F3D8C7]"
-                        : "border-[#BCAAA4] bg-white"
+                        ? "border-[#8D6E63] bg-[#F3E5D5]"
+                        : "border-[#D6C8B8] bg-[#FFFDF9]"
                     }`}
                   >
                     <span
-                      className="mb-2 block h-5 w-5 border-2 border-[#4A3E3D]"
+                      className="mb-2 block h-5 w-5 rounded border border-[#CDBCA9]"
                       style={{ background: preset.swatch }}
                     />
                     {preset.label}
@@ -136,10 +136,10 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
                     type="button"
                     onClick={() => update("temperament", temperament.value)}
                     aria-pressed={form.temperament === temperament.value}
-                    className={`border-4 p-3 text-left shadow-[3px_3px_0px_0px_#4A3E3D] ${
+                    className={`rounded-xl border p-3 text-left shadow-[0_8px_24px_#6C514510] ${
                       form.temperament === temperament.value
-                        ? "border-[#4A3E3D] bg-[#F3D8C7]"
-                        : "border-[#BCAAA4] bg-white"
+                        ? "border-[#8D6E63] bg-[#F3E5D5]"
+                        : "border-[#D6C8B8] bg-[#FFFDF9]"
                     }`}
                   >
                     <span className="block font-bold">{temperament.label}</span>
@@ -157,7 +157,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
 
             <button
               type="submit"
-              className="border-4 border-[#4A3E3D] bg-[#4A3E3D] px-5 py-4 text-base font-black text-[#FFFDF9] shadow-[4px_4px_0px_0px_#C9A08B] transition-transform hover:-translate-y-0.5"
+              className="rounded-2xl border border-[#CDBCA9] bg-[#6C5145] px-5 py-4 text-base font-semibold text-[#FFFDF9] shadow-[0_8px_24px_#6C514510] transition-transform hover:-translate-y-0.5"
             >
               登记喵星护照
             </button>

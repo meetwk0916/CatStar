@@ -93,6 +93,19 @@ for (const width of [320, 375, 414, 768]) {
   });
 }
 
+test("mobile first screen keeps the room and incoming letter within reach", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await registerPassport(page);
+  await page.evaluate(() => window.scrollTo(0, 0));
+
+  await expect(page.locator("canvas")).toBeInViewport({ ratio: 1 });
+  const mailbox = page.getByRole("button", { name: /时光信箱/ });
+  await expect(mailbox).toBeInViewport({ ratio: 1 });
+  await mailbox.click();
+  await page.getByRole("button", { name: /第 1 封.*我在窗边安顿好了/ }).click();
+  await expect(page.getByRole("dialog", { name: "我在窗边安顿好了" })).toBeVisible();
+});
+
 test("mailbox uses one focus-managed modal dialog", async ({ page }) => {
   await registerPassport(page);
   await page.getByRole("button", { name: /时光信箱/ }).click();
@@ -186,42 +199,59 @@ test("passport and read progress survive a reload", async ({ page }) => {
   await expect(page.getByRole("button", { name: /我在窗边安顿好了.*已经读过/ })).toBeVisible();
 });
 
-test("final letter stays gated, then farewell seals only the mailbox", async ({ page }) => {
-  await registerPassport(page);
-  await page.getByRole("button", { name: "最终信投递日", exact: true }).click();
-  await expect(page.getByText("小灰 正在窗边陪你，已经抵达的信都可以慢慢读。", { exact: true })).toBeVisible();
-  await expect(page.getByText(/等下一封信抵达/)).toHaveCount(0);
-  await page.getByRole("button", { name: /时光信箱/ }).click();
+for (const width of [1280, 390]) {
+  test(`final letter stays gated, then farewell seals only the mailbox at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 720 });
+    await registerPassport(page);
+    await page.getByRole("button", { name: "最终信投递日", exact: true }).click();
+    await expect(page.getByText("小灰 正在窗边陪你，已经抵达的信都可以慢慢读。", { exact: true })).toBeVisible();
+    await expect(page.getByText(/等下一封信抵达/)).toHaveCount(0);
+    await page.getByRole("button", { name: /时光信箱/ }).click();
 
-  const waitingFinal = page.getByRole("button", { name: /远方的星光/ });
-  await expect(waitingFinal).toBeDisabled();
+    const waitingFinal = page.getByRole("button", { name: /远方的星光/ });
+    await expect(waitingFinal).toBeDisabled();
+    await expect(waitingFinal).toContainText("最后一封");
+    await expect(waitingFinal).not.toContainText("99");
 
-  for (const title of [
-    "我在窗边安顿好了",
-    "窗边有喜欢的味道",
-    "今天的星光很轻",
-    "今天在房间里走走",
-    "想念不用放整齐",
-    "睡醒以后还在这里",
-    "谢谢你记得我",
-  ]) {
-    await page.getByRole("button", { name: new RegExp(title) }).click();
-    await expect(page.getByRole("dialog", { name: title, exact: true })).toBeVisible();
+    for (const title of [
+      "我在窗边安顿好了",
+      "窗边有喜欢的味道",
+      "今天的星光很轻",
+      "今天在房间里走走",
+      "想念不用放整齐",
+      "睡醒以后还在这里",
+      "谢谢你记得我",
+    ]) {
+      await page.getByRole("button", { name: new RegExp(title) }).click();
+      await expect(page.getByRole("dialog", { name: title, exact: true })).toBeVisible();
+      await page.getByRole("button", { name: "回到信箱", exact: true }).click();
+    }
+
+    await page.getByRole("button", { name: /最后一封信：窗边还亮着/ }).click();
+    const finalDialog = page.getByRole("dialog", { name: "最后一封信：窗边还亮着", exact: true });
+    await expect(finalDialog.getByText("最后一封", { exact: true })).toBeVisible();
+    await expect(finalDialog).not.toContainText("99");
+    await expect(page.getByText(/这不是我消失，也不是要你把想念放下/)).toBeVisible();
+    const farewell = page.getByRole("button", { name: "谢谢你陪我走到这里", exact: true });
+    await farewell.scrollIntoViewIfNeeded();
+    await expect(farewell).toBeInViewport({ ratio: 1 });
+    await farewell.click();
+    await expect(page.getByText("信箱已经封存，星河陪伴仍在继续。", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "关闭", exact: true }).click();
+    await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
+    await page.getByRole("button", { name: /信箱封存/ }).click();
+    await expect(page.getByRole("button", { name: /最后一封信：窗边还亮着/ })).toContainText("已经读过");
+    await page.getByRole("button", { name: /最后一封信：窗边还亮着/ }).click();
+    await expect(finalDialog).toBeVisible();
+    await expect(farewell).toHaveCount(0);
     await page.getByRole("button", { name: "回到信箱", exact: true }).click();
-  }
-
-  await page.getByRole("button", { name: /最后一封信：窗边还亮着/ }).click();
-  await expect(page.getByText(/这不是我消失，也不是要你把想念放下/)).toBeVisible();
-  await page.getByRole("button", { name: "谢谢你陪我走到这里", exact: true }).click();
-  await expect(page.getByText("信箱已经封存，星河陪伴仍在继续。", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "关闭", exact: true }).click();
-  await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
-
-  await page.reload();
-  await expect(page.getByRole("button", { name: /信箱封存/ })).toBeVisible();
-  await page.getByRole("button", { name: /信箱封存/ }).click();
-  await expect(page.getByRole("button", { name: /最后一封信：窗边还亮着/ })).toContainText("已经读过");
-});
+    await page.getByRole("button", { name: /第 1 封.*我在窗边安顿好了/ }).click();
+    await expect(page.getByRole("dialog", { name: "我在窗边安顿好了", exact: true })).toBeVisible();
+  });
+}
 
 test("reset can be cancelled and confirmed without leaving stale local state", async ({ page }) => {
   await registerPassport(page);

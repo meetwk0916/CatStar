@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-23
+Last updated: 2026-11-06
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -68,25 +68,33 @@ first-release profile rejects it.
 - Regenerate runtime evidence with `npm run review:runtime`.
 
 The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-08-23/`. Its 19
-screenshots cover default movement, window bench, cat bed, food bowl, blanket,
+`artifacts/art/runtime-review/2026-11-06/`. Its 19 screenshots passed automatic
+structural validation against source fingerprint
+`f5e8a12841eece7d7c30c60100b1b38a0ecfc5969c649601e8b27bf6376397d2`.
+Walter's visual acceptance is pending; this set does not renew earlier human
+approvals or establish production-art acceptance.
+
+The historical set under `artifacts/art/runtime-review/2026-08-23/` retains 19
+screenshots covering default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. Its manifest is bound to
 source fingerprint
 `0e75df7af4b52cb64081cd2cb7c05563eda93b10c434f340b1d745d2fc6529c5`.
 meetwk0916 approved all 19 screenshots on 2026-08-23 against this fingerprint.
 That approval preserves the existing internal-preview boundary and does not
-accept the orange-tabby preview as Issue #23 release art.
+accept the orange-tabby preview as Issue #23 release art. Its older source
+fingerprint does not establish acceptance of the current full source tree.
 
-The current appearance-authority and cross-action scale evidence lives under
+The historical appearance-authority and cross-action scale evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
 manifest covers gray-white and the internal orange preview across `idle`,
 `sit`, and `walk` at `1280x720` and `390x844`, binds all 12 continuous
 recordings to source fingerprint
 `5af4f2c9d43536f37ae24fa3c2fd5d2939c0bb1958c58fdbe985ac0c8c225b50`, and
 records meetwk0916's scoped approval of every entry on 2026-08-22. The approval
-covers the internal-preview boundary and cross-action stability; it is not
-Issue #23 release-art acceptance. The older locked
+covers the internal-preview boundary and cross-action stability at that source
+fingerprint; it is not current full-source or Issue #23 release-art acceptance.
+The older locked
 gray-white ten-action evidence under
 `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` remains
 historical review evidence; its source fingerprint predates the scale fix and
