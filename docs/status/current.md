@@ -27,8 +27,9 @@ review on mobile and desktop.
 On 2026-11-06, Walter asked to stop and reconsider the direction, then return
 to this earlier implementation. Further product/UI work is paused. Retaining
 this baseline is not mobile-first design acceptance or release approval. The
-later portrait-background extension was rejected and remains an unmerged local
-draft; its display geometry and draft specs are not the current contract.
+later portrait-background extension was rejected and never integrated. Its
+draft worktree and temporary review files were removed after Walter confirmed
+cleanup; its display geometry and draft specs are not the current contract.
 Resume only after Walter supplies a new direction. The open
 [experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77)
 records this hold.

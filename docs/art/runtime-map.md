@@ -74,8 +74,8 @@ structural validation against source fingerprint
 This is evidence for the retained landscape review baseline. Further design
 work is paused; no mobile-first visual acceptance was granted. This set does
 not renew earlier human approvals or establish production-art acceptance. The
-rejected portrait extension is an unmerged draft and is not a runtime authority
-in this checkout.
+rejected portrait extension was never integrated; its draft worktree has been
+removed and is not a runtime authority in this checkout.
 
 The historical set under `artifacts/art/runtime-review/2026-08-23/` retains 19
 screenshots covering default movement, window bench, cat bed, food bowl, blanket,
