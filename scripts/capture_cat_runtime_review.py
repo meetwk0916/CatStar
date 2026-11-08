@@ -3,13 +3,14 @@
 
 This script is a repeatable version of the manual runtime review pass. It starts
 the Vite dev server, injects a local-only passport into browser storage, and
-uses the Playwright CLI to capture key room interaction states.
+uses the project's Playwright installation to capture key room interaction states.
 """
 
 from __future__ import annotations
 
 import json
 import hashlib
+import math
 import os
 import shutil
 import signal
@@ -42,8 +43,6 @@ VIEWPORT = os.environ.get("CATSTAR_REVIEW_VIEWPORT", "1280,720")
 EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1))
 MOBILE_VIEWPORT = os.environ.get("CATSTAR_REVIEW_MOBILE_VIEWPORT", "390,844")
 EXPECTED_MOBILE_VIEWPORT = tuple(int(value) for value in MOBILE_VIEWPORT.split(",", maxsplit=1))
-ROOM_REVIEW_REGION = (64, 188, 791, 598)
-CANVAS_REVIEW_REGION = (65, 189, 790, 597)
 MIN_ROOM_UNIQUE_COLORS = 10_000
 MIN_ROOM_MEAN_LUMINANCE = 40
 MAX_ROOM_MEAN_LUMINANCE = 140
@@ -92,12 +91,14 @@ SHOT_VIEWPORTS = {
 }
 SHOT_VIEWPORTS.update({filename: list(EXPECTED_VIEWPORT) for filename in INTERACTION_SHOTS})
 MANIFEST_FILENAME = "manifest.json"
+CAPTURE_SCRIPT = REPO_ROOT / "scripts/capture_cat_runtime_review.mjs"
 FINGERPRINT_PATHS = [
     REPO_ROOT / "index.html",
     REPO_ROOT / "package.json",
     REPO_ROOT / "package-lock.json",
     REPO_ROOT / "vite.config.ts",
     REPO_ROOT / "scripts/capture_cat_runtime_review.py",
+    CAPTURE_SCRIPT,
 ]
 FINGERPRINT_TREES = [
     REPO_ROOT / "src",
@@ -141,57 +142,58 @@ def make_storage_state(path: Path) -> None:
 
 
 def capture(storage_state: Path) -> None:
-    playwright = shutil.which("playwright")
-    if not playwright:
-        raise RuntimeError("Missing Playwright CLI. Install or expose `playwright` on PATH.")
+    with tempfile.TemporaryDirectory(prefix="catstar-screenshot-staging-") as temp_dir:
+        staged = Path(temp_dir)
+        bounds = {}
+        for index, (filename, route, timeout, viewport) in enumerate(SHOTS):
+            print(f"Capturing {'preflight ' if index == 0 else ''}{filename} ...", flush=True)
+            frame = {"filename": filename, "route": route, "waitMs": timeout}
+            bounds[filename] = capture_browser_frames(storage_state, staged, viewport, frame).get(filename)
+            validate_screenshot(staged / filename, tuple(SHOT_VIEWPORTS[filename]), bounds[filename])
+            if index == 0:
+                print("Preflight passed.", flush=True)
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+        print("Capturing real-pointer interaction sequences ...", flush=True)
+        interactions = capture_browser_frames(storage_state, staged, VIEWPORT)
+        for filename in INTERACTION_SHOTS:
+            bounds[filename] = interactions.get(filename)
+            validate_screenshot(staged / filename, EXPECTED_VIEWPORT, bounds[filename])
 
-    for filename, route, timeout, viewport in SHOTS:
-        command = [
-            playwright,
-            "screenshot",
-            "--load-storage",
-            str(storage_state),
-            "--viewport-size",
-            viewport,
-            "--wait-for-timeout",
-            str(timeout),
-        ]
-        if CHANNEL:
-            command.extend(["--channel", CHANNEL])
-        command.extend([f"{BASE_URL}{route}", str(OUT_DIR / filename)])
-
-        print(f"Capturing {filename} ...", flush=True)
-        subprocess.run(command, check=True)
-        validate_screenshot(OUT_DIR / filename, tuple(SHOT_VIEWPORTS[filename]))
-
-    capture_touch_sequence(storage_state)
-    write_manifest()
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        (OUT_DIR / MANIFEST_FILENAME).unlink(missing_ok=True)
+        for filename in SHOT_FILENAMES:
+            shutil.move(staged / filename, OUT_DIR / filename)
+        write_manifest(bounds)
 
 
-def capture_touch_sequence(storage_state: Path) -> None:
+def capture_browser_frames(
+    storage_state: Path, output: Path, viewport: str, shot: dict | None = None
+) -> dict:
     command = [
-        shutil.which("node") or "node",
-        str(REPO_ROOT / "scripts/capture_cat_touch_sequence.mjs"),
+        "node",
+        str(CAPTURE_SCRIPT),
         BASE_URL,
         str(storage_state),
-        str(OUT_DIR),
+        str(output),
         CHANNEL,
+        viewport,
     ]
-    print("Capturing real-pointer interaction sequences ...", flush=True)
-    subprocess.run(command, check=True, cwd=REPO_ROOT)
-    for filename in INTERACTION_SHOTS:
-        validate_screenshot(OUT_DIR / filename, EXPECTED_VIEWPORT)
+    if shot is not None:
+        command.append(json.dumps(shot))
+    result = subprocess.run(command, check=True, cwd=REPO_ROOT, stdout=subprocess.PIPE, text=True)
+    bounds = json.loads(result.stdout)
+    if not isinstance(bounds, dict):
+        raise RuntimeError("Browser did not return canvas bounds")
+    return bounds
 
 
 def validate_existing_screenshots() -> None:
-    validate_manifest()
+    bounds = validate_manifest()
     for filename in SHOT_FILENAMES:
         path = OUT_DIR / filename
         if not path.exists():
             raise RuntimeError(f"Missing runtime review screenshot: {path}")
-        validate_screenshot(path, tuple(SHOT_VIEWPORTS[filename]))
+        validate_screenshot(path, tuple(SHOT_VIEWPORTS[filename]), bounds[filename])
         print(f"Validated {path}", flush=True)
 
 
@@ -215,13 +217,14 @@ def source_fingerprint() -> tuple[str, list[str]]:
     return digest.hexdigest(), relative_paths
 
 
-def write_manifest() -> None:
+def write_manifest(bounds: dict) -> None:
     fingerprint, source_files = source_fingerprint()
     manifest = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "capturedAt": datetime.now().astimezone().isoformat(),
         "viewport": list(EXPECTED_VIEWPORT),
         "shotViewports": SHOT_VIEWPORTS,
+        "canvasBounds": bounds,
         "sourceFingerprint": fingerprint,
         "sourceFiles": source_files,
         "screenshots": SHOT_FILENAMES,
@@ -232,14 +235,14 @@ def write_manifest() -> None:
     )
 
 
-def validate_manifest() -> None:
+def validate_manifest() -> dict:
     path = OUT_DIR / MANIFEST_FILENAME
     if not path.exists():
         raise RuntimeError(f"Missing runtime review manifest: {path}; regenerate runtime evidence")
 
     manifest = json.loads(path.read_text(encoding="utf-8"))
     fingerprint, source_files = source_fingerprint()
-    if manifest.get("schemaVersion") != 2:
+    if manifest.get("schemaVersion") != 3:
         raise RuntimeError(f"{path}: unsupported manifest schema")
     if manifest.get("viewport") != list(EXPECTED_VIEWPORT):
         raise RuntimeError(f"{path}: viewport does not match {list(EXPECTED_VIEWPORT)}")
@@ -249,6 +252,10 @@ def validate_manifest() -> None:
         raise RuntimeError(f"{path}: screenshot set does not match the current review contract")
     if manifest.get("sourceFiles") != source_files or manifest.get("sourceFingerprint") != fingerprint:
         raise RuntimeError(f"{path}: runtime inputs changed; regenerate runtime evidence")
+    bounds = manifest.get("canvasBounds")
+    if not isinstance(bounds, dict) or set(bounds) != set(SHOT_FILENAMES):
+        raise RuntimeError(f"{path}: missing or unexpected per-shot canvas bounds")
+    return bounds
 
 
 def mean_luminance(image: Image.Image) -> float:
@@ -257,33 +264,43 @@ def mean_luminance(image: Image.Image) -> float:
     return sum(value * count for value, count in enumerate(histogram)) / pixels
 
 
-def validate_screenshot(path: Path, expected_viewport: tuple[int, int]) -> None:
+def canvas_region(path: Path, bounds: object, viewport: tuple[int, int]) -> tuple[int, int, int, int]:
+    if not isinstance(bounds, dict):
+        raise RuntimeError(f"{path}: missing or invalid canvas bounds")
+    values = [bounds.get(key) for key in ("x", "y", "width", "height")]
+    if any(type(value) not in (int, float) or not math.isfinite(value) for value in values):
+        raise RuntimeError(f"{path}: invalid canvas bounds: {bounds}")
+    x, y, width, height = values
+    if x < 0 or y < 0 or width <= 0 or height <= 0 or x + width > viewport[0] or y + height > viewport[1]:
+        raise RuntimeError(f"{path}: canvas bounds empty or outside viewport: {bounds}")
+    left, top, right, bottom = math.ceil(x), math.ceil(y), math.floor(x + width), math.floor(y + height)
+    if left >= right or top >= bottom:
+        raise RuntimeError(f"{path}: canvas bounds contain no whole pixels: {bounds}")
+    return left, top, right, bottom
+
+
+def validate_screenshot(path: Path, expected_viewport: tuple[int, int], bounds: object) -> None:
     image = Image.open(path).convert("RGB")
     if image.size != expected_viewport:
         raise RuntimeError(f"{path}: expected viewport {expected_viewport}, got {image.size}")
 
+    room = image.crop(canvas_region(path, bounds, expected_viewport))
+    unique_colors = len(room.getcolors(maxcolors=room.width * room.height) or [])
+    if unique_colors < MIN_ROOM_UNIQUE_COLORS:
+        raise RuntimeError(f"{path}: canvas looks blank; only {unique_colors} unique colors")
     if expected_viewport == EXPECTED_MOBILE_VIEWPORT:
-        unique_colors = len(image.getcolors(maxcolors=image.width * image.height) or [])
-        if unique_colors < MIN_ROOM_UNIQUE_COLORS:
-            raise RuntimeError(f"{path}: mobile review looks blank; only {unique_colors} unique colors")
         return
 
-    room = image.crop(ROOM_REVIEW_REGION)
-    unique_colors = len(room.getcolors(maxcolors=room.width * room.height) or [])
     luminance = mean_luminance(room)
-
-    if unique_colors < MIN_ROOM_UNIQUE_COLORS:
-        raise RuntimeError(f"{path}: room region looks blank; only {unique_colors} unique colors")
     if not (MIN_ROOM_MEAN_LUMINANCE <= luminance <= MAX_ROOM_MEAN_LUMINANCE):
         raise RuntimeError(f"{path}: room luminance out of range: {luminance:.1f}")
 
-    cat_component = largest_cat_diff_component(image)
+    cat_component = largest_cat_diff_component(room)
     if cat_component < MIN_CAT_DIFF_COMPONENT:
         raise RuntimeError(f"{path}: cat is not visibly present; largest cat diff component is {cat_component}px")
 
 
-def largest_cat_diff_component(screenshot: Image.Image) -> int:
-    canvas = screenshot.crop(CANVAS_REVIEW_REGION)
+def largest_cat_diff_component(canvas: Image.Image) -> int:
     background = Image.open(BACKGROUND_PATH).convert("RGB").resize(canvas.size, Image.Resampling.BICUBIC)
     width, height = canvas.size
     diff_pixels = []

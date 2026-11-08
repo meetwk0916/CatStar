@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-11-06
+Last updated: 2026-11-08
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -65,17 +65,23 @@ first-release profile rejects it.
   wait for acknowledgement.
 - `plant-touch` remains distinct from ordinary `plant-inspect`; it reuses
   `walk` and `interact`, moves only the split leaf, and resets on user touch.
-- Regenerate runtime evidence with `npm run review:runtime`.
+- Regenerate runtime evidence with `npm run review:runtime`. The first shot
+  must pass before the other scenes run. Schema 3 records each shot's actual
+  canvas bounds for both capture-time and saved-evidence checks.
 
 The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-11-06/`. Its 19 screenshots passed automatic
+`artifacts/art/runtime-review/2026-11-08/`. Its 19 screenshots passed automatic
 structural validation against source fingerprint
-`f5e8a12841eece7d7c30c60100b1b38a0ecfc5969c649601e8b27bf6376397d2`.
+`1cd2b48463f5ab79fc63c29a102e26dc55860a819f837a7ab03ddbca46735289`.
 This is evidence for the retained landscape review baseline. Further design
 work is paused; no mobile-first visual acceptance was granted. This set does
 not renew earlier human approvals or establish production-art acceptance. The
 rejected portrait extension was never integrated; its draft worktree has been
 removed and is not a runtime authority in this checkout.
+
+The previous `artifacts/art/runtime-review/2026-11-06/` set remains historical
+evidence for the same UI. Its schema 2 manifest predates per-shot canvas
+bounds.
 
 The historical set under `artifacts/art/runtime-review/2026-08-23/` retains 19
 screenshots covering default movement, window bench, cat bed, food bowl, blanket,

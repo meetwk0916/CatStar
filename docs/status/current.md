@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-11-06
+**Last aligned:** 2026-11-08
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -36,11 +36,10 @@ records this hold.
 
 ## Current release and hosting state
 
-The current local preview serves the retained production build at
-`http://127.0.0.1:5173/`. The implementation has not been pushed, merged into
-remote `main`, or deployed. The hosted observations below are historical;
-remote access policy and live delivery were not reverified in this local
-closeout.
+To preview the retained local version, follow the [run guide](../../README.md).
+The implementation has not been pushed, merged into remote `main`, or
+deployed. The hosted observations below are historical; remote access policy
+and live delivery were not reverified in this local closeout.
 
 The first-public-release route uses the repository's existing OpenAI Sites
 project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
@@ -150,12 +149,12 @@ The current implementation includes:
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
   recorded in the runtime asset map. The current project-wide runtime
-  screenshot set under `artifacts/art/runtime-review/2026-11-06/` contains 19
+  screenshot set under `artifacts/art/runtime-review/2026-11-08/` contains 19
   current-fingerprint desktop/mobile captures with automatic structural checks
-  passed and Walter's visual acceptance pending. The 2026-08-23 screenshot set
-  retains its original fingerprint and approval as historical evidence, not
-  acceptance of the current full source tree. Exact review scope is recorded
-  in the runtime asset map.
+  passed using recorded canvas bounds and Walter's visual acceptance pending.
+  The 2026-08-23 screenshot set retains its original fingerprint and approval
+  as historical evidence, not acceptance of the current full source tree.
+  Exact review scope is recorded in the runtime asset map.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
