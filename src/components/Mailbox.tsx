@@ -41,17 +41,17 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className={`flex min-h-20 w-full items-center justify-between border-4 border-[#4A3E3D] px-4 py-3 text-left shadow-[4px_4px_0px_0px_#4A3E3D] ${
-          passport.isFarewellCompleted ? "bg-[#EFE8F6]" : "bg-[#FFFDF9]"
+        className={`flex min-h-20 w-full items-center justify-between rounded-2xl border border-[#CDBCA9] px-4 py-3 text-left shadow-[0_8px_24px_#6C514510] ${
+          passport.isFarewellCompleted ? "bg-[#F0E9DD]" : "bg-[#FFFDF9]"
         }`}
       >
         <span>
           <span className="block text-sm font-bold text-[#8D6E63]">时光信箱</span>
-          <span className="block text-xl font-black">
+          <span className="block text-xl font-semibold">
             {passport.isFarewellCompleted ? "信箱封存" : "打开来信"}
           </span>
         </span>
-        <span className="grid h-10 min-w-10 place-items-center border-4 border-[#4A3E3D] bg-[#F3D8C7] px-2 text-lg font-black">
+        <span className="grid h-10 min-w-10 place-items-center rounded-2xl border border-[#CDBCA9] bg-[#F3E5D5] px-2 text-lg font-semibold">
           {unreadCount}
         </span>
       </button>
@@ -60,12 +60,12 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
         open={isOpen && !selected}
         ariaLabel="时光信箱"
         onClose={() => setIsOpen(false)}
-        panelClassName="max-h-[90dvh] w-full max-w-2xl overflow-auto border-4 border-[#4A3E3D] bg-[#FBF8F3] p-5 shadow-[6px_6px_0_#4A3E3D]"
+        panelClassName="max-h-[90dvh] w-full max-w-2xl overflow-auto rounded-2xl border border-[#CDBCA9] bg-[#FBF8F3] p-5 shadow-[0_8px_24px_#6C514510]"
       >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#A98D85]">Mailbox</p>
-                <h2 className="mt-1 text-3xl font-black">时光信箱</h2>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8D6E63]">Mailbox</p>
+                <h2 className="mt-1 text-3xl font-semibold">时光信箱</h2>
               </div>
               <button
                 type="button"
@@ -73,7 +73,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
                   setIsOpen(false);
                   setSelected(null);
                 }}
-                className="border-4 border-[#4A3E3D] bg-white px-3 py-2 font-black shadow-[3px_3px_0_#4A3E3D]"
+                className="rounded-2xl border border-[#CDBCA9] bg-white px-3 py-2 font-semibold shadow-[0_8px_24px_#6C514510]"
               >
                 关闭
               </button>
@@ -86,18 +86,18 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
                   type="button"
                   onClick={() => openLetter(item)}
                   disabled={item.state !== "readable"}
-                  className={`border-4 border-[#4A3E3D] p-4 text-left shadow-[3px_3px_0_#4A3E3D] ${
+                  className={`rounded-2xl border border-[#CDBCA9] p-4 text-left shadow-[0_8px_24px_#6C514510] ${
                     item.state === "final-waiting"
                       ? "cursor-not-allowed bg-[#ECE5DE] text-[#7B6662]"
                       : item.isRead
                         ? "bg-white"
-                        : "bg-[#F3D8C7]"
+                        : "bg-[#F3E5D5]"
                   }`}
                 >
                   <span className="mb-1 block text-xs font-bold uppercase tracking-[0.18em] text-[#8D6E63]">
-                    第 {item.letter.id} 封
+                    {isFinalLetter(item.letter) ? "最后一封" : `第 ${item.letter.id} 封`}
                   </span>
-                  <span className="block text-lg font-black">{item.title}</span>
+                  <span className="block text-lg font-semibold">{item.title}</span>
                   <span className="mt-1 block text-sm text-[#7B6662]">{item.subtitle}</span>
                 </button>
               ))}
@@ -111,21 +111,21 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
         open={selected !== null}
         ariaLabel={selected?.letter.title ?? "来信"}
         onClose={closeModal}
-        overlayClassName="z-[60] bg-[#2A2321]/60 px-4 py-6"
-        panelClassName="max-h-[90dvh] w-full max-w-xl overflow-auto border-4 border-[#4A3E3D] bg-[#FFFDF9] p-6 shadow-[6px_6px_0_#4A3E3D]"
+        overlayClassName="z-[60] bg-[#3F352C]/35 px-4 py-6"
+        panelClassName="max-h-[90dvh] w-full max-w-xl overflow-auto rounded-2xl border border-[#CDBCA9] bg-[#FFFDF9] p-6 shadow-[0_8px_24px_#6C514510]"
       >
           {selected ? (
             <article>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#A98D85]">
-              Letter {selected.letter.id}
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8D6E63]">
+              {isFinalLetter(selected.letter) ? "最后一封" : `第 ${selected.letter.id} 封`}
             </p>
-            <h2 className="mt-2 text-3xl font-black">{selected.letter.title}</h2>
+            <h2 className="mt-2 text-3xl font-semibold">{selected.letter.title}</h2>
             <p className="mt-6 whitespace-pre-wrap text-lg leading-9 text-[#5F504D]">
               {renderLetterContent(selected.letter, passport)}
             </p>
 
             {isFinalLetter(selected.letter) && !passport.isFarewellCompleted ? (
-              <div className="mt-7 border-4 border-[#4A3E3D] bg-[#FBF8F3] p-4">
+              <div className="mt-7 rounded-2xl border border-[#CDBCA9] bg-[#FBF8F3] p-4">
                 <p className="text-base leading-7 text-[#6C5A57]">
                   如果你已经读到这里，可以把这段旅程轻轻收好。以后信箱会进入星河陪伴，所有来信仍然可以回看。
                 </p>
@@ -135,7 +135,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
                     onCompleteFarewell();
                     closeModal();
                   }}
-                  className="mt-4 w-full border-4 border-[#4A3E3D] bg-[#4A3E3D] px-4 py-3 font-black text-[#FFFDF9] shadow-[4px_4px_0_#C9A08B]"
+                  className="mt-4 w-full rounded-2xl border border-[#CDBCA9] bg-[#6C5145] px-4 py-3 font-semibold text-[#FFFDF9] shadow-[0_8px_24px_#6C514510]"
                 >
                   谢谢你陪我走到这里
                 </button>
@@ -145,7 +145,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
             <button
               type="button"
               onClick={closeModal}
-              className="mt-6 w-full border-4 border-[#4A3E3D] bg-white px-4 py-3 font-black shadow-[4px_4px_0_#4A3E3D]"
+              className="mt-6 w-full rounded-2xl border border-[#CDBCA9] bg-white px-4 py-3 font-semibold shadow-[0_8px_24px_#6C514510]"
             >
               回到信箱
             </button>

@@ -28,7 +28,7 @@ export default function ModalDialog({
   onClose,
   children,
   panelClassName,
-  overlayClassName = "bg-[#2A2321]/50 px-4 py-6",
+  overlayClassName = "bg-[#3F352C]/35 px-4 py-6",
   closeOnBackdrop = true,
 }: ModalDialogProps) {
   const panelRef = useRef<HTMLElement | null>(null);

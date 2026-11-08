@@ -1,6 +1,6 @@
 # Product Cat Actions Runtime Map
 
-Last updated: 2026-08-23
+Last updated: 2026-11-08
 
 This file maps runtime cat sheets to their reviewed source candidates. Runtime
 paths follow:
@@ -65,28 +65,45 @@ first-release profile rejects it.
   wait for acknowledgement.
 - `plant-touch` remains distinct from ordinary `plant-inspect`; it reuses
   `walk` and `interact`, moves only the split leaf, and resets on user touch.
-- Regenerate runtime evidence with `npm run review:runtime`.
+- Regenerate runtime evidence with `npm run review:runtime`. The first shot
+  must pass before the other scenes run. Schema 3 records each shot's actual
+  canvas bounds for both capture-time and saved-evidence checks.
 
 The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-08-23/`. Its 19
-screenshots cover default movement, window bench, cat bed, food bowl, blanket,
+`artifacts/art/runtime-review/2026-11-08/`. Its 19 screenshots passed automatic
+structural validation against source fingerprint
+`1cd2b48463f5ab79fc63c29a102e26dc55860a819f837a7ab03ddbca46735289`.
+This is evidence for the retained landscape review baseline. Further design
+work is paused; no mobile-first visual acceptance was granted. This set does
+not renew earlier human approvals or establish production-art acceptance. The
+rejected portrait extension was never integrated; its draft worktree has been
+removed and is not a runtime authority in this checkout.
+
+The previous `artifacts/art/runtime-review/2026-11-06/` set remains historical
+evidence for the same UI. Its schema 2 manifest predates per-shot canvas
+bounds.
+
+The historical set under `artifacts/art/runtime-review/2026-08-23/` retains 19
+screenshots covering default movement, window bench, cat bed, food bowl, blanket,
 grooming, stretching, deep sleep, foreground approach, plant touch, real
 pointer interactions, and a `390x844` mobile sit. Its manifest is bound to
 source fingerprint
 `0e75df7af4b52cb64081cd2cb7c05563eda93b10c434f340b1d745d2fc6529c5`.
 meetwk0916 approved all 19 screenshots on 2026-08-23 against this fingerprint.
 That approval preserves the existing internal-preview boundary and does not
-accept the orange-tabby preview as Issue #23 release art.
+accept the orange-tabby preview as Issue #23 release art. Its older source
+fingerprint does not establish acceptance of the current full source tree.
 
-The current appearance-authority and cross-action scale evidence lives under
+The historical appearance-authority and cross-action scale evidence lives under
 `artifacts/art/runtime-motion-review/2026-08-22-appearance-authority-v1/`. Its
 manifest covers gray-white and the internal orange preview across `idle`,
 `sit`, and `walk` at `1280x720` and `390x844`, binds all 12 continuous
 recordings to source fingerprint
 `5af4f2c9d43536f37ae24fa3c2fd5d2939c0bb1958c58fdbe985ac0c8c225b50`, and
 records meetwk0916's scoped approval of every entry on 2026-08-22. The approval
-covers the internal-preview boundary and cross-action stability; it is not
-Issue #23 release-art acceptance. The older locked
+covers the internal-preview boundary and cross-action stability at that source
+fingerprint; it is not current full-source or Issue #23 release-art acceptance.
+The older locked
 gray-white ten-action evidence under
 `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` remains
 historical review evidence; its source fingerprint predates the scale fix and

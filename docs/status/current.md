@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-08-24
+**Last aligned:** 2026-11-08
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -18,7 +18,27 @@ This ledger describes the locally verified implementation. Git integration,
 pull-request, deployment, and production status are separate release facts and
 must not be inferred from this document.
 
+The retained local review baseline uses the landscape room, places the mailbox
+before passport details on mobile, and labels the final letter as **最后一封**
+without changing its stored ID. Existing browser checks cover first-screen
+access at 390×844 and final-letter reading, explicit farewell, and archive
+review on mobile and desktop.
+
+On 2026-11-06, Walter asked to stop and reconsider the direction, then return
+to this earlier implementation. Further product/UI work is paused. Retaining
+this baseline is not mobile-first design acceptance or release approval. The
+later portrait-background extension was rejected and never integrated. Its
+draft worktree and temporary review files were removed after Walter confirmed
+cleanup; its display geometry and draft specs are not the current contract.
+Resume only after Walter supplies a new direction. The open
+[experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77)
+records this hold.
+
 ## Current release and hosting state
+
+To preview the retained local version, follow the [run guide](../../README.md).
+The hosted observations below are historical; remote access policy and live
+delivery were not reverified in this local closeout.
 
 The first-public-release route uses the repository's existing OpenAI Sites
 project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
@@ -59,13 +79,14 @@ The current implementation includes:
   sleep, groom, stretch, and interact.
 - The gray-white rounded short-haired ten-action motion master is locked for
   internal production work. Its 2026-08-15 ten-action matrix remains historical
-  evidence because later scale normalization changed runtime inputs. Current
-  fingerprint-bound evidence now covers gray-white and the internal orange
+  evidence because later scale normalization changed runtime inputs. Historical
+  capture-time fingerprint-bound evidence covers gray-white and the internal
+  orange
   preview across `idle`, `sit`, and `walk` at `1280x720` and `390x844`;
   meetwk0916 approved all 12 entries on 2026-08-22 for the internal-preview
-  boundary and cross-action stability. This scoped approval neither renews the
-  full-master lock, accepts Issue #23 release art, nor clears public
-  distribution rights.
+  boundary and cross-action stability. This scoped approval does not accept the
+  current full source tree, renew the full-master lock, accept Issue #23 release
+  art, or clear public distribution rights.
 - An engine-independent **陪伴例程** planner with temperament weighting,
   recent-intent suppression, awake session opening, dwell windows, and
   zone-aware rendering.
@@ -86,7 +107,7 @@ The current implementation includes:
 - The production-identity jump v6 candidate supplies six distinct phases for
   anticipation, launch, rise, apex balance, prepared descent, and grounded
   recovery. The scene binds those poses to the scripted arc instead of playing
-  an unsynchronized fixed-rate animation. Current fingerprint-bound desktop and
+  an unsynchronized fixed-rate animation. Capture-time fingerprint-bound desktop and
   mobile evidence covers the full window-bench round trip; meetwk0916 approved
   both entries on 2026-08-15.
 - The production-model-derived quiet-motion v1 candidate supplies the
@@ -99,7 +120,7 @@ The current implementation includes:
 - The production-model-derived daily-life v1 candidate now supplies the
   gray-white `eat`, `groom`, and `stretch` authority used by the master and four
   ordinary coat derivatives. Orange uses its separately declared internal
-  preview package. Structural asset validation passes. Current
+  preview package. Structural asset validation passes. Capture-time
   fingerprint-bound gray-white master evidence at
   desktop and mobile sizes records the complete food route, an 8–12 second
   grooming dwell, and phase-weighted stretch timing; meetwk0916 approved all
@@ -127,9 +148,12 @@ The current implementation includes:
   `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
   is structurally valid for desktop and mobile; its approved review state is
   recorded in the runtime asset map. The current project-wide runtime
-  screenshot set under `artifacts/art/runtime-review/2026-08-23/` contains 19
-  current-fingerprint desktop/mobile captures; its review state and scope are
-  recorded in the runtime asset map.
+  screenshot set under `artifacts/art/runtime-review/2026-11-08/` contains 19
+  current-fingerprint desktop/mobile captures with automatic structural checks
+  passed using recorded canvas bounds and Walter's visual acceptance pending.
+  The 2026-08-23 screenshot set retains its original fingerprint and approval
+  as historical evidence, not acceptance of the current full source tree.
+  Exact review scope is recorded in the runtime asset map.
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -168,7 +192,8 @@ hashes or branch information to this file.
 
 ## Remaining work
 
-- Polish responsive layout after browser review on mobile and desktop.
+- Reconsider the product/UI direction with Walter before further layout work.
+  The retained landscape baseline has not passed mobile-first acceptance.
 - The representative mid-range-phone performance evidence was explicitly
   waived for the first public release on 2026-08-24 and must not be reported as
   passed. ADR-0004 still governs future engine decisions: do not begin a Phaser
@@ -206,5 +231,3 @@ hashes or branch information to this file.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.
 - Review Phaser chunk size after final sprite sheets are introduced.
-- Remove the external Playwright CLI dependency from runtime screenshot
-  regeneration, or add it as an explicit project-managed development tool.

@@ -32,6 +32,7 @@ specs and mutable status notes never override those sources.
 
 ## Engineering Rules
 
+- For UI structure or scene-composition changes without a user-approved target-screen composition, show a main-screen draft at the target phone viewport and obtain the user's confirmation before production implementation or production-asset generation. Implementation and review handoffs must include the user's latest design feedback verbatim and label unresolved visual assumptions.
 - Keep product logic out of UI components:
   - `src/domain/time.ts`: delivery time calculations.
   - `src/domain/letters.ts`: mailbox, delivery, read/final-letter rules.
