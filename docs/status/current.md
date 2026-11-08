@@ -37,9 +37,8 @@ records this hold.
 ## Current release and hosting state
 
 To preview the retained local version, follow the [run guide](../../README.md).
-The implementation has not been pushed, merged into remote `main`, or
-deployed. The hosted observations below are historical; remote access policy
-and live delivery were not reverified in this local closeout.
+The hosted observations below are historical; remote access policy and live
+delivery were not reverified in this local closeout.
 
 The first-public-release route uses the repository's existing OpenAI Sites
 project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
@@ -232,5 +231,3 @@ hashes or branch information to this file.
 - Split foreground occlusion elements after the scene composition stabilizes.
 - Revisit collision rectangles after the final background is approved on mobile.
 - Review Phaser chunk size after final sprite sheets are introduced.
-- Remove the external Playwright CLI dependency from runtime screenshot
-  regeneration, or add it as an explicit project-managed development tool.
