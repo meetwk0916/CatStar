@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   countUnreadDeliveredLetters,
   getMailboxLetters,
@@ -13,11 +13,13 @@ import ModalDialog from "./ModalDialog";
 interface MailboxProps {
   passport: ICatPassport;
   now?: number;
+  floating?: boolean;
   onReadLetter: (letterId: number) => void;
   onCompleteFarewell: () => void;
 }
 
-export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewell }: MailboxProps) {
+export default function Mailbox({ passport, now, floating, onReadLetter, onCompleteFarewell }: MailboxProps) {
+  const entrance = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<MailboxLetter | null>(null);
   const mailboxItems = useMemo(() => getMailboxLetters(passport, now), [now, passport]);
@@ -36,30 +38,52 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
     setSelected(null);
   };
 
+  const closeMailbox = () => {
+    setIsOpen(false);
+    entrance.current?.focus();
+  };
+
+  const mailboxName = passport.isFarewellCompleted ? "信箱封存" : "时光信箱";
+
   return (
     <>
       <button
+        ref={entrance}
         type="button"
-        onClick={() => setIsOpen(true)}
-        className={`flex min-h-20 w-full items-center justify-between rounded-2xl border border-[#CDBCA9] px-4 py-3 text-left shadow-[0_8px_24px_#6C514510] ${
+        onClick={(event) => {
+          event.currentTarget.focus();
+          setIsOpen(true);
+        }}
+        aria-label={floating ? (unreadCount ? `${mailboxName}，${unreadCount} 封未读` : mailboxName) : undefined}
+        className={floating ? "room-entry room-entry-mail" : `flex min-h-20 w-full items-center justify-between rounded-2xl border border-[#CDBCA9] px-4 py-3 text-left shadow-[0_8px_24px_#6C514510] ${
           passport.isFarewellCompleted ? "bg-[#F0E9DD]" : "bg-[#FFFDF9]"
         }`}
       >
-        <span>
-          <span className="block text-sm font-bold text-[#8D6E63]">时光信箱</span>
-          <span className="block text-xl font-semibold">
-            {passport.isFarewellCompleted ? "信箱封存" : "打开来信"}
+        {floating ? (
+          <>
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+            {unreadCount > 0 && <span aria-hidden="true" className="room-unread-count">{unreadCount}</span>}
+          </>
+        ) : <>
+          <span>
+            <span className="block text-sm font-bold text-[#8D6E63]">时光信箱</span>
+            <span className="block text-xl font-semibold">
+              {passport.isFarewellCompleted ? "信箱封存" : "打开来信"}
+            </span>
           </span>
-        </span>
-        <span className="grid h-10 min-w-10 place-items-center rounded-2xl border border-[#CDBCA9] bg-[#F3E5D5] px-2 text-lg font-semibold">
-          {unreadCount}
-        </span>
+          <span className="grid h-10 min-w-10 place-items-center rounded-2xl border border-[#CDBCA9] bg-[#F3E5D5] px-2 text-lg font-semibold">
+            {unreadCount}
+          </span>
+        </>}
       </button>
 
       <ModalDialog
         open={isOpen && !selected}
         ariaLabel="时光信箱"
-        onClose={() => setIsOpen(false)}
+        onClose={closeMailbox}
         panelClassName="max-h-[90dvh] w-full max-w-2xl overflow-auto rounded-2xl border border-[#CDBCA9] bg-[#FBF8F3] p-5 shadow-[0_8px_24px_#6C514510]"
       >
             <div className="mb-5 flex items-start justify-between gap-4">
@@ -69,10 +93,7 @@ export default function Mailbox({ passport, now, onReadLetter, onCompleteFarewel
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  setIsOpen(false);
-                  setSelected(null);
-                }}
+                onClick={closeMailbox}
                 className="rounded-2xl border border-[#CDBCA9] bg-white px-3 py-2 font-semibold shadow-[0_8px_24px_#6C514510]"
               >
                 关闭

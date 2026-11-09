@@ -36,6 +36,22 @@ When documents disagree, use this order:
   audio.
 - Use the vocabulary and gentle grief boundaries in `CONTEXT.md`.
 
+### Returning on a phone
+
+When someone misses their cat, they can open the mobile site and spend a
+moment with it. After creating a **护照**, they return directly to the
+**陪伴场景**, even when a new letter has arrived. Watching quietly is a complete
+visit. Touch and reading are optional.
+
+A single tap on the cat gives a visible **陪伴反应**. The response can vary
+with what the cat is doing.
+
+Review the first screen at 390 × 844. The **陪伴场景** fills the screen.
+Frame a familiar corner by the window so the cat is easy to see and touch.
+Use floating icon buttons for **时光信箱** in the lower left and **护照** in
+the lower right. The mailbox opens the letter list for reading and rereading,
+and shows the unread count quietly on its icon.
+
 ## Current architecture
 
 - React, TypeScript, Vite, and Tailwind CSS provide the application shell.

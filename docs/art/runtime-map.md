@@ -22,6 +22,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | Runtime asset | Current source | Status |
 | --- | --- | --- |
 | `background.png` | `artifacts/art/sources/plant-interaction-v1/background-before-leaf-split.png` via `scripts/derive_plant_interaction_assets.py` | Local repair under the split leaf; room composition otherwise unchanged. |
+| `portrait.png` | `artifacts/art/sources/portrait-room-v1.svg`, rasterized at 320 × 900 | Phone composition for internal review under Issue #79. Cat sprites and the split plant leaf use their existing sources. |
 | `plant-leaf.png` | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` via `scripts/derive_plant_interaction_assets.py` | `47x24` transparent internal-prototype prop with a fixed Phaser pivot. |
 
 ## Motion Master
@@ -69,15 +70,15 @@ first-release profile rejects it.
   must pass before the other scenes run. Schema 3 records each shot's actual
   canvas bounds for both capture-time and saved-evidence checks.
 
-The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-11-08/`. Its 19 screenshots passed automatic
-structural validation against source fingerprint
-`1cd2b48463f5ab79fc63c29a102e26dc55860a819f837a7ab03ddbca46735289`.
-This is evidence for the retained landscape review baseline. Further design
-work is paused; no mobile-first visual acceptance was granted. This set does
-not renew earlier human approvals or establish production-art acceptance. The
-rejected portrait extension was never integrated; its draft worktree has been
-removed and is not a runtime authority in this checkout.
+The Issue #79 runtime evidence lives under
+`artifacts/art/runtime-review/2026-11-09-mobile-companion/`. Its manifest binds
+the desktop and phone screenshots to the captured source. The phone screenshot
+uses the new portrait room, including the blanket rest surface. The full-motion matrix still uses the landscape
+composition at both viewport widths for comparable action and route evidence.
+Portrait art and real-phone touch remain pending human review.
+
+The previous `artifacts/art/runtime-review/2026-11-08/` set is structural
+evidence for the landscape review baseline, before the portrait layout.
 
 The previous `artifacts/art/runtime-review/2026-11-06/` set remains historical
 evidence for the same UI. Its schema 2 manifest predates per-shot canvas

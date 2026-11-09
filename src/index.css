@@ -16,6 +16,41 @@
   animation: cat-reaction-in 180ms ease-out;
 }
 
+.room-entry {
+  position: absolute;
+  z-index: 1;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid #bb9e84;
+  border-radius: 50%;
+  background: #352824;
+  color: #fff3e4;
+}
+
+.room-entry-mail {
+  left: max(1.25rem, env(safe-area-inset-left));
+}
+
+.room-entry-passport {
+  right: max(1.25rem, env(safe-area-inset-right));
+}
+
+.room-unread-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #f4ddbd;
+  color: #442c24;
+  font-size: 12px;
+  line-height: 18px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cat-reaction {
     animation: none;

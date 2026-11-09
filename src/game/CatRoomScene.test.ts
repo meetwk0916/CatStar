@@ -27,6 +27,7 @@ interface SceneInternals {
     play: ReturnType<typeof vi.fn>;
     depth: number;
     scaleX: number;
+    scaleY: number;
     x: number;
     y: number;
     setDepth: ReturnType<typeof vi.fn>;
@@ -84,14 +85,16 @@ function createCat(x = 320): SceneInternals["cat"] {
     play: vi.fn(),
     depth: 5,
     scaleX: 1,
+    scaleY: 1,
     x,
     y: 225,
     setDepth: vi.fn((nextDepth: number) => {
       cat.depth = nextDepth;
     }),
     setFlipX: vi.fn(),
-    setScale: vi.fn((nextScale: number) => {
-      cat.scaleX = nextScale;
+    setScale: vi.fn((nextScaleX: number, nextScaleY = nextScaleX) => {
+      cat.scaleX = nextScaleX;
+      cat.scaleY = nextScaleY;
     }),
     setTexture: vi.fn(),
     setPosition: vi.fn((nextX: number, nextY: number) => {
@@ -577,7 +580,7 @@ describe("CatRoomScene interactions", () => {
     expect(internals.manualInteractUntil).toBe(2700);
     expect(internals.cat.setVelocity).toHaveBeenCalledWith(0, 0);
     expect(internals.playCatAction).toHaveBeenCalledWith("interact", true);
-    expect(internals.onInteract).toHaveBeenCalledWith("我在呢。");
+    expect(internals.onInteract).toHaveBeenCalledWith("我在呢。", "acknowledge");
     expect(internals.onInteract).toHaveBeenCalledTimes(1);
     expect(durationMs).toBe(1_700);
   });
@@ -764,7 +767,7 @@ describe("CatRoomScene interactions", () => {
 
     expect(internals.cat.setPosition).not.toHaveBeenCalled();
     expect(internals.cat.setY).toHaveBeenLastCalledWith(270);
-    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1.18);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1.18, 1.18);
     expect(internals.cat.setDepth).toHaveBeenLastCalledWith(7);
     expect(internals.routine).toBe("acknowledgeUser");
 
@@ -779,7 +782,7 @@ describe("CatRoomScene interactions", () => {
       if (internals.routine === "floorPause") break;
     }
     expect(internals.cat.setY).toHaveBeenLastCalledWith(225);
-    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1);
+    expect(internals.cat.setScale).toHaveBeenLastCalledWith(1, 1);
     expect(internals.cat.setDepth).toHaveBeenLastCalledWith(5);
     expect(internals.routine).toBe("floorPause");
   });

@@ -47,7 +47,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
         },
       },
       scale: {
-        mode: Phaser.Scale.FIT,
+        mode: props.portrait ? Phaser.Scale.RESIZE : Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 640,
         height: 360,
@@ -66,6 +66,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
       coatPreset: props.coatPreset,
       temperament: props.temperament,
       showStardust: props.showStardust,
+      portrait: props.portrait,
       onInteract: props.onInteract,
       initialInteractionCount,
       onReady: deliverPendingInteractions,
@@ -83,6 +84,7 @@ export default function PhaserCatScene(props: PhaserCatSceneProps) {
     props.coatPreset,
     props.temperament,
     props.showStardust,
+    props.portrait,
     props.onInteract,
   ]);
 

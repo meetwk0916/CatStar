@@ -23,7 +23,7 @@ async function registerPassport(page: Page) {
   await page.getByLabel("你希望小猫怎么称呼你？", { exact: true }).fill("家人");
   await page.getByLabel("它最喜欢的零食", { exact: true }).fill("小鱼干");
   await page.getByRole("button", { name: "登记喵星护照", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "星光窗边", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "陪伴场景", exact: true })).toBeVisible();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -93,17 +93,73 @@ for (const width of [320, 375, 414, 768]) {
   });
 }
 
-test("mobile first screen keeps the room and incoming letter within reach", async ({ page }) => {
+test("mobile return opens a full-screen room with mailbox and passport in the lower corners", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await registerPassport(page);
-  await page.evaluate(() => window.scrollTo(0, 0));
-
-  await expect(page.locator("canvas")).toBeInViewport({ ratio: 1 });
+  await page.reload();
+  const room = page.locator("canvas");
+  await expect(room).toBeInViewport({ ratio: 1 });
+  await expect.poll(() => room.boundingBox()).toEqual({ x: 0, y: 0, width: 390, height: 844 });
+  await expect(page.getByRole("heading", { name: "喵星来信", exact: true })).toBeHidden();
   const mailbox = page.getByRole("button", { name: /时光信箱/ });
+  const passport = page.getByRole("button", { name: "护照", exact: true });
   await expect(mailbox).toBeInViewport({ ratio: 1 });
+  await expect(passport).toBeInViewport({ ratio: 1 });
+  const mailBox = await mailbox.boundingBox();
+  const passportBox = await passport.boundingBox();
+  expect(mailBox?.x).toBeLessThan(60);
+  expect(passportBox?.x).toBeGreaterThan(280);
+  expect(mailBox?.y).toBeGreaterThan(740);
+  expect(passportBox?.y).toBeGreaterThan(740);
+  expect(mailBox?.width).toBeGreaterThanOrEqual(44);
+  expect(passportBox?.width).toBeGreaterThanOrEqual(44);
+  await expect(mailbox).toHaveAccessibleName("时光信箱，1 封未读");
   await mailbox.click();
   await page.getByRole("button", { name: /第 1 封.*我在窗边安顿好了/ }).click();
   await expect(page.getByRole("dialog", { name: "我在窗边安顿好了" })).toBeVisible();
+  await page.getByRole("button", { name: "回到信箱", exact: true }).click();
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  await expect(mailbox).toHaveAccessibleName("时光信箱");
+  await expect(mailbox).toBeFocused();
+  await passport.click();
+  await expect(page.getByRole("dialog", { name: "喵星护照" })).toContainText("小灰");
+  await page.getByRole("button", { name: "返回房间", exact: true }).click();
+  await expect(passport).toBeFocused();
+  await passport.press("Enter");
+  await expect(page.getByRole("dialog", { name: "喵星护照" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(passport).toBeFocused();
+});
+
+test("mobile cat visibly responds to one pointer tap and to keyboard activation", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await registerPassport(page);
+
+  const reactions: Buffer[] = [];
+  for (const routine of ["floorSit", "floorSleep"]) {
+    const background = page.waitForResponse((response) => response.url().endsWith("/portrait.png") && response.ok());
+    await page.goto(`/?catstarRoutine=${routine}&catstarFullTouch=1`);
+    await background;
+    const canvas = page.locator("canvas");
+    await expect(canvas).toBeVisible();
+    await page.waitForTimeout(350);
+
+    // Both review routines use the same stable floor anchor.
+    const clip = { x: 140, y: 419, width: 110, height: 116 };
+    const before = await page.screenshot({ clip });
+    if (routine === "floorSit") {
+      await canvas.click({ position: { x: 195, y: 477 } });
+      await expect(page.getByRole("status")).toContainText("小猫转过头，慢慢眨了下眼。");
+    } else {
+      await page.getByRole("button", { name: "轻轻摸摸小灰", exact: true }).press("Enter");
+      await expect(page.getByRole("status")).toContainText("小猫醒来，伸了个懒腰。");
+    }
+    await page.waitForTimeout(225);
+    const reaction = await page.screenshot({ clip });
+    expect(reaction.equals(before)).toBe(false);
+    reactions.push(reaction);
+  }
+  expect(reactions[0].equals(reactions[1])).toBe(false);
 });
 
 test("mailbox uses one focus-managed modal dialog", async ({ page }) => {
@@ -203,8 +259,15 @@ for (const width of [1280, 390]) {
   test(`final letter stays gated, then farewell seals only the mailbox at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 720 });
     await registerPassport(page);
+    if (width === 390) {
+      await page.getByRole("button", { name: "护照", exact: true }).click();
+    }
     await page.getByRole("button", { name: "最终信投递日", exact: true }).click();
-    await expect(page.getByText("小灰 正在窗边陪你，已经抵达的信都可以慢慢读。", { exact: true })).toBeVisible();
+    if (width === 390) {
+      await page.getByRole("button", { name: "返回房间", exact: true }).click();
+    } else {
+      await expect(page.getByText("小灰 正在窗边陪你，已经抵达的信都可以慢慢读。", { exact: true })).toBeVisible();
+    }
     await expect(page.getByText(/等下一封信抵达/)).toHaveCount(0);
     await page.getByRole("button", { name: /时光信箱/ }).click();
 
