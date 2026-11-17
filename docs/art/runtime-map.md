@@ -22,7 +22,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | Runtime asset | Current source | Status |
 | --- | --- | --- |
 | `background.png` | `artifacts/art/sources/plant-interaction-v1/background-before-leaf-split.png` via `scripts/derive_plant_interaction_assets.py` | Local repair under the split leaf; room composition otherwise unchanged. |
-| `portrait.png` | `artifacts/art/sources/portrait-room-v1.svg`, rasterized at 320 × 900 | Phone composition for internal review under Issue #79. Cat sprites and the split plant leaf use their existing sources. |
+| `portrait.png` | `artifacts/art/sources/portrait-room-v2.png`, resized to 320 × 900 with Sharp (Lanczos3) | Phone art for internal review under Issues #77 and #79. The separate leaf uses a portrait-specific pivot at the painted stem. |
 | `plant-leaf.png` | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` via `scripts/derive_plant_interaction_assets.py` | `47x24` transparent internal-prototype prop with a fixed Phaser pivot. |
 
 ## Motion Master
@@ -70,12 +70,15 @@ first-release profile rejects it.
   must pass before the other scenes run. Schema 3 records each shot's actual
   canvas bounds for both capture-time and saved-evidence checks.
 
-The Issue #79 runtime evidence lives under
-`artifacts/art/runtime-review/2026-11-09-mobile-companion/`. Its manifest binds
-the desktop and phone screenshots to the captured source. The phone screenshot
-uses the new portrait room, including the blanket rest surface. The full-motion matrix still uses the landscape
-composition at both viewport widths for comparable action and route evidence.
-Portrait art and real-phone touch remain pending human review.
+The runtime evidence for the revised Issue #79 portrait room is in
+`artifacts/art/runtime-review/2026-11-09-portrait-art/`. Its manifest binds the
+desktop and phone screenshots to the captured source. The phone shots show the
+cat sitting on the floor and resting on the folded blanket. Walter accepted the
+revised artwork on 2026-11-10. Physical-phone touch remains pending.
+
+The prior `2026-11-09-mobile-companion/` set records the first portrait artwork.
+The full-motion matrix uses the landscape composition at both viewport widths
+for comparable action and route evidence.
 
 The previous `artifacts/art/runtime-review/2026-11-08/` set is structural
 evidence for the landscape review baseline, before the portrait layout.

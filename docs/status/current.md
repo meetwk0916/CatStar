@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-11-09
+**Last aligned:** 2026-11-17
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -28,8 +28,9 @@ own composition.
 Walter confirmed the phone layout in the 390 × 844 prototype on 2026-11-08,
 after the earlier portrait extension was retired. The implementation follows
 [the approved layout spec](https://github.com/meetwk0916/CatStar/issues/79).
-The portrait artwork and physical-phone touch experience still need human
-review under [the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
+Walter accepted the revised portrait artwork on 2026-11-10 after reviewing
+the 390 × 844 browser capture. Safe areas and touch on a physical phone
+remain to be checked under [the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
 
 ## Current release and hosting state
 
@@ -189,8 +190,8 @@ hashes or branch information to this file.
 
 ## Remaining work
 
-- Review the portrait room artwork and physical-phone touch experience against
-  the approved 390 × 844 composition.
+- Verify browser safe areas and cat, mailbox, and passport touch targets on
+  a physical phone against the approved 390 × 844 composition.
 - The representative mid-range-phone performance evidence was explicitly
   waived for the first public release on 2026-08-24 and must not be reported as
   passed. ADR-0004 still governs future engine decisions: do not begin a Phaser

@@ -1464,7 +1464,7 @@ export class CatRoomScene extends Phaser.Scene {
 
   private createPlantLeaf() {
     this.plantLeaf = this.add
-      .image(this.portrait ? 568 : PLANT_LEAF_PIVOT_X, this.portrait ? 211 : PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
+      .image(this.portrait ? 586 : PLANT_LEAF_PIVOT_X, this.portrait ? 213 : PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
       .setOrigin(43 / 47, 15 / 24)
       .setScale(this.portrait ? PORTRAIT_WORLD_SCALE_X : 1, 1)
       .setDepth(6);
