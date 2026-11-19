@@ -70,13 +70,13 @@ first-release profile rejects it.
   must pass before the other scenes run. Schema 3 records each shot's actual
   canvas bounds for both capture-time and saved-evidence checks.
 
-The runtime evidence for the revised Issue #79 portrait room is in
-`artifacts/art/runtime-review/2026-11-09-portrait-art/`. Its manifest binds the
-desktop and phone screenshots to the captured source. The phone shots show the
-cat sitting on the floor and resting on the folded blanket. Walter accepted the
-revised artwork on 2026-11-10. Physical-phone touch remains pending.
+The [current runtime capture](../../artifacts/art/runtime-review/2026-11-18-portrait-blanket/)
+binds the desktop and phone screenshots to the source with the corrected portrait
+blanket landing. The phone shots show the cat sitting on the floor and resting on
+the folded blanket.
 
-The prior `2026-11-09-mobile-companion/` set records the first portrait artwork.
+The prior `2026-11-09-portrait-art/` set records the artwork Walter accepted
+on 2026-11-10. The `2026-11-09-mobile-companion/` set records the first portrait artwork.
 The full-motion matrix uses the landscape composition at both viewport widths
 for comparable action and route evidence.
 

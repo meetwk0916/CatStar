@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-11-17
+**Last aligned:** 2026-11-19
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -10,9 +10,9 @@ asset provenance; Git history owns completed change history.
 
 ## Current local implementation
 
-CatStar Phase 0.1 is a working local-first internal H5 prototype for
-**喵星来信** / **Letters from Cat Star**. It is not yet a public beta or
-production-quality release.
+The mobile companionship experience is in implementation. The runnable
+CatStar Phase 0.1 build is a local-first internal H5 prototype for
+**喵星来信** / **Letters from Cat Star**.
 
 This ledger describes the locally verified implementation. Git integration,
 pull-request, deployment, and production status are separate release facts and
@@ -22,15 +22,18 @@ The local Issue #79 implementation opens directly to a full-screen
 **陪伴场景** in a narrow portrait viewport. **时光信箱** and **护照** open
 from the lower corners. Desktop uses the landscape room and its existing
 controls. Both layouts use the same passport, letter, and companionship
-rules. The portrait room places the existing routine destinations in its
-own composition.
+rules. The planner picks an opening activity and the cat moves between
+routine destinations during the visit. The portrait room aligns the blanket
+rest position with the painted surface for both opening and jump arrival.
 
 Walter confirmed the phone layout in the 390 × 844 prototype on 2026-11-08,
 after the earlier portrait extension was retired. The implementation follows
 [the approved layout spec](https://github.com/meetwk0916/CatStar/issues/79).
 Walter accepted the revised portrait artwork on 2026-11-10 after reviewing
-the 390 × 844 browser capture. Safe areas and touch on a physical phone
-remain to be checked under [the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
+the 390 × 844 browser capture. Follow the
+[manual QA checklist](../qa/phase-0.1.md#mobile-companionship-home) for
+the remaining physical-phone checks tracked under
+[the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
 
 ## Current release and hosting state
 
@@ -181,7 +184,7 @@ npm run build
 npm run check:bundle
 ```
 
-The accepted runtime-evidence set is owned by
+The current runtime-evidence set is owned by
 [`../art/runtime-map.md`](../art/runtime-map.md). Current test and build results
 belong in the gate or CI output rather than this mutable implementation ledger.
 

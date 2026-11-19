@@ -241,6 +241,7 @@ const PLANT_LEAF_SWAY_DEGREES = 8;
 const BLANKET_STAND_Y = 158;
 const BLANKET_REST_X = 578;
 const PORTRAIT_BLANKET_REST_X = 536;
+const PORTRAIT_BLANKET_STAND_Y = 150;
 const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
@@ -446,6 +447,10 @@ export class CatRoomScene extends Phaser.Scene {
 
   private get blanketRestX() {
     return this.portrait ? PORTRAIT_BLANKET_REST_X : BLANKET_REST_X;
+  }
+
+  private get blanketStandY() {
+    return this.portrait ? PORTRAIT_BLANKET_STAND_Y : BLANKET_STAND_Y;
   }
 
   private setCatScale(scale: number) {
@@ -802,7 +807,7 @@ export class CatRoomScene extends Phaser.Scene {
       if (this.moveTowardTarget(BLANKET_TAKEOFF_X)) {
         this.startScriptedJump(time, {
           toX: this.blanketRestX,
-          toY: BLANKET_STAND_Y,
+          toY: this.blanketStandY,
           duration: 720,
           peakHeight: 42,
           landingRoutine: "restBlanket",
@@ -814,7 +819,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.routine === "restBlanket") {
       this.currentZone = "blanket";
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(BLANKET_STAND_Y);
+      this.cat.setY(this.blanketStandY);
       this.cat.setVelocityX(0);
       this.cat.setFlipX(true);
       this.playCatAction("lie");
@@ -1256,7 +1261,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "blanket-rest") {
       this.currentZone = "blanket";
       this.routine = "restBlanket";
-      this.cat.setPosition(this.blanketRestX, BLANKET_STAND_Y);
+      this.cat.setPosition(this.blanketRestX, this.blanketStandY);
       this.cat.setFlipX(true);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("lie", true);

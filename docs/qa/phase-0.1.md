@@ -2,7 +2,7 @@
 
 **Status:** Current manual acceptance checklist
 
-Last updated: 2026-08-11
+Last updated: 2026-11-19
 
 ## Scope
 
@@ -50,6 +50,17 @@ accessibility checks.
 - Confirm the main page shows the created passport.
 - Refresh the page.
 - Confirm the passport is still present.
+
+### Mobile Companionship Home
+
+- Set the browser viewport to 390 × 844 before opening the home page with an
+  existing passport. Confirm the room fills the first screen and the mailbox
+  and passport open from the lower corners and return to the room.
+- Stay in the room and watch the cat leave its starting spot. In development,
+  use `?catstarRoutine=approachBlanket` to check that the cat lands on the
+  blanket surface and responds to a tap there.
+- On a physical phone, check that the bottom browser controls leave both corner
+  buttons accessible and that a single tap on the cat gives a visible response.
 
 ### Cat Scene
 
