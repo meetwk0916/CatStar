@@ -22,6 +22,7 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | Runtime asset | Current source | Status |
 | --- | --- | --- |
 | `background.png` | `artifacts/art/sources/plant-interaction-v1/background-before-leaf-split.png` via `scripts/derive_plant_interaction_assets.py` | Local repair under the split leaf; room composition otherwise unchanged. |
+| `portrait.png` | `artifacts/art/sources/portrait-room-v2.png`, resized to 320 × 900 with Sharp (Lanczos3) | Phone art for internal review under Issues #77 and #79. The separate leaf uses a portrait-specific pivot at the painted stem. |
 | `plant-leaf.png` | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` via `scripts/derive_plant_interaction_assets.py` | `47x24` transparent internal-prototype prop with a fixed Phaser pivot. |
 
 ## Motion Master
@@ -69,15 +70,18 @@ first-release profile rejects it.
   must pass before the other scenes run. Schema 3 records each shot's actual
   canvas bounds for both capture-time and saved-evidence checks.
 
-The current project-wide browser evidence lives under
-`artifacts/art/runtime-review/2026-11-08/`. Its 19 screenshots passed automatic
-structural validation against source fingerprint
-`1cd2b48463f5ab79fc63c29a102e26dc55860a819f837a7ab03ddbca46735289`.
-This is evidence for the retained landscape review baseline. Further design
-work is paused; no mobile-first visual acceptance was granted. This set does
-not renew earlier human approvals or establish production-art acceptance. The
-rejected portrait extension was never integrated; its draft worktree has been
-removed and is not a runtime authority in this checkout.
+The [current runtime capture](../../artifacts/art/runtime-review/2026-11-18-portrait-blanket/)
+binds the desktop and phone screenshots to the source with the corrected portrait
+blanket landing. The phone shots show the cat sitting on the floor and resting on
+the folded blanket.
+
+The prior `2026-11-09-portrait-art/` set records the artwork Walter accepted
+on 2026-11-10. The `2026-11-09-mobile-companion/` set records the first portrait artwork.
+The full-motion matrix uses the landscape composition at both viewport widths
+for comparable action and route evidence.
+
+The previous `artifacts/art/runtime-review/2026-11-08/` set is structural
+evidence for the landscape review baseline, before the portrait layout.
 
 The previous `artifacts/art/runtime-review/2026-11-06/` set remains historical
 evidence for the same UI. Its schema 2 manifest predates per-shot canvas

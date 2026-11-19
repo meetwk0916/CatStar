@@ -48,7 +48,7 @@ export default function OnboardingForm({ onCreate }: OnboardingFormProps) {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-[#FBF8F3] px-5 py-8 text-[#4A3E3D]">
+    <main className="min-h-[100dvh] bg-[#FBF8F3] px-5 py-8 pt-[max(2rem,env(safe-area-inset-top))] text-[#4A3E3D]">
       <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <section className="space-y-5">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8D6E63]">

@@ -23,7 +23,8 @@ export interface CatRoomSceneData {
   coatPreset?: CatCoatPreset;
   temperament?: CatTemperament;
   showStardust: boolean;
-  onInteract: (message: string | null) => void;
+  portrait?: boolean;
+  onInteract: (message: string | null, disposition: TouchDisposition) => void;
   initialInteractionCount?: number;
   onReady?: (scene: CatRoomScene) => void;
 }
@@ -167,6 +168,8 @@ export function sampleScriptedJump(
 }
 
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
+const PORTRAIT_ROOM_WIDTH = 320;
+const PORTRAIT_WORLD_SCALE_X = 2;
 const CAT_ACTIONS: CatAction[] = [
   "idle",
   "sit",
@@ -237,6 +240,8 @@ const PLANT_TOUCH_DURATION_MS = 3_000;
 const PLANT_LEAF_SWAY_DEGREES = 8;
 const BLANKET_STAND_Y = 158;
 const BLANKET_REST_X = 578;
+const PORTRAIT_BLANKET_REST_X = 536;
+const PORTRAIT_BLANKET_STAND_Y = 150;
 const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
@@ -307,6 +312,7 @@ export class CatRoomScene extends Phaser.Scene {
   private plantTouchStartedAt = 0;
   private plantTouchCooldownStarted = false;
   private showStardust = false;
+  private portrait = false;
   private coatPreset: CatCoatPreset = "GRAY_WHITE_TABBY";
   private temperament: CatTemperament = "AFFECTIONATE";
   private currentZone: CompanionZone = "floor";
@@ -316,7 +322,7 @@ export class CatRoomScene extends Phaser.Scene {
   private debugMotionReview = false;
   private debugFloorWalkDirection = 1;
   private debugForceFullTouch = false;
-  private onInteract: (message: string | null) => void = () => {};
+  private onInteract: CatRoomSceneData["onInteract"] = () => {};
   private onReady: (scene: CatRoomScene) => void = () => {};
   private acceptsInteractions = false;
 
@@ -328,6 +334,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.coatPreset = data.coatPreset ?? "GRAY_WHITE_TABBY";
     this.temperament = data.temperament ?? "AFFECTIONATE";
     this.showStardust = data.showStardust;
+    this.portrait = data.portrait ?? false;
     this.walkPaceSeed = Phaser.Math.FloatBetween(0, Math.PI * 2);
     this.routeExecutor = createCompanionRouteExecutor(this.temperament, this.walkPaceSeed);
     this.planner = createCompanionPlanner({
@@ -354,9 +361,13 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
-    this.load.image("window-room-foreground-cat-bed", `${SCENE_ASSET_ROOT}/foreground-cat-bed.png`);
-    this.load.image("window-room-foreground-blanket", `${SCENE_ASSET_ROOT}/foreground-blanket.png`);
+    if (this.portrait) {
+      this.load.image("portrait-room-background", `${SCENE_ASSET_ROOT}/portrait.png`);
+    } else {
+      this.load.image("window-room-background", `${SCENE_ASSET_ROOT}/background.png`);
+      this.load.image("window-room-foreground-cat-bed", `${SCENE_ASSET_ROOT}/foreground-cat-bed.png`);
+      this.load.image("window-room-foreground-blanket", `${SCENE_ASSET_ROOT}/foreground-blanket.png`);
+    }
     this.load.image("window-room-plant-leaf", `${SCENE_ASSET_ROOT}/plant-leaf.png`);
     this.load.json("window-room-collision", `${SCENE_ASSET_ROOT}/collision.json`);
     this.load.json("cat-animation-spec", `${SCENE_ASSET_ROOT}/cat/cat.animations.json`);
@@ -373,12 +384,21 @@ export class CatRoomScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 640, 360);
     this.createPhysicsTexture();
     this.createParticleTexture();
-    this.add.image(320, 180, "window-room-background").setDisplaySize(640, 360).setDepth(0);
+    if (this.portrait) {
+      this.createPortraitRoom();
+      this.framePortraitRoom();
+      this.scale.on(Phaser.Scale.Events.RESIZE, this.framePortraitRoom, this);
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        this.scale.off(Phaser.Scale.Events.RESIZE, this.framePortraitRoom, this);
+      });
+    } else {
+      this.add.image(320, 180, "window-room-background").setDisplaySize(640, 360).setDepth(0);
+      this.createForegroundObjects();
+    }
     this.createPlantLeaf();
     this.createCatAnimations();
     this.createSceneObjects();
     this.createCat();
-    this.createForegroundObjects();
     const cat = this.cat;
     if (!cat) {
       throw new Error("Cat sprite was not created");
@@ -410,6 +430,32 @@ export class CatRoomScene extends Phaser.Scene {
     }
     this.acceptsInteractions = true;
     this.onReady(this);
+  }
+
+  private framePortraitRoom() {
+    const zoom = this.scale.gameSize.width / PORTRAIT_ROOM_WIDTH;
+    this.cameras.main.setZoom(zoom / PORTRAIT_WORLD_SCALE_X, zoom).centerOn(320, 180);
+  }
+
+  private createPortraitRoom() {
+    const addRoomLayer = () => this.add.image(320, 180, "portrait-room-background").setScale(PORTRAIT_WORLD_SCALE_X, 1);
+    addRoomLayer().setDepth(0);
+    // Repaint the front edges above the sprite where it rests in the bed or on the blanket.
+    addRoomLayer().setCrop(16, 511, 68, 6).setDepth(6);
+    addRoomLayer().setCrop(250, 464, 70, 5).setDepth(6);
+  }
+
+  private get blanketRestX() {
+    return this.portrait ? PORTRAIT_BLANKET_REST_X : BLANKET_REST_X;
+  }
+
+  private get blanketStandY() {
+    return this.portrait ? PORTRAIT_BLANKET_STAND_Y : BLANKET_STAND_Y;
+  }
+
+  private setCatScale(scale: number) {
+    // Keep the original sprite proportions in the narrower projection of the room.
+    this.cat?.setScale(scale * (this.portrait ? PORTRAIT_WORLD_SCALE_X : 1), scale);
   }
 
   update(time: number) {
@@ -458,7 +504,7 @@ export class CatRoomScene extends Phaser.Scene {
 
   private createCat() {
     this.cat = this.physics.add.sprite(320, FLOOR_STAND_Y, "cat-idle");
-    this.cat.setDisplaySize(CAT_DISPLAY_SIZE, CAT_DISPLAY_SIZE);
+    this.setCatScale(CAT_BASE_SCALE);
     this.cat.setCollideWorldBounds(true);
     this.cat.setGravityY(0);
     this.cat.body.setAllowGravity(false);
@@ -467,8 +513,10 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setInteractive({ useHandCursor: true });
     this.cat.on("pointerdown", (pointer: Phaser.Input.Pointer) => this.interact(pointer.worldX));
 
-    this.cat.setSize(48, 76);
-    this.cat.setOffset(24, 18);
+    // Arcade applies sprite scale to the body too. Keep its world-space width and center.
+    const bodyScaleX = this.portrait ? PORTRAIT_WORLD_SCALE_X : 1;
+    this.cat.setSize(48 / bodyScaleX, 76);
+    this.cat.setOffset(48 - 24 / bodyScaleX, 18);
     this.playCatAction("idle");
 
     const colliders = this.registry.get("catstar-colliders") as Phaser.Physics.Arcade.Image[] | undefined;
@@ -547,7 +595,10 @@ export class CatRoomScene extends Phaser.Scene {
     this.manualInteractAction = TOUCH_ACTIONS[outcome.disposition];
     this.manualInteractUntil = this.time.now + outcome.durationMs;
     this.playCatReaction(this.manualInteractAction, true);
-    this.onInteract(chooseCompanionWhisper(this.temperament, () => Phaser.Math.RND.frac()));
+    this.onInteract(
+      chooseCompanionWhisper(this.temperament, () => Phaser.Math.RND.frac()),
+      outcome.disposition,
+    );
     return outcome.durationMs;
   }
 
@@ -755,8 +806,8 @@ export class CatRoomScene extends Phaser.Scene {
 
       if (this.moveTowardTarget(BLANKET_TAKEOFF_X)) {
         this.startScriptedJump(time, {
-          toX: BLANKET_REST_X,
-          toY: BLANKET_STAND_Y,
+          toX: this.blanketRestX,
+          toY: this.blanketStandY,
           duration: 720,
           peakHeight: 42,
           landingRoutine: "restBlanket",
@@ -768,7 +819,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.routine === "restBlanket") {
       this.currentZone = "blanket";
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(BLANKET_STAND_Y);
+      this.cat.setY(this.blanketStandY);
       this.cat.setVelocityX(0);
       this.cat.setFlipX(true);
       this.playCatAction("lie");
@@ -867,7 +918,7 @@ export class CatRoomScene extends Phaser.Scene {
       this.currentZone = "floor";
       this.cat.setVelocityX(0);
       this.cat.setY(FOREGROUND_STAND_Y);
-      this.cat.setScale(FOREGROUND_SCALE);
+      this.setCatScale(FOREGROUND_SCALE);
       this.cat.setDepth(7);
       this.playCatAction("interact");
       if (time >= this.routineHoldUntil) {
@@ -1018,7 +1069,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.setVelocityX(frame.velocityX);
     this.cat.setVelocityY(frame.velocityY);
     if (frame.y !== undefined) this.cat.setY(frame.y);
-    if (frame.scale !== undefined) this.cat.setScale(frame.scale);
+    if (frame.scale !== undefined) this.setCatScale(frame.scale);
     if (frame.depth !== undefined) this.cat.setDepth(frame.depth);
     this.cat.setFlipX(frame.facingLeft);
 
@@ -1089,7 +1140,7 @@ export class CatRoomScene extends Phaser.Scene {
     return {
       x: this.cat.x,
       y: this.cat.y,
-      scale: this.cat.scaleX,
+      scale: this.cat.scaleY,
       depth: this.cat.depth,
       facingLeft: this.cat.flipX,
       velocityX: this.cat.body.velocity.x,
@@ -1210,7 +1261,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "blanket-rest") {
       this.currentZone = "blanket";
       this.routine = "restBlanket";
-      this.cat.setPosition(BLANKET_REST_X, BLANKET_STAND_Y);
+      this.cat.setPosition(this.blanketRestX, this.blanketStandY);
       this.cat.setFlipX(true);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("lie", true);
@@ -1418,8 +1469,9 @@ export class CatRoomScene extends Phaser.Scene {
 
   private createPlantLeaf() {
     this.plantLeaf = this.add
-      .image(PLANT_LEAF_PIVOT_X, PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
+      .image(this.portrait ? 586 : PLANT_LEAF_PIVOT_X, this.portrait ? 213 : PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
       .setOrigin(43 / 47, 15 / 24)
+      .setScale(this.portrait ? PORTRAIT_WORLD_SCALE_X : 1, 1)
       .setDepth(6);
   }
 

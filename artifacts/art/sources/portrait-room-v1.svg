@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="900" viewBox="0 0 320 900">
+  <defs>
+    <linearGradient id="wall" x2=".88" y2="1">
+      <stop stop-color="#2c252c"/>
+      <stop offset=".55" stop-color="#715046"/>
+      <stop offset="1" stop-color="#3d2a2b"/>
+    </linearGradient>
+    <linearGradient id="night" x2=".16" y2="1">
+      <stop stop-color="#131d38"/>
+      <stop offset=".7" stop-color="#2e4262"/>
+      <stop offset="1" stop-color="#535270"/>
+    </linearGradient>
+    <linearGradient id="floor" x2=".1" y2="1">
+      <stop stop-color="#3e2828"/>
+      <stop offset=".18" stop-color="#78503c"/>
+      <stop offset=".53" stop-color="#51352d"/>
+      <stop offset="1" stop-color="#282128"/>
+    </linearGradient>
+    <linearGradient id="wood" x2=".04" y2="1">
+      <stop stop-color="#b28155"/>
+      <stop offset=".18" stop-color="#815139"/>
+      <stop offset="1" stop-color="#482e2a"/>
+    </linearGradient>
+    <linearGradient id="cushion" x2=".12" y2="1">
+      <stop stop-color="#d9ae83"/>
+      <stop offset=".65" stop-color="#ae795a"/>
+      <stop offset="1" stop-color="#855644"/>
+    </linearGradient>
+    <radialGradient id="lamplight">
+      <stop stop-color="#ffd09a" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#ffd09a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="wall-grain" width="17" height="19" patternUnits="userSpaceOnUse">
+      <path d="M2 3h2v1H2zm9 6h1v2h-1zM5 15h4v1H5z" fill="#e5b089" opacity=".11"/>
+      <path d="M13 1h2v1h-2zM1 10h1v2H1zm12 6h2v1h-2z" fill="#271b24" opacity=".19"/>
+    </pattern>
+    <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M1 2h3v1H1zm4 4h2v1H5z" fill="#f1c394" opacity=".22"/>
+      <path d="M1 7h2v1H1zm4-7h2v1H5z" fill="#58382e" opacity=".18"/>
+    </pattern>
+    <clipPath id="window">
+      <path d="M52 403V310h8v-22h13v-19h20v-13h27v-8h78v8h27v13h20v19h13v22h8v93z"/>
+    </clipPath>
+  </defs>
+
+  <path d="M0 0h320v900H0z" fill="url(#wall)"/>
+  <path d="M0 0h320v900H0z" fill="url(#wall-grain)"/>
+  <path d="M0 477h320v423H0z" fill="url(#floor)"/>
+  <path d="M0 478h320v10H0z" fill="#352329"/>
+  <path d="M0 479h320v2H0z" fill="#9c694c" opacity=".52"/>
+  <path d="M0 513h320M0 552h320M0 600h320M0 663h320M0 746h320M0 849h320M64 489 48 513m188-24 12 24m-125 0-5 39m174-39 19 39m-233 0-13 48m119-48 6 48m-79 0-9 63m155-63 20 63m-227 0-28 83m189-83 12 83m-98 0-8 103m166-103 35 103" fill="none" stroke="#321f25" stroke-opacity=".65" stroke-width="2"/>
+  <path d="M0 555h320M0 603h320M0 666h320M0 749h320" stroke="#b67d51" stroke-opacity=".21" fill="none"/>
+  <ellipse cx="174" cy="450" rx="200" ry="290" fill="url(#lamplight)"/>
+  <path d="M61 403h195l64 256v77L35 607 7 515z" fill="#ffc88c" opacity=".065"/>
+
+  <path d="M39 419V301h8v-21h12v-19h21v-15h30v-10h99v10h29v15h22v19h12v21h8v118z" fill="#35262c"/>
+  <path d="M44 414V304h8v-21h13v-19h21v-14h28v-9h91v9h28v14h21v19h13v21h8v110z" fill="url(#wood)"/>
+  <g clip-path="url(#window)">
+    <path d="M45 239h228v180H45z" fill="url(#night)"/>
+    <path d="M49 363h19v-10h18v5h19v-16h17v5h16v18h22v-12h21v-12h18v9h18v-7h28v12h24v61H49z" fill="#293951"/>
+    <path d="M52 378h20v-12h19v7h22v-5h17v12h27v-10h22v8h24v-9h22v10h16v-14h26v42H52z" fill="#1b293f"/>
+    <path d="M85 284h2v2h-2zm30-17h2v2h-2zm31 36h2v2h-2zm-71 25h2v2h-2zm42 7h2v2h-2zm67-69h2v2h-2zm54 20h2v2h-2zm-14 42h2v2h-2zm22 20h2v2h-2zm-68-13h2v2h-2z" fill="#e9d1a6"/>
+    <path d="M208 285h-8v5h-6v12h5v7h13v-5h6v-6h-6v-4h-4z" fill="#f7ddb0"/>
+    <path d="M57 379h3v4h-3zm38-10h3v3h-3zm30 10h3v4h-3zm69-10h3v4h-3zm28 7h3v4h-3zm27-8h3v4h-3z" fill="#b88a62" opacity=".6"/>
+    <path d="M156 241h8v166h-8zM46 341h227v7H46z" fill="#76513e"/>
+    <path d="M156 244h2v159h-2zM52 341h214v2H52z" fill="#bc8a62" opacity=".58"/>
+  </g>
+  <path d="M33 403h253v8H33zm5 8h244v5H38z" fill="url(#wood)"/>
+  <path d="M33 403h253v2H33z" fill="#bf946c"/>
+
+  <path d="M38 443h244l12 16v32h-8v14h-14v-19H48v19H34v-14h-8v-32z" fill="#3d2928"/>
+  <path d="M38 447h244l9 13v18H29v-18z" fill="url(#wood)"/>
+  <path d="M30 462h260v3H30zm14 15h231v2H44z" fill="#b37b52" opacity=".52"/>
+  <path d="M53 432h214v4h7v9h6v10h-6v5H46v-5h-6v-10h6v-9h7z" fill="url(#cushion)"/>
+  <path d="M53 433h214v4h7v8h6v9h-6v4H46v-4h-6v-9h6v-8h7z" fill="url(#weave)"/>
+  <path d="M47 450h226v2H47z" fill="#6c473b" opacity=".45"/>
+  <path d="M48 445h3v3h-3zm12-8h3v2h-3zm199 0h4v2h-4zm9 8h3v3h-3z" fill="#eed0a3"/>
+
+  <path d="M26 391h18v13H26z" fill="#b07553"/>
+  <path d="M29 389h13v3H29zm3-15h3v16h-3zm4 4h3v11h-3z" fill="#87916a"/>
+  <path d="M25 368h7v7h-7zm11 3h7v7h-7zm1-10h5v7h-5z" fill="#6b805d"/>
+  <path d="M280 393h11v11h-11z" fill="#9e684c"/>
+  <path d="M283 384h5v9h-5z" fill="#f3c98c"/>
+  <path d="M285 380h2v5h-2z" fill="#fff0b6"/>
+
+  <path d="M6 513h7v-8h15v-5h43v5h13v8h8v22h-9v7H19v-6H6z" fill="#573631"/>
+  <path d="M13 516h8v-7h57v7h8v15H13z" fill="#b17a61"/>
+  <path d="M16 511h68v6H16z" fill="#95614c"/>
+  <path d="M16 529h68v5H16z" fill="#774a3b"/>
+  <path d="M19 525h60v6H19z" fill="url(#weave)"/>
+
+  <path d="M261 447h59v47h-62v-12h-8v-26h11z" fill="#5d3e37"/>
+  <path d="M259 447h61v18h-69v-9h8z" fill="#9a745e"/>
+  <path d="M253 460h67v4h-67zm7 12h60v3h-60zm0 10h60v3h-60z" fill="#d0a47f" opacity=".52"/>
+  <path d="M250 447h70v19h-70z" fill="url(#weave)"/>
+
+  <g transform="translate(14 55)">
+    <path d="M262 432h3v16h-3zm6-16h3v32h-3zm3 14h13v3h-13zm-16-7h15v3h-15z" fill="#626f4d"/>
+    <path d="M256 445h24l-4 18h-16z" fill="#b27752"/>
+    <path d="M254 444h28v4h-28z" fill="#d09867"/>
+  </g>
+
+  <path d="M209 564h64v17h-64z" fill="#4b3431"/>
+  <path d="M239 557h25v4h4v6h-4v7h-25v-6h-4v-7h4z" fill="#b48768"/>
+  <path d="M239 558h25v6h-25z" fill="#514034"/>
+  <path d="M242 559h19v3h-19z" fill="#927053"/>
+
+  <path d="M65 616h190l26 100H39z" fill="#523a3a"/>
+  <path d="M71 622h178l22 88H49z" fill="#926b54" opacity=".48"/>
+  <path d="M71 622h178l22 88H49z" fill="url(#weave)"/>
+  <path d="M78 630h164l16 71H62z" fill="none" stroke="#b28663" stroke-opacity=".62" stroke-width="2"/>
+  <path d="m160 640 27 24-27 24-27-24z" fill="none" stroke="#bd906b" stroke-opacity=".46" stroke-width="3"/>
+  <path d="M42 719h236v3H42z" fill="#b3896b" opacity=".32"/>
+</svg>

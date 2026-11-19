@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-11-08
+**Last aligned:** 2026-11-19
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -10,29 +10,30 @@ asset provenance; Git history owns completed change history.
 
 ## Current local implementation
 
-CatStar Phase 0.1 is a working local-first internal H5 prototype for
-**喵星来信** / **Letters from Cat Star**. It is not yet a public beta or
-production-quality release.
+The mobile companionship experience is in implementation. The runnable
+CatStar Phase 0.1 build is a local-first internal H5 prototype for
+**喵星来信** / **Letters from Cat Star**.
 
 This ledger describes the locally verified implementation. Git integration,
 pull-request, deployment, and production status are separate release facts and
 must not be inferred from this document.
 
-The retained local review baseline uses the landscape room, places the mailbox
-before passport details on mobile, and labels the final letter as **最后一封**
-without changing its stored ID. Existing browser checks cover first-screen
-access at 390×844 and final-letter reading, explicit farewell, and archive
-review on mobile and desktop.
+The local Issue #79 implementation opens directly to a full-screen
+**陪伴场景** in a narrow portrait viewport. **时光信箱** and **护照** open
+from the lower corners. Desktop uses the landscape room and its existing
+controls. Both layouts use the same passport, letter, and companionship
+rules. The planner picks an opening activity and the cat moves between
+routine destinations during the visit. The portrait room aligns the blanket
+rest position with the painted surface for both opening and jump arrival.
 
-On 2026-11-06, Walter asked to stop and reconsider the direction, then return
-to this earlier implementation. Further product/UI work is paused. Retaining
-this baseline is not mobile-first design acceptance or release approval. The
-later portrait-background extension was rejected and never integrated. Its
-draft worktree and temporary review files were removed after Walter confirmed
-cleanup; its display geometry and draft specs are not the current contract.
-Resume only after Walter supplies a new direction. The open
-[experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77)
-records this hold.
+Walter confirmed the phone layout in the 390 × 844 prototype on 2026-11-08,
+after the earlier portrait extension was retired. The implementation follows
+[the approved layout spec](https://github.com/meetwk0916/CatStar/issues/79).
+Walter accepted the revised portrait artwork on 2026-11-10 after reviewing
+the 390 × 844 browser capture. Follow the
+[manual QA checklist](../qa/phase-0.1.md#mobile-companionship-home) for
+the remaining physical-phone checks tracked under
+[the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
 
 ## Current release and hosting state
 
@@ -183,7 +184,7 @@ npm run build
 npm run check:bundle
 ```
 
-The accepted runtime-evidence set is owned by
+The current runtime-evidence set is owned by
 [`../art/runtime-map.md`](../art/runtime-map.md). Current test and build results
 belong in the gate or CI output rather than this mutable implementation ledger.
 
@@ -192,8 +193,8 @@ hashes or branch information to this file.
 
 ## Remaining work
 
-- Reconsider the product/UI direction with Walter before further layout work.
-  The retained landscape baseline has not passed mobile-first acceptance.
+- Verify browser safe areas and cat, mailbox, and passport touch targets on
+  a physical phone against the approved 390 × 844 composition.
 - The representative mid-range-phone performance evidence was explicitly
   waived for the first public release on 2026-08-24 and must not be reported as
   passed. ADR-0004 still governs future engine decisions: do not begin a Phaser

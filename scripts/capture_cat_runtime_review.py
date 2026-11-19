@@ -44,6 +44,7 @@ EXPECTED_VIEWPORT = tuple(int(value) for value in VIEWPORT.split(",", maxsplit=1
 MOBILE_VIEWPORT = os.environ.get("CATSTAR_REVIEW_MOBILE_VIEWPORT", "390,844")
 EXPECTED_MOBILE_VIEWPORT = tuple(int(value) for value in MOBILE_VIEWPORT.split(",", maxsplit=1))
 MIN_ROOM_UNIQUE_COLORS = 10_000
+MIN_PORTRAIT_ROOM_UNIQUE_COLORS = 1_000
 MIN_ROOM_MEAN_LUMINANCE = 40
 MAX_ROOM_MEAN_LUMINANCE = 140
 CAT_DIFF_THRESHOLD = 75
@@ -52,6 +53,7 @@ CAT_DIFF_THRESHOLD = 75
 # solid-black food-bowl poses testable.
 MIN_CAT_DIFF_COMPONENT = 90
 BACKGROUND_PATH = Path("public/assets/scenes/window-room/background.png")
+PORTRAIT_BACKGROUND_PATH = Path("public/assets/scenes/window-room/portrait.png")
 
 REVIEW_PASSPORT = {
     "schemaVersion": 1,
@@ -78,6 +80,7 @@ SHOTS = [
     ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000, VIEWPORT),
     ("plant-touch-1s.png", "/?catstarRoutine=touchPlant", 1100, VIEWPORT),
     ("mobile-sit-2s.png", "/?catstarRoutine=floorSit", 1800, MOBILE_VIEWPORT),
+    ("mobile-blanket-10s.png", "/?catstarRoutine=approachBlanket", 10000, MOBILE_VIEWPORT),
 ]
 INTERACTION_SHOTS = [
     f"interaction-{side}-{frame:02d}.png"
@@ -286,9 +289,28 @@ def validate_screenshot(path: Path, expected_viewport: tuple[int, int], bounds: 
 
     room = image.crop(canvas_region(path, bounds, expected_viewport))
     unique_colors = len(room.getcolors(maxcolors=room.width * room.height) or [])
-    if unique_colors < MIN_ROOM_UNIQUE_COLORS:
+    portrait = expected_viewport == EXPECTED_MOBILE_VIEWPORT
+    # The authored portrait uses a smaller palette than the landscape backdrop.
+    color_floor = MIN_PORTRAIT_ROOM_UNIQUE_COLORS if portrait else MIN_ROOM_UNIQUE_COLORS
+    if unique_colors < color_floor:
         raise RuntimeError(f"{path}: canvas looks blank; only {unique_colors} unique colors")
-    if expected_viewport == EXPECTED_MOBILE_VIEWPORT:
+    if portrait:
+        if room.size != expected_viewport:
+            raise RuntimeError(f"{path}: portrait canvas must fill the viewport, got {room.size}")
+        if path.name == "mobile-sit-2s.png":
+            # The fixed sitting anchor is clear of the corner controls and the plant.
+            width, height = room.size
+            with Image.open(PORTRAIT_BACKGROUND_PATH) as source:
+                scale = width / source.width
+                reference = source.convert("RGB").transform(
+                    room.size,
+                    Image.Transform.AFFINE,
+                    (1 / scale, 0, 0, 0, 1 / scale, (source.height - height / scale) / 2),
+                    Image.Resampling.NEAREST,
+                )
+            area = (int(width * .34), height // 2, int(width * .62), int(height / 2 + width * .30))
+            if largest_cat_diff_component(room.crop(area), reference.crop(area)) < MIN_CAT_DIFF_COMPONENT:
+                raise RuntimeError(f"{path}: cat is not visibly present at the portrait sitting anchor")
         return
 
     luminance = mean_luminance(room)
@@ -300,8 +322,10 @@ def validate_screenshot(path: Path, expected_viewport: tuple[int, int], bounds: 
         raise RuntimeError(f"{path}: cat is not visibly present; largest cat diff component is {cat_component}px")
 
 
-def largest_cat_diff_component(canvas: Image.Image) -> int:
-    background = Image.open(BACKGROUND_PATH).convert("RGB").resize(canvas.size, Image.Resampling.BICUBIC)
+def largest_cat_diff_component(canvas: Image.Image, background: Image.Image | None = None) -> int:
+    if background is None:
+        with Image.open(BACKGROUND_PATH) as source:
+            background = source.convert("RGB").resize(canvas.size, Image.Resampling.BICUBIC)
     width, height = canvas.size
     diff_pixels = []
 
