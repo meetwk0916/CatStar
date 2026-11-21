@@ -1,9 +1,9 @@
 # Art rights-chain checklist
 
 **Status:** Current checklist; internal-prototype gate remains in force
-**Scope:** Every runtime art group entering the first public web release
+**Scope:** Every runtime art group entering the invited beta (`ADR-0011`), with public-release-only groups tracked separately
 **Owner:** Walter
-**Last reviewed:** 2026-08-24
+**Last reviewed:** 2026-11-21
 
 This checklist records evidence needed for a distribution decision. Completing
 it does not itself grant public, paid, marketing, beta, or app-store rights.
@@ -15,16 +15,15 @@ Record the narrowest target being evaluated. Do not treat one target as
 approval for another.
 
 - [ ] Internal prototype review only
-- [ ] Private user testing / closed beta
-- [x] Public web release (free)
+- [x] Private user testing / closed beta
+- [ ] Public web release (free)
 - [ ] Paid distribution
 - [ ] Marketing or promotional use
 - [ ] App-store submission
 
-**Selected target:** First public web release, completely free. Current allowed
-use remains internal-only until the project-wide gate closes.
+**Selected target:** Invited beta of **喵星来信** ([`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md)), completely free. If external visitors cannot open Sites without an OpenAI account and the beta uses an unadvertised link, every asset reachable in the beta build must meet the free public-web standard before access opens. Current allowed use remains internal-only until [Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61) closes.
 **Decision owner:** Walter
-**Decision date:** 2026-08-24
+**Decision date:** 2026-11-21
 
 ## 2. Evidence required for every runtime asset group
 
@@ -52,25 +51,26 @@ Use this table as a work queue. It is not a clearance decision.
 
 | Runtime group | Current evidence | Remaining blocker | Gate |
 | --- | --- | --- | --- |
-| Rounded short-haired model sheet v1 | Production identity record, terms snapshot, enlarged review, and runtime/room derivative | Project-wide public-target decision (Issue #61) | Internal only |
-| v12 `sit`, `walk`, `interact` | Source prompts, lineage, terms snapshot, and current fingerprint-bound scoped review | Sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
-| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, terms snapshot, and eight approved historical motion decisions | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
-| Daily-life v1 `eat`, `groom`, `stretch` | Source prompts, lineage, terms snapshot, structural checks, and six-entry historical gray-white review | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
-| Jump v6 | Production-identity source, lineage, terms snapshot, and approved historical desktop/mobile evidence | Current sixty-combination release review and project-wide gate (Issues #60/#61) | Internal only |
-| Orange-tabby preset | Internal preview plus approved production brief | Independent production source, intake record, release review, and project-wide gate (Issues #56/#60/#61) | Internal only |
-| Four deterministic coat derivatives | Complete deterministic lineage and inherited terms evidence | Per-combination release review and project-wide gate (Issues #60/#61) | Internal only |
-| Room background/foreground | Completed owner record, lineage, terms snapshot, and current desktop/mobile review | Project-wide public-target decision (Issue #61) | Internal only |
-| Plant interaction leaf | Completed owner record, prompt, lineage, terms snapshot, and runtime review | Project-wide public-target decision (Issue #61) | Internal only |
-| Runtime review evidence | Fingerprint-bound screenshots and manifests | Inherits every source group's gate | Internal only |
+| Rounded short-haired model sheet v1 | Production identity record, terms snapshot, enlarged review, and runtime/room derivative | Beta rights-gate decision ([Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61)) | Internal only |
+| v12 `sit`, `walk`, `interact` | Source prompts, lineage, terms snapshot, and historical scoped review | Current-fingerprint form/motion review ([完成内测毛色的形态与连续动作逐项验收并锁死可选预设](https://github.com/meetwk0916/CatStar/issues/84)) and beta rights gate | Internal only |
+| Quiet-motion v1 `idle`, `lie`, `sleep` | Source prompts, lineage, terms snapshot, and eight approved historical motion decisions | Current-fingerprint form/motion review (`#84`) and beta rights gate (`#61`) | Internal only |
+| Daily-life v1 `eat`, `groom`, `stretch` | Source prompts, lineage, terms snapshot, structural checks, and six-entry historical gray-white review | Current-fingerprint form/motion review (`#84`) and beta rights gate (`#61`) | Internal only |
+| Jump v6 | Production-identity source, lineage, terms snapshot, and approved historical desktop/mobile evidence | Current-fingerprint form/motion review (`#84`) and beta rights gate (`#61`) | Internal only |
+| Orange-tabby preset | Internal preview plus approved production brief (`artifacts/art/production-briefs/orange-tabby-v1/`) | Excluded from the invited beta (`ADR-0011`, runtime selector gated by `#84`); post-beta public release requires independent production source, intake, and full review | Internal only (post-beta) |
+| Four deterministic coat derivatives | Complete deterministic lineage and inherited terms evidence | Per-entry form/motion review for any preset selected for invitees (`#84`) and beta rights gate (`#61`); full sixty-combination review deferred to post-beta public release | Internal only |
+| Landscape room background/foreground | Completed owner record, lineage, terms snapshot, and desktop/mobile review | Beta rights-gate decision (`#61`) | Internal only |
+| Portrait room background (and any derived foreground/prop layers) | Owner ImageGen record (`artifacts/art/sources/portrait-room-v2.md`) and 2026-11-10 artwork acceptance | Portrait environment/prop cohesion calibration ([校准并验收竖屏环境背景融合与全区域交互质量](https://github.com/meetwk0916/CatStar/issues/88)), lineage update if modified, and beta rights gate (`#61`) | Internal only |
+| Plant interaction leaf | Completed owner record, prompt, lineage, terms snapshot, and runtime review | Portrait leaf cohesion check (`#88`) and beta rights gate (`#61`) | Internal only |
+| Runtime review evidence | Fingerprint-bound screenshots/videos and manifests | Inherits every source group's gate | Internal only |
 
-## 4. Project-wide public-web closure checklist
+## 4. Target closure checklist
 
-Close the project-wide gate only when every applicable box is checked and the
-linked records are reviewable by someone other than the person who generated
-the art. These boxes record the second reviewer's closure confirmations, not
-the underlying evidence inventory. An unchecked box can therefore coexist with
-a verified fact recorded above, and remains unchecked until that reviewer
-confirms the complete package and signs the decision below.
+Close the gate for the selected target only when every applicable box is checked
+and the linked records are reviewable by someone other than the person who
+generated the art. These boxes record the second reviewer's closure
+confirmations, not the underlying evidence inventory. An unchecked box can
+therefore coexist with a verified fact recorded above, and remains unchecked
+until that reviewer confirms the complete package and signs the decision below.
 
 - [ ] Distribution target is explicitly selected.
 - [ ] The dedicated production model sheet is the sole identity authority.
@@ -79,12 +79,14 @@ confirms the complete package and signs the decision below.
 - [ ] Enlarged model-sheet review is recorded.
 - [ ] `96x96` runtime-cell review is recorded.
 - [ ] Desktop room review is recorded.
-- [ ] Mobile room review is recorded at the supported viewport.
-- [ ] Every runtime asset group in the intended distribution has a completed
-      evidence record from section 2.
+- [ ] Mobile portrait room review (`390 × 844`) is recorded across all active zones.
+- [ ] Every runtime asset group reachable in the intended build has a completed
+      evidence record from section 2. Excluded groups are absent from the
+      assembled client assets, not just hidden from the coat selector.
 - [ ] Applicable terms/provider records are archived immutably and hashed.
 - [ ] Human approval and attribution requirements are recorded.
-- [ ] Public product copy identifies the art as AI-generated.
+- [ ] User-facing note / copy discloses AI-generated art where applicable to the
+      selected target.
 - [ ] The runtime map contains no unresolved asset that can enter the intended
       distribution build.
 - [ ] A second reviewer confirms the package and signs the decision below.
@@ -96,13 +98,22 @@ confirms the complete package and signs the decision below.
 
 ______________________________________________________________________________
 
-## 5. Next action for Issue #61
+## 5. Next action for [Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61)
 
-1. Review every group above against the public-web target.
-2. Record the sixty-combination result and orange-tabby production intake.
-3. Complete the second-person review and sign the decision below.
-4. Change the canonical gate only when every applicable box passes; otherwise
-   record the exact blocker list and keep the internal-only classification.
+1. Finish portrait environment/prop cohesion calibration (`#88`) and ensure any
+   adjusted room, foreground, or leaf layer has updated hashes and lineage in
+   `rights-and-provenance.md`.
+2. Review every runtime group exposed in the invited beta (excluding the
+   runtime-disabled orange preview) against the selected target above.
+3. Complete the confirmation and sign the decision block in section 4.
+4. Attach the reviewed client asset path-to-SHA-256 inventory to the decision.
+   Generate a review candidate with `python3 scripts/check_beta_assets.py --inventory`.
+   This is an inventory, not an approval. See the [hosting check](../../README.md#hosting)
+   before exposing the exact package.
+5. Change the canonical gate in `rights-and-provenance.md` only for the invited
+   beta scope when every applicable box passes; a future public release still
+   requires a fresh public-target closure covering orange-tabby production art
+   and all sixty six-preset combinations.
 
 Closing or completing the internal review does not clear any public,
 commercial, marketing, beta, or app-store distribution. Keep the repository's
@@ -126,6 +137,8 @@ The previously open observation is closed by an immutable repository archive.
   evaluation obligations, publication/sharing policies, and terms changes —
   all present in the archived text.
 - **Gate result:** The immutable-terms-snapshot evidence field is complete for
-  every group citing OpenAI's Terms of Use. Remaining gate fields include the
-  sixty-combination review, orange-tabby production intake, confirmation of the
-  selected public target, and second-person closure.
+  every group citing OpenAI's Terms of Use. Remaining gate fields for the
+  invited beta (`ADR-0011`) are portrait environment/prop cohesion (`#88`),
+  current-fingerprint form-and-motion review on the beta preset subset (`#84`),
+  and target closure in section 4 (`#61`); orange-tabby production intake and
+  sixty-combination review apply to a post-beta public release.
