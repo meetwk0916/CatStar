@@ -37,9 +37,9 @@ Run `gh issue view <number> --comments`.
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
 
-- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --label wayfinder:map`.
-- **Child ticket**: an issue linked to the map as a GitHub sub-issue. Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body.
-- **Blocking**: GitHub's native issue dependencies. Where unavailable, use a `Blocked by: #<n>` line at the top of the child body.
+- **Map**: a single issue labelled `wayfinder:map`, with Destination, Notes, Decisions so far, Not yet specified, and Out of scope sections.
+- **Child ticket and blocking**: use native GitHub sub-issues and native dependencies. Start open ticket bodies with `## Question`; use the single Wayfinder label matching the ticket type.
 - **Frontier query**: list the map's open children, dropping blocked or assigned issues; first in map order wins.
 - **Claim**: `gh issue edit <n> --add-assignee @me`
 - **Resolve**: comment with the answer, close the issue, then append a context pointer to the map's Decisions-so-far.
+- **Verify after charting, re-charting, or wiring**: run `python3 scripts/check_wayfinder.py <map-number>` from this repo with an authenticated `gh`. Compare the returned open tickets and native blockers to the intended graph; confirm any other open map is a separate effort. The command detects structural drift and lists the frontier, but a reviewer must still trace the route to the destination.

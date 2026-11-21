@@ -2,7 +2,7 @@
 
 **Status:** Living implementation ledger
 
-**Last aligned:** 2026-11-19
+**Last aligned:** 2026-11-21
 
 This is the only document that should summarize mutable project-wide
 implementation status. Specs define contracts; the art runtime map owns exact
@@ -35,23 +35,29 @@ the 390 × 844 browser capture. Follow the
 the remaining physical-phone checks tracked under
 [the experience implementation ticket](https://github.com/meetwk0916/CatStar/issues/77).
 
-## Current release and hosting state
+## Current destination and hosting state
 
-To preview the retained local version, follow the [run guide](../../README.md).
-The hosted observations below are historical; remote access policy and live
-delivery were not reverified in this local closeout.
+On 2026-11-21 Walter moved the project destination from a public launch to an
+invited beta, recorded in
+[`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md) and
+tracked on
+[Wayfinder map: 喵星来信邀请内测](https://github.com/meetwk0916/CatStar/issues/48).
+This lifts the 2026-11-06 execution pause. Milestones: by 2026-12-05 settle the
+Sites `403` fallback and the invitees' cat coats; by 2026-12-19 be invite-ready
+or narrow preset breadth to gray-white only without cutting letter, environment,
+form-and-motion, or rights gates.
 
-The first-public-release route uses the repository's existing OpenAI Sites
-project plus a user-owned `.com` domain. Direct Cloudflare Workers deployment
-is fallback only if Sites public delivery cannot be cleared. The canonical
-execution map is
-[Wayfinder map: first public release of 喵星来信](https://github.com/meetwk0916/CatStar/issues/48).
+To preview the local build, follow the [run guide](../../README.md). The
+invited beta reuses the repository's existing OpenAI Sites project without
+purchasing a custom `.com` domain; direct Cloudflare Workers deployment is the
+2026-12-05 fallback if Sites external delivery cannot be cleared (custom `.com`
+binding moves to post-beta public-release scope).
 
-As verified on 2026-08-24, the Sites project is active, has no custom domain,
-and its deployed version predates the current `main`. Its default public URL
-returns Cloudflare-edge `HTTP 403`; no matching recent Worker error was
-reported, so the user-facing site is not live-verified. The release path must
-not treat that deployment as a public launch. The open verification owner is
+As verified on 2026-08-24, the Sites project is active behind owner-only
+`custom` access (`version 4`, rollback `version 3`), has no custom domain, and
+its deployed version predates the current `main`. Unauthenticated requests
+return Cloudflare-edge `HTTP 403` with no matching recent Worker error, so
+external delivery is not yet live-verified; the open verification owner is
 [Prove Sites public delivery and clear the current edge 403](https://github.com/meetwk0916/CatStar/issues/69).
 
 The hosted configuration has no D1 or R2 binding. Passport and letter state
@@ -145,16 +151,9 @@ The current implementation includes:
   frames and owns only the acknowledgement action. Dedicated gray-white
   desktop/mobile continuous evidence covers the complete round trip and touch
   interruption; its review state is recorded in the runtime asset map.
-- Dedicated food-bowl motion evidence is present at
-  `artifacts/art/runtime-motion-review/2026-08-12-food-bowl-acceptance/` and
-  is structurally valid for desktop and mobile; its approved review state is
-  recorded in the runtime asset map. The current project-wide runtime
-  screenshot set under `artifacts/art/runtime-review/2026-11-08/` contains 19
-  current-fingerprint desktop/mobile captures with automatic structural checks
-  passed using recorded canvas bounds and Walter's visual acceptance pending.
-  The 2026-08-23 screenshot set retains its original fingerprint and approval
-  as historical evidence, not acceptance of the current full source tree.
-  Exact review scope is recorded in the runtime asset map.
+- Current runtime screenshot and continuous-motion evidence sets, fingerprints,
+  and per-set human review status are owned solely by
+  [`../art/runtime-map.md`](../art/runtime-map.md).
 - The production identity authority is
   `artifacts/art/candidates/active/product-cat-model-sheet-v1/`; the older
   three-prototype comparison remains visual-direction reference only.
@@ -193,42 +192,43 @@ hashes or branch information to this file.
 
 ## Remaining work
 
-- Verify browser safe areas and cat, mailbox, and passport touch targets on
-  a physical phone against the approved 390 × 844 composition.
-- The representative mid-range-phone performance evidence was explicitly
-  waived for the first public release on 2026-08-24 and must not be reported as
-  passed. ADR-0004 still governs future engine decisions: do not begin a Phaser
-  migration without repeated measured failures.
-- Produce independent ten-action masters for slender short-haired and fluffy
-  long-haired before exposing those prototypes in the passport; they do not
-  block the first release. The gray-white master is locked for internal
-  production work. Its immutable terms snapshot is archived; the current
-  release matrix and project-wide public-distribution gate remain unresolved.
-- Close the project-wide art rights gate before public, paid, marketing, or
-  app-store distribution. Every current runtime group has a provenance record
-  and immutable terms evidence; records alone do not grant release clearance.
-- Complete the sixty-combination review for the six first-release
-  rounded-short-haired coat appearances — gray-and-white tabby, orange tabby,
-  solid black, solid white, calico, and black-and-white tuxedo. The four
-  deterministic derivatives may ship only if every applicable combination
-  passes; a failing preset requires independent production art. The internal
-  orange preview must be replaced by the approved production source. Brown
-  tabby, solid gray, tortoiseshell, and colorpoint are post-release scope per
-  ADR-0010.
-- Produce and intake the approved orange-tabby appearance defined in
-  `artifacts/art/production-briefs/orange-tabby-v1/`. Its current ten-action
-  desktop/mobile capture is comparison evidence only; Issue #23 remains blocked
-  until an independent production source, complete release rights, and twenty
-  human review decisions exist.
-- Defer bespoke **自发玩耍** sheets until after the ten core action classes;
-  reuse walk and interact motion for Phase 0.1 **主动靠近**.
-- Keep the first-release repertoire frozen at the ten core action classes;
-  kneading, belly-up, chase, zoomie, and additional bespoke play motions are
-  follow-up scope rather than release blockers.
-- Use the plant-touch lifecycle as evidence before extracting a general prop
-  interaction framework or expanding other zones.
-- Add one-way/top-only platform support before enabling free-form landings.
-- Complete manual pixel cleanup and interaction timing polish before art lock.
-- Split foreground occlusion elements after the scene composition stabilizes.
-- Revisit collision rectangles after the final background is approved on mobile.
-- Review Phaser chunk size after final sprite sheets are introduced.
+Invited-beta gates ([`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md)):
+
+- Rewrite and approve the eight prewritten **信件** in `src/data/letters.json`
+  (currently Phase 0 test copy).
+- Calibrate and approve `390 × 844` portrait environment-art cohesion and
+  six-zone interaction quality (full-zone portrait captures, room/leaf/cat
+  pixel and shadow cohesion, prop scale/anchors/foreground occlusion, and tap
+  interruption behavior).
+- Capture current-fingerprint continuous-motion evidence (`390 × 844` portrait
+  room and `1280 × 720` desktop) and pass Walter's per-entry form-and-motion
+  review across all ten actions and room routes — gray-white first, then any
+  derivative preset chosen for the invitees' cats — and lock the runtime coat
+  selector to approved presets (excluding the internal orange preview).
+- Verify browser safe areas and cat, **时光信箱**, and **护照** touch targets on
+  a physical phone against the approved `390 × 844` composition.
+- Close the art rights gate for every asset group exposed in the invited beta.
+- Verify whether the Sites external-visitor allowlist requires invitees to hold
+  an OpenAI account, clear the Sites `HTTP 403` (or switch to the Cloudflare
+  Workers fallback by 2026-12-05), and write the beta privacy note and
+  invitation copy.
+- Complete Walter's test-passport walk-through, invite at least three people
+  who have lost a cat through **告别选择**, and record whether to pursue a
+  public release.
+
+Post-beta and follow-up scope:
+
+- If a public release is chosen after the beta: produce and intake independent
+  release-grade orange-tabby art (`artifacts/art/production-briefs/orange-tabby-v1/`,
+  Issue #23), complete the six-preset sixty-combination human review
+  (`ADR-0010`), close the public-distribution rights gate (including AI-art
+  disclosure in public copy), and register/bind a `.com` domain.
+- Representative mid-range physical-phone performance evidence was waived on
+  2026-08-24 and must be recorded as `waived`, never `passed`; `ADR-0004` still
+  requires repeated measured failures before considering a Phaser migration.
+- Slender short-haired and fluffy long-haired **外形原型**, plus brown tabby,
+  solid gray, tortoiseshell, and colorpoint presets (`ADR-0005` / `ADR-0010`).
+- Action classes beyond the ten core actions (kneading, belly-up, chase,
+  zoomie, bespoke **自发玩耍** sheets), general prop-interaction extraction,
+  one-way/top-only free-form landings, collision rectangle revisit, and Phaser
+  chunk-size review after final sprite sheets land.

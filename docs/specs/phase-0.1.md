@@ -2,7 +2,7 @@
 
 **Status:** Current
 
-**Last aligned:** 2026-08-23
+**Last aligned:** 2026-11-21
 
 This document is the current implementation specification for the CatStar web
 internal prototype. It supersedes the runtime architecture described in
@@ -14,6 +14,10 @@ defined in [`../../CONTEXT.md`](../../CONTEXT.md).
 Phase 0.1 validates the memorial ritual, local-only data model, letter pacing,
 and first interactive room slice. It is not a public beta, paid release, or
 evidence that current generated art is approved for production.
+
+The project destination is an invited beta, not a public launch; its
+completion criteria, gates, and timebox are recorded in
+[`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md).
 
 ## Document precedence
 
@@ -89,8 +93,10 @@ and shows the unread count quietly on its icon.
 - The separation between a passport coat choice and its current preview-art
   authority is recorded in
   [`ADR-0009`](../adr/0009-separate-memorial-coat-choice-from-preview-art-authority.md).
-- The first-release boundary of six reviewed **毛色预设** is recorded in
-  [`ADR-0010`](../adr/0010-first-release-ships-six-coat-presets.md).
+- The public-release boundary of six reviewed **毛色预设** is recorded in
+  [`ADR-0010`](../adr/0010-first-release-ships-six-coat-presets.md); the
+  invited beta ships a subset per
+  [`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md).
 
 ## Runtime behavior
 
@@ -106,6 +112,9 @@ and shows the unread count quietly on its icon.
   two prototypes do not block that release. The user chooses an observable
   silhouette rather than a breed, and every available prototype must have the
   complete ten-action repertoire before it can be selected in the product.
+- The invited beta ships only presets that share the locked gray-white motion
+  master, chosen by the invitees' real cats; orange tabby is excluded
+  (ADR-0011).
 - Six curated **毛色预设** ship with the first public release: gray-and-white
   tabby, orange tabby, solid black, solid white, calico, and black-and-white
   tuxedo. Each is a reviewed complete appearance, not an unrestricted color or

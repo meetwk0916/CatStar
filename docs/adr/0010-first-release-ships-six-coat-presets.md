@@ -13,7 +13,7 @@ asset profile. This supersedes the ten-preset first-release requirement set by
 ADR-0005 and ADR-0006.
 
 - **Date:** 2026-08-23
-- **Status:** Accepted
+- **Status:** Accepted (six presets remain the first public-release target; [`ADR-0011`](./0011-first-external-milestone-is-an-invited-beta.md) later set an invited beta with a gray-white-master subset as the first external milestone)
 
 ## Considered Options
 

@@ -1,25 +1,27 @@
 # Art rights and provenance
 
 **Status:** Internal-prototype gate
-**Last reviewed:** 2026-08-24
+**Last reviewed:** 2026-11-21
 
 Unless a specific record below clears it, the current room and cat art may be
 used only for CatStar internal prototype review. Every current asset group now
 holds a provenance record below covering creator, tool, dates, lineage,
 third-party assertions, and terms evidence. Records alone do not flip the
-distribution gate: the project-wide rights-gate closing review (Issue #61)
-owns that decision. An incomplete or missing record is an open rights chain,
-not proof of production rights.
+distribution gate: [Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61)
+owns invited-beta clearance (`ADR-0011`), while a future six-preset public
+release requires its own target closure after orange-tabby production intake
+and sixty-combination human review. An incomplete or missing record is an open
+rights chain, not proof of production rights.
 
 ## Current asset groups
 
 | Runtime group | Technical source | Provider/model | License or terms evidence | Allowed use |
 | --- | --- | --- | --- | --- |
-| Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Codex built-in ImageGen; contemporaneous docs archived 2026-07-10 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; public use gated on the Issue #61 rights-gate closure |
-| Portrait window-room background | `artifacts/art/sources/portrait-room-v2.png`, resized to the runtime PNG | Codex built-in ImageGen on 2026-11-09. Per-generation model version unavailable. | The generation references were the project’s own landscape room and the rasterized Issue #79 layout. See the [source record](../../artifacts/art/sources/portrait-room-v2.md). | Artwork accepted for internal review on 2026-11-10. Public distribution requires Issue #61 closure. |
-| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; contemporaneous docs archived 2026-08-12/14 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; public use gated on the Issue #61 rights-gate closure |
-| Deterministic coat derivatives (solid black, solid white, calico, tuxedo) | `public/assets/scenes/window-room/cat/solid-black/` etc., built by `scripts/build_cat_coat_presets.py` from the gray-white master | No new generation — deterministic per-pixel recolor of recorded upstream sources (record below) | Recorded below; inherits each upstream component's OpenAI terms coverage and the immutable archived snapshot | Rights lineage complete; public use gated on the Issue #60 review pass and Issue #61 rights-gate closure |
-| Remaining cat action sheets outside the records below | Internal orange-tabby appearance-preview sheets listed in `runtime-map.md` | Independent internal preview; release-grade replacement owned by Issues #23/#56 | Not cleared for any release use | Internal prototype only |
+| Window-room background and foreground layers | `artifacts/art/sources/` plus local composition scripts | Codex built-in ImageGen; contemporaneous docs archived 2026-07-10 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; invited-beta use gated on `#61` closure |
+| Portrait window-room background | `artifacts/art/sources/portrait-room-v2.png`, resized to the runtime PNG | Codex built-in ImageGen on 2026-11-09. Per-generation model version unavailable. | The generation references were the project’s own landscape room and the rasterized Issue #79 layout. See the [source record](../../artifacts/art/sources/portrait-room-v2.md). | Artwork accepted for internal review on 2026-11-10. Invited-beta use requires portrait cohesion sign-off (`#88`) and `#61` closure. |
+| Plant interaction leaf | `artifacts/art/sources/plant-interaction-v1/` plus `scripts/derive_plant_interaction_assets.py` | Codex built-in ImageGen; contemporaneous docs archived 2026-08-12/14 identify `gpt-image-2` (record below) | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Rights lineage recorded; invited-beta use gated on `#88` and `#61` closure |
+| Deterministic coat derivatives (solid black, solid white, calico, tuxedo) | `public/assets/scenes/window-room/cat/solid-black/` etc., built by `scripts/build_cat_coat_presets.py` from the gray-white master | No new generation — deterministic per-pixel recolor of recorded upstream sources (record below) | Recorded below; inherits each upstream component's OpenAI terms coverage and the immutable archived snapshot | Rights lineage complete; invited-beta use gated on per-preset form/motion review (`#84`) and `#61` closure; public release requires full sixty-combination review |
+| Remaining cat action sheets outside the records below | Internal orange-tabby appearance-preview sheets listed in `runtime-map.md` | Independent internal preview; release-grade replacement deferred to post-beta (`ADR-0011`, Issue #23) | Not cleared for beta or release use | Internal prototype only (must be disabled in the beta selector) |
 | Rounded short-haired production model sheet v1 | `artifacts/art/candidates/active/product-cat-model-sheet-v1/` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Production identity authority recorded; public clearance pending |
 | Rounded short-haired v12 `sit`, `walk`, and `interact` sources | `artifacts/art/candidates/active/product-cat-quality-slice-v12/` plus `scripts/compose_product_cat_quality_slice_v12.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; current human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Included in the locked internal motion master; not public-release clearance |
 | Rounded short-haired quiet-motion v1 `idle`, `lie`, and `sleep` sources | `artifacts/art/candidates/active/product-cat-quiet-motion-v1/` plus `scripts/compose_product_cat_quiet_motion_v1.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; human confirmation complete; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Internal quiet-motion evidence; not public-release clearance |
@@ -118,7 +120,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-motion-master-v1/` contains 20 historical recordings: all ten actions at `1280x720` and `390x844`, bound to its capture-time source fingerprint `821a28c7793d4a5bae119dd1f959b1c8d56f0e137359b55b3a21a92214a3542f`. Current `idle`, `sit`, and `walk` inputs and scale registration postdate this evidence, so it is not a current release matrix. |
 | Human approval | meetwk0916 approved all 20 desktop/mobile entries in Codex on 2026-08-15 against that historical fingerprint after reviewing identity consistency, readable action semantics, grounded room contacts, believable scale, and touch readability. The approval does not transfer to changed source inputs. |
 | Terms evidence | The component records below retain their applicable OpenAI Terms review dates. Immutable repository snapshot archived 2026-08-23 (see Rights snapshots); commercial-use review at [`codex-imagegen-rights-review.md`](codex-imagegen-rights-review.md). |
-| Distribution status | Locked for CatStar internal production work only. The immutable terms snapshot is archived; public, paid, marketing, and app-store distribution remain blocked by the current release review and project-wide rights gate (Issues #60/#61). |
+| Distribution status | Locked for CatStar internal production work only. The immutable terms snapshot is archived; invited-beta use is gated by `#84` and `#61`, while public, paid, marketing, and app-store distribution remain blocked by full release review and public-target gate closure. |
 
 ## Rounded short-haired daily-life v1 intake record
 
@@ -138,7 +140,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Structural evidence | `npm run check:assets` and `npm run test:assets` pass for all six current coat presets and the ten-action contract. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-daily-life-v3/` covers `eat`, sustained `groom`, and phase-weighted `stretch` for the gray-white motion master at `1280x720` and `390x844` from entry through exit. All six entries were approved by meetwk0916 on 2026-08-15 and pass the release-grade motion-review gate. The v1 and v2 directories retain the earlier short-stretch and short-grooming iterations for comparison. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
-| Distribution status | Internal daily-life evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
+| Distribution status | Internal daily-life evidence only. The immutable terms snapshot is archived; invited-beta use is gated by `#84` and `#61`, and public distribution requires full release review and public-target gate closure. |
 
 ## Rounded short-haired jump v6 intake record
 
@@ -158,7 +160,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Structural evidence | `npm run check:assets` passes for all six current coat presets; `tests/jump-motion.test.ts` records six distinct frames, stable body mass, runtime wiring, and the approved evidence matrix. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-15-jump-v3/` covers the final post-review floor-to-window-bench and return route at `1280x720` and `390x844`. meetwk0916 approved both entries on 2026-08-15, and the release-grade motion-review gate passes. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
-| Distribution status | Internal jump evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
+| Distribution status | Internal jump evidence only. The immutable terms snapshot is archived; invited-beta use is gated by `#84` and `#61`, and public distribution requires full release review and public-target gate closure. |
 
 ## Rounded short-haired quiet-motion v1 intake record
 
@@ -177,7 +179,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 | Transformation lineage | Built-in ImageGen chroma-key sources → recorded chroma-key removal → connected-pose extraction → nearest-neighbor normalization → binary-alpha, 64-color `96x96` sheets via `scripts/compose_product_cat_quiet_motion_v1.py` → deterministic current coat derivatives via `scripts/build_cat_coat_presets.py`. |
 | Terms evidence | [OpenAI Terms of Use](https://openai.com/es-US/policies/row-terms-of-use/), effective 2026-01-01 and reviewed 2026-08-09; immutable repository snapshot archived 2026-08-23 (see Rights snapshots), subject to applicable law and the Terms. |
 | Continuous runtime evidence | `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1/` and `artifacts/art/runtime-motion-review/2026-08-09-quiet-motion-v1-blanket/`, covering `idle`, cat-bed and blanket awake-rest `lie`, and deep `sleep` at `1280x720` and `390x844` from entry through exit. Both release-grade structural gates pass; wakun approved all eight human-review decisions on 2026-08-09. |
-| Distribution status | Internal quiet-motion evidence only. The immutable terms snapshot is archived; public distribution remains blocked by the current release review and project-wide rights gate (Issues #60/#61). |
+| Distribution status | Internal quiet-motion evidence only. The immutable terms snapshot is archived; invited-beta use is gated by `#84` and `#61`, and public distribution requires full release review and public-target gate closure. |
 
 ## Rounded short-haired idle v3 intake record
 
@@ -199,7 +201,7 @@ Records below refer to it as the archived OpenAI terms snapshot.
 
 ## Deterministic coat-preset derivative records (solid black, solid white, calico, black-and-white tuxedo)
 
-**Status:** Rights lineage complete; release use gated on the sixty-combination human review
+**Status:** Rights lineage complete; invited-beta use gated on per-preset form/motion review (`#84`) and `#61`; public release gated on sixty-combination review
 
 Per ADR-0010 these four 毛色预设 are the shipping deterministic derivatives.
 They contain no independently generated art: every runtime sheet is a pure
@@ -211,13 +213,13 @@ chain is the upstream master's chain plus this recorded derivation.
 | Runtime groups | `public/assets/scenes/window-room/cat/solid-black/`, `solid-white/`, `calico/`, and `tuxedo/` — ten action sheets each |
 | Upstream authority | The locked gray-white rounded short-haired motion master: quiet-motion v1 (`idle`, `lie`, `sleep`), quality-slice v12 (`sit`, `walk`, `interact`), daily-life v1 (`eat`, `groom`, `stretch`), and jump v6 (`jump`), each with its own intake record above |
 | Derivation tool | `scripts/build_cat_coat_presets.py` — project-owned, deterministic, version-controlled; authored and maintained by the project owner (first committed 2026-07-29, continuously in-repo since) |
-| Transformation lineage | Per-pixel recolor of the gray-white master sheets only, preserving alpha geometry, anchors, frame counts, and timing exactly: luminance-preserving charcoal mapping (tuxedo keeps the master's white markings; solid-black remaps all coat pixels), warm-white mapping (solid-white), and a fixed three-patch orange-over-charcoal map (calico). Gold and pink accent pixels — eyes, nose, paw pads — pass through unchanged from the master. Orange tabby is excluded: its runtime directory holds the separately lined internal appearance preview, and its release intake is Issue #56. |
+| Transformation lineage | Per-pixel recolor of the gray-white master sheets only, preserving alpha geometry, anchors, frame counts, and timing exactly: luminance-preserving charcoal mapping (tuxedo keeps the master's white markings; solid-black remaps all coat pixels), warm-white mapping (solid-white), and a fixed three-patch orange-over-charcoal map (calico). Gold and pink accent pixels — eyes, nose, paw pads — pass through unchanged from the master. Orange tabby is excluded: its runtime directory holds the separately lined internal appearance preview, and its release-grade replacement is tracked in Issue #23 (post-beta per `ADR-0011`). |
 | Creator and account owner | The deriving script was written by the project owner; all upstream generated art is the project owner's own Codex built-in ImageGen output per the component intake records above |
 | Third-party source assertion | The transform introduces no third-party artwork. The creator confirms that no third-party character, brand, illustration, or photograph was used as an input or imitation target, in either the upstream generation or the recolor rules. |
 | Terms evidence | Inherits each upstream record's OpenAI Terms of Use coverage; immutable repository snapshot archived 2026-08-23 (see Rights snapshots). The owner-use statement remains subject to applicable law and the Terms. |
 | Structural evidence | `npm run check:assets` validates all six current coat presets across the ten-action contract, and the motion-master tests assert exact runtime-to-source wiring and shared alpha geometry for the four derivatives. |
-| Human approval slot | Reserved for the sixty-combination release-matrix review (Issue #60). Per the pragmatic derivative policy and ADR-0010, each of the four presets ships only if its combinations pass; any failing preset switches to independent production art instead. |
-| Distribution status | Rights lineage recorded for internal production work. Public distribution additionally requires the Issue #60 review pass and closure of the project-wide art rights gate (Issue #61). |
+| Human approval slot | Per-preset ten-action continuous form/motion review (`#84`) for any derivative enabled in the invited beta (`ADR-0011`), and full sixty-combination review for a future six-preset public release (`ADR-0010`). Each preset ships only if all ten of its combinations pass; any failing preset switches to independent production art or stays excluded. |
+| Distribution status | Rights lineage recorded for internal production work. Invited-beta use requires passing `#84` and `#61`; public distribution additionally requires full sixty-combination review and public-target gate closure. |
 
 ## Window-room background and foreground intake record
 

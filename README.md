@@ -2,7 +2,9 @@
 
 Phase 0.1 internal web prototype for **喵星来信** / **Letters from Cat Star**:
 a local-first memorial companionship experience for people grieving a real cat
-who has died. It is not yet a public beta or production-art build.
+who has died. It is not yet a public beta or production-art build. The current
+destination is an invited beta
+([ADR-0011](./docs/adr/0011-first-external-milestone-is-an-invited-beta.md)).
 
 ## What Phase 0.1 Includes
 
@@ -66,6 +68,30 @@ The production build targets the existing OpenAI Sites project identified by
 itself mean the public site is reachable. The current hosting route, public
 HTTP status, and release blockers are maintained in
 [`docs/status/current.md`](./docs/status/current.md).
+
+For a candidate that will be exposed outside the owner-only preview, including
+a temporary HTTP probe, check the exact assembled `dist/client/assets/` tree
+against the inventory signed off in the
+[target rights review](./docs/art/rights-chain-checklist.md):
+
+```bash
+python3 scripts/check_beta_assets.py --approved /path/to/approved-assets.json
+```
+
+Package the same checked output without rebuilding. Hiding a coat from the UI
+does not remove its files. If hosting can be diagnosed with a probe containing
+no project art, prefer that over opening the product candidate.
+
+For read-only Sites verification, use the native `get_site` tool in a
+Sites-enabled session for the existing project ID in `.openai/hosting.json`.
+If a deployment ID is known, use `get_deployment_status` for that deployment;
+record its version/source commit and the current audience separately. Verify
+the exact hosted root and a real generated asset with ordinary requests;
+record HTTP status separately from the deployment result. If the Sites tools
+are unavailable, mark the version and audience unverified; HTTP alone cannot
+establish either. The Sites identity reference states that private browser
+access requires sign-in; verify the specific external-visitor flow separately
+if needed, without changing the audience for a read-only check.
 
 ## Project Structure
 
