@@ -21,7 +21,21 @@ approval for another.
 - [ ] Marketing or promotional use
 - [ ] App-store submission
 
-**Selected target:** Invited beta of **喵星来信** ([`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md)), completely free. If external visitors cannot open Sites without an OpenAI account and the beta uses an unadvertised link, every asset reachable in the beta build must meet the free public-web standard before access opens. Current allowed use remains internal-only until [Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61) closes.
+**Selected target:** Free invited beta of **喵星来信**
+([`ADR-0011`](../adr/0011-first-external-milestone-is-an-invited-beta.md)).
+Project art remains internal-only until
+[Close the invited-beta art rights gate](https://github.com/meetwk0916/CatStar/issues/61)
+clears the intended target.
+
+**Anonymous access:** An unadvertised beta link and a temporary anonymous
+[Sites delivery probe](https://github.com/meetwk0916/CatStar/issues/69)
+both count as public-web distribution, even if the beta itself uses a visitor
+allowlist. Before exposing a build containing project art, record free
+public-web clearance for every reachable asset and verify the exact package
+against that approved inventory. If the product candidate is not cleared for
+that target, use a separate probe package containing no project art; keep the
+product candidate owner-only.
+
 **Decision owner:** Walter
 **Decision date:** 2026-11-21
 

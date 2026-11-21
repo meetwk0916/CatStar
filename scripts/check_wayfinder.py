@@ -4,7 +4,6 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
-import re
 import subprocess
 import sys
 
@@ -39,22 +38,23 @@ def labels(issue):
 
 def audit(map_issue, children, blockers):
     problems = []
-    sections = re.findall(r"^## (.+)$", map_issue.get("body") or "", re.MULTILINE)
+    map_lines = (map_issue.get("body") or "").splitlines()
+    sections = tuple(line[3:] for line in map_lines if line.startswith("## "))
     if map_issue["state"] != "open" or labels(map_issue) != {MAP_LABEL}:
         problems.append("Expected an open map carrying only wayfinder:map.")
-    if tuple(sections) != MAP_SECTIONS:
+    if sections != MAP_SECTIONS:
         problems.append("Map sections are missing, extra, or out of order.")
 
     frontier = []
     for child in children:
         number = child["number"]
-        body = child.get("body") or ""
+        lines = (child.get("body") or "").splitlines()
         child_labels = labels(child)
         if len(child_labels) != 1 or not child_labels <= TICKET_LABELS:
             problems.append(f"{link(child)}: expected exactly one Wayfinder ticket label.")
-        if not body.startswith("## Question\n"):
+        if lines[:1] != ["## Question"]:
             problems.append(f"{link(child)}: expected a Question heading.")
-        if re.search(r"^(?:Part of|Blocked by:)", body, re.MULTILINE):
+        if any(line.startswith(("Part of", "Blocked by:")) for line in lines):
             problems.append(f"{link(child)}: remove legacy parent/dependency lines; use native links.")
         opened = [dep for dep in blockers[number] if dep["state"] == "open"]
         assignees = ", ".join(person["login"] for person in child["assignees"])
