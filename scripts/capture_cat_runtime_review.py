@@ -79,20 +79,60 @@ SHOTS = [
     ("floor-sleep-2s.png", "/?catstarRoutine=floorSleep", 1800, VIEWPORT),
     ("approach-user-4s.png", "/?catstarRoutine=approachUser", 4000, VIEWPORT),
     ("plant-touch-1s.png", "/?catstarRoutine=touchPlant", 1100, VIEWPORT),
-    ("mobile-sit-2s.png", "/?catstarRoutine=floorSit", 1800, MOBILE_VIEWPORT),
-    ("mobile-blanket-10s.png", "/?catstarRoutine=approachBlanket", 10000, MOBILE_VIEWPORT),
 ]
 INTERACTION_SHOTS = [
     f"interaction-{side}-{frame:02d}.png"
     for side in ("left", "right")
     for frame in range(1, 5)
 ]
-SHOT_FILENAMES = [filename for filename, _route, _timeout, _viewport in SHOTS] + INTERACTION_SHOTS
+PORTRAIT_SEQUENCES = [
+    ("floorIdle", [("idle", "floorIdle", "idle")]),
+    ("floorWalk", [("walk", "floorWalk", "walk")]),
+    ("floorSit", [("sit", "floorSit", "sit")]),
+    ("floorGroom", [("groom", "floorGroom", "groom")]),
+    ("floorStretch", [("stretch", "floorStretch", "stretch")]),
+    ("floorSleep", [("sleep", "floorSleep", "sleep")]),
+    ("approachWindowBench", [
+        ("window-jump", "approachWindowBench", "jump"),
+        ("window-perch", "perchWindowBench", "sit"),
+        ("window-walk", "perchWindowBench", "walk"),
+    ]),
+    ("approachCatBed", [
+        ("catbed-hop", "approachCatBed", "jump"),
+        ("catbed-rest", "restCatBed", "lie"),
+    ]),
+    ("approachBlanket", [
+        ("blanket-jump", "approachBlanket", "jump"),
+        ("blanket-rest", "restBlanket", "lie"),
+    ]),
+    ("approachFoodBowl", [
+        ("food-route", "approachFoodBowl", "walk"),
+        ("food-eat", "eatFoodBowl", "eat"),
+    ]),
+    ("approachPlant", [("plant-inspect", "inspectPlant", "interact")]),
+    ("approachPlantTouch", [
+        ("plant-touch", "touchPlant", "interact"),
+        ("plant-sway", "watchPlantSway", "idle"),
+    ]),
+    ("approachUser", [("foreground", "acknowledgeUser", "interact")]),
+    ("floorSit", [("touch-whisper", "floorSit", "sit")]),
+    ("approachFoodBowl", [("interrupt-route", "approachFoodBowl", "walk")]),
+    ("approachWindowBench", [("interrupt-jump", "approachWindowBench", "jump")]),
+    ("approachPlantTouch", [("interrupt-plant", "watchPlantSway", "idle")]),
+    ("floorSit", [("stardust", "floorSit", "sit")]),
+]
+PORTRAIT_SHOTS = [
+    f"mobile-{name}.png"
+    for _, frames in PORTRAIT_SEQUENCES
+    for name, _, _ in frames
+]
+SHOT_FILENAMES = [filename for filename, _route, _timeout, _viewport in SHOTS] + INTERACTION_SHOTS + PORTRAIT_SHOTS
 SHOT_VIEWPORTS = {
     filename: [int(value) for value in viewport.split(",", maxsplit=1)]
     for filename, _route, _timeout, viewport in SHOTS
 }
 SHOT_VIEWPORTS.update({filename: list(EXPECTED_VIEWPORT) for filename in INTERACTION_SHOTS})
+SHOT_VIEWPORTS.update({filename: list(EXPECTED_MOBILE_VIEWPORT) for filename in PORTRAIT_SHOTS})
 MANIFEST_FILENAME = "manifest.json"
 CAPTURE_SCRIPT = REPO_ROOT / "scripts/capture_cat_runtime_review.mjs"
 FINGERPRINT_PATHS = [
@@ -161,6 +201,14 @@ def capture(storage_state: Path) -> None:
         for filename in INTERACTION_SHOTS:
             bounds[filename] = interactions.get(filename)
             validate_screenshot(staged / filename, EXPECTED_VIEWPORT, bounds[filename])
+
+        print("Capturing state-verified portrait review frames ...", flush=True)
+        portrait = capture_browser_frames(
+            storage_state, staged, MOBILE_VIEWPORT, {"portraitSequences": PORTRAIT_SEQUENCES}
+        )
+        for filename in PORTRAIT_SHOTS:
+            bounds[filename] = portrait.get(filename)
+            validate_screenshot(staged / filename, EXPECTED_MOBILE_VIEWPORT, bounds[filename])
 
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         (OUT_DIR / MANIFEST_FILENAME).unlink(missing_ok=True)
@@ -297,7 +345,7 @@ def validate_screenshot(path: Path, expected_viewport: tuple[int, int], bounds: 
     if portrait:
         if room.size != expected_viewport:
             raise RuntimeError(f"{path}: portrait canvas must fill the viewport, got {room.size}")
-        if path.name == "mobile-sit-2s.png":
+        if path.name == "mobile-sit.png":
             # The fixed sitting anchor is clear of the corner controls and the plant.
             width, height = room.size
             with Image.open(PORTRAIT_BACKGROUND_PATH) as source:

@@ -125,6 +125,29 @@ describe("companion route executor", () => {
     expect(Math.abs(pose.y - 225)).toBeLessThanOrEqual(4);
   });
 
+  it("returns from the portrait bowl through both waypoints without turning back", () => {
+    const executor = createCompanionRouteExecutor("AFFECTIONATE", 0, { bowl: { x: 406, y: 255 } });
+    const pose = initialPose(406, 255);
+    executor.start("food-bowl-to-floor", { pose });
+
+    const path = [];
+    let phase;
+    for (let time = 1_000; time <= 22_000; time += 16) {
+      const frame = executor.advance(time, pose);
+      if (!frame) break;
+      applyFrame(pose, frame, time === 1_000 ? 0 : 16);
+      path.push({ ...pose });
+      phase = frame.phase;
+      if (phase === "arrived") break;
+    }
+
+    expect(phase).toBe("arrived");
+    expect(path.some(({ x, y }) => Math.hypot(x - 382, y - 243) <= 4)).toBe(true);
+    expect(path.some(({ x, y }) => Math.hypot(x - 334, y - 230) <= 4)).toBe(true);
+    expect(Math.hypot(pose.x - 326, pose.y - 225)).toBeLessThanOrEqual(4);
+    expect(path.every(({ velocityX }) => velocityX <= 0)).toBe(true);
+  });
+
   it.each([
     ["floor-to-plant-inspect", 458],
     ["floor-to-plant-touch", 462],

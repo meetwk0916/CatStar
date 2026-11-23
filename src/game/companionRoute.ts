@@ -31,6 +31,11 @@ export interface CompanionRouteFrame {
 }
 
 interface RoutePoint { x: number; y: number }
+export interface CompanionRouteAnchors {
+  bowl?: RoutePoint;
+  plantInspectX?: number;
+  plantTouchX?: number;
+}
 interface ActiveRoute {
   name: CompanionRouteName;
   waypoints: RoutePoint[];
@@ -84,11 +89,11 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
 const linear = (from: number, to: number, progress: number) => from + (to - from) * progress;
 const sineOut = (progress: number) => Math.sin((Math.PI * progress) / 2);
 
-export function getCompanionRouteDestination(name: CompanionRouteName): { x: number; y: number } {
-  if (name === "floor-to-food-bowl") return { x: BOWL_X, y: BOWL_Y };
-  if (name === "food-bowl-to-floor") return { x: BOWL_X - RETURN_OFFSET_X, y: FLOOR_Y };
-  if (name === "floor-to-plant-inspect") return { x: PLANT_INSPECT_X, y: FLOOR_Y };
-  if (name === "floor-to-plant-touch") return { x: PLANT_TOUCH_X, y: FLOOR_Y };
+export function getCompanionRouteDestination(name: CompanionRouteName, anchors: CompanionRouteAnchors = {}): RoutePoint {
+  if (name === "floor-to-food-bowl") return anchors.bowl ?? { x: BOWL_X, y: BOWL_Y };
+  if (name === "food-bowl-to-floor") return { x: (anchors.bowl?.x ?? BOWL_X) - RETURN_OFFSET_X, y: FLOOR_Y };
+  if (name === "floor-to-plant-inspect") return { x: anchors.plantInspectX ?? PLANT_INSPECT_X, y: FLOOR_Y };
+  if (name === "floor-to-plant-touch") return { x: anchors.plantTouchX ?? PLANT_TOUCH_X, y: FLOOR_Y };
   if (name === "floor-to-foreground") return { x: FOREGROUND_X, y: FOREGROUND_Y };
   return { x: FOREGROUND_X, y: FLOOR_Y };
 }
@@ -96,6 +101,7 @@ export function getCompanionRouteDestination(name: CompanionRouteName): { x: num
 export function createCompanionRouteExecutor(
   temperament: CatTemperament,
   walkPaceSeed = 0,
+  anchors: CompanionRouteAnchors = {},
 ): CompanionRouteExecutor {
   let active: ActiveRoute | null = null;
   let cancellation: Cancellation | null = null;
@@ -121,27 +127,30 @@ export function createCompanionRouteExecutor(
     start(name, { pose }) {
       if (active || cancellation) return "rejected-active";
 
-      const destination = getCompanionRouteDestination(name);
+      const destination = getCompanionRouteDestination(name, anchors);
+      const bowlX = anchors.bowl?.x ?? BOWL_X;
+      const innerY = anchors.bowl ? anchors.bowl.y - 12 : INNER_Y;
       const returningFromBowl = name === "food-bowl-to-floor";
       const foregroundRoute = name === "floor-to-foreground" || name === "foreground-to-floor";
       const direction = returningFromBowl
         ? pose.facingLeft ? 1 : -1
         : destination.x >= pose.x ? 1 : -1;
-      const facingLeft = returningFromBowl ? !pose.facingLeft : direction < 0;
+      const facingLeft = returningFromBowl ? !pose.facingLeft : direction < 0 && !(anchors.bowl && name === "floor-to-food-bowl");
+      const bowlApproachDirection = anchors.bowl ? 1 : direction;
       const authored = name === "floor-to-food-bowl"
         ? [
-            { x: BOWL_X - direction * OUTER_OFFSET_X, y: OUTER_Y },
-            { x: BOWL_X - direction * INNER_OFFSET_X, y: INNER_Y },
+            { x: bowlX - bowlApproachDirection * OUTER_OFFSET_X, y: OUTER_Y },
+            { x: bowlX - bowlApproachDirection * INNER_OFFSET_X, y: innerY },
           ]
         : returningFromBowl
           ? [
-              { x: BOWL_X + direction * INNER_OFFSET_X, y: INNER_Y },
-              { x: BOWL_X + direction * OUTER_OFFSET_X, y: OUTER_Y },
+              { x: bowlX + direction * INNER_OFFSET_X, y: innerY },
+              { x: bowlX + direction * OUTER_OFFSET_X, y: OUTER_Y },
             ]
           : foregroundRoute
             ? []
             : [{ x: destination.x - direction * PLANT_WAYPOINT_OFFSET_X, y: PLANT_WAYPOINT_Y }];
-      const waypoints = returningFromBowl
+      const waypoints = returningFromBowl || (anchors.bowl && name === "floor-to-food-bowl" && pose.x >= bowlX - INNER_OFFSET_X)
         ? authored
         : authored.filter((point) => direction > 0 ? point.x > pose.x + TOLERANCE : point.x < pose.x - TOLERANCE);
       active = {
@@ -149,7 +158,7 @@ export function createCompanionRouteExecutor(
         waypoints,
         waypointIndex: 0,
         destination: returningFromBowl
-          ? { x: BOWL_X + direction * RETURN_OFFSET_X, y: FLOOR_Y }
+          ? { x: bowlX + direction * RETURN_OFFSET_X, y: FLOOR_Y }
           : foregroundRoute
             ? { x: FOREGROUND_X, y: pose.y }
             : destination,

@@ -25,6 +25,12 @@ The six coat preset directories are `gray-white-tabby`, `orange-tabby`,
 | `portrait.png` | `artifacts/art/sources/portrait-room-v2.png`, resized to 320 × 900 with Sharp (Lanczos3) | Phone art for internal review under Issues #77 and #79. The separate leaf uses a portrait-specific pivot at the painted stem. |
 | `plant-leaf.png` | `artifacts/art/sources/plant-interaction-v1/generated-leaf-alpha.png` via `scripts/derive_plant_interaction_assets.py` | `47x24` transparent internal-prototype prop with a fixed Phaser pivot. |
 
+The portrait scene keeps the existing background and room layout. Its bed,
+blanket, and bowl front edges are clipped directly from `portrait.png` at
+runtime so they follow the painted contours. The leaf reuses `plant-leaf.png`
+with a smaller, warmer render at the painted stem. The contact shadow is a
+procedural shape; there are no new external asset inputs.
+
 ## Motion Master
 
 | Runtime action | Current source | Status |
@@ -70,10 +76,10 @@ first-release profile rejects it.
   must pass before the other scenes run. Schema 3 records each shot's actual
   canvas bounds for both capture-time and saved-evidence checks.
 
-The [current runtime capture](../../artifacts/art/runtime-review/2026-11-18-portrait-blanket/)
-binds the desktop and phone screenshots to the source with the corrected portrait
-blanket landing. The phone shots show the cat sitting on the floor and resting on
-the folded blanket.
+The [2026-11-18 capture](../../artifacts/art/runtime-review/2026-11-18-portrait-blanket/)
+is historical evidence for the previous portrait blanket landing. Generate and
+validate current evidence in a local scratch directory with `CATSTAR_REVIEW_OUT`.
+CI generates and validates its own evidence without uploading the screenshots.
 
 The prior `2026-11-09-portrait-art/` set records the artwork Walter accepted
 on 2026-11-10. The `2026-11-09-mobile-companion/` set records the first portrait artwork.

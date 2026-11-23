@@ -35,7 +35,10 @@ jobs:
         run: npm run check:assets
 
       - name: Check runtime review screenshots
-        run: npm run review:runtime:check
+        run: |
+          export CATSTAR_REVIEW_OUT="$RUNNER_TEMP/catstar-runtime-review"
+          npm run review:runtime
+          npm run review:runtime:check
 
       - name: Run tests
         run: npm test

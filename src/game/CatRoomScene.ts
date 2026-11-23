@@ -170,6 +170,19 @@ export function sampleScriptedJump(
 const SCENE_ASSET_ROOT = "/assets/scenes/window-room";
 const PORTRAIT_ROOM_WIDTH = 320;
 const PORTRAIT_WORLD_SCALE_X = 2;
+const PORTRAIT_CAT_SCALE = 0.92;
+const PORTRAIT_ART_Y_AT_WORLD_ZERO = 270;
+const PORTRAIT_ROUTE_ANCHORS = {
+  bowl: { x: 406, y: 255 },
+  plantInspectX: 447,
+  plantTouchX: 450,
+};
+const PORTRAIT_CAT_BED = { x: 96, y: 204 };
+const PORTRAIT_FRONT_EDGES = {
+  bed: [[9, 503], [14, 507], [26, 512], [43, 513], [60, 512], [76, 507], [86, 501], [88, 519], [77, 532], [17, 533], [8, 520]],
+  blanket: [[248, 452], [259, 454], [277, 455], [309, 453], [319, 448], [319, 466], [247, 466]],
+  bowl: [[226, 556], [232, 560], [257, 560], [264, 555], [266, 563], [261, 570], [251, 574], [234, 573], [226, 567]],
+} as const;
 const CAT_ACTIONS: CatAction[] = [
   "idle",
   "sit",
@@ -240,8 +253,8 @@ const PLANT_TOUCH_DURATION_MS = 3_000;
 const PLANT_LEAF_SWAY_DEGREES = 8;
 const BLANKET_STAND_Y = 158;
 const BLANKET_REST_X = 578;
-const PORTRAIT_BLANKET_REST_X = 536;
-const PORTRAIT_BLANKET_STAND_Y = 150;
+const PORTRAIT_BLANKET_REST_X = 550;
+const PORTRAIT_BLANKET_STAND_Y = 143;
 const BLANKET_TAKEOFF_X = 482;
 const BLANKET_RETURN_X = FLOOR_CENTER_ZONE.xMax - 20;
 const FLOOR_RETURN_X = FLOOR_CENTER_ZONE.xMin + 72;
@@ -295,6 +308,7 @@ const TOUCH_ACTIONS: Record<TouchDisposition, CatReaction> = {
 
 export class CatRoomScene extends Phaser.Scene {
   private cat?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private contactShadow?: Phaser.GameObjects.Ellipse;
   private plantLeaf?: Phaser.GameObjects.Image;
   private routine: CatRoutine = "approachWindowBench";
   private routineHoldUntil = 0;
@@ -322,6 +336,7 @@ export class CatRoomScene extends Phaser.Scene {
   private debugMotionReview = false;
   private debugFloorWalkDirection = 1;
   private debugForceFullTouch = false;
+  private debugPortraitReview = false;
   private onInteract: CatRoomSceneData["onInteract"] = () => {};
   private onReady: (scene: CatRoomScene) => void = () => {};
   private acceptsInteractions = false;
@@ -336,7 +351,7 @@ export class CatRoomScene extends Phaser.Scene {
     this.showStardust = data.showStardust;
     this.portrait = data.portrait ?? false;
     this.walkPaceSeed = Phaser.Math.FloatBetween(0, Math.PI * 2);
-    this.routeExecutor = createCompanionRouteExecutor(this.temperament, this.walkPaceSeed);
+    this.routeExecutor = this.createRouteExecutor();
     this.planner = createCompanionPlanner({
       temperament: this.temperament,
       random: () => Phaser.Math.RND.frac(),
@@ -357,6 +372,7 @@ export class CatRoomScene extends Phaser.Scene {
         this.debugRoutine = debugRoutine;
       }
       this.debugForceFullTouch = searchParams.get("catstarFullTouch") === "1";
+      this.debugPortraitReview = this.portrait && searchParams.get("catstarPortraitReview") === "1";
     }
   }
 
@@ -407,7 +423,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.debugRoutine) {
       this.routine = this.debugRoutine;
       if (this.debugRoutine === "touchPlant") {
-        this.cat?.setPosition(PLANT_TOUCH_X, FLOOR_STAND_Y);
+        this.cat?.setPosition(this.portrait ? PORTRAIT_ROUTE_ANCHORS.plantTouchX : PLANT_TOUCH_X, FLOOR_STAND_Y);
         this.cat?.setFlipX(false);
         this.currentZone = "plant";
         this.plantTouchStartedAt = this.time.now - PLANT_TOUCH_OBSERVE_MS;
@@ -428,6 +444,12 @@ export class CatRoomScene extends Phaser.Scene {
     } else {
       this.startReturnEncounter(this.time.now);
     }
+    if (this.debugPortraitReview) {
+      this.game.events.on(Phaser.Core.Events.POST_RENDER, this.publishPortraitReviewFrame, this);
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        this.game.events.off(Phaser.Core.Events.POST_RENDER, this.publishPortraitReviewFrame, this);
+      });
+    }
     this.acceptsInteractions = true;
     this.onReady(this);
   }
@@ -438,11 +460,40 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private createPortraitRoom() {
-    const addRoomLayer = () => this.add.image(320, 180, "portrait-room-background").setScale(PORTRAIT_WORLD_SCALE_X, 1);
-    addRoomLayer().setDepth(0);
-    // Repaint the front edges above the sprite where it rests in the bed or on the blanket.
-    addRoomLayer().setCrop(16, 511, 68, 6).setDepth(6);
-    addRoomLayer().setCrop(250, 464, 70, 5).setDepth(6);
+    const key = "portrait-room-background";
+    this.add.image(320, 180, key).setScale(PORTRAIT_WORLD_SCALE_X, 1).setDepth(0);
+    const room = this.textures.get(key).getSourceImage() as HTMLImageElement;
+    for (const [name, points] of Object.entries(PORTRAIT_FRONT_EDGES)) {
+      const layer = `portrait-front-${name}`;
+      const left = Math.min(...points.map(([x]) => x));
+      const top = Math.min(...points.map(([, y]) => y));
+      if (!this.textures.exists(layer)) {
+        const width = Math.max(...points.map(([x]) => x)) - left + 1;
+        const height = Math.max(...points.map(([, y]) => y)) - top + 1;
+        const texture = this.textures.createCanvas(layer, width, height);
+        if (!texture) throw new Error(`Could not create ${layer}`);
+        const context = texture.getContext();
+        context.beginPath();
+        points.forEach(([x, y], index) => {
+          if (index === 0) context.moveTo(x - left, y - top);
+          else context.lineTo(x - left, y - top);
+        });
+        context.closePath();
+        context.clip();
+        context.drawImage(room, -left, -top);
+        texture.refresh();
+      }
+      this.add.image(left * PORTRAIT_WORLD_SCALE_X, top - PORTRAIT_ART_Y_AT_WORLD_ZERO, layer)
+        .setOrigin(0).setScale(PORTRAIT_WORLD_SCALE_X, 1).setDepth(6);
+    }
+  }
+
+  private get catBedSurface() {
+    return this.portrait ? PORTRAIT_CAT_BED : CAT_BED_SURFACE;
+  }
+
+  private get foodBowlY() {
+    return this.portrait ? PORTRAIT_ROUTE_ANCHORS.bowl.y : FOOD_BOWL_STAND_Y;
   }
 
   private get blanketRestX() {
@@ -455,7 +506,37 @@ export class CatRoomScene extends Phaser.Scene {
 
   private setCatScale(scale: number) {
     // Keep the original sprite proportions in the narrower projection of the room.
-    this.cat?.setScale(scale * (this.portrait ? PORTRAIT_WORLD_SCALE_X : 1), scale);
+    const displayScale = this.portrait ? scale * PORTRAIT_CAT_SCALE : scale;
+    this.cat?.setScale(displayScale * (this.portrait ? PORTRAIT_WORLD_SCALE_X : 1), displayScale);
+  }
+
+  private publishPortraitReviewFrame() {
+    if (!this.cat) return;
+    const camera = this.cameras.main;
+    const data = document.documentElement.dataset;
+    const frame = {
+      routine: this.routine,
+      action: this.cat.texture.key,
+      frame: Number(this.cat.frame.name),
+      leafAngle: this.plantLeaf?.angle ?? 0,
+      stardust: this.showStardust,
+      onFloor: !this.scriptedJump && Math.abs(this.cat.y - FLOOR_STAND_Y) < 1,
+      x: camera.centerX + (this.cat.x - camera.midPoint.x) * camera.zoomX,
+      y: camera.centerY + (this.cat.y - 12 - camera.midPoint.y) * camera.zoomY,
+    };
+    data.catstarPortraitFrame = JSON.stringify(frame);
+
+    const captureKey = `${frame.routine}:${frame.action}:${frame.frame}`;
+    if (data.catstarPortraitLocked) {
+      if (data.catstarPortraitLock !== data.catstarPortraitLocked) {
+        delete data.catstarPortraitLocked;
+        this.sys.resume();
+      }
+    } else if (data.catstarPortraitLock === captureKey) {
+      // The scene keeps rendering this pose while the browser captures the page.
+      this.sys.pause();
+      data.catstarPortraitLocked = captureKey;
+    }
   }
 
   update(time: number) {
@@ -510,11 +591,21 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat.body.setAllowGravity(false);
     this.cat.setBounce(0);
     this.cat.setDepth(5);
+    if (this.portrait) {
+      const shadow = this.add.ellipse(0, 0, 104, 7, 0x301816, 0.38).setDepth(4);
+      this.contactShadow = shadow;
+      const updateShadow = (time: number) => this.updateContactShadow(time);
+      this.events.on(Phaser.Scenes.Events.POST_UPDATE, updateShadow);
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        this.events.off(Phaser.Scenes.Events.POST_UPDATE, updateShadow);
+        this.contactShadow = undefined;
+      });
+    }
     this.cat.setInteractive({ useHandCursor: true });
     this.cat.on("pointerdown", (pointer: Phaser.Input.Pointer) => this.interact(pointer.worldX));
 
     // Arcade applies sprite scale to the body too. Keep its world-space width and center.
-    const bodyScaleX = this.portrait ? PORTRAIT_WORLD_SCALE_X : 1;
+    const bodyScaleX = this.portrait ? PORTRAIT_WORLD_SCALE_X * PORTRAIT_CAT_SCALE : 1;
     this.cat.setSize(48 / bodyScaleX, 76);
     this.cat.setOffset(48 - 24 / bodyScaleX, 18);
     this.playCatAction("idle");
@@ -529,6 +620,19 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.showStardust) {
       this.addStardust();
     }
+  }
+
+  private updateContactShadow(time: number) {
+    const cat = this.cat;
+    const shadow = this.contactShadow;
+    if (!cat || !shadow) return;
+    const jump = this.scriptedJump;
+    const progress = jump ? Phaser.Math.Clamp((time - jump.startedAt) / jump.duration, 0, 1) : 0;
+    const baseline = jump ? Phaser.Math.Linear(jump.fromY, jump.toY, progress) : cat.y;
+    const separation = Math.max(0, baseline - cat.y);
+    shadow.setPosition(cat.x, baseline + 43 * cat.scaleY)
+      .setScale(cat.scaleY, cat.scaleY)
+      .setAlpha(1 - Math.min(0.72, separation / 75));
   }
 
   interact(touchWorldX?: number): number {
@@ -596,7 +700,9 @@ export class CatRoomScene extends Phaser.Scene {
     this.manualInteractUntil = this.time.now + outcome.durationMs;
     this.playCatReaction(this.manualInteractAction, true);
     this.onInteract(
-      chooseCompanionWhisper(this.temperament, () => Phaser.Math.RND.frac()),
+      chooseCompanionWhisper(this.temperament, () =>
+        this.debugPortraitReview && this.debugForceFullTouch ? 0 : Phaser.Math.RND.frac(),
+      ),
       outcome.disposition,
     );
     return outcome.durationMs;
@@ -640,8 +746,8 @@ export class CatRoomScene extends Phaser.Scene {
 
       if (this.moveTowardTarget(CAT_BED_ENTRY_X)) {
         this.startScriptedJump(time, {
-          toX: CAT_BED_SURFACE.x,
-          toY: CAT_BED_SURFACE.y,
+          toX: this.catBedSurface.x,
+          toY: this.catBedSurface.y,
           duration: 700,
           peakHeight: 34,
           landingRoutine: "restCatBed",
@@ -653,7 +759,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.routine === "restCatBed") {
       this.currentZone = "cat-bed";
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(CAT_BED_SURFACE.y);
+      this.cat.setY(this.catBedSurface.y);
       this.cat.setVelocityX(0);
       this.playCatAction("lie");
 
@@ -682,7 +788,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (this.routine === "eatFoodBowl") {
       this.currentZone = "food-bowl";
       this.cat.body.setAllowGravity(false);
-      this.cat.setY(FOOD_BOWL_STAND_Y);
+      this.cat.setY(this.foodBowlY);
       this.cat.setVelocityX(0);
       this.cat.setFlipX(this.foodBowlFacingLeft);
       this.playCatAction("eat");
@@ -1140,7 +1246,7 @@ export class CatRoomScene extends Phaser.Scene {
     return {
       x: this.cat.x,
       y: this.cat.y,
-      scale: this.cat.scaleY,
+      scale: this.cat.scaleY / (this.portrait ? PORTRAIT_CAT_SCALE : 1),
       depth: this.cat.depth,
       facingLeft: this.cat.flipX,
       velocityX: this.cat.body.velocity.x,
@@ -1149,8 +1255,16 @@ export class CatRoomScene extends Phaser.Scene {
   }
 
   private companionRouteExecutor() {
-    this.routeExecutor ??= createCompanionRouteExecutor(this.temperament, this.walkPaceSeed);
+    this.routeExecutor ??= this.createRouteExecutor();
     return this.routeExecutor;
+  }
+
+  private createRouteExecutor() {
+    return createCompanionRouteExecutor(
+      this.temperament,
+      this.walkPaceSeed,
+      this.portrait ? PORTRAIT_ROUTE_ANCHORS : undefined,
+    );
   }
 
   private nextCompanionWalkVelocity(distance: number) {
@@ -1252,7 +1366,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "cat-bed-rest") {
       this.currentZone = "cat-bed";
       this.routine = "restCatBed";
-      this.cat.setPosition(CAT_BED_SURFACE.x, CAT_BED_SURFACE.y);
+      this.cat.setPosition(this.catBedSurface.x, this.catBedSurface.y);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("lie", true);
       return;
@@ -1271,7 +1385,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "eat") {
       this.currentZone = "food-bowl";
       this.routine = "eatFoodBowl";
-      this.cat.setPosition(FOOD_BOWL_X, FOOD_BOWL_STAND_Y);
+      this.cat.setPosition(this.portrait ? PORTRAIT_ROUTE_ANCHORS.bowl.x : FOOD_BOWL_X, this.foodBowlY);
       this.cat.setFlipX(false);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("eat", true);
@@ -1281,7 +1395,7 @@ export class CatRoomScene extends Phaser.Scene {
     if (intent.kind === "plant-inspect") {
       this.currentZone = "plant";
       this.routine = "inspectPlant";
-      this.cat.setPosition(PLANT_INSPECT_X, FLOOR_STAND_Y);
+      this.cat.setPosition(this.portrait ? PORTRAIT_ROUTE_ANCHORS.plantInspectX : PLANT_INSPECT_X, FLOOR_STAND_Y);
       this.cat.setFlipX(false);
       this.routineHoldUntil = time + intent.dwellMs;
       this.playCatAction("interact", true);
@@ -1432,7 +1546,7 @@ export class CatRoomScene extends Phaser.Scene {
       if (jump.landingRoutine === "restCatBed") {
         this.currentZone = "cat-bed";
         this.cat.body.setAllowGravity(false);
-        this.cat.setY(CAT_BED_SURFACE.y);
+        this.cat.setY(this.catBedSurface.y);
         this.routineHoldUntil = time + this.activeDwellMs(5_000);
         this.cat.setFlipX(false);
         this.playCatAction("lie", true);
@@ -1469,10 +1583,12 @@ export class CatRoomScene extends Phaser.Scene {
 
   private createPlantLeaf() {
     this.plantLeaf = this.add
-      .image(this.portrait ? 586 : PLANT_LEAF_PIVOT_X, this.portrait ? 213 : PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
+      .image(this.portrait ? 584 : PLANT_LEAF_PIVOT_X, this.portrait ? 212 : PLANT_LEAF_PIVOT_Y, "window-room-plant-leaf")
       .setOrigin(43 / 47, 15 / 24)
-      .setScale(this.portrait ? PORTRAIT_WORLD_SCALE_X : 1, 1)
       .setDepth(6);
+    if (this.portrait) {
+      this.plantLeaf.setScale(0.7 * PORTRAIT_WORLD_SCALE_X, 0.7).setTint(0xdec7cc);
+    }
   }
 
   private createCatAnimations() {

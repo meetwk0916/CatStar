@@ -29,6 +29,12 @@ rights chain, not proof of production rights.
 | Rounded short-haired idle v3 source | `artifacts/art/candidates/active/product-cat-idle-v3/` plus `scripts/compose_product_cat_idle.py` | Built-in ImageGen; per-generation version not exposed; contemporaneous official docs (archived 2026-08-12/14, see Rights snapshots sources) identify `gpt-image-2` | Recorded below; immutable terms snapshot archived 2026-08-23 (see Rights snapshots) | Historical internal support; not current runtime or release art |
 | Runtime-review screenshots | Locally captured from CatStar | CatStar code plus the applicable runtime asset groups above | Inherits the reviewed assets' source status | Internal review only |
 
+The portrait-specific bed, blanket, and bowl foreground overlays are runtime
+polygon clips of `portrait.png` and inherit the portrait source record. The
+tinted, scaled leaf inherits the plant interaction leaf record. The contact
+shadow is drawn by the scene code without a source image. None of these local
+transformations changes the existing beta-clearance requirements.
+
 ## Production intake requirements
 
 Before any free public web release, public beta, paid distribution, marketing

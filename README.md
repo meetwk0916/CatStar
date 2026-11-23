@@ -49,17 +49,22 @@ http://127.0.0.1:5173/
 
 ```bash
 npm run check:assets
-npm run review:runtime:check
+(
+  export CATSTAR_REVIEW_OUT="$(mktemp -d "${TMPDIR:-/tmp}/catstar-runtime-review.XXXXXX")"
+  test -n "$CATSTAR_REVIEW_OUT" || exit 1
+  npm run review:runtime && npm run review:runtime:check
+)
 npm test
 npm run test:e2e
 npm run build
 npm run check:bundle
 ```
 
-This checks runtime cat sprite-sheet structure, validates saved browser review
-screenshots, runs domain and browser regression tests, builds the OpenAI
-Sites-compatible Vinext app and its Cloudflare Worker output, and enforces the
-accepted internal-prototype bundle budget.
+This checks runtime cat sprite-sheet structure, captures and validates browser
+review screenshots in the same temporary directory, runs domain and browser
+regression tests, builds the OpenAI Sites-compatible Vinext app and its
+Cloudflare Worker output, and enforces the accepted internal-prototype bundle
+budget.
 
 ## Hosting
 
