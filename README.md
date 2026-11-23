@@ -51,6 +51,7 @@ http://127.0.0.1:5173/
 npm run check:assets
 (
   export CATSTAR_REVIEW_OUT="$(mktemp -d "${TMPDIR:-/tmp}/catstar-runtime-review.XXXXXX")"
+  test -n "$CATSTAR_REVIEW_OUT" || exit 1
   npm run review:runtime && npm run review:runtime:check
 )
 npm test
