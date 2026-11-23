@@ -57,16 +57,14 @@ specs and mutable status notes never override those sources.
 npm install
 npm run dev
 npm run check:assets
-npm run review:runtime:check
 npm test
 npm run test:e2e
 npm run build
 npm run check:bundle
 ```
 
-Run `npm run check:assets`, `npm run review:runtime:check`, `npm test`,
-`npm run test:e2e`, `npm run build`, and `npm run check:bundle` before
-committing code or runtime asset changes.
+Before committing code or runtime asset changes, run [Verify in README.md](README.md#verify),
+including capture and validation in the same temporary `CATSTAR_REVIEW_OUT`.
 
 ## Agent skills
 

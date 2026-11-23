@@ -31,6 +31,27 @@ async function captureScene(route, run, state = storageState) {
   }
 }
 
+async function captureLockedFrame(page, save, filename, expected) {
+  const { routine, action, requiredFrame } = expected;
+  const key = `${routine}:cat-${action}:${requiredFrame}`;
+  await page.evaluate((key) => {
+    document.documentElement.dataset.catstarPortraitLock = key;
+  }, key);
+  try {
+    await page.waitForFunction(
+      (key) => document.documentElement.dataset.catstarPortraitLocked === key,
+      key, { timeout: 20_000 },
+    );
+    const before = await page.evaluate(() => document.documentElement.dataset.catstarPortraitFrame);
+    await save(filename);
+    const after = await page.evaluate(() => document.documentElement.dataset.catstarPortraitFrame);
+    if (before !== after) throw new Error(`Rendered frame changed while capturing ${filename}`);
+  } finally {
+    await page.evaluate(() => { delete document.documentElement.dataset.catstarPortraitLock; });
+  }
+  await page.waitForFunction(() => !document.documentElement.dataset.catstarPortraitLocked);
+}
+
 async function capturePortrait(sequences) {
   for (const [initialRoutine, frames] of sequences) {
     let state = storageState;
@@ -49,18 +70,23 @@ async function capturePortrait(sequences) {
       `/?catstarRoutine=${initialRoutine}&catstarPortraitReview=1&catstarFullTouch=1`,
       async (page, canvas, save) => {
         for (const [name, routine, action] of frames) {
-          const observed = await page.waitForFunction(({ name, routine, action }) => {
+          const filename = `mobile-${name}.png`;
+          const interrupt = name.startsWith("interrupt-");
+          const requiredFrame = action === "eat" ? 2 : action === "jump" || action === "stretch" ? 3 : null;
+          if (requiredFrame !== null && !interrupt) {
+            await captureLockedFrame(page, save, filename, { routine, action, requiredFrame });
+            continue;
+          }
+          const observed = await page.waitForFunction(({ name, routine, action, requiredFrame }) => {
             const raw = document.documentElement.dataset.catstarPortraitFrame;
             if (!raw) return false;
             const frame = JSON.parse(raw);
             const requiresSway = name === "plant-sway" || name === "interrupt-plant";
-            const requiredFrame = action === "eat" ? 2 : action === "jump" || action === "stretch" ? 3 : null;
             return frame.routine === routine && frame.action === `cat-${action}` &&
               (requiredFrame === null || frame.frame === requiredFrame) &&
               (!requiresSway || Math.abs(frame.leafAngle) > 3) && frame;
-          }, { name, routine, action }, { timeout: 20_000 }).then((handle) => handle.jsonValue());
+          }, { name, routine, action, requiredFrame }, { timeout: 20_000 }).then((handle) => handle.jsonValue());
 
-          const interrupt = name.startsWith("interrupt-");
           if (name === "touch-whisper" || interrupt) {
             const box = await canvas.boundingBox();
             await page.mouse.click(box.x + observed.x, box.y + observed.y);
@@ -80,7 +106,7 @@ async function capturePortrait(sequences) {
             if (!observed.stardust) throw new Error("The farewell passport did not enable stardust");
             await page.waitForTimeout(900); // Let multiple stardust particles enter the scene.
           }
-          await save(`mobile-${name}.png`);
+          await save(filename);
         }
       },
       state,

@@ -158,7 +158,7 @@ export function createCompanionRouteExecutor(
         waypoints,
         waypointIndex: 0,
         destination: returningFromBowl
-          ? { x: BOWL_X + direction * RETURN_OFFSET_X, y: FLOOR_Y }
+          ? { x: bowlX + direction * RETURN_OFFSET_X, y: FLOOR_Y }
           : foregroundRoute
             ? { x: FOREGROUND_X, y: pose.y }
             : destination,

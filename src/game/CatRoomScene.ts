@@ -444,6 +444,12 @@ export class CatRoomScene extends Phaser.Scene {
     } else {
       this.startReturnEncounter(this.time.now);
     }
+    if (this.debugPortraitReview) {
+      this.game.events.on(Phaser.Core.Events.POST_RENDER, this.publishPortraitReviewFrame, this);
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        this.game.events.off(Phaser.Core.Events.POST_RENDER, this.publishPortraitReviewFrame, this);
+      });
+    }
     this.acceptsInteractions = true;
     this.onReady(this);
   }
@@ -504,26 +510,41 @@ export class CatRoomScene extends Phaser.Scene {
     this.cat?.setScale(displayScale * (this.portrait ? PORTRAIT_WORLD_SCALE_X : 1), displayScale);
   }
 
+  private publishPortraitReviewFrame() {
+    if (!this.cat) return;
+    const camera = this.cameras.main;
+    const data = document.documentElement.dataset;
+    const frame = {
+      routine: this.routine,
+      action: this.cat.texture.key,
+      frame: Number(this.cat.frame.name),
+      leafAngle: this.plantLeaf?.angle ?? 0,
+      stardust: this.showStardust,
+      onFloor: !this.scriptedJump && Math.abs(this.cat.y - FLOOR_STAND_Y) < 1,
+      x: camera.centerX + (this.cat.x - camera.midPoint.x) * camera.zoomX,
+      y: camera.centerY + (this.cat.y - 12 - camera.midPoint.y) * camera.zoomY,
+    };
+    data.catstarPortraitFrame = JSON.stringify(frame);
+
+    const captureKey = `${frame.routine}:${frame.action}:${frame.frame}`;
+    if (data.catstarPortraitLocked) {
+      if (data.catstarPortraitLock !== data.catstarPortraitLocked) {
+        delete data.catstarPortraitLocked;
+        this.sys.resume();
+      }
+    } else if (data.catstarPortraitLock === captureKey) {
+      // The scene keeps rendering this pose while the browser captures the page.
+      this.sys.pause();
+      data.catstarPortraitLocked = captureKey;
+    }
+  }
+
   update(time: number) {
     if (!this.cat) {
       return;
     }
 
     this.publishDebugMotionState();
-    if (this.debugPortraitReview) {
-      const camera = this.cameras.main;
-      const data = document.documentElement.dataset;
-      data.catstarPortraitFrame = JSON.stringify({
-        routine: this.routine,
-        action: this.cat.texture.key,
-        frame: Number(this.cat.frame.name),
-        leafAngle: this.plantLeaf?.angle ?? 0,
-        stardust: this.showStardust,
-        onFloor: !this.scriptedJump && Math.abs(this.cat.y - FLOOR_STAND_Y) < 1,
-        x: camera.centerX + (this.cat.x - camera.midPoint.x) * camera.zoomX,
-        y: camera.centerY + (this.cat.y - 12 - camera.midPoint.y) * camera.zoomY,
-      });
-    }
     this.advanceCancelledRoute(time);
 
     if (time < this.manualInteractUntil) {
